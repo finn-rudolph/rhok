@@ -1,5 +1,3 @@
-mod rho;
-
 use std::env;
 
 use rug::{Complete, Integer};
@@ -11,5 +9,5 @@ fn main() {
         .expect("failed to parse the number to be factored")
         .complete();
 
-    println!("=> {}", rho::pollard_rho(&n, 2));
+    println!("=> {}", rhok::pollard_rho(&n, 2));
 }
