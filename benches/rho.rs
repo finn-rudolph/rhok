@@ -7,15 +7,19 @@ use rug::{integer::IsPrime, rand::RandState, Integer};
 
 use rhok;
 
-const K: Range<u32> = 2..1000;
+const K: Range<u32> = 2..10;
 const BITS: [u32; 4] = [64, 72, 84, 98];
 
-fn random_prime(bits: u32, rng: &mut RandState) -> Integer {
-    let mut p: Integer = Integer::random_bits(bits, rng).into();
+fn random_semiprime(bits: u32, rng: &mut RandState) -> Integer {
+    let mut p: Integer = Integer::random_bits(bits >> 1, rng).into();
     while p.is_probably_prime(48) == IsPrime::No {
-        p = Integer::random_bits(bits, rng).into();
+        p = Integer::random_bits(bits >> 1, rng).into();
     }
-    p
+    let mut q: Integer = Integer::random_bits(bits >> 1, rng).into();
+    while q == p || q.is_probably_prime(48) == IsPrime::No {
+        q = Integer::random_bits(bits >> 1, rng).into();
+    }
+    p * q
 }
 
 fn bench_semiprime(c: &mut Criterion) {
@@ -23,15 +27,12 @@ fn bench_semiprime(c: &mut Criterion) {
     rng.seed(&Integer::from(42u64 << 42));
 
     for bits in BITS {
-        let mut group = c.benchmark_group(format!("semiprime {}", bits));
+        let mut group = c.benchmark_group(format!("semiprime-{}", bits));
         for k in K {
             group.bench_function(BenchmarkId::from_parameter(k), |b| {
                 b.iter_batched(
-                    || {
-                        random_prime(bits >> 1, &mut rng)
-                            * random_prime(bits >> 1, &mut rng)
-                    },
-                    |n| rhok::pollard_rho(black_box(&n), black_box(k)),
+                    || random_semiprime(bits, &mut rng),
+                    |n| rhok::multi::pollard_rho(black_box(&n), black_box(k)),
                     criterion::BatchSize::SmallInput,
                 )
             });
@@ -42,8 +43,8 @@ fn bench_semiprime(c: &mut Criterion) {
 criterion_group!(
     name = benches;
     config = Criterion::default()
-        .warm_up_time(Duration::from_nanos(1))
-        .sample_size(12);
+        .warm_up_time(Duration::from_millis(100))
+        .sample_size(10);
     targets = bench_semiprime
 );
 criterion_main!(benches);
