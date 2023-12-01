@@ -15,7 +15,8 @@ namespace nat
         for (size_t i = 2; i < N; ++i)
             if (!r[i])
             {
-                for (size_t j = i; j < N; j += i)
+                r[i] = i;
+                for (size_t j = i * i; j < N; j += i)
                     r[j] = i;
             }
 
@@ -26,9 +27,6 @@ namespace nat
         phi[1] = 1;
         for (size_t i = 2; i < N; ++i)
         {
-            for (auto d : div[i])
-                printf("%" PRIu32 " ", d);
-            printf("\n");
             size_t q = 1, n = i;
             while (!(n % r[i]))
             {
@@ -36,26 +34,20 @@ namespace nat
                 n /= r[i];
             }
 
-            if (q == i)
+            if (n == 1)
                 phi[i] = (r[i] - 1) * (q / r[i]);
             else
                 phi[i] = phi[q] * phi[i / q];
-
-            // printf("phi(%zu) = %" PRIu32 "\n", i, phi[i]);
         }
     }
 
-    double gcd_prob(uint32_t k, uint32_t d)
-    {
-        assert(!(k % d));
-        return (double)phi[k / d] / (double)k;
-    }
+    double gcd_prob(uint32_t k, uint32_t d) { return (double)phi[k / d] / k; }
 }
 
 double expected(uint32_t k, size_t i = 0, uint32_t d_sum = 0)
 {
     if (i == F)
-        return 1.0 / sqrt((double)d_sum);
+        return 1.0 / sqrt(d_sum);
 
     double e = 0.0;
     for (auto d : nat::div[k])
@@ -68,5 +60,7 @@ int main()
     nat::init();
     printf("%-8cexpected iterations / sqrt((p - 1) ln 2)\n", 'k');
     for (uint32_t k = 1; k < N; ++k)
-        printf("%-8" PRIu32 "%lf\n", k, expected(k) * log2((double)k * 2.0));
+    {
+        printf("%-8" PRIu32 "%lf\n", k, expected(k) * log2(2.0 * k));
+    }
 }
