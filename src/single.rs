@@ -35,7 +35,7 @@ fn gcd(mut a: u64, mut b: u64) -> u64 {
 
 // Pollard's Rho algorithm with Brent's optimization, taken from Sergey Slotin's
 // book "Algorithms for Modern Hardware". (the gcd above is also from there)
-fn pollard_rho(n: u64, k: u64) -> u64 {
+pub fn pollard_rho(n: u64, k: u64) -> u64 {
     const BATCH_SIZE: u64 = 1 << 9;
     const LENGTH_LIMIT: u64 = 1 << 17;
 

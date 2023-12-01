@@ -3,7 +3,7 @@ use rug::{rand::RandState, Integer};
 const BATCH_SIZE: u64 = 1 << 9;
 const LENGTH_LIMIT: u64 = 1 << 17;
 
-pub fn pollard_rho(n: &Integer, k: u32) -> Integer {
+pub fn pollard_rho(n: &Integer, k: u64) -> Integer {
     let mut rng = RandState::new();
     rng.seed(&Integer::from(42));
 
