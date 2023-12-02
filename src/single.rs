@@ -1,11 +1,13 @@
 use core::cmp;
-use std::time::{Duration, Instant};
+use std::{
+    cmp::min,
+    time::{Duration, Instant, SystemTime, UNIX_EPOCH},
+};
 
 use rand_xoshiro::{
     rand_core::{RngCore, SeedableRng},
     Xoshiro256PlusPlus,
 };
-use rayon::prelude::*;
 
 use crate::{miller_rabin, montgomery::Montgomery};
 
@@ -35,12 +37,11 @@ fn gcd(mut a: u64, mut b: u64) -> u64 {
 
 // Pollard's Rho algorithm with Brent's optimization, taken from Sergey Slotin's
 // book "Algorithms for Modern Hardware". (the gcd above is also from there)
-pub fn pollard_rho(n: u64, k: u64) -> u64 {
-    const BATCH_SIZE: u64 = 1 << 9;
+pub fn pollard_rho(n: u64, k: u64, rng: &mut Xoshiro256PlusPlus) -> u64 {
+    const BATCH_SIZE: u64 = 1 << 10;
     const LENGTH_LIMIT: u64 = 1 << 17;
 
     let mtg = Montgomery::new(n);
-    let mut rng = Xoshiro256PlusPlus::seed_from_u64(42);
 
     loop {
         let mut x = rng.next_u64() % n;
@@ -71,6 +72,32 @@ pub fn pollard_rho(n: u64, k: u64) -> u64 {
     }
 }
 
+pub fn pollard_slow(n: u64, k: u64, rng: &mut Xoshiro256PlusPlus) -> u64 {
+    const LENGTH_LIMIT: u64 = 1 << 18;
+
+    let mtg = Montgomery::new(n);
+    let _k = k << 1;
+
+    loop {
+        let mut x = rng.next_u64() % n;
+        let mut y = x;
+
+        for _ in 0..LENGTH_LIMIT {
+            x = mtg.pow(x, _k) + 1;
+            y = mtg.pow(mtg.pow(y, _k) + 1, _k) + 1;
+
+            let mut d = x.wrapping_sub(y);
+            if x < y {
+                d = d.wrapping_add(n);
+            }
+            let g = gcd(d, n);
+            if g != 1 && g != n {
+                return g;
+            }
+        }
+    }
+}
+
 fn random_prime(bits: u32, rng: &mut Xoshiro256PlusPlus) -> u64 {
     let mut p = rng.next_u64() >> (64 - bits);
     while !miller_rabin::miller_rabin(p) {
@@ -79,32 +106,33 @@ fn random_prime(bits: u32, rng: &mut Xoshiro256PlusPlus) -> u64 {
     p
 }
 
+// note: pollard_rho with BATCH_SIZE = 1 << 10 does not show improvement when
+// M = 10 and some 2s and 3s are chosen.
+
+const K: [u64; 10] = [1, 1, 1, 1, 1, 6, 3, 6, 2, 2];
+
 pub fn bench_single_rho() {
     const SAMPLES: usize = 1000;
+    let mut rng = Xoshiro256PlusPlus::seed_from_u64(
+        SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos() as u64,
+    );
+    let mut avg = Duration::ZERO;
 
-    print!("[");
-    (2..10)
-        .map(|k| {
-            let mut duration_sum = (0..SAMPLES)
-                .into_par_iter()
-                .fold(
-                    || Duration::ZERO,
-                    |sum, i| {
-                        let mut rng = Xoshiro256PlusPlus::seed_from_u64(
-                            (k << 42) ^ i as u64,
-                        );
-                        let n = random_prime(31, &mut rng)
-                            * random_prime(31, &mut rng);
-                        let start = Instant::now();
-                        let factor = pollard_rho(n, k);
-                        sum + start.elapsed()
-                    },
-                )
-                .sum::<Duration>();
-            (k, duration_sum / SAMPLES as u32)
-        })
-        .collect::<Vec<(u64, Duration)>>()
-        .iter()
-        .for_each(|(k, t)| print!("{},", t.as_nanos()));
-    print!("]");
+    for _ in 0..SAMPLES {
+        let n = random_prime(31, &mut rng) * random_prime(31, &mut rng);
+        let mut min_duration = Duration::from_secs(60);
+
+        for k in K {
+            let start = Instant::now();
+            let factor = pollard_rho(n, k, &mut rng);
+            min_duration = min(min_duration, start.elapsed());
+        }
+
+        avg += min_duration;
+    }
+
+    println!("{:?}", avg / SAMPLES as u32);
 }

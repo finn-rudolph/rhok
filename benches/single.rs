@@ -27,6 +27,7 @@ fn random_semiprime(bits: u32, rng: &mut Xoshiro256PlusPlus) -> u64 {
 
 fn bench_semiprime(c: &mut Criterion) {
     let mut rng = Xoshiro256PlusPlus::seed_from_u64(42u64 << 42);
+    let mut _rng = Xoshiro256PlusPlus::seed_from_u64(41u64 << 45);
 
     for bits in BITS {
         let mut group = c.benchmark_group(format!("single-semiprime-{}", bits));
@@ -35,7 +36,13 @@ fn bench_semiprime(c: &mut Criterion) {
             group.bench_function(BenchmarkId::from_parameter(k), |b| {
                 b.iter_batched(
                     || random_semiprime(bits, &mut rng),
-                    |n| rhok::single::pollard_rho(black_box(n), black_box(k)),
+                    |n| {
+                        rhok::single::pollard_rho(
+                            black_box(n),
+                            black_box(k),
+                            black_box(&mut _rng),
+                        )
+                    },
                     criterion::BatchSize::SmallInput,
                 )
             });
@@ -45,6 +52,7 @@ fn bench_semiprime(c: &mut Criterion) {
 
 fn bench_general(c: &mut Criterion) {
     let mut rng = Xoshiro256PlusPlus::seed_from_u64(42u64 << 41);
+    let mut _rng = Xoshiro256PlusPlus::seed_from_u64(46u64 << 40);
 
     for bits in BITS {
         let mut group = c.benchmark_group(format!("single-general-{}", bits));
@@ -56,7 +64,13 @@ fn bench_general(c: &mut Criterion) {
                         random_prime(bits / 3, &mut rng)
                             * random_prime((2 * bits) / 3, &mut rng)
                     },
-                    |n| rhok::single::pollard_rho(black_box(n), black_box(k)),
+                    |n| {
+                        rhok::single::pollard_rho(
+                            black_box(n),
+                            black_box(k),
+                            &mut _rng,
+                        )
+                    },
                     criterion::BatchSize::SmallInput,
                 )
             });
