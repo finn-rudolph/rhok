@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-constexpr size_t N = 1 << 6, F = 1, M = 2;
+constexpr size_t N = 1 << 4, F = 2, M = 6;
 
 namespace nat
 {
@@ -44,49 +44,51 @@ namespace nat
     double gcd_prob(uint32_t k, uint32_t d) { return (double)phi[k / d] / k; }
 }
 
-double expected_m1(uint32_t k, size_t factor = 0, uint32_t d_sum = 0)
-{
-    if (factor == F)
-        return 1.0 / sqrt(d_sum);
-
-    double e = 0.0;
-    for (auto d : nat::div[k])
-        e += expected_m1(k, factor + 1, d_sum + d) * nat::gcd_prob(k, d);
-    return e;
-}
-
-uint32_t _k[M];
+uint32_t k[M];
 double inv_lg_k[M];
 
-double expected_f1(size_t machine = 0, double d_div_lg_sum = 0.0)
+double expected(
+    size_t machine = 0, size_t factor = 0, uint32_t d_sum = 0,
+    double d_div_lg_sum = 0.0)
 {
     if (machine == M)
         return 1.0 / sqrt(d_div_lg_sum);
+    if (factor == F)
+        return expected(
+            machine + 1, 0, 0, d_div_lg_sum + d_sum * inv_lg_k[machine]);
 
     double e = 0.0;
-    for (auto d : nat::div[_k[machine]])
-        e += expected_f1(machine + 1, d_div_lg_sum +
-                                          (double)d * inv_lg_k[machine]) *
-             nat::gcd_prob(_k[machine], d);
+    for (auto d : nat::div[k[machine]])
+        e += expected(machine, factor + 1, d_sum + d, d_div_lg_sum) *
+             nat::gcd_prob(k[machine], d);
     return e;
+}
+
+void iterate_k_cartesian_prod(size_t machine = 0)
+{
+    if (machine == M)
+    {
+        for (size_t i = 0; i < M; ++i)
+            printf("%-6" PRIu32, k[i]);
+        printf("%lf\n", expected());
+        return;
+    }
+
+    size_t start = !machine ? 1 : k[machine - 1];
+    for (size_t i = start; i < N; ++i)
+    {
+        k[machine] = i;
+        inv_lg_k[machine] = 1.0 / log2(2.0 * i);
+        inv_lg_k[machine] *= inv_lg_k[machine];
+        iterate_k_cartesian_prod(machine + 1);
+    }
 }
 
 int main()
 {
     nat::init();
-    printf("%-8s%-8sexpected iterations / sqrt((p - 1) ln 2)\n", "k_0", "k_1");
-
-    for (uint32_t k1 = 1; k1 < N; ++k1)
-    {
-        _k[0] = k1;
-        inv_lg_k[0] = 1.0 / log2(2.0 * k1);
-        inv_lg_k[0] *= inv_lg_k[0];
-        for (uint32_t k2 = k1 + 1; k2 < N; ++k2)
-        {
-            _k[1] = k2;
-            inv_lg_k[1] = 1.0 / log2(2.0 * k2);
-            inv_lg_k[1] *= inv_lg_k[1];
-            printf("%-8" PRIu32 "%-8" PRIu32 "%lf\n", k1, k2, expected_f1());
-        }
-    }
+    for (size_t i = 0; i < M; ++i)
+        printf("k%-5zu", i);
+    printf("expected iterations / sqrt((p - 1) ln 2)\n");
+    iterate_k_cartesian_prod();
 }
