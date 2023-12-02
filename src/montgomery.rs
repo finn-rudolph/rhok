@@ -78,7 +78,14 @@ impl Montgomery {
     // Space!
     #[inline]
     pub const fn pow(&self, mut x: u64, mut y: u64) -> u64 {
-        let mut result: u64 = self.to_montgomery_space(1);
+        let mut result: u64 = x;
+        assert!(y != 0);
+        while y & 1 == 0 {
+            result = self.mul(result, result);
+            y >>= 1;
+        }
+        x = result;
+        y ^= 1;
 
         loop {
             if y & 1 == 1 {
