@@ -1,6 +1,9 @@
 use crate::montgomery::Montgomery;
 // Deterministic variant of Miller-Rabin that works up to 2^64.
 pub const fn miller_rabin(n: u64) -> bool {
+    if n == 1 {
+        return false;
+    }
     if n == 2 {
         return true;
     }
