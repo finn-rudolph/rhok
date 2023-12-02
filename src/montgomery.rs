@@ -79,7 +79,6 @@ impl Montgomery {
     #[inline]
     pub const fn pow(&self, mut x: u64, mut y: u64) -> u64 {
         let mut result: u64 = x;
-        assert!(y != 0);
         while y & 1 == 0 {
             result = self.mul(result, result);
             y >>= 1;

@@ -38,7 +38,7 @@ fn gcd(mut a: u64, mut b: u64) -> u64 {
 // Pollard's Rho algorithm with Brent's optimization, taken from Sergey Slotin's
 // book "Algorithms for Modern Hardware". (the gcd above is also from there)
 pub fn pollard_rho(n: u64, k: u64, rng: &mut Xoshiro256PlusPlus) -> u64 {
-    const BATCH_SIZE: u64 = 1 << 10;
+    const BATCH_SIZE: u64 = 1 << 8;
     const LENGTH_LIMIT: u64 = 1 << 17;
 
     let mtg = Montgomery::new(n);
@@ -107,12 +107,15 @@ fn random_prime(bits: u32, rng: &mut Xoshiro256PlusPlus) -> u64 {
 }
 
 // note: pollard_rho with BATCH_SIZE = 1 << 10 does not show improvement when
-// M = 10 and some 2s and 3s are chosen.
+// M = 10 and some 2s and 3s are chosen (semiprimes 62).
+// with 20/42 split, 2x2 and 2x3 outperforms 10x1.
+// seems that when one prime factor is rather small, adding 2s and 3s helps
+// something but WHY?
 
-const K: [u64; 10] = [1, 1, 1, 1, 1, 6, 3, 6, 2, 2];
+const K: [u64; 10] = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
 pub fn bench_single_rho() {
-    const SAMPLES: usize = 1000;
+    const SAMPLES: usize = 10000;
     let mut rng = Xoshiro256PlusPlus::seed_from_u64(
         SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -122,7 +125,10 @@ pub fn bench_single_rho() {
     let mut avg = Duration::ZERO;
 
     for _ in 0..SAMPLES {
-        let n = random_prime(31, &mut rng) * random_prime(31, &mut rng);
+        let mut n = rng.next_u64() >> 2;
+        while miller_rabin::miller_rabin(n) {
+            n = rng.next_u64() >> 2;
+        }
         let mut min_duration = Duration::from_secs(60);
 
         for k in K {
