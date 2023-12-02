@@ -67,7 +67,7 @@ fn bench_pow(c: &mut Criterion) {
     let mut rng = RandState::new();
     rng.seed(&Integer::from(42u64 << 42));
 
-    for bits in [256] {
+    for bits in [4096] {
         let mut group = c.benchmark_group(format!("pow-{}", bits));
         group.warm_up_time(Duration::from_millis(100));
 
