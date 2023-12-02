@@ -14,5 +14,9 @@ rug = "1.22.0"
 criterion = "0.5.1"
 
 [[bench]]
-name = "rho"
+name = "multi"
+harness = false
+
+[[bench]]
+name = "single"
 harness = false
