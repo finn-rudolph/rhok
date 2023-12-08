@@ -1,9 +1,10 @@
+use core::num;
 use std::collections::VecDeque;
 
 use crate::{miller_rabin::miller_rabin, montgomery::Montgomery, single::gcd};
 
-const A: usize = 1 << 20;
-const B: usize = (1 << 20) + (1 << 8);
+const A: usize = 1 << 16;
+const B: usize = (1 << 16) + (1 << 12);
 const K1: usize = 2;
 const K2: usize = 12;
 
@@ -95,6 +96,8 @@ pub fn mu_lambda_stats() {
         "tail std dev"
     );
 
+    let mut nu_means: Vec<[f64; K2 + 1]> = Vec::new();
+
     for p in A..=B {
         if !miller_rabin(p as u64) {
             continue;
@@ -106,6 +109,10 @@ pub fn mu_lambda_stats() {
         let mut cycle_nodes: Vec<usize> = Vec::new();
         let mut collision_len: Vec<usize> = vec![0; p];
         let mut cycle_len: Vec<usize> = vec![0; p];
+
+        if gcd(p as u64 - 1, 4) == 2 && gcd(p as u64 - 1, 6) == 2 {
+            nu_means.push([0.0; K2 + 1]);
+        }
 
         for k in (K1..=K2).step_by(2) {
             let (in_degree, pre) = get_in_degree_predecessors(p, k, &mtg);
@@ -156,6 +163,9 @@ pub fn mu_lambda_stats() {
             }
 
             let mean_nu = (total_collision_len as f64) / (p as f64);
+            if gcd(p as u64 - 1, 4) == 2 && gcd(p as u64 - 1, 6) == 2 {
+                nu_means.last_mut().unwrap()[k] = mean_nu;
+            }
             let mean_cycle_len = (total_cycle_len as f64) / (p as f64);
             let mean_tail_len =
                 ((total_collision_len - total_cycle_len) as f64) / (p as f64);
@@ -194,4 +204,35 @@ pub fn mu_lambda_stats() {
             );
         }
     }
+
+    let mut mean = [0.0; K2 + 1];
+    let mut std_dev = [0.0; K2 + 1];
+    for x in &nu_means {
+        for k in (K1..K2).step_by(2) {
+            mean[k] += x[k];
+        }
+    }
+    for v in mean.iter_mut() {
+        *v /= nu_means.len() as f64;
+    }
+    for x in &nu_means {
+        for k in (K1..K2).step_by(2) {
+            std_dev[k] += (x[k] - mean[k]) * (x[k] - mean[k]);
+        }
+    }
+    for v in std_dev.iter_mut() {
+        *v = (*v / nu_means.len() as f64).sqrt();
+    }
+
+    let mut corr = 0.0;
+    let prob = (1.0 / nu_means.len() as f64) * (1.0 / nu_means.len() as f64);
+    for x in &nu_means {
+        for y in &nu_means {
+            corr += (x[4] - mean[4]) * (y[6] - mean[6]) * prob;
+        }
+    }
+
+    corr /= std_dev[4];
+    corr /= std_dev[6];
+    eprintln!("{}", corr);
 }
