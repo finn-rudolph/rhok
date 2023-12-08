@@ -1,4 +1,5 @@
 around 200000 samples for each K-config i think
+average number of iterations for random seed, batch size 2^8, length limit 2^17
 
 K = [1, 1, 1, 1, 1, 1] | 18356.60544
 K = [1, 1, 1, 1, 1, 2] | 17735.7632

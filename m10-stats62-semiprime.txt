@@ -1,4 +1,6 @@
 100000 samples for each K-configuration
+average number of iterations for random seed, batch size 2^8, length limit 2^17
+
 
 K = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1] | 14808.32768
 K = [1, 1, 1, 1, 1, 1, 1, 1, 1, 2] | 14208.17664
