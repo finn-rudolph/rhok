@@ -8,7 +8,9 @@ use rand_xoshiro::{
     rand_core::{RngCore, SeedableRng},
     Xoshiro256PlusPlus,
 };
-use rayon::iter::{IntoParallelIterator, ParallelIterator};
+use rayon::iter::{
+    IntoParallelIterator, IntoParallelRefIterator, ParallelIterator,
+};
 
 use crate::{
     miller_rabin::{self, miller_rabin},
@@ -107,7 +109,7 @@ pub fn pollard_rho_iteration_count(
                 }
 
                 let g = gcd(q, n);
-                if g != 1 && g != n {
+                if g != 1 {
                     return iterations;
                 }
 
@@ -191,7 +193,8 @@ fn random_prime(bits: u32, rng: &mut Xoshiro256PlusPlus) -> u64 {
 // seems that when one prime factor is rather small, adding 2s and 3s helps
 // something but WHY?
 
-const M: usize = 6;
+const K: [u64; 3] = [1, 2, 3];
+const M: usize = 10;
 
 fn get_ks(mut a: u64) -> [u64; M] {
     let mut k = [0u64; M];
@@ -210,56 +213,41 @@ pub fn bench_single_rho() {
             .as_nanos() as u64,
     );
 
-    let mut samples: Vec<u64> = Vec::new();
-    for _ in 0..200000 {
-        samples.push(random_prime(31, &mut rng) * random_prime(31, &mut rng));
-    }
+    const SAMPLES: usize = 1000000;
 
-    let mut all_ks: Vec<[u64; M]> = Vec::new();
-    for i in 0..=M {
-        for j in i..=M {
-            let mut y = [0u64; M];
-            for p in 0..i {
-                y[p] = 1;
-            }
-            for p in i..j {
-                y[p] = 2;
-            }
-            for p in j..M {
-                y[p] = 3;
-            }
-            all_ks.push(y);
-        }
-    }
-    all_ks.reverse();
-
-    all_ks
+    let avg: usize = (0..SAMPLES)
         .into_par_iter()
-        .map(|ks| {
-            let mut rng = Xoshiro256PlusPlus::seed_from_u64(
-                SystemTime::now()
-                    .duration_since(UNIX_EPOCH)
-                    .unwrap()
-                    .as_nanos() as u64,
-            );
-            let mut avg = 0.0;
+        .fold(
+            || 0usize,
+            |sum, _| {
+                let mut rng = Xoshiro256PlusPlus::seed_from_u64(
+                    SystemTime::now()
+                        .duration_since(UNIX_EPOCH)
+                        .unwrap()
+                        .as_nanos() as u64,
+                );
 
-            for n in &samples {
-                let mut min_time = f64::MAX;
-
-                for k in ks {
-                    let iterations =
-                        pollard_rho_iteration_count(*n, k, &mut rng);
-                    min_time = min_time
-                        .min(iterations as f64 * ((k << 1) as f64).log2());
+                let mut n = random_prime(21, &mut rng);
+                while n == 2 || (n - 1) % 4 == 0 || (n - 1) % 6 == 0 {
+                    n = random_prime(21, &mut rng);
                 }
 
-                avg += min_time;
-            }
+                let mut min_time = usize::MAX;
 
-            (ks, avg / samples.len() as f64)
-        })
-        .collect::<Vec<([u64; M], f64)>>()
+                for k in K {
+                    let iterations =
+                        pollard_rho_iteration_count(n, k, &mut rng);
+                    min_time = min_time.min(
+                        iterations * (((4 * k * k).ilog2() + 1) / 2) as usize,
+                    );
+                }
+
+                sum + min_time
+            },
+        )
+        .collect::<Vec<usize>>()
         .iter()
-        .for_each(|(ks, t)| println!("K = {:?} | {}", ks, t));
+        .sum();
+
+    println!("{}", avg as f64 / SAMPLES as f64);
 }
