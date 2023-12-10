@@ -4,30 +4,24 @@ use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 use crate::{miller_rabin::miller_rabin, montgomery::Montgomery, single::gcd};
 
-const A: usize = 1 << 17;
-const B: usize = (1 << 17) + (1 << 7);
-const K1: usize = 2;
-const K2: usize = 120;
+const A: usize = 656159711;
+const B: usize = 656159711;
+const K1: usize = 3;
+const K2: usize = 10;
 
 fn f(x: usize, k: usize, mtg: &Montgomery) -> usize {
-    mtg.strict(mtg.pow(x as u64, k as u64) + 1) as usize
+    mtg.strict(mtg.pow(x as u64, (k as u64) << 1) + 1) as usize
 }
 
-fn get_in_degree_predecessors(
-    p: usize,
-    k: usize,
-    mtg: &Montgomery,
-) -> (Vec<usize>, Vec<[usize; K2 + 1]>) {
-    let mut in_degree: Vec<usize> = vec![0; p];
-    let mut pre: Vec<[usize; K2 + 1]> = vec![[0; K2 + 1]; p];
+fn get_predecessors(p: usize, k: usize, mtg: &Montgomery) -> Vec<Vec<usize>> {
+    let mut pre: Vec<Vec<usize>> = vec![Vec::new(); p];
 
     for i in 0..p {
         let next = f(i, k, mtg);
-        pre[next][in_degree[next]] = i;
-        in_degree[next] += 1;
+        pre[next].push(i);
     }
 
-    (in_degree, pre)
+    pre
 }
 
 // iota: # predecessors that have in-degree > 1 (i.e lie in the interesting
@@ -35,32 +29,28 @@ fn get_in_degree_predecessors(
 pub fn iota_stats() {
     println!(
         "{:<20}{:<16}{:<16}{:<20}{}",
-        "", "k", "gcd(k, p - 1)", "std dev(iota)", "avg of squares (iota)"
+        "", "k", "gcd(2k, p - 1)", "std dev(iota)", "avg of squares (iota)"
     );
     for p in A..=B {
-        if !miller_rabin(p as u64) {
-            continue;
-        }
-
         println!("p = {}", p,);
         let mtg = Montgomery::new(p as u64);
 
-        for k in (K1..=K2).step_by(2) {
-            let (in_degree, pre) = get_in_degree_predecessors(p, k, &mtg);
+        for k in K1..=K2 {
+            let pre = get_predecessors(p, k, &mtg);
 
             // mean is 1 since there is an equal number of in and out nodes.
             let mut var_iota: usize = 0;
             let mut quad_iota: usize = 0;
-            let mut iota_histogram: [usize; K2 + 1] = [0; K2 + 1];
-            let mut in_degree_histogram: [usize; K2 + 1] = [0; K2 + 1];
+            let mut iota_histogram: [usize; 2 * K2 + 1] = [0; 2 * K2 + 1];
+            let mut in_degree_histogram: [usize; 2 * K2 + 1] = [0; 2 * K2 + 1];
 
             for i in 0..p {
                 // there's some weird in-degree 1 node, we wanna ignore this
-                in_degree_histogram[in_degree[i]] += 1;
-                if in_degree[i] > 1 {
+                in_degree_histogram[pre[i].len()] += 1;
+                if pre[i].len() > 0 {
                     let mut iota = 0;
-                    for j in 0..in_degree[i] {
-                        if in_degree[pre[i][j]] > 1 {
+                    for u in &pre[i] {
+                        if pre[*u].len() > 1 {
                             iota += 1;
                         }
                     }
@@ -71,7 +61,7 @@ pub fn iota_stats() {
                 }
             }
 
-            let g = gcd(p as u64 - 1, k as u64);
+            let g = gcd(p as u64 - 1, 2 * k as u64);
             println!(
                 "{:<20}{:<16}{:<16}{:<20}{:<20} {:<?} {:?}",
                 "",
@@ -83,25 +73,25 @@ pub fn iota_stats() {
                 in_degree_histogram
             );
 
-            if g == 2 {
-                if p & 7 == 1 {
-                    assert!(iota_histogram[0] == (p - 1) >> 3);
-                    assert!(iota_histogram[1] == (p + 3) >> 2);
-                    assert!(iota_histogram[2] == (p - 9) >> 3);
-                } else if p & 7 == 3 {
-                    assert!(iota_histogram[0] == (p - 3) >> 3);
-                    assert!(iota_histogram[1] == (p + 1) >> 2);
-                    assert!(iota_histogram[2] == (p - 3) >> 3);
-                } else if p & 7 == 5 {
-                    assert!(iota_histogram[0] == (p + 3) >> 3);
-                    assert!(iota_histogram[1] == (p - 1) >> 2);
-                    assert!(iota_histogram[2] == (p - 5) >> 3);
-                } else if p & 7 == 7 {
-                    assert!(iota_histogram[0] == (p + 1) >> 3);
-                    assert!(iota_histogram[1] == (p - 3) >> 2);
-                    assert!(iota_histogram[2] == (p + 1) >> 3);
-                }
-            }
+            // if g == 2 {
+            //     if p & 7 == 1 {
+            //         assert!(iota_histogram[0] == (p - 1) >> 3);
+            //         assert!(iota_histogram[1] == (p + 3) >> 2);
+            //         assert!(iota_histogram[2] == (p - 9) >> 3);
+            //     } else if p & 7 == 3 {
+            //         assert!(iota_histogram[0] == (p - 3) >> 3);
+            //         assert!(iota_histogram[1] == (p + 1) >> 2);
+            //         assert!(iota_histogram[2] == (p - 3) >> 3);
+            //     } else if p & 7 == 5 {
+            //         assert!(iota_histogram[0] == (p + 3) >> 3);
+            //         assert!(iota_histogram[1] == (p - 1) >> 2);
+            //         assert!(iota_histogram[2] == (p - 5) >> 3);
+            //     } else if p & 7 == 7 {
+            //         assert!(iota_histogram[0] == (p + 1) >> 3);
+            //         assert!(iota_histogram[1] == (p - 3) >> 2);
+            //         assert!(iota_histogram[2] == (p + 1) >> 3);
+            //     }
+            // }
         }
     }
 }
@@ -140,8 +130,8 @@ pub fn mu_lambda_stats() {
             let mut collision_len: Vec<usize> = vec![0; p];
             let mut cycle_len: Vec<usize> = vec![0; p];
 
-            for k in (K1..=K2).step_by(2) {
-                let (in_degree, pre) = get_in_degree_predecessors(p, k, &mtg);
+            for k in K1..=K2 {
+                let pre = get_predecessors(p, k, &mtg);
                 let mut visited: Vec<bool> = vec![false; p];
 
                 let mut total_collision_len: usize = 0;
@@ -180,9 +170,9 @@ pub fn mu_lambda_stats() {
                                 cycle_len[u] = cycle_nodes.len();
                                 total_cycle_len += cycle_nodes.len();
 
-                                for i in 0..in_degree[u] {
-                                    if !visited[pre[u][i]] {
-                                        q.push_back((pre[u][i], dis + 1));
+                                for v in &pre[u] {
+                                    if !visited[*v] {
+                                        q.push_back((*v, dis + 1));
                                     }
                                 }
                             }
@@ -233,13 +223,13 @@ pub fn mu_lambda_stats() {
         })
         .collect::<Vec<[f64; K2 + 1]>>()
         .into_iter()
-        .filter(|x| x[4] != 0.0)
+        .filter(|x| x[2] != 0.0)
         .collect();
 
     let mut mean = [0.0; K2 + 1];
     let mut std_dev = [0.0; K2 + 1];
     for x in &nu_means {
-        for k in (K1..=K2).step_by(2) {
+        for k in K1..=K2 {
             mean[k] += x[k];
         }
     }
@@ -247,7 +237,7 @@ pub fn mu_lambda_stats() {
         *v /= nu_means.len() as f64;
     }
     for x in &nu_means {
-        for k in (K1..=K2).step_by(2) {
+        for k in K1..=K2 {
             std_dev[k] += (x[k] - mean[k]) * (x[k] - mean[k]);
         }
     }
@@ -258,18 +248,18 @@ pub fn mu_lambda_stats() {
     let mut corr = 0.0;
     let prob = 1.0 / nu_means.len() as f64;
     for x in &nu_means {
-        corr += (x[4] - mean[4]) * (x[6] - mean[6]) * prob;
+        corr += (x[2] - mean[2]) * (x[3] - mean[3]) * prob;
     }
 
-    corr /= std_dev[4];
-    corr /= std_dev[6];
+    corr /= std_dev[2];
+    corr /= std_dev[3];
     eprintln!("{}", corr);
 
     for x in &nu_means {
-        println!("{}", x[4]);
+        println!("{}", x[2]);
     }
 
     for x in &nu_means {
-        println!("{}", x[6]);
+        println!("{}", x[3]);
     }
 }
