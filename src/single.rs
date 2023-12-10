@@ -109,7 +109,7 @@ pub fn pollard_rho_iteration_count(
                 }
 
                 let g = gcd(q, n);
-                if g != 1 {
+                if g != 1 && g != n {
                     return iterations;
                 }
 
@@ -194,16 +194,6 @@ fn random_prime(bits: u32, rng: &mut Xoshiro256PlusPlus) -> u64 {
 // something but WHY?
 
 const K: [u64; 3] = [1, 2, 3];
-const M: usize = 10;
-
-fn get_ks(mut a: u64) -> [u64; M] {
-    let mut k = [0u64; M];
-    for i in 0..M {
-        k[i] = (a % 3) + 1;
-        a /= 3;
-    }
-    k
-}
 
 pub fn bench_single_rho() {
     let mut rng = Xoshiro256PlusPlus::seed_from_u64(
@@ -213,7 +203,7 @@ pub fn bench_single_rho() {
             .as_nanos() as u64,
     );
 
-    const SAMPLES: usize = 1000000;
+    const SAMPLES: usize = 100000;
 
     let avg: usize = (0..SAMPLES)
         .into_par_iter()
@@ -227,10 +217,15 @@ pub fn bench_single_rho() {
                         .as_nanos() as u64,
                 );
 
-                let mut n = random_prime(21, &mut rng);
-                while n == 2 || (n - 1) % 4 == 0 || (n - 1) % 6 == 0 {
-                    n = random_prime(21, &mut rng);
+                let mut p = random_prime(31, &mut rng);
+                while p == 2 || (p - 1) % 4 == 0 || (p - 1) % 6 == 0 {
+                    p = random_prime(31, &mut rng);
                 }
+                let mut q = random_prime(31, &mut rng);
+                while q == 2 || (q - 1) % 4 == 0 || (q - 1) % 6 == 0 {
+                    q = random_prime(31, &mut rng);
+                }
+                let n = p * q;
 
                 let mut min_time = usize::MAX;
 
@@ -238,7 +233,7 @@ pub fn bench_single_rho() {
                     let iterations =
                         pollard_rho_iteration_count(n, k, &mut rng);
                     min_time = min_time.min(
-                        iterations * (((4 * k * k).ilog2() + 1) / 2) as usize,
+                        iterations /* * (((4 * k * k).ilog2() + 1) / 2 as usize,*/
                     );
                 }
 
