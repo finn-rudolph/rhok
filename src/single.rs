@@ -109,7 +109,7 @@ pub fn pollard_rho_iteration_count(
                 }
 
                 let g = gcd(q, n);
-                if g != 1 && g != n {
+                if g != 1 {
                     return iterations;
                 }
 
@@ -193,56 +193,48 @@ fn random_prime(bits: u32, rng: &mut Xoshiro256PlusPlus) -> u64 {
 // seems that when one prime factor is rather small, adding 2s and 3s helps
 // something but WHY?
 
-const K: [u64; 3] = [1, 2, 3];
+const K: [u64; 2] = [1, 1];
 
 pub fn bench_single_rho() {
-    let mut rng = Xoshiro256PlusPlus::seed_from_u64(
-        SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_nanos() as u64,
-    );
+    const A: usize = 1 << 17;
+    const B: usize = 1 << 18;
+    const RUNS: usize = 100;
 
-    const SAMPLES: usize = 100000;
-
-    let avg: usize = (0..SAMPLES)
+    let samples = (A..=B)
         .into_par_iter()
-        .fold(
-            || 0usize,
-            |sum, _| {
-                let mut rng = Xoshiro256PlusPlus::seed_from_u64(
-                    SystemTime::now()
-                        .duration_since(UNIX_EPOCH)
-                        .unwrap()
-                        .as_nanos() as u64,
-                );
+        .map(|p| {
+            if !miller_rabin(p as u64) || (p - 1) % 6 == 0 {
+                return 0.0;
+            }
 
-                let mut p = random_prime(31, &mut rng);
-                while p == 2 || (p - 1) % 4 == 0 || (p - 1) % 6 == 0 {
-                    p = random_prime(31, &mut rng);
-                }
-                let mut q = random_prime(31, &mut rng);
-                while q == 2 || (q - 1) % 4 == 0 || (q - 1) % 6 == 0 {
-                    q = random_prime(31, &mut rng);
-                }
-                let n = p * q;
+            let mut rng = Xoshiro256PlusPlus::seed_from_u64(
+                SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap()
+                    .as_nanos() as u64,
+            );
 
+            let mut s = 0;
+            for _ in 0..RUNS {
                 let mut min_time = usize::MAX;
 
                 for k in K {
                     let iterations =
-                        pollard_rho_iteration_count(n, k, &mut rng);
+                        pollard_rho_iteration_count(p as u64, k, &mut rng);
                     min_time = min_time.min(
-                        iterations /* * (((4 * k * k).ilog2() + 1) / 2 as usize,*/
-                    );
+                    iterations, /* * (((4 * k * k).ilog2() + 1) / 2 as usize,*/
+                );
                 }
+                s += min_time;
+            }
 
-                sum + min_time
-            },
-        )
-        .collect::<Vec<usize>>()
-        .iter()
-        .sum();
+            s as f64 / (RUNS as f64 * (p as f64).sqrt())
+        })
+        .filter(|a| *a != 0.0)
+        .collect::<Vec<f64>>();
 
-    println!("{}", avg as f64 / SAMPLES as f64);
+    println!(
+        "{}",
+        samples.iter().sum::<f64>() as f64 / samples.len() as f64
+    );
 }
