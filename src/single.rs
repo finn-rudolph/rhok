@@ -147,11 +147,7 @@ pub fn pollard_slow(n: u64, k: u64, rng: &mut Xoshiro256PlusPlus) -> u64 {
     }
 }
 
-pub fn pollard_slow_iteration_count(
-    n: u64,
-    k: u64,
-    rng: &mut Xoshiro256PlusPlus,
-) -> usize {
+pub fn pollard_slow_iteration_count(n: u64, k: u64, start: u64) -> usize {
     const LENGTH_LIMIT: u64 = 1 << 18;
 
     let mtg = Montgomery::new(n);
@@ -159,7 +155,7 @@ pub fn pollard_slow_iteration_count(
     let mut iterations: usize = 0;
 
     loop {
-        let mut x = rng.next_u64() % n;
+        let mut x = start;
         let mut y = x;
 
         for _ in 0..LENGTH_LIMIT {
@@ -172,10 +168,12 @@ pub fn pollard_slow_iteration_count(
                 d = d.wrapping_add(n);
             }
             let g = gcd(d, n);
-            if g != 1 && g != n {
+            if g != 1 {
                 return iterations;
             }
         }
+
+        assert!(false);
     }
 }
 
@@ -196,14 +194,13 @@ fn random_prime(bits: u32, rng: &mut Xoshiro256PlusPlus) -> u64 {
 const K: [u64; 2] = [1, 1];
 
 pub fn bench_single_rho() {
-    const A: usize = 1 << 17;
-    const B: usize = 1 << 18;
-    const RUNS: usize = 100;
+    const A: usize = 1 << 8;
+    const B: usize = 1 << 10;
 
     let samples = (A..=B)
         .into_par_iter()
         .map(|p| {
-            if !miller_rabin(p as u64) || (p - 1) % 6 == 0 {
+            if !miller_rabin(p as u64) || (p - 1) % 4 == 0 {
                 return 0.0;
             }
 
@@ -215,20 +212,23 @@ pub fn bench_single_rho() {
             );
 
             let mut s = 0;
-            for _ in 0..RUNS {
-                let mut min_time = usize::MAX;
-
-                for k in K {
-                    let iterations =
-                        pollard_rho_iteration_count(p as u64, k, &mut rng);
-                    min_time = min_time.min(
-                    iterations, /* * (((4 * k * k).ilog2() + 1) / 2 as usize,*/
-                );
+            for start1 in 0..p {
+                for start2 in 0..p {
+                    let min_time = pollard_slow_iteration_count(
+                        p as u64,
+                        2,
+                        start1 as u64,
+                    )
+                    .min(pollard_slow_iteration_count(
+                        p as u64,
+                        2,
+                        start2 as u64,
+                    ));
+                    s += min_time;
                 }
-                s += min_time;
             }
 
-            s as f64 / (RUNS as f64 * (p as f64).sqrt())
+            s as f64 / ((p * p) as f64 * (p as f64).sqrt())
         })
         .filter(|a| *a != 0.0)
         .collect::<Vec<f64>>();
