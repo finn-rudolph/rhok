@@ -1,9 +1,7 @@
-use std::{
-    collections::VecDeque,
-    process::{exit, ExitCode},
-};
+use std::collections::VecDeque;
 
-use rug::float;
+use num_traits::AsPrimitive;
+use rayon::prelude::*;
 
 use crate::{
     miller_rabin::miller_rabin,
@@ -23,15 +21,22 @@ fn create_histogram(x: &Vec<usize>) -> Vec<usize> {
     histogram
 }
 
-fn mean(x: &Vec<usize>) -> f64 {
-    x.iter().sum::<usize>() as f64 / x.len() as f64
+fn mean<'a, T>(x: &'a [T]) -> f64
+where
+    T: std::iter::Sum<&'a T> + AsPrimitive<f64>,
+{
+    T::from(x.iter().sum::<T>()).as_() / x.len() as f64
 }
 
-fn standard_deviation(x: &Vec<usize>) -> f64 {
+fn standard_deviation<'a, T>(x: &'a [T]) -> f64
+where
+    T: std::iter::Sum<&'a T> + AsPrimitive<f64>,
+{
     let mean = mean(x);
+
     let mut sigma = 0.0;
     for v in x {
-        sigma += (*v as f64 - mean) * (*v as f64 - mean);
+        sigma += (v.as_() - mean) * (v.as_() as f64 - mean);
     }
     (sigma / x.len() as f64).sqrt()
 }
@@ -201,7 +206,8 @@ pub fn mu_lambda_nu_stats() {
 
         for k in K1..=K2 {
             let (mu, lambda) = get_mu_lambda(p, k, &mtg);
-            let nu = mu.iter().zip(lambda.iter()).map(|(x, y)| x + y).collect();
+            let nu: Vec<usize> =
+                mu.iter().zip(lambda.iter()).map(|(x, y)| x + y).collect();
 
             println!(
                 "{:<20}{:<16}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
@@ -307,66 +313,98 @@ pub fn nu_min_expectation_m2_gcd2() {
 // Same as above, but using the number of steps until a collision is detected
 // by Floyd's algorithm instead.
 pub fn floyd_iteration_min_expectation_m2_gcd2() {
-    const A: usize = 1 << 12;
-    const B: usize = 1 << 17;
+    const A: usize = 1 << 8;
+    const B: usize = 1 << 10;
     const K1: usize = 1;
     const K2: usize = 3;
 
-    (A..=B).for_each(|p| {
-        if !miller_rabin(p as u64) {
-            return;
-        }
+    let floyd_min_m2: Vec<[[f64; K2 - K1 + 1]; K2 - K1 + 1]> = (A..=B)
+        .into_par_iter()
+        .map(|p| {
+            let mut expectation = [[0.0; K2 - K1 + 1]; K2 - K1 + 1];
 
-        println!("{}", p);
-        let mtg = Montgomery::new(p as u64);
+            if !miller_rabin(p as u64) {
+                return expectation;
+            }
 
-        let floyd_iterations: Vec<Vec<usize>> = (K1..=K2)
-            .map(|k| {
-                // A collision is detected in the c-th iteration, where c is
-                // minimal such that c = 2c mod lambda. But then it is easy to
-                // see that c must be ceil(mu / lambda) * lambda.
+            // println!("{}", p);
+            let mtg = Montgomery::new(p as u64);
 
-                let (mu, lambda) = get_mu_lambda(p, k, &mtg);
-                let mut floyd_iterations = mu
-                    .iter()
-                    .zip(lambda.iter())
-                    .map(|(mu, lambda)| {
-                        (*lambda).max(((mu + lambda - 1) / lambda) * lambda)
-                    })
-                    .collect::<Vec<usize>>();
+            let floyd_iterations: Vec<Vec<usize>> = (K1..=K2)
+                .map(|k| {
+                    // A collision is detected in the c-th iteration, where c is
+                    // minimal such that c = 2c mod lambda. But then it is easy to
+                    // see that c must be ceil(mu / lambda) * lambda.
 
-                assert!(floyd_iterations.iter().enumerate().all(
-                    |(start, iterations)| {
-                        *iterations
-                            == single::pollard_slow_iteration_count(
-                                p as u64,
-                                k as u64,
-                                start as u64,
-                            )
-                    },
-                ));
+                    let (mu, lambda) = get_mu_lambda(p, k, &mtg);
+                    let mut floyd_iterations = mu
+                        .iter()
+                        .zip(lambda.iter())
+                        .map(|(mu, lambda)| {
+                            (*lambda).max(((mu + lambda - 1) / lambda) * lambda)
+                        })
+                        .collect::<Vec<usize>>();
 
-                floyd_iterations.sort();
-                floyd_iterations
-            })
-            .collect();
+                    assert!(floyd_iterations.iter().enumerate().all(
+                        |(start, iterations)| {
+                            *iterations
+                                == single::pollard_slow_iteration_count(
+                                    p as u64,
+                                    k as u64,
+                                    start as u64,
+                                )
+                        },
+                    ));
 
-        for k1 in K1..=K2 {
-            for k2 in k1..=K2 {
-                if gcd(k1 as u64, (p as u64 - 1) / 2) == 1
-                    && gcd(k2 as u64, (p as u64 - 1) / 2) == 1
-                {
-                    println!(
-                        "{:<4} {:<4} {}",
-                        k1,
-                        k2,
-                        min_expectation_var2(
+                    floyd_iterations.sort();
+                    floyd_iterations
+                })
+                .collect();
+
+            for k1 in K1..=K2 {
+                for k2 in k1..=K2 {
+                    if gcd(k1 as u64, (p as u64 - 1) / 2) == 1
+                        && gcd(k2 as u64, (p as u64 - 1) / 2) == 1
+                    {
+                        expectation[k1 - K1][k2 - K1] = min_expectation_var2(
                             &floyd_iterations[k1 - K1],
-                            &floyd_iterations[k2 - K1]
-                        )
-                    );
+                            &floyd_iterations[k2 - K1],
+                        );
+
+                        // println!(
+                        //     "{:<4} {:<4} {}",
+                        //     k1,
+                        //     k2,
+                        //     expectation[k1 - K1][k2 - K1]
+                        // );
+                    }
                 }
             }
+
+            expectation
+        })
+        .filter(|x| !x.iter().all(|y| y.iter().all(|z| *z == 0.0)))
+        .collect();
+
+    println!(
+        "{:<4} {:<4} {:<20} {:<20}",
+        "k_1", "k_2", "mean floyd iter", "std dev floyd iter"
+    );
+    for k1 in K1..=K2 {
+        for k2 in k1..=K2 {
+            let u: Vec<f64> = floyd_min_m2
+                .iter()
+                .map(|x| x[k1 - K1][k2 - K1])
+                .filter(|x| *x != 0.0)
+                .collect();
+
+            println!(
+                "{:<4} {:<4} {:<20} {:<20}",
+                k1,
+                k2,
+                mean(&u),
+                standard_deviation(&u)
+            );
         }
-    });
+    }
 }
