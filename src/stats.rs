@@ -228,13 +228,18 @@ pub fn mu_lambda_nu_individual() {
 // Calculates the mean and standard deviation of mu / lambda / nu for a fixed
 // gcd over and for multiple k over primes in an interval.
 pub fn mu_lambda_nu_summary() {
-    const A: usize = 1 << 16;
-    const B: usize = 1 << 17;
+    const A: usize = 1 << 17;
+    const B: usize = 1 << 18;
     const K1: usize = 1;
-    const K2: usize = 12;
+    const K2: usize = 30;
     const GCD: usize = 2;
+    const NORMALIZE: bool = true;
 
-    println!("gcd(p - 1, 2k) = {}\n", GCD);
+    println!(
+        "A = {}, B = {}, K1 = {}, K2 = {}\n\
+        gcd(p - 1, 2k) = {}\nnormalization by sqrt p: {}\n",
+        A, B, K1, K2, GCD, NORMALIZE
+    );
 
     let mln: Vec<[(f64, f64, f64); K2 - K1 + 1]> = (A..=B)
         .into_par_iter()
@@ -256,7 +261,17 @@ pub fn mu_lambda_nu_summary() {
                         .map(|(x, y)| x + y)
                         .collect();
 
-                    mln[k - K1] = (mean(&mu), mean(&lambda), mean(&nu));
+                    let normalization_factor = if NORMALIZE {
+                        1.0 / (p as f64).sqrt()
+                    } else {
+                        1.0
+                    };
+
+                    mln[k - K1] = (
+                        mean(&mu) * normalization_factor,
+                        mean(&lambda) * normalization_factor,
+                        mean(&nu) * normalization_factor,
+                    );
                 }
             }
 
