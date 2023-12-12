@@ -1,7 +1,5 @@
 use std::collections::VecDeque;
 
-use rayon::iter::{IntoParallelIterator, ParallelIterator};
-
 use crate::{miller_rabin::miller_rabin, montgomery::Montgomery, single::gcd};
 
 fn f(x: usize, k: usize, mtg: &Montgomery) -> usize {
@@ -166,9 +164,9 @@ pub fn iota_stats() {
 
 pub fn mu_lambda_nu_stats() {
     const A: usize = 1 << 16;
-    const B: usize = (1 << 16) + (1 << 12);
+    const B: usize = (1 << 16) + (1 << 16);
     const K1: usize = 1;
-    const K2: usize = 12;
+    const K2: usize = 3;
 
     println!(
         "{:<20}{:<16}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
@@ -184,9 +182,6 @@ pub fn mu_lambda_nu_stats() {
     );
 
     (A..=B).into_iter().for_each(|p| {
-        let mut nu = [0.0; K2 + 1];
-        let mut gcds = [0usize; K2 + 1];
-
         if !miller_rabin(p as u64) {
             return;
         }
@@ -212,6 +207,35 @@ pub fn mu_lambda_nu_stats() {
                 standard_deviation(&mu)
             );
         }
+    });
+}
+
+pub fn m2_nu_min_expectation() {
+    const A: usize = 1 << 12;
+    const B: usize = (1 << 12) + (1 << 12);
+    const K1: usize = 1;
+    const K2: usize = 3;
+
+    println!("{:<4} {:<4} {}", "k_1", "k_2", "E");
+
+    (A..=B).into_iter().for_each(|p| {
+        if !miller_rabin(p as u64) {
+            return;
+        }
+
+        println!("{}", p);
+
+        let mtg = &Montgomery::new(p as u64);
+
+        let nu: Vec<Vec<usize>> = (K1..=K2)
+            .map(|k| {
+                let (mu, lambda) = get_mu_lambda(p, k, &mtg);
+                let mut nu: Vec<usize> =
+                    mu.iter().zip(lambda.iter()).map(|(x, y)| x + y).collect();
+                nu.sort();
+                nu
+            })
+            .collect();
 
         for k1 in K1..=K2 {
             for k2 in k1..=K2 {
@@ -221,11 +245,11 @@ pub fn mu_lambda_nu_stats() {
                     let mut sum: usize = 0;
                     let mut num_samples: usize = 0;
 
-                    for x in &collision_len[k1] {
+                    for x in &nu[k1 - K1] {
                         let (mut a, mut b) = (0, p);
                         while a < b {
                             let mid = (a + b) / 2;
-                            if collision_len[k2][mid] <= *x {
+                            if nu[k2 - K1][mid] <= *x {
                                 a = mid + 1;
                             } else {
                                 b = mid;
@@ -235,11 +259,11 @@ pub fn mu_lambda_nu_stats() {
                         num_samples += a;
                     }
 
-                    for x in &collision_len[k2] {
+                    for x in &nu[k2 - K1] {
                         let (mut a, mut b) = (0, p);
                         while a < b {
                             let mid = (a + b) / 2;
-                            if collision_len[k1][mid] < *x {
+                            if nu[k1 - K1][mid] < *x {
                                 a = mid + 1;
                             } else {
                                 b = mid;
@@ -252,12 +276,11 @@ pub fn mu_lambda_nu_stats() {
                     assert_eq!(num_samples, p * p);
 
                     let expected = (sum as f64) / ((p * p) as f64);
-                    println!(
-                        "k1 = {:<4} k2 = {:<4} expected = {}",
-                        k1, k2, expected
-                    );
+                    println!("{:<4} {:<4} {}", k1, k2, expected);
                 }
             }
         }
+
+        println!("");
     });
 }
