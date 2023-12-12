@@ -235,13 +235,13 @@ fn min_expectation_var2(x: &Vec<usize>, y: &Vec<usize>) -> f64 {
         let (mut a, mut b) = (0, y.len());
         while a < b {
             let mid = (a + b) / 2;
-            if y[mid] <= *x_i {
+            if y[mid] < *x_i {
                 a = mid + 1;
             } else {
                 b = mid;
             }
         }
-        sum += a * x_i;
+        sum += (y.len() - a) * x_i;
         num_samples += a;
     }
 
@@ -249,13 +249,13 @@ fn min_expectation_var2(x: &Vec<usize>, y: &Vec<usize>) -> f64 {
         let (mut a, mut b) = (0, x.len());
         while a < b {
             let mid = (a + b) / 2;
-            if x[mid] < *y_i {
+            if x[mid] <= *y_i {
                 a = mid + 1;
             } else {
                 b = mid;
             }
         }
-        sum += a * y_i;
+        sum += (x.len() - a) * y_i;
         num_samples += a;
     }
 
@@ -313,10 +313,10 @@ pub fn nu_min_expectation_m2_gcd2() {
 // Same as above, but using the number of steps until a collision is detected
 // by Floyd's algorithm instead.
 pub fn floyd_iteration_min_expectation_m2_gcd2() {
-    const A: usize = 1 << 8;
-    const B: usize = 1 << 10;
+    const A: usize = 2;
+    const B: usize = 5;
     const K1: usize = 1;
-    const K2: usize = 3;
+    const K2: usize = 1;
 
     let floyd_min_m2: Vec<[[f64; K2 - K1 + 1]; K2 - K1 + 1]> = (A..=B)
         .into_par_iter()
@@ -327,7 +327,6 @@ pub fn floyd_iteration_min_expectation_m2_gcd2() {
                 return expectation;
             }
 
-            // println!("{}", p);
             let mtg = Montgomery::new(p as u64);
 
             let floyd_iterations: Vec<Vec<usize>> = (K1..=K2)
@@ -387,9 +386,10 @@ pub fn floyd_iteration_min_expectation_m2_gcd2() {
         .collect();
 
     println!(
-        "{:<4} {:<4} {:<20} {:<20}",
-        "k_1", "k_2", "mean floyd iter", "std dev floyd iter"
+        "{:<4} {:<4} {:<10} {:<20} {:<20}",
+        "k_1", "k_2", "#samples", "mean floyd iter", "std dev floyd iter"
     );
+
     for k1 in K1..=K2 {
         for k2 in k1..=K2 {
             let u: Vec<f64> = floyd_min_m2
@@ -399,9 +399,10 @@ pub fn floyd_iteration_min_expectation_m2_gcd2() {
                 .collect();
 
             println!(
-                "{:<4} {:<4} {:<20} {:<20}",
+                "{:<4} {:<4} {:<10} {:<20} {:<20}",
                 k1,
                 k2,
+                u.len(),
                 mean(&u),
                 standard_deviation(&u)
             );
