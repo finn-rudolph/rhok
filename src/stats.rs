@@ -4,10 +4,10 @@ use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 use crate::{miller_rabin::miller_rabin, montgomery::Montgomery, single::gcd};
 
-const A: usize = 656159711;
-const B: usize = 656159711;
-const K1: usize = 3;
-const K2: usize = 10;
+const A: usize = 1 << 16;
+const B: usize = (1 << 16) + (1 << 12);
+const K1: usize = 1;
+const K2: usize = 12;
 
 fn f(x: usize, k: usize, mtg: &Montgomery) -> usize {
     mtg.strict(mtg.pow(x as u64, (k as u64) << 1) + 1) as usize
@@ -98,48 +98,52 @@ pub fn iota_stats() {
 
 // calculates average collision length (nu) for various k
 pub fn mu_lambda_stats() {
-    // println!(
-    //     "{:<20}{:<16}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
-    //     "",
-    //     "k",
-    //     "gcd(k, p - 1)",
-    //     "nu mean",
-    //     "nu std dev",
-    //     "cycle mean",
-    //     "cycle std dev",
-    //     "tail mean",
-    //     "tail std dev"
-    // );
+    println!(
+        "{:<20}{:<16}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
+        "",
+        "k",
+        "gcd(k, p - 1)",
+        "nu mean",
+        "nu std dev",
+        "cycle mean",
+        "cycle std dev",
+        "tail mean",
+        "tail std dev"
+    );
 
-    let nu_means: Vec<[f64; K2 + 1]> = (A..=B)
-        .into_par_iter()
+    let y: Vec<[f64; K2 + 1]> = (A..=B)
+        .into_iter()
         .map(|p| {
             let mut nu = [0.0; K2 + 1];
+            let mut gcds = [0usize; K2 + 1];
 
-            if gcd(p as u64 - 1, 4) != 2
-                || gcd(p as u64 - 1, 6) != 2
-                || !miller_rabin(p as u64)
-            {
+            if !miller_rabin(p as u64) {
                 return nu;
             }
 
-            // println!("p = {}", p,);
-
             let mtg = Montgomery::new(p as u64);
             let mut cycle_nodes: Vec<usize> = Vec::new();
-            let mut collision_len: Vec<usize> = vec![0; p];
+            let mut collision_len: Vec<Vec<usize>> = vec![vec![0; p]; K2 + 1];
             let mut cycle_len: Vec<usize> = vec![0; p];
+            let mut histogram: Vec<Vec<usize>> = vec![vec![0; p]; K2 + 1];
+            let mut cycle_avg = [0f64; K2 + 1];
+
+            println!("{}", p);
 
             for k in K1..=K2 {
+                gcds[k] = gcd(2 * k as u64, p as u64 - 1) as usize;
+
                 let pre = get_predecessors(p, k, &mtg);
                 let mut visited: Vec<bool> = vec![false; p];
 
                 let mut total_collision_len: usize = 0;
                 let mut total_cycle_len: usize = 0;
+                let mut ccs = 0;
 
                 for i in 0..p {
                     if !visited[i] {
                         {
+                            ccs += 1;
                             // mark cycle nodes
                             let (mut x, mut y) = (i, f(i, k, &mtg));
                             while x != y {
@@ -165,10 +169,13 @@ pub fn mu_lambda_stats() {
                                 let (u, dis) = *q.front().unwrap();
                                 q.pop_front();
                                 visited[u] = true;
-                                total_collision_len += dis + cycle_nodes.len();
-                                collision_len[u] = dis + cycle_nodes.len();
-                                cycle_len[u] = cycle_nodes.len();
-                                total_cycle_len += cycle_nodes.len();
+                                total_collision_len +=
+                                    dis + 2 * cycle_nodes.len();
+                                collision_len[k][u] =
+                                    dis + 2 * cycle_nodes.len();
+                                cycle_len[u] = 2 * cycle_nodes.len();
+                                total_cycle_len += 2 * cycle_nodes.len();
+                                histogram[k][collision_len[k][u]] += 1;
 
                                 for v in &pre[u] {
                                     if !visited[*v] {
@@ -181,7 +188,7 @@ pub fn mu_lambda_stats() {
                 }
 
                 let mean_nu = (total_collision_len as f64) / (p as f64);
-                nu[k] = mean_nu / (p as f64).sqrt();
+                nu[k] = mean_nu;
                 let mean_cycle_len = (total_cycle_len as f64) / (p as f64);
                 let mean_tail_len = ((total_collision_len - total_cycle_len)
                     as f64)
@@ -191,75 +198,179 @@ pub fn mu_lambda_stats() {
                 let mut std_dev_cycle_len = 0.0;
                 let mut std_dev_tail_len = 0.0;
                 for i in 0..p {
-                    std_dev_nu += (collision_len[i] as f64 - mean_nu)
-                        * (collision_len[i] as f64 - mean_nu);
+                    std_dev_nu += (collision_len[k][i] as f64 - mean_nu)
+                        * (collision_len[k][i] as f64 - mean_nu);
                     std_dev_cycle_len += (cycle_len[i] as f64 - mean_cycle_len)
                         * (cycle_len[i] as f64 - mean_cycle_len);
-                    std_dev_tail_len += ((collision_len[i] - cycle_len[i])
+                    std_dev_tail_len += ((collision_len[k][i] - cycle_len[i])
                         as f64
                         - mean_tail_len)
-                        * ((collision_len[i] - cycle_len[i]) as f64
+                        * ((collision_len[k][i] - cycle_len[i]) as f64
                             - mean_tail_len);
+                }
+
+                let g = gcd(2 * k as u64, p as u64 - 1);
+                if g == 2 {
+                    cycle_avg[k] = mean_cycle_len;
                 }
 
                 std_dev_nu = (std_dev_nu / p as f64).sqrt();
                 std_dev_cycle_len = (std_dev_cycle_len / p as f64).sqrt();
                 std_dev_tail_len = (std_dev_tail_len / p as f64).sqrt();
 
-                // println!(
-                //     "{:<20}{:<16}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
-                //     "",
-                //     k,
-                //     g,
-                //     mean_nu,
-                //     std_dev_nu,
-                //     mean_cycle_len,
-                //     std_dev_cycle_len,
-                //     mean_tail_len,
-                //     std_dev_tail_len
-                // );
+                println!(
+                    "{:<20}{:<16}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
+                    "",
+                    k,
+                    g,
+                    mean_nu,
+                    std_dev_nu,
+                    mean_cycle_len,
+                    std_dev_cycle_len,
+                    mean_tail_len,
+                    std_dev_tail_len
+                );
+
+                // if gcd(k as u64, (p as u64 - 1) / 2) == 1 {
+                //     println!("k = {}, ccs: {}", k, ccs);
+                // }
+
+                // collision_len[k].sort();
             }
-            nu
+
+            // for k1 in K1..=K2 {
+            //     for k2 in k1..=K2 {
+            //         if gcd(k1 as u64, (p as u64 - 1) / 2) == 1
+            //             && gcd(k2 as u64, (p as u64 - 1) / 2) == 1
+            //         {
+            //             let mut sum: usize = 0;
+            //             let mut num_samples: usize = 0;
+
+            //             for x in &collision_len[k1] {
+            //                 let (mut a, mut b) = (0, p);
+            //                 while a < b {
+            //                     let mid = (a + b) / 2;
+            //                     if collision_len[k2][mid] <= *x {
+            //                         a = mid + 1;
+            //                     } else {
+            //                         b = mid;
+            //                     }
+            //                 }
+            //                 sum += a * x;
+            //                 num_samples += a;
+            //             }
+
+            //             for x in &collision_len[k2] {
+            //                 let (mut a, mut b) = (0, p);
+            //                 while a < b {
+            //                     let mid = (a + b) / 2;
+            //                     if collision_len[k1][mid] < *x {
+            //                         a = mid + 1;
+            //                     } else {
+            //                         b = mid;
+            //                     }
+            //                 }
+            //                 sum += a * x;
+            //                 num_samples += a;
+            //             }
+
+            //             assert_eq!(num_samples, p * p);
+
+            //             let expected = (sum as f64) / ((p * p) as f64);
+            //             println!(
+            //                 "k1 = {:<4} k2 = {:<4} expected = {}",
+            //                 k1, k2, expected
+            //             );
+
+            //             samples[k1][k2] += 1;
+            //             e[k1][k2] += expected / (p as f64).sqrt();
+            //         }
+            //     }
+            // }
+
+            // println!("{:?}\n{:?}", nu, gcds);
+            // println!("{:?}\n", &histogram[1][0..500]);
+            // println!("{:?}", &histogram[3][0..500]);
+            // for k in K1..=K2 {
+            //     if gcd(k as u64, p as u64 - 1) == 1 {
+            //         println!("k = {}\n{:?}\n", k, &histogram[k][0..600]);
+            //     }
+            // }
+
+            cycle_avg
         })
-        .collect::<Vec<[f64; K2 + 1]>>()
-        .into_iter()
-        .filter(|x| x[2] != 0.0)
-        .collect();
+        .collect::<Vec<[f64; K2 + 1]>>();
 
-    let mut mean = [0.0; K2 + 1];
-    let mut std_dev = [0.0; K2 + 1];
-    for x in &nu_means {
+    let mut sum = [0f64; K2 + 1];
+    let mut samples = [0u64; K2 + 1];
+
+    for x in &y {
         for k in K1..=K2 {
-            mean[k] += x[k];
+            if x[k] != 0.0 {
+                sum[k] += x[k];
+                samples[k] += 1;
+            }
         }
     }
-    for v in mean.iter_mut() {
-        *v /= nu_means.len() as f64;
-    }
-    for x in &nu_means {
-        for k in K1..=K2 {
-            std_dev[k] += (x[k] - mean[k]) * (x[k] - mean[k]);
-        }
-    }
-    for v in std_dev.iter_mut() {
-        *v = (*v / nu_means.len() as f64).sqrt();
+
+    for k in K1..=K2 {
+        eprintln!(
+            "k = {}, samples = {}, avg = {}",
+            k,
+            samples[k],
+            sum[k] / (samples[k] as f64)
+        );
     }
 
-    let mut corr = 0.0;
-    let prob = 1.0 / nu_means.len() as f64;
-    for x in &nu_means {
-        corr += (x[2] - mean[2]) * (x[3] - mean[3]) * prob;
-    }
+    // for k1 in K1..=K2 {
+    //     for k2 in k1..=K2 {
+    //         e[k1][k2] /= samples[k1][k2] as f64;
+    //         eprintln!("k1 = {:<4} k2 = {:<4} expected = {}", k1, k2, e[k1][k2]);
+    //     }
+    // }
 
-    corr /= std_dev[2];
-    corr /= std_dev[3];
-    eprintln!("{}", corr);
+    // for k1 in K1..=K2 {
+    //     for k2 in k1 + 1..=K2 {
+    //         let mut len: usize = 0;
 
-    for x in &nu_means {
-        println!("{}", x[2]);
-    }
+    //         let mut mean1 = 0.0;
+    //         let mut mean2 = 0.0;
 
-    for x in &nu_means {
-        println!("{}", x[3]);
-    }
+    //         for (nu, gcds) in &y {
+    //             if gcds[k1] == 2 && gcds[k2] == 2 {
+    //                 len += 1;
+    //                 mean1 += nu[k1];
+    //                 mean2 += nu[k2];
+    //             }
+    //         }
+
+    //         mean1 /= len as f64;
+    //         mean2 /= len as f64;
+
+    //         let mut std_dev1 = 0.0;
+    //         let mut std_dev2 = 0.0;
+
+    //         for (nu, gcds) in &y {
+    //             if gcds[k1] == 2 && gcds[k2] == 2 {
+    //                 std_dev1 += (nu[k1] - mean1) * (nu[k1] - mean1);
+    //                 std_dev2 += (nu[k2] - mean2) * (nu[k2] - mean2);
+    //             }
+    //         }
+
+    //         std_dev1 = (std_dev1 / len as f64).sqrt();
+    //         std_dev2 = (std_dev2 / len as f64).sqrt();
+
+    //         let mut corr = 0.0;
+    //         let prob = 1.0 / len as f64;
+    //         for (nu, gcds) in &y {
+    //             if gcds[k1] == 2 && gcds[k2] == 2 {
+    //                 corr += (nu[k1] - mean1) * (nu[k2] - mean2) * prob;
+    //             }
+    //         }
+
+    //         corr /= std_dev1;
+    //         corr /= std_dev2;
+    //         // eprintln!("k1 = {:<4} k2 = {:<4} correlation = {}", k1, k2, corr);
+    //     }
+    // }
 }
