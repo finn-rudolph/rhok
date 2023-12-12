@@ -312,37 +312,23 @@ pub fn mu_lambda_nu_summary() {
 // the expected value of min(X, Y) assuming each (x, y)-pair is equally likely.
 fn min_expectation_var2(x: &Vec<usize>, y: &Vec<usize>) -> f64 {
     let mut sum: usize = 0;
-    let mut num_samples: usize = 0;
 
+    let mut p = 0; // pointer for the two pointer method
     for x_i in x {
-        let (mut a, mut b) = (0, y.len());
-        while a < b {
-            let mid = (a + b) / 2;
-            if y[mid] < *x_i {
-                a = mid + 1;
-            } else {
-                b = mid;
-            }
+        while p < y.len() && y[p] < *x_i {
+            p += 1;
         }
-        sum += (y.len() - a) * x_i;
-        num_samples += a;
+        sum += (y.len() - p) * x_i;
     }
 
+    p = 0;
     for y_i in y {
-        let (mut a, mut b) = (0, x.len());
-        while a < b {
-            let mid = (a + b) / 2;
-            if x[mid] <= *y_i {
-                a = mid + 1;
-            } else {
-                b = mid;
-            }
+        while p < x.len() && x[p] <= *y_i {
+            p += 1;
         }
-        sum += (x.len() - a) * y_i;
-        num_samples += a;
+        sum += (x.len() - p) * y_i;
     }
 
-    assert_eq!(num_samples, x.len() * y.len());
     (sum as f64) / ((x.len() * y.len()) as f64)
 }
 
