@@ -1,5 +1,7 @@
 use std::collections::VecDeque;
 
+use rug::float;
+
 use crate::{miller_rabin::miller_rabin, montgomery::Montgomery, single::gcd};
 
 fn f(x: usize, k: usize, mtg: &Montgomery) -> usize {
@@ -248,6 +250,10 @@ fn min_expectation_var2(x: &Vec<usize>, y: &Vec<usize>) -> f64 {
     (sum as f64) / ((x.len() * y.len()) as f64)
 }
 
+// The expected value of the number of steps until a collision occurs when
+// running two machines in parallel and ignoring the higher costs of
+// exponentiation when k != 1, but also requiring that the gcd(p - 1, 2k) = 2.
+// Calculated over all possible assignments of k.
 pub fn nu_min_expectation_m2_gcd2() {
     const A: usize = 1 << 12;
     const B: usize = (1 << 12) + (1 << 12);
@@ -262,7 +268,6 @@ pub fn nu_min_expectation_m2_gcd2() {
         }
 
         println!("{}", p);
-
         let mtg = &Montgomery::new(p as u64);
 
         let nu: Vec<Vec<usize>> = (K1..=K2)
@@ -284,16 +289,16 @@ pub fn nu_min_expectation_m2_gcd2() {
                         "{:<4} {:<4} {}",
                         k1,
                         k2,
-                        min_expectation_var2(&nu[k1], &nu[k2])
+                        min_expectation_var2(&nu[k1 - K1], &nu[k2 - K1])
                     );
                 }
             }
         }
-
-        println!("");
     });
 }
 
+// Same as above, but using the number of steps until a collision is detected
+// by Floyd's algorithm instead.
 pub fn floyd_iteration_min_expectation_m2_gcd2() {
     const A: usize = 1 << 12;
     const B: usize = (1 << 12) + (1 << 12);
@@ -303,6 +308,44 @@ pub fn floyd_iteration_min_expectation_m2_gcd2() {
     (A..=B).for_each(|p| {
         if !miller_rabin(p as u64) {
             return;
+        }
+
+        println!("{}", p);
+        let mtg = Montgomery::new(p as u64);
+
+        let floyd_iterations: Vec<Vec<usize>> = (K1..=K2)
+            .map(|k| {
+                // A collision is detected in the c-th iteration, where c is
+                // minimal such that c = 2c mod lambda. But then it is easy to
+                // see that c must be ceil(mu / lambda) * lambda.
+
+                let (mu, lambda) = get_mu_lambda(p, k, &mtg);
+                let mut floyd_iterations = mu
+                    .iter()
+                    .zip(lambda.iter())
+                    .map(|(mu, lambda)| ((mu + lambda - 1) / lambda) * lambda)
+                    .collect::<Vec<usize>>();
+                floyd_iterations.sort();
+                floyd_iterations
+            })
+            .collect();
+
+        for k1 in K1..=K2 {
+            for k2 in k1..=K2 {
+                if gcd(k1 as u64, (p as u64 - 1) / 2) == 1
+                    && gcd(k2 as u64, (p as u64 - 1) / 2) == 1
+                {
+                    println!(
+                        "{:<4} {:<4} {}",
+                        k1,
+                        k2,
+                        min_expectation_var2(
+                            &floyd_iterations[k1 - K1],
+                            &floyd_iterations[k2 - K1]
+                        )
+                    );
+                }
+            }
         }
     });
 }
