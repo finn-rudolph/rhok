@@ -1,8 +1,15 @@
-use std::collections::VecDeque;
+use std::{
+    collections::VecDeque,
+    process::{exit, ExitCode},
+};
 
 use rug::float;
 
-use crate::{miller_rabin::miller_rabin, montgomery::Montgomery, single::gcd};
+use crate::{
+    miller_rabin::miller_rabin,
+    montgomery::Montgomery,
+    single::{self, gcd},
+};
 
 fn f(x: usize, k: usize, mtg: &Montgomery) -> usize {
     mtg.strict(mtg.pow(x as u64, (k as u64) << 1) + 1) as usize
@@ -301,7 +308,7 @@ pub fn nu_min_expectation_m2_gcd2() {
 // by Floyd's algorithm instead.
 pub fn floyd_iteration_min_expectation_m2_gcd2() {
     const A: usize = 1 << 12;
-    const B: usize = (1 << 12) + (1 << 12);
+    const B: usize = 1 << 17;
     const K1: usize = 1;
     const K2: usize = 3;
 
@@ -323,8 +330,22 @@ pub fn floyd_iteration_min_expectation_m2_gcd2() {
                 let mut floyd_iterations = mu
                     .iter()
                     .zip(lambda.iter())
-                    .map(|(mu, lambda)| ((mu + lambda - 1) / lambda) * lambda)
+                    .map(|(mu, lambda)| {
+                        (*lambda).max(((mu + lambda - 1) / lambda) * lambda)
+                    })
                     .collect::<Vec<usize>>();
+
+                assert!(floyd_iterations.iter().enumerate().all(
+                    |(start, iterations)| {
+                        *iterations
+                            == single::pollard_slow_iteration_count(
+                                p as u64,
+                                k as u64,
+                                start as u64,
+                            )
+                    },
+                ));
+
                 floyd_iterations.sort();
                 floyd_iterations
             })
