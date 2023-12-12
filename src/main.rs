@@ -11,5 +11,6 @@ fn main() {
     //     .complete();
 
     // println!("=> {}", rhok::pollard_rho(&n, 2));
-    rhok::single::bench_single_rho();
+    // rhok::single::bench_single_rho();
+    rhok::stats::mu_lambda_stats();
 }
