@@ -181,7 +181,7 @@ pub fn mu_lambda_nu_stats() {
         "mu std dev"
     );
 
-    (A..=B).into_iter().for_each(|p| {
+    (A..=B).for_each(|p| {
         if !miller_rabin(p as u64) {
             return;
         }
@@ -210,7 +210,45 @@ pub fn mu_lambda_nu_stats() {
     });
 }
 
-pub fn m2_nu_min_expectation() {
+// Takes two sorted sequences of samples of random variables X, Y and returns
+// the expected value of min(X, Y) assuming each (x, y)-pair is equally likely.
+fn min_expectation_var2(x: &Vec<usize>, y: &Vec<usize>) -> f64 {
+    let mut sum: usize = 0;
+    let mut num_samples: usize = 0;
+
+    for x_i in x {
+        let (mut a, mut b) = (0, y.len());
+        while a < b {
+            let mid = (a + b) / 2;
+            if y[mid] <= *x_i {
+                a = mid + 1;
+            } else {
+                b = mid;
+            }
+        }
+        sum += a * x_i;
+        num_samples += a;
+    }
+
+    for y_i in y {
+        let (mut a, mut b) = (0, x.len());
+        while a < b {
+            let mid = (a + b) / 2;
+            if x[mid] < *y_i {
+                a = mid + 1;
+            } else {
+                b = mid;
+            }
+        }
+        sum += a * y_i;
+        num_samples += a;
+    }
+
+    assert_eq!(num_samples, x.len() * y.len());
+    (sum as f64) / ((x.len() * y.len()) as f64)
+}
+
+pub fn nu_min_expectation_m2_gcd2() {
     const A: usize = 1 << 12;
     const B: usize = (1 << 12) + (1 << 12);
     const K1: usize = 1;
@@ -218,7 +256,7 @@ pub fn m2_nu_min_expectation() {
 
     println!("{:<4} {:<4} {}", "k_1", "k_2", "E");
 
-    (A..=B).into_iter().for_each(|p| {
+    (A..=B).for_each(|p| {
         if !miller_rabin(p as u64) {
             return;
         }
@@ -242,45 +280,29 @@ pub fn m2_nu_min_expectation() {
                 if gcd(k1 as u64, (p as u64 - 1) / 2) == 1
                     && gcd(k2 as u64, (p as u64 - 1) / 2) == 1
                 {
-                    let mut sum: usize = 0;
-                    let mut num_samples: usize = 0;
-
-                    for x in &nu[k1 - K1] {
-                        let (mut a, mut b) = (0, p);
-                        while a < b {
-                            let mid = (a + b) / 2;
-                            if nu[k2 - K1][mid] <= *x {
-                                a = mid + 1;
-                            } else {
-                                b = mid;
-                            }
-                        }
-                        sum += a * x;
-                        num_samples += a;
-                    }
-
-                    for x in &nu[k2 - K1] {
-                        let (mut a, mut b) = (0, p);
-                        while a < b {
-                            let mid = (a + b) / 2;
-                            if nu[k1 - K1][mid] < *x {
-                                a = mid + 1;
-                            } else {
-                                b = mid;
-                            }
-                        }
-                        sum += a * x;
-                        num_samples += a;
-                    }
-
-                    assert_eq!(num_samples, p * p);
-
-                    let expected = (sum as f64) / ((p * p) as f64);
-                    println!("{:<4} {:<4} {}", k1, k2, expected);
+                    println!(
+                        "{:<4} {:<4} {}",
+                        k1,
+                        k2,
+                        min_expectation_var2(&nu[k1], &nu[k2])
+                    );
                 }
             }
         }
 
         println!("");
+    });
+}
+
+pub fn floyd_iteration_min_expectation_m2_gcd2() {
+    const A: usize = 1 << 12;
+    const B: usize = (1 << 12) + (1 << 12);
+    const K1: usize = 1;
+    const K2: usize = 3;
+
+    (A..=B).for_each(|p| {
+        if !miller_rabin(p as u64) {
+            return;
+        }
     });
 }
