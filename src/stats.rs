@@ -268,55 +268,95 @@ fn min_expectation_var2(x: &Vec<usize>, y: &Vec<usize>) -> f64 {
 // exponentiation when k != 1, but also requiring that the gcd(p - 1, 2k) = 2.
 // Calculated over all possible assignments of k.
 pub fn nu_min_expectation_m2_gcd2() {
-    const A: usize = 1 << 12;
-    const B: usize = (1 << 12) + (1 << 12);
+    const A: usize = 1 << 15;
+    const B: usize = 1 << 16;
     const K1: usize = 1;
     const K2: usize = 3;
 
-    println!("{:<4} {:<4} {}", "k_1", "k_2", "E");
+    // println!("{:<4} {:<4} {}", "k_1", "k_2", "E");
 
-    (A..=B).for_each(|p| {
-        if !miller_rabin(p as u64) {
-            return;
-        }
+    let nu_min_m2: Vec<[[f64; K2 - K1 + 1]; K2 - K1 + 1]> = (A..=B)
+        .into_par_iter()
+        .map(|p| {
+            let mut expectation = [[0.0; K2 - K1 + 1]; K2 - K1 + 1];
 
-        println!("{}", p);
-        let mtg = &Montgomery::new(p as u64);
+            if !miller_rabin(p as u64) {
+                return expectation;
+            }
 
-        let nu: Vec<Vec<usize>> = (K1..=K2)
-            .map(|k| {
-                let (mu, lambda) = get_mu_lambda(p, k, &mtg);
-                let mut nu: Vec<usize> =
-                    mu.iter().zip(lambda.iter()).map(|(x, y)| x + y).collect();
-                nu.sort();
-                nu
-            })
-            .collect();
+            // println!("{}", p);
+            let mtg = &Montgomery::new(p as u64);
 
-        for k1 in K1..=K2 {
-            for k2 in k1..=K2 {
-                if gcd(k1 as u64, (p as u64 - 1) / 2) == 1
-                    && gcd(k2 as u64, (p as u64 - 1) / 2) == 1
-                {
-                    println!(
-                        "{:<4} {:<4} {}",
-                        k1,
-                        k2,
-                        min_expectation_var2(&nu[k1 - K1], &nu[k2 - K1])
-                    );
+            let nu: Vec<Vec<usize>> = (K1..=K2)
+                .map(|k| {
+                    let (mu, lambda) = get_mu_lambda(p, k, &mtg);
+                    let mut nu: Vec<usize> = mu
+                        .iter()
+                        .zip(lambda.iter())
+                        .map(|(x, y)| x + y)
+                        .collect();
+                    nu.sort();
+                    nu
+                })
+                .collect();
+
+            for k1 in K1..=K2 {
+                for k2 in k1..=K2 {
+                    if gcd(k1 as u64, (p as u64 - 1) / 2) == 1
+                        && gcd(k2 as u64, (p as u64 - 1) / 2) == 1
+                    {
+                        expectation[k1 - K1][k2 - K1] =
+                            min_expectation_var2(&nu[k1 - K1], &nu[k2 - K1]);
+
+                        // println!(
+                        //     "{:<4} {:<4} {}",
+                        //     k1,
+                        //     k2,
+                        //     expectation[k1 - K1][k2 - K1]
+                        // );
+                    }
                 }
             }
+
+            expectation
+        })
+        .filter(|x| !x.iter().all(|y| y.iter().all(|z| *z == 0.0)))
+        .collect();
+
+    println!(
+        "{:<4} {:<4} {:<10} {:<20} {:<20}",
+        "k_1", "k_2", "#samples", "mean nu", "std dev nu"
+    );
+
+    for k1 in K1..=K2 {
+        for k2 in k1..=K2 {
+            let u: Vec<f64> = nu_min_m2
+                .iter()
+                .map(|x| x[k1 - K1][k2 - K1])
+                .filter(|x| *x != 0.0)
+                .collect();
+
+            println!(
+                "{:<4} {:<4} {:<10} {:<20} {:<20}",
+                k1,
+                k2,
+                u.len(),
+                mean(&u),
+                standard_deviation(&u)
+            );
         }
-    });
+    }
 }
 
 // Same as above, but using the number of steps until a collision is detected
 // by Floyd's algorithm instead.
 pub fn floyd_iteration_min_expectation_m2_gcd2() {
-    const A: usize = 2;
-    const B: usize = 5;
+    const A: usize = 1 << 16;
+    const B: usize = 1 << 17;
     const K1: usize = 1;
-    const K2: usize = 1;
+    const K2: usize = 3;
+
+    // println!("{:<4} {:<4} {}", "k_1", "k_2", "E");
 
     let floyd_min_m2: Vec<[[f64; K2 - K1 + 1]; K2 - K1 + 1]> = (A..=B)
         .into_par_iter()
@@ -327,6 +367,7 @@ pub fn floyd_iteration_min_expectation_m2_gcd2() {
                 return expectation;
             }
 
+            // println!("{}", p);
             let mtg = Montgomery::new(p as u64);
 
             let floyd_iterations: Vec<Vec<usize>> = (K1..=K2)
@@ -344,7 +385,7 @@ pub fn floyd_iteration_min_expectation_m2_gcd2() {
                         })
                         .collect::<Vec<usize>>();
 
-                    assert!(floyd_iterations.iter().enumerate().all(
+                    debug_assert!(floyd_iterations.iter().enumerate().all(
                         |(start, iterations)| {
                             *iterations
                                 == single::pollard_slow_iteration_count(
