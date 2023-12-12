@@ -4,5 +4,5 @@ use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use rug::{Complete, Integer};
 
 fn main() {
-    rhok::stats::nu_min_expectation_m2_gcd2();
+    rhok::stats::mu_lambda_nu_summary();
 }

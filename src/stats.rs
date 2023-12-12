@@ -125,7 +125,7 @@ fn get_mu_lambda(
     (mu, lambda)
 }
 
-pub fn iota_stats() {
+pub fn iota_individual() {
     const A: usize = 1 << 16;
     const B: usize = (1 << 16) + (1 << 12);
     const K1: usize = 1;
@@ -176,23 +176,23 @@ pub fn iota_stats() {
     }
 }
 
-pub fn mu_lambda_nu_stats() {
+pub fn mu_lambda_nu_individual() {
     const A: usize = 1 << 16;
-    const B: usize = (1 << 16) + (1 << 16);
+    const B: usize = 1 << 17;
     const K1: usize = 1;
     const K2: usize = 3;
 
     println!(
-        "{:<20}{:<16}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
+        "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}\n",
         "",
         "k",
         "gcd(2k, p - 1)",
-        "nu mean",
-        "nu std dev",
+        "mu mean",
+        "mu std dev",
         "lambda mean",
         "lambda std dev",
-        "mu mean",
-        "mu std dev"
+        "nu mean",
+        "nu std dev"
     );
 
     (A..=B).for_each(|p| {
@@ -210,19 +210,102 @@ pub fn mu_lambda_nu_stats() {
                 mu.iter().zip(lambda.iter()).map(|(x, y)| x + y).collect();
 
             println!(
-                "{:<20}{:<16}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
+                "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
                 "",
                 k,
                 gcd(2 * k as u64, p as u64 - 1),
-                mean(&nu),
-                standard_deviation(&nu),
+                mean(&mu),
+                standard_deviation(&mu),
                 mean(&lambda),
                 standard_deviation(&lambda),
-                mean(&mu),
-                standard_deviation(&mu)
+                mean(&nu),
+                standard_deviation(&nu)
             );
         }
     });
+}
+
+// Calculates the mean and standard deviation of mu / lambda / nu for a fixed
+// gcd over and for multiple k over primes in an interval.
+pub fn mu_lambda_nu_summary() {
+    const A: usize = 1 << 16;
+    const B: usize = 1 << 17;
+    const K1: usize = 1;
+    const K2: usize = 12;
+    const GCD: usize = 2;
+
+    println!("gcd(p - 1, 2k) = {}\n", GCD);
+
+    let mln: Vec<[(f64, f64, f64); K2 - K1 + 1]> = (A..=B)
+        .into_par_iter()
+        .map(|p| {
+            let mut mln = [(0.0, 0.0, 0.0); K2 - K1 + 1];
+
+            if !miller_rabin(p as u64) {
+                return mln;
+            }
+
+            let mtg = Montgomery::new(p as u64);
+
+            for k in K1..=K2 {
+                if gcd(2 * k as u64, p as u64 - 1) as usize == GCD {
+                    let (mu, lambda) = get_mu_lambda(p, k, &mtg);
+                    let nu: Vec<usize> = mu
+                        .iter()
+                        .zip(lambda.iter())
+                        .map(|(x, y)| x + y)
+                        .collect();
+
+                    mln[k - K1] = (mean(&mu), mean(&lambda), mean(&nu));
+                }
+            }
+
+            mln
+        })
+        .collect();
+
+    println!(
+        "{:<4}{:<10}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}\n",
+        "k",
+        "#samples",
+        "mu mean",
+        "mu std dev",
+        "lambda mean",
+        "lambda std dev",
+        "nu mean",
+        "nu std dev",
+    );
+
+    for k in K1..=K2 {
+        let (mu, lambda, nu) = (
+            mln.iter()
+                .map(|x| x[k - K1].0)
+                .filter(|x| *x != 0.0)
+                .collect::<Vec<f64>>(),
+            mln.iter()
+                .map(|x| x[k - K1].1)
+                .filter(|x| *x != 0.0)
+                .collect::<Vec<f64>>(),
+            mln.iter()
+                .map(|x| x[k - K1].2)
+                .filter(|x| *x != 0.0)
+                .collect::<Vec<f64>>(),
+        );
+        assert_eq!(mu.len(), lambda.len());
+        assert_eq!(lambda.len(), nu.len());
+
+        println!(
+            "{:<4}{:<10}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
+            k,
+            mu.len(),
+            mean(&mu),
+            standard_deviation(&mu),
+            mean(&lambda),
+            standard_deviation(&lambda),
+            mean(&nu),
+            standard_deviation(&nu)
+        );
+    }
 }
 
 // Takes two sorted sequences of samples of random variables X, Y and returns
