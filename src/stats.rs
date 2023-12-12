@@ -1,4 +1,4 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, ops::Sub};
 
 use num_traits::AsPrimitive;
 use rayon::prelude::*;
@@ -39,6 +39,22 @@ where
         sigma += (v.as_() - mean) * (v.as_() as f64 - mean);
     }
     (sigma / x.len() as f64).sqrt()
+}
+
+// The pearson correlation for two sequences x_i, y_i of samples of random
+// variables, where each pair (x_i, y_i) is equally likely and (x_i, y_j) for
+// i != j has probability 0.
+fn correlation<'a, T>(x: &'a [T], y: &'a [T]) -> f64
+where
+    T: std::iter::Sum<&'a T> + AsPrimitive<f64>,
+{
+    assert_eq!(x.len(), y.len());
+    let (mean_x, mean_y) = (mean(x), mean(y));
+    let mut cov = 0.0;
+    for (x_i, y_i) in x.iter().zip(y.iter()) {
+        cov += (x_i.as_() - mean_x) * (y_i.as_() - mean_y);
+    }
+    cov / (x.len() as f64 * standard_deviation(x) * standard_deviation(y))
 }
 
 fn get_predecessors(p: usize, k: usize, mtg: &Montgomery) -> Vec<Vec<usize>> {
@@ -123,6 +139,77 @@ fn get_mu_lambda(
     }
 
     (mu, lambda)
+}
+
+fn get_mu_lambda_nu_mean<const K1: usize, const K2: usize>(
+    a: usize,
+    b: usize,
+    g: usize,
+    normalize: bool,
+) -> [(Vec<f64>, Vec<f64>, Vec<f64>); K2 - K1 + 1]
+where
+    [(); K2 - K1 + 1]:,
+    [(Vec<f64>, Vec<f64>, Vec<f64>); K2 - K1 + 1]: Default,
+{
+    let mln: Vec<[(f64, f64, f64); K2 - K1 + 1]> = (a..=b)
+        .into_par_iter()
+        .map(|p| {
+            let mut mln = [(0.0, 0.0, 0.0); K2 - K1 + 1];
+
+            if !miller_rabin(p as u64) {
+                return mln;
+            }
+
+            let mtg = Montgomery::new(p as u64);
+
+            for k in K1..=K2 {
+                if gcd(2 * k as u64, p as u64 - 1) as usize == g {
+                    let (mu, lambda) = get_mu_lambda(p, k, &mtg);
+                    let nu: Vec<usize> = mu
+                        .iter()
+                        .zip(lambda.iter())
+                        .map(|(x, y)| x + y)
+                        .collect();
+
+                    let normalization_factor = if normalize {
+                        1.0 / (p as f64).sqrt()
+                    } else {
+                        1.0
+                    };
+
+                    mln[k - K1] = (
+                        mean(&mu) * normalization_factor,
+                        mean(&lambda) * normalization_factor,
+                        mean(&nu) * normalization_factor,
+                    );
+                }
+            }
+
+            mln
+        })
+        .collect();
+
+    let mut result: [(Vec<f64>, Vec<f64>, Vec<f64>); K2 - K1 + 1] =
+        Default::default();
+
+    for k in K1..=K2 {
+        result[k - K1] = (
+            mln.iter()
+                .map(|x| x[k - K1].0)
+                .filter(|x| *x != 0.0)
+                .collect::<Vec<f64>>(),
+            mln.iter()
+                .map(|x| x[k - K1].1)
+                .filter(|x| *x != 0.0)
+                .collect::<Vec<f64>>(),
+            mln.iter()
+                .map(|x| x[k - K1].2)
+                .filter(|x| *x != 0.0)
+                .collect::<Vec<f64>>(),
+        )
+    }
+
+    result
 }
 
 pub fn iota_individual() {
@@ -228,8 +315,8 @@ pub fn mu_lambda_nu_individual() {
 // Calculates the mean and standard deviation of mu / lambda / nu for a fixed
 // gcd over and for multiple k over primes in an interval.
 pub fn mu_lambda_nu_summary() {
-    const A: usize = 1 << 17;
-    const B: usize = 1 << 18;
+    const A: usize = 1 << 13;
+    const B: usize = 1 << 14;
     const K1: usize = 1;
     const K2: usize = 30;
     const GCD: usize = 2;
@@ -240,44 +327,6 @@ pub fn mu_lambda_nu_summary() {
         gcd(p - 1, 2k) = {}\nnormalization by sqrt p: {}\n",
         A, B, K1, K2, GCD, NORMALIZE
     );
-
-    let mln: Vec<[(f64, f64, f64); K2 - K1 + 1]> = (A..=B)
-        .into_par_iter()
-        .map(|p| {
-            let mut mln = [(0.0, 0.0, 0.0); K2 - K1 + 1];
-
-            if !miller_rabin(p as u64) {
-                return mln;
-            }
-
-            let mtg = Montgomery::new(p as u64);
-
-            for k in K1..=K2 {
-                if gcd(2 * k as u64, p as u64 - 1) as usize == GCD {
-                    let (mu, lambda) = get_mu_lambda(p, k, &mtg);
-                    let nu: Vec<usize> = mu
-                        .iter()
-                        .zip(lambda.iter())
-                        .map(|(x, y)| x + y)
-                        .collect();
-
-                    let normalization_factor = if NORMALIZE {
-                        1.0 / (p as f64).sqrt()
-                    } else {
-                        1.0
-                    };
-
-                    mln[k - K1] = (
-                        mean(&mu) * normalization_factor,
-                        mean(&lambda) * normalization_factor,
-                        mean(&nu) * normalization_factor,
-                    );
-                }
-            }
-
-            mln
-        })
-        .collect();
 
     println!(
         "{:<4}{:<10}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}\n",
@@ -291,21 +340,10 @@ pub fn mu_lambda_nu_summary() {
         "nu std dev",
     );
 
+    let mln = get_mu_lambda_nu_mean::<K1, K2>(A, B, GCD, NORMALIZE);
+
     for k in K1..=K2 {
-        let (mu, lambda, nu) = (
-            mln.iter()
-                .map(|x| x[k - K1].0)
-                .filter(|x| *x != 0.0)
-                .collect::<Vec<f64>>(),
-            mln.iter()
-                .map(|x| x[k - K1].1)
-                .filter(|x| *x != 0.0)
-                .collect::<Vec<f64>>(),
-            mln.iter()
-                .map(|x| x[k - K1].2)
-                .filter(|x| *x != 0.0)
-                .collect::<Vec<f64>>(),
-        );
+        let (mu, lambda, nu) = &mln[k - K1];
         assert_eq!(mu.len(), lambda.len());
         assert_eq!(lambda.len(), nu.len());
 
