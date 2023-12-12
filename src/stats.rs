@@ -113,7 +113,7 @@ fn get_mu_lambda(
     (mu, lambda)
 }
 
-pub fn iota() {
+pub fn iota_stats() {
     const A: usize = 1 << 16;
     const B: usize = (1 << 16) + (1 << 12);
     const K1: usize = 1;
@@ -121,7 +121,7 @@ pub fn iota() {
 
     println!(
         "{:<20}{:<16}{:<16}{:<20}{}",
-        "", "k", "gcd(2k, p - 1)", "std dev(iota)", "avg of squares (iota)"
+        "", "k", "gcd(2k, p - 1)", "iota std dev", "iota histogram"
     );
     for p in A..=B {
         println!("p = {}", p,);
@@ -164,8 +164,7 @@ pub fn iota() {
     }
 }
 
-// calculates average collision length (nu) for various k
-pub fn mu_lambda() {
+pub fn mu_lambda_nu_stats() {
     const A: usize = 1 << 16;
     const B: usize = (1 << 16) + (1 << 12);
     const K1: usize = 1;
@@ -175,13 +174,13 @@ pub fn mu_lambda() {
         "{:<20}{:<16}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
         "",
         "k",
-        "gcd(k, p - 1)",
+        "gcd(2k, p - 1)",
         "nu mean",
         "nu std dev",
-        "cycle mean",
-        "cycle std dev",
-        "tail mean",
-        "tail std dev"
+        "lambda mean",
+        "lambda std dev",
+        "mu mean",
+        "mu std dev"
     );
 
     (A..=B).into_iter().for_each(|p| {
@@ -192,64 +191,26 @@ pub fn mu_lambda() {
             return;
         }
 
-        let mtg = Montgomery::new(p as u64);
-        let mut collision_len: Vec<Vec<usize>> = vec![vec![0; p]; K2 + 1];
-        let mut cycle_len: Vec<usize> = vec![0; p];
-        let mut histogram: Vec<Vec<usize>> = vec![vec![0; p]; K2 + 1];
-        let mut cycle_avg = [0f64; K2 + 1];
-
         println!("{}", p);
 
+        let mtg = Montgomery::new(p as u64);
+
         for k in K1..=K2 {
-            gcds[k] = gcd(2 * k as u64, p as u64 - 1) as usize;
-
-            let mut total_collision_len: usize = 0;
-            let mut total_cycle_len: usize = 0;
-
-            let mean_nu = (total_collision_len as f64) / (p as f64);
-            nu[k] = mean_nu;
-            let mean_cycle_len = (total_cycle_len as f64) / (p as f64);
-            let mean_tail_len =
-                ((total_collision_len - total_cycle_len) as f64) / (p as f64);
-
-            let mut std_dev_nu = 0.0;
-            let mut std_dev_cycle_len = 0.0;
-            let mut std_dev_tail_len = 0.0;
-            for i in 0..p {
-                std_dev_nu += (collision_len[k][i] as f64 - mean_nu)
-                    * (collision_len[k][i] as f64 - mean_nu);
-                std_dev_cycle_len += (cycle_len[i] as f64 - mean_cycle_len)
-                    * (cycle_len[i] as f64 - mean_cycle_len);
-                std_dev_tail_len += ((collision_len[k][i] - cycle_len[i])
-                    as f64
-                    - mean_tail_len)
-                    * ((collision_len[k][i] - cycle_len[i]) as f64
-                        - mean_tail_len);
-            }
-
-            let g = gcd(2 * k as u64, p as u64 - 1);
-            if g == 2 {
-                cycle_avg[k] = mean_cycle_len;
-            }
-
-            std_dev_nu = (std_dev_nu / p as f64).sqrt();
-            std_dev_cycle_len = (std_dev_cycle_len / p as f64).sqrt();
-            std_dev_tail_len = (std_dev_tail_len / p as f64).sqrt();
+            let (mu, lambda) = get_mu_lambda(p, k, &mtg);
+            let nu = mu.iter().zip(lambda.iter()).map(|(x, y)| x + y).collect();
 
             println!(
                 "{:<20}{:<16}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
                 "",
                 k,
-                g,
-                mean_nu,
-                std_dev_nu,
-                mean_cycle_len,
-                std_dev_cycle_len,
-                mean_tail_len,
-                std_dev_tail_len
+                gcd(2 * k as u64, p as u64 - 1),
+                mean(&nu),
+                standard_deviation(&nu),
+                mean(&lambda),
+                standard_deviation(&lambda),
+                mean(&mu),
+                standard_deviation(&mu)
             );
-
-            collision_len[k].sort();
         }
 
         for k1 in K1..=K2 {
