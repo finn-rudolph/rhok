@@ -1,4 +1,3 @@
-use core::num;
 use std::collections::VecDeque;
 
 use num_traits::AsPrimitive;
@@ -11,7 +10,7 @@ use crate::{
 };
 
 fn f(x: usize, k: usize, mtg: &Montgomery) -> usize {
-    mtg.strict(mtg.pow(x as u64, (k as u64) << 1) + 1) as usize
+    mtg.strict(mtg.add(mtg.pow(x as u64, (k as u64) << 1), mtg.one())) as usize
 }
 
 fn create_histogram(x: &Vec<usize>) -> Vec<usize> {
@@ -20,6 +19,16 @@ fn create_histogram(x: &Vec<usize>) -> Vec<usize> {
         histogram[*v] += 1;
     }
     histogram
+}
+
+pub fn histogram_to_distr(h: &[usize]) -> Vec<usize> {
+    let mut x: Vec<usize> = Vec::new();
+    for (i, f) in h.iter().enumerate() {
+        for _ in 0..*f {
+            x.push(i);
+        }
+    }
+    x
 }
 
 fn mean<'a, T>(x: &'a [T]) -> f64
@@ -66,6 +75,7 @@ fn get_predecessors(p: usize, k: usize, mtg: &Montgomery) -> Vec<Vec<usize>> {
 
     for i in 0..p {
         let next = f(i, k, mtg);
+        println!("p = {}, k = {}, x = {}, next = {}", p, k, i, next);
         pre[next].push(i);
     }
 
@@ -120,6 +130,8 @@ fn get_mu_lambda(
                     x = f(x, k, &mtg);
                 }
             }
+
+            println!("p = {}, k = {}, cycle {:?}", p, k, cycle_nodes);
 
             for x in &cycle_nodes {
                 let mut q: VecDeque<(usize, usize)> = VecDeque::new();
@@ -274,13 +286,13 @@ pub fn iota_individual() {
 }
 
 pub fn mu_lambda_nu_individual() {
-    const A: usize = 1 << 16;
-    const B: usize = 1 << 17;
+    const A: usize = 1;
+    const B: usize = 100;
     const K1: usize = 1;
     const K2: usize = 3;
 
     println!(
-        "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}\n",
+        "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}{}\n",
         "",
         "k",
         "gcd(2k, p - 1)",
@@ -289,7 +301,8 @@ pub fn mu_lambda_nu_individual() {
         "lambda mean",
         "lambda std dev",
         "nu mean",
-        "nu std dev"
+        "nu std dev",
+        "nu histogram"
     );
 
     (A..=B).for_each(|p| {
@@ -305,6 +318,8 @@ pub fn mu_lambda_nu_individual() {
             let (mu, lambda) = get_mu_lambda(p, k, &mtg);
             let nu: Vec<usize> =
                 mu.iter().zip(lambda.iter()).map(|(x, y)| x + y).collect();
+
+            println!("{:?}\n{:?}", mu, lambda);
 
             println!(
                 "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20} {:?}",
@@ -326,10 +341,10 @@ pub fn mu_lambda_nu_individual() {
 // Calculates the mean and standard deviation of mu / lambda / nu for a fixed
 // gcd over and for multiple k over primes in an interval.
 pub fn mu_lambda_nu_summary() {
-    const A: usize = 1 << 13;
-    const B: usize = 1 << 14;
+    const A: usize = 2;
+    const B: usize = 17;
     const K1: usize = 1;
-    const K2: usize = 30;
+    const K2: usize = 3;
     const GCD: usize = 2;
     const NORMALIZE: bool = true;
 
@@ -461,7 +476,7 @@ pub fn cc_summary() {
     const A: usize = 1 << 16;
     const B: usize = 1 << 17;
     const K1: usize = 1;
-    const K2: usize = 3;
+    const K2: usize = 30;
     const GCD: usize = 2;
 
     println!(
@@ -560,15 +575,18 @@ pub fn cc_summary() {
 
 // Takes two sorted sequences of samples of random variables X, Y and returns
 // the expected value of min(X, Y) assuming each (x, y)-pair is equally likely.
-fn min_expectation_var2(x: &Vec<usize>, y: &Vec<usize>) -> f64 {
-    let mut sum: usize = 0;
+fn min_expectation_var2<'a, T>(x: &[T], y: &[T]) -> f64
+where
+    T: std::cmp::PartialOrd + AsPrimitive<f64>,
+{
+    let mut sum: f64 = 0.0;
 
-    let mut p = 0; // pointer for the two pointer method
+    let mut p: usize = 0; // pointer for the two pointer method
     for x_i in x {
         while p < y.len() && y[p] < *x_i {
             p += 1;
         }
-        sum += (y.len() - p) * x_i;
+        sum += <usize as AsPrimitive<f64>>::as_(y.len() - p) * x_i.as_()
     }
 
     p = 0;
@@ -576,7 +594,7 @@ fn min_expectation_var2(x: &Vec<usize>, y: &Vec<usize>) -> f64 {
         while p < x.len() && x[p] <= *y_i {
             p += 1;
         }
-        sum += (x.len() - p) * y_i;
+        sum += <usize as AsPrimitive<f64>>::as_(x.len() - p) * y_i.as_();
     }
 
     (sum as f64) / ((x.len() * y.len()) as f64)
@@ -587,15 +605,15 @@ fn min_expectation_var2(x: &Vec<usize>, y: &Vec<usize>) -> f64 {
 // exponentiation when k != 1, but also requiring that the gcd(p - 1, 2k) = 2.
 // Calculated over all possible assignments of k.
 pub fn nu_min_expectation_m2_gcd2() {
-    const A: usize = 1 << 15;
-    const B: usize = 1 << 16;
+    const A: usize = 2;
+    const B: usize = 100;
     const K1: usize = 1;
     const K2: usize = 3;
 
-    // println!("{:<4} {:<4} {}", "k_1", "k_2", "E");
+    println!("{:<12}{:<4} {:<4} {}", "", "k_1", "k_2", "E");
 
     let nu_min_m2: Vec<[[f64; K2 - K1 + 1]; K2 - K1 + 1]> = (A..=B)
-        .into_par_iter()
+        .into_iter()
         .map(|p| {
             let mut expectation = [[0.0; K2 - K1 + 1]; K2 - K1 + 1];
 
@@ -603,7 +621,7 @@ pub fn nu_min_expectation_m2_gcd2() {
                 return expectation;
             }
 
-            // println!("{}", p);
+            println!("{}", p);
             let mtg = &Montgomery::new(p as u64);
 
             let nu: Vec<Vec<usize>> = (K1..=K2)
@@ -627,12 +645,13 @@ pub fn nu_min_expectation_m2_gcd2() {
                         expectation[k1 - K1][k2 - K1] =
                             min_expectation_var2(&nu[k1 - K1], &nu[k2 - K1]);
 
-                        // println!(
-                        //     "{:<4} {:<4} {}",
-                        //     k1,
-                        //     k2,
-                        //     expectation[k1 - K1][k2 - K1]
-                        // );
+                        println!(
+                            "{:<12}{:<4} {:<4} {}",
+                            "",
+                            k1,
+                            k2,
+                            expectation[k1 - K1][k2 - K1]
+                        );
                     }
                 }
             }
@@ -642,29 +661,29 @@ pub fn nu_min_expectation_m2_gcd2() {
         .filter(|x| !x.iter().all(|y| y.iter().all(|z| *z == 0.0)))
         .collect();
 
-    println!(
-        "{:<4} {:<4} {:<10} {:<20} {:<20}",
-        "k_1", "k_2", "#samples", "mean nu", "std dev nu"
-    );
+    // println!(
+    //     "{:<4} {:<4} {:<10} {:<20} {:<20}",
+    //     "k_1", "k_2", "#samples", "mean nu", "std dev nu"
+    // );
 
-    for k1 in K1..=K2 {
-        for k2 in k1..=K2 {
-            let u: Vec<f64> = nu_min_m2
-                .iter()
-                .map(|x| x[k1 - K1][k2 - K1])
-                .filter(|x| *x != 0.0)
-                .collect();
+    // for k1 in K1..=K2 {
+    //     for k2 in k1..=K2 {
+    //         let u: Vec<f64> = nu_min_m2
+    //             .iter()
+    //             .map(|x| x[k1 - K1][k2 - K1])
+    //             .filter(|x| *x != 0.0)
+    //             .collect();
 
-            println!(
-                "{:<4} {:<4} {:<10} {:<20} {:<20}",
-                k1,
-                k2,
-                u.len(),
-                mean(&u),
-                standard_deviation(&u)
-            );
-        }
-    }
+    //         println!(
+    //             "{:<4} {:<4} {:<10} {:<20} {:<20}",
+    //             k1,
+    //             k2,
+    //             u.len(),
+    //             mean(&u),
+    //             standard_deviation(&u)
+    //         );
+    //     }
+    // }
 }
 
 // Same as above, but using the number of steps until a collision is detected
@@ -768,4 +787,25 @@ pub fn floyd_iteration_min_expectation_m2_gcd2() {
             );
         }
     }
+}
+
+pub fn analyze_distributions<'a, T>(x: &'a [T], y: &'a [T])
+where
+    T: std::cmp::PartialOrd
+        + std::cmp::Ord
+        + AsPrimitive<f64>
+        + std::iter::Sum<&'a T>,
+{
+    println!("mean x: {}", mean(x));
+    println!("mean y: {}", mean(y));
+    println!("std dev x: {}", standard_deviation(x));
+    println!("std dev y: {}", standard_deviation(y));
+    let mut _x: Vec<T> = x.iter().map(|a| a.clone()).collect();
+    let mut _y: Vec<T> = y.iter().map(|a| a.clone()).collect();
+    _x.sort();
+    _y.sort();
+
+    println!("min(x, y): {}", min_expectation_var2(&_x, &_y));
+    println!("min(x, x): {}", min_expectation_var2(&_x, &_x));
+    println!("min(y, y): {}", min_expectation_var2(&_y, &_y));
 }
