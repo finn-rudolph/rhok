@@ -10,7 +10,12 @@ use crate::{
 };
 
 fn f(x: usize, k: usize, mtg: &Montgomery) -> usize {
-    mtg.strict(mtg.add(mtg.pow(x as u64, (k as u64) << 1), mtg.one())) as usize
+    let r = mtg.out_of_montgomery_space(mtg.add(
+        mtg.pow(mtg.to_montgomery_space(x as u64), (k as u64) << 1),
+        mtg.one(),
+    ));
+    assert!(r < 2 * mtg.n());
+    (r - if r >= mtg.n() { mtg.n() } else { 0 }) as usize
 }
 
 fn create_histogram(x: &Vec<usize>) -> Vec<usize> {
@@ -808,4 +813,23 @@ where
     println!("min(x, y): {}", min_expectation_var2(&_x, &_y));
     println!("min(x, x): {}", min_expectation_var2(&_x, &_x));
     println!("min(y, y): {}", min_expectation_var2(&_y, &_y));
+}
+
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_f() {
+        for p in 3..10001 {
+            if !miller_rabin(p) {
+                continue;
+            }
+
+            let mtg = Montgomery::new(p);
+            for i in 0..p {
+                println!("{}, {}", p, i);
+                assert_eq!(f(i as usize, 1, &mtg) as u64, (i * i + 1) % p);
+            }
+        }
+    }
 }

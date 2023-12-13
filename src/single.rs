@@ -48,6 +48,7 @@ pub fn pollard_rho(n: u64, k: u64, rng: &mut Xoshiro256PlusPlus) -> u64 {
     const LENGTH_LIMIT: u64 = 1 << 17;
 
     let mtg = Montgomery::new(n);
+    let one = mtg.to_montgomery_space(1);
     let _k = k << 1;
 
     loop {
@@ -60,7 +61,7 @@ pub fn pollard_rho(n: u64, k: u64, rng: &mut Xoshiro256PlusPlus) -> u64 {
             let mut i = 0;
             while i < l {
                 for _ in 0..BATCH_SIZE {
-                    x = mtg.pow(x, _k) + 1;
+                    x = mtg.add(mtg.pow(x, _k), one);
                     let mut d = x.wrapping_sub(y);
                     d = d.wrapping_add(if (d as i64) < 0 { n } else { 0 });
                     q = mtg.mul(q, d);
@@ -88,6 +89,7 @@ pub fn pollard_rho_iteration_count(
     const LENGTH_LIMIT: u64 = 1 << 17;
 
     let mtg = Montgomery::new(n);
+    let one = mtg.to_montgomery_space(1);
     let _k = k << 1;
     let mut iterations: usize = 0;
 
@@ -102,7 +104,7 @@ pub fn pollard_rho_iteration_count(
             while i < l {
                 for _ in 0..BATCH_SIZE {
                     iterations += 1;
-                    x = mtg.pow(x, _k) + 1;
+                    x = mtg.add(mtg.pow(x, _k), one);
                     let mut d = x.wrapping_sub(y);
                     d = d.wrapping_add(if (d as i64) < 0 { n } else { 0 });
                     q = mtg.mul(q, d);
@@ -125,6 +127,7 @@ pub fn pollard_slow(n: u64, k: u64, rng: &mut Xoshiro256PlusPlus) -> u64 {
     const LENGTH_LIMIT: u64 = 1 << 18;
 
     let mtg = Montgomery::new(n);
+    let one = mtg.to_montgomery_space(1);
     let _k = k << 1;
 
     loop {
@@ -132,8 +135,8 @@ pub fn pollard_slow(n: u64, k: u64, rng: &mut Xoshiro256PlusPlus) -> u64 {
         let mut y = x;
 
         for _ in 0..LENGTH_LIMIT {
-            x = mtg.pow(x, _k) + 1;
-            y = mtg.pow(mtg.pow(y, _k) + 1, _k) + 1;
+            x = mtg.add(mtg.pow(x, _k), one);
+            y = mtg.add(mtg.pow(mtg.add(mtg.pow(y, _k), one), _k), one);
 
             let mut d = x.wrapping_sub(y);
             if x < y {
@@ -151,17 +154,18 @@ pub fn pollard_slow_iteration_count(n: u64, k: u64, start: u64) -> usize {
     const LENGTH_LIMIT: u64 = 1 << 18;
 
     let mtg = Montgomery::new(n);
+    let one = mtg.to_montgomery_space(1);
     let _k = k << 1;
     let mut iterations: usize = 0;
 
     loop {
-        let mut x = start;
+        let mut x = mtg.to_montgomery_space(start);
         let mut y = x;
 
         for _ in 0..LENGTH_LIMIT {
             iterations += 1;
-            x = mtg.pow(x, _k) + 1;
-            y = mtg.pow(mtg.pow(y, _k) + 1, _k) + 1;
+            x = mtg.add(mtg.pow(x, _k), one);
+            y = mtg.add(mtg.pow(mtg.add(mtg.pow(y, _k), one), _k), one);
 
             let mut d = x.wrapping_sub(y);
             if x < y {
@@ -194,13 +198,13 @@ fn random_prime(bits: u32, rng: &mut Xoshiro256PlusPlus) -> u64 {
 const K: [u64; 2] = [1, 1];
 
 pub fn bench_single_rho() {
-    const A: usize = 1 << 8;
-    const B: usize = 1 << 10;
+    const A: usize = 1 << 1;
+    const B: usize = 5;
 
     let samples = (A..=B)
-        .into_par_iter()
+        .into_iter()
         .map(|p| {
-            if !miller_rabin(p as u64) || (p - 1) % 4 == 0 {
+            if !miller_rabin(p as u64) {
                 return 0.0;
             }
 
@@ -211,28 +215,35 @@ pub fn bench_single_rho() {
                     .as_nanos() as u64,
             );
 
+            println!("{}", p);
+
             let mut s = 0;
             for start1 in 0..p {
                 for start2 in 0..p {
-                    let min_time = pollard_slow_iteration_count(
-                        p as u64,
-                        2,
-                        start1 as u64,
-                    )
-                    .min(pollard_slow_iteration_count(
-                        p as u64,
-                        2,
-                        start2 as u64,
-                    ));
-                    s += min_time;
+                    let (t1, t2) = (
+                        pollard_slow_iteration_count(
+                            p as u64,
+                            1,
+                            start1 as u64,
+                        ),
+                        pollard_slow_iteration_count(
+                            p as u64,
+                            1,
+                            start2 as u64,
+                        ),
+                    );
+
+                    println!("{} {} {} {}", start1, start2, t1, t2);
+                    s += t1.min(t2);
                 }
             }
 
-            s as f64 / ((p * p) as f64 * (p as f64).sqrt())
+            s as f64 / ((p * p) as f64)
         })
         .filter(|a| *a != 0.0)
         .collect::<Vec<f64>>();
 
+    println!("{}", samples.len());
     println!(
         "{}",
         samples.iter().sum::<f64>() as f64 / samples.len() as f64

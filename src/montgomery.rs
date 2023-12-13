@@ -1,7 +1,8 @@
 pub struct Montgomery {
-    pub n: u64,            // the modulus
-    two_n: u64,            // 2 * n
-    n_inv: u64,            // n^-1 mod 2^64
+    pub n: u64, // the modulus
+    two_n: u64, // 2 * n
+    n_inv: u64, // n^-1 mod 2^64
+    one: u64,
     two_to_128_mod_n: u64, // 2^128 mod n
 }
 
@@ -14,15 +15,22 @@ impl Montgomery {
                 n_inv.wrapping_mul(2u64.wrapping_sub(n.wrapping_mul(n_inv)));
             i += 1;
         }
-        Montgomery {
+        let mut mtg = Montgomery {
             n,
             two_n: n << 1,
             n_inv,
+            one: 0,
             two_to_128_mod_n: {
                 let two_to_64_mod_n = (1u128 << 64) % n as u128;
                 ((two_to_64_mod_n * two_to_64_mod_n) % n as u128) as u64
             },
-        }
+        };
+        mtg.one = mtg.to_montgomery_space(1);
+        mtg
+    }
+
+    pub const fn n(&self) -> u64 {
+        self.n
     }
 
     #[inline(always)]
@@ -46,12 +54,6 @@ impl Montgomery {
         z - if z >= self.two_n { self.two_n } else { 0 }
     }
 
-    #[inline(always)]
-    pub const fn sub(&self, x: u64, y: u64) -> u64 {
-        let z = x.wrapping_sub(y);
-        z.wrapping_add(if (z as i64) < 0 { self.two_n } else { 0 })
-    }
-
     // Computes the product of x and y in Montgomery Space, reducing the result
     // to 0..2n - 1.
     #[inline(always)]
@@ -66,12 +68,6 @@ impl Montgomery {
         // divisible by 2^64).
         let mn_high = ((m as u128 * self.n as u128) >> 64) as u64;
         t_high + self.n - mn_high
-    }
-
-    // Only works for prime moduli.
-    #[inline]
-    pub const fn inv(&self, x: u64) -> u64 {
-        self.pow(x, self.n - 2)
     }
 
     // x^y, reduced to 0..2n - 1. Of course, only x should be in Montgomery
@@ -104,9 +100,9 @@ impl Montgomery {
     pub const fn strict(&self, x: u64) -> u64 {
         x - if x >= self.n { self.n } else { 0 }
     }
-}
 
-pub fn modular_inverse(x: u64, p: u64) -> u64 {
-    let mtg = Montgomery::new(p);
-    mtg.out_of_montgomery_space(mtg.pow(mtg.to_montgomery_space(x), p - 2))
+    #[inline(always)]
+    pub const fn one(&self) -> u64 {
+        self.one
+    }
 }
