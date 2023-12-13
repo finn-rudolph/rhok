@@ -1,4 +1,5 @@
-use std::{collections::VecDeque, ops::Sub};
+use core::num;
+use std::collections::VecDeque;
 
 use num_traits::AsPrimitive;
 use rayon::prelude::*;
@@ -306,7 +307,7 @@ pub fn mu_lambda_nu_individual() {
                 mu.iter().zip(lambda.iter()).map(|(x, y)| x + y).collect();
 
             println!(
-                "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}",
+                "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20} {:?}",
                 "",
                 k,
                 gcd(2 * k as u64, p as u64 - 1),
@@ -315,7 +316,8 @@ pub fn mu_lambda_nu_individual() {
                 mean(&lambda),
                 standard_deviation(&lambda),
                 mean(&nu),
-                standard_deviation(&nu)
+                standard_deviation(&nu),
+                create_histogram(&nu),
             );
         }
     });
@@ -452,6 +454,107 @@ pub fn mu_lambda_nu_correlation() {
                 )
             )
         }
+    }
+}
+
+pub fn cc_summary() {
+    const A: usize = 1 << 16;
+    const B: usize = 1 << 17;
+    const K1: usize = 1;
+    const K2: usize = 3;
+    const GCD: usize = 2;
+
+    println!(
+        "A = {}, B = {}, K1 = {}, K2 = {}\n\
+        gcd(p - 1, 2k) = {}\n",
+        A, B, K1, K2, GCD
+    );
+
+    println!(
+        "{:<6}{:<10}{:<24}{:<24}{:<24}{:<24}\n",
+        "k",
+        "#samples",
+        "#cc mean",
+        "#cc std dev",
+        "cc size mean",
+        "cc size std dev"
+    );
+
+    let cc_num_mean_size: Vec<[(usize, f64); K2 - K1 + 1]> = (A..=B)
+        .into_par_iter()
+        .map(|p| {
+            let mut cc_num_mean_size = [(0usize, 0f64); K2 - K1 + 1];
+            if !miller_rabin(p as u64) {
+                return cc_num_mean_size;
+            }
+
+            let mtg = Montgomery::new(p as u64);
+
+            for k in K1..=K2 {
+                if gcd(p as u64 - 1, 2 * k as u64) as usize != GCD {
+                    continue;
+                }
+
+                let pre = get_predecessors(p, k, &mtg);
+                let mut visited = vec![false; p];
+                let mut num_ccs: usize = 0;
+
+                for x in 0..p {
+                    if !visited[x] {
+                        num_ccs += 1;
+
+                        let mut q = VecDeque::new();
+                        q.push_back(x);
+                        visited[x] = true;
+
+                        while !q.is_empty() {
+                            let u = *q.front().unwrap();
+                            q.pop_front();
+
+                            for v in &pre[u] {
+                                if !visited[*v] {
+                                    visited[*v] = true;
+                                    q.push_back(*v);
+                                }
+                            }
+
+                            let next = f(u, k, &mtg);
+                            if !visited[next] {
+                                visited[next] = true;
+                                q.push_back(next);
+                            }
+                        }
+                    }
+                }
+
+                cc_num_mean_size[k - K1] = (num_ccs, p as f64 / num_ccs as f64);
+            }
+
+            cc_num_mean_size
+        })
+        .collect();
+
+    for k in K1..=K2 {
+        let cc_num: Vec<usize> = cc_num_mean_size
+            .iter()
+            .map(|x| x[k - K1].0)
+            .filter(|x| *x != 0)
+            .collect();
+        let cc_mean_size: Vec<f64> = cc_num_mean_size
+            .iter()
+            .map(|x| x[k - K1].1)
+            .filter(|x| *x != 0.0)
+            .collect();
+
+        println!(
+            "{:<6}{:<10}{:<24}{:<24}{:<24}{:<24}",
+            k,
+            cc_num.len(),
+            mean(&cc_num),
+            standard_deviation(&cc_num),
+            mean(&cc_mean_size),
+            standard_deviation(&cc_mean_size),
+        );
     }
 }
 
