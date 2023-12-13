@@ -34,11 +34,12 @@ where
 {
     let mean = mean(x);
 
-    let mut sigma = 0.0;
+    let mut variance = 0.0;
     for v in x {
-        sigma += (v.as_() - mean) * (v.as_() as f64 - mean);
+        variance += (v.as_() - mean) * (v.as_() as f64 - mean);
     }
-    (sigma / x.len() as f64).sqrt()
+
+    (variance / x.len() as f64).sqrt()
 }
 
 // The pearson correlation for two sequences x_i, y_i of samples of random
@@ -49,11 +50,13 @@ where
     T: std::iter::Sum<&'a T> + AsPrimitive<f64>,
 {
     assert_eq!(x.len(), y.len());
+
     let (mean_x, mean_y) = (mean(x), mean(y));
     let mut cov = 0.0;
     for (x_i, y_i) in x.iter().zip(y.iter()) {
         cov += (x_i.as_() - mean_x) * (y_i.as_() - mean_y);
     }
+
     cov / (x.len() as f64 * standard_deviation(x) * standard_deviation(y))
 }
 
@@ -141,23 +144,25 @@ fn get_mu_lambda(
     (mu, lambda)
 }
 
+// Returns (p, mu, lambda, nu), where in p are the primes from which the data
+// was gathered.
 fn get_mu_lambda_nu_mean<const K1: usize, const K2: usize>(
     a: usize,
     b: usize,
     g: usize,
     normalize: bool,
-) -> [(Vec<f64>, Vec<f64>, Vec<f64>); K2 - K1 + 1]
+) -> [(Vec<usize>, Vec<f64>, Vec<f64>, Vec<f64>); K2 - K1 + 1]
 where
     [(); K2 - K1 + 1]:,
-    [(Vec<f64>, Vec<f64>, Vec<f64>); K2 - K1 + 1]: Default,
+    [(Vec<usize>, Vec<f64>, Vec<f64>, Vec<f64>); K2 - K1 + 1]: Default,
 {
-    let mln: Vec<[(f64, f64, f64); K2 - K1 + 1]> = (a..=b)
+    let mln: Vec<(usize, [(f64, f64, f64); K2 - K1 + 1])> = (a..=b)
         .into_par_iter()
         .map(|p| {
             let mut mln = [(0.0, 0.0, 0.0); K2 - K1 + 1];
 
             if !miller_rabin(p as u64) {
-                return mln;
+                return (p, mln);
             }
 
             let mtg = Montgomery::new(p as u64);
@@ -185,25 +190,29 @@ where
                 }
             }
 
-            mln
+            (p, mln)
         })
         .collect();
 
-    let mut result: [(Vec<f64>, Vec<f64>, Vec<f64>); K2 - K1 + 1] =
+    let mut result: [(Vec<usize>, Vec<f64>, Vec<f64>, Vec<f64>); K2 - K1 + 1] =
         Default::default();
 
     for k in K1..=K2 {
         result[k - K1] = (
             mln.iter()
-                .map(|x| x[k - K1].0)
+                .filter(|(p, x)| x[k - K1].0 != 0.0)
+                .map(|(p, _)| *p)
+                .collect::<Vec<usize>>(),
+            mln.iter()
+                .map(|(p, x)| x[k - K1].0)
                 .filter(|x| *x != 0.0)
                 .collect::<Vec<f64>>(),
             mln.iter()
-                .map(|x| x[k - K1].1)
+                .map(|(_, x)| x[k - K1].1)
                 .filter(|x| *x != 0.0)
                 .collect::<Vec<f64>>(),
             mln.iter()
-                .map(|x| x[k - K1].2)
+                .map(|(_, x)| x[k - K1].2)
                 .filter(|x| *x != 0.0)
                 .collect::<Vec<f64>>(),
         )
@@ -343,7 +352,7 @@ pub fn mu_lambda_nu_summary() {
     let mln = get_mu_lambda_nu_mean::<K1, K2>(A, B, GCD, NORMALIZE);
 
     for k in K1..=K2 {
-        let (mu, lambda, nu) = &mln[k - K1];
+        let (_, mu, lambda, nu) = &mln[k - K1];
         assert_eq!(mu.len(), lambda.len());
         assert_eq!(lambda.len(), nu.len());
 
@@ -358,6 +367,91 @@ pub fn mu_lambda_nu_summary() {
             mean(&nu),
             standard_deviation(&nu)
         );
+    }
+}
+
+fn sorted_seq_intersection(x: &[usize], y: &[usize]) -> Vec<usize> {
+    let mut z: Vec<usize> = Vec::new();
+    let (mut i, mut j) = (x.iter().peekable(), y.iter().peekable());
+    while i.peek().is_some() && j.peek().is_some() {
+        if i.peek() < j.peek() {
+            i.next().unwrap();
+        } else if i.peek() > j.peek() {
+            j.next().unwrap();
+        } else {
+            z.push(*i.next().unwrap());
+            j.next().unwrap();
+        }
+    }
+    z
+}
+
+// x is indexed by index and subseq_index is a subset of index. x[i] appears in
+// the result if and only if index[i] is in subseq_index.
+fn subsequence<T>(x: &[T], index: &[usize], subseq_index: &[usize]) -> Vec<T>
+where
+    T: Copy,
+{
+    let mut z: Vec<T> = Vec::new();
+    let mut i = subseq_index.iter().peekable();
+    for (v, j) in x.iter().zip(index.iter()) {
+        if j == *i.peek().unwrap() {
+            z.push(*v);
+            i.next().unwrap();
+            if i.peek().is_none() {
+                break;
+            }
+        }
+    }
+    z
+}
+
+pub fn mu_lambda_nu_correlation() {
+    const A: usize = 1 << 14;
+    const B: usize = 1 << 15;
+    const K1: usize = 1;
+    const K2: usize = 3;
+    const GCD: usize = 2;
+    const NORMALIZE: bool = true;
+
+    println!(
+        "A = {}, B = {}, K1 = {}, K2 = {}\n\
+        gcd(p - 1, 2k) = {}\nnormalization by sqrt p: {}\n",
+        A, B, K1, K2, GCD, NORMALIZE
+    );
+
+    println!(
+        "{:<6}{:<6}{:<10}{:<24}{:<24}{:<24}\n",
+        "k_1", "k_2", "#samples", "mu corr", "lambda corr", "nu corr",
+    );
+
+    let mln = get_mu_lambda_nu_mean::<K1, K2>(A, B, GCD, NORMALIZE);
+
+    for k1 in K1..=K2 {
+        for k2 in k1 + 1..=K2 {
+            let (p1, mu1, lambda1, nu1) = &mln[k1 - K1];
+            let (p2, mu2, lambda2, nu2) = &mln[k2 - K1];
+            let q = sorted_seq_intersection(p1, p2);
+
+            println!(
+                "{:<6}{:<6}{:<10}{:<24}{:<24}{:<24}",
+                k1,
+                k2,
+                q.len(),
+                correlation(
+                    &subsequence(mu1, p1, &q),
+                    &subsequence(mu2, p2, &q)
+                ),
+                correlation(
+                    &subsequence(lambda1, p1, &q),
+                    &subsequence(lambda2, p2, &q)
+                ),
+                correlation(
+                    &subsequence(nu1, p1, &q),
+                    &subsequence(nu2, p2, &q)
+                )
+            )
+        }
     }
 }
 
