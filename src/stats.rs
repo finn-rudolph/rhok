@@ -9,13 +9,16 @@ use crate::{
     single::{self, gcd},
 };
 
+pub static mut GRAPH: [[[usize; 10000]; 3]; 5000] = [[[0; 10000]; 3]; 5000];
+
 fn f(x: usize, k: usize, mtg: &Montgomery) -> usize {
-    let r = mtg.out_of_montgomery_space(mtg.add(
-        mtg.pow(mtg.to_montgomery_space(x as u64), (k as u64) << 1),
-        mtg.one(),
-    ));
-    assert!(r < 2 * mtg.n());
-    (r - if r >= mtg.n() { mtg.n() } else { 0 }) as usize
+    // let r = mtg.out_of_montgomery_space(mtg.add(
+    //     mtg.pow(mtg.to_montgomery_space(x as u64), (k as u64) << 1),
+    //     mtg.one(),
+    // ));
+    // assert!(r < 2 * mtg.n());
+    // (r - if r >= mtg.n() { mtg.n() } else { 0 }) as usize
+    unsafe { GRAPH[mtg.n() as usize - 5000][k - 1][x] }
 }
 
 fn create_histogram(x: &Vec<usize>) -> Vec<usize> {
@@ -602,12 +605,12 @@ pub fn nu_min_expectation_m2_gcd2<const K1: usize, const K2: usize>(
 ) where
     [(); K2 - K1 + 1]:,
 {
-    println!(
-        "{:<12}{:<4} {:<4} {}",
-        "", "k_1", "k_2", "E(min(nu_1, nu_2))"
-    );
+    // println!(
+    //     "{:<12}{:<4} {:<4} {}",
+    //     "", "k_1", "k_2", "E(min(nu_1, nu_2))"
+    // );
 
-    let _nu_min_m2: Vec<[[f64; K2 - K1 + 1]; K2 - K1 + 1]> = (a..=b)
+    let nu_min_m2: Vec<[[f64; K2 - K1 + 1]; K2 - K1 + 1]> = (a..=b)
         .into_iter()
         .map(|p| {
             let mut expectation = [[0.0; K2 - K1 + 1]; K2 - K1 + 1];
@@ -616,7 +619,7 @@ pub fn nu_min_expectation_m2_gcd2<const K1: usize, const K2: usize>(
                 return expectation;
             }
 
-            println!("{}", p);
+            // println!("{}", p);
             let mtg = &Montgomery::new(p as u64);
 
             let nu: Vec<Vec<usize>> = (K1..=K2)
@@ -640,13 +643,13 @@ pub fn nu_min_expectation_m2_gcd2<const K1: usize, const K2: usize>(
                         expectation[k1 - K1][k2 - K1] =
                             min_expectation_var2(&nu[k1 - K1], &nu[k2 - K1]);
 
-                        println!(
-                            "{:<12}{:<4} {:<4} {}",
-                            "",
-                            k1,
-                            k2,
-                            expectation[k1 - K1][k2 - K1]
-                        );
+                        // println!(
+                        //     "{:<12}{:<4} {:<4} {}",
+                        //     "",
+                        //     k1,
+                        //     k2,
+                        //     expectation[k1 - K1][k2 - K1]
+                        // );
                     }
                 }
             }
@@ -656,29 +659,29 @@ pub fn nu_min_expectation_m2_gcd2<const K1: usize, const K2: usize>(
         .filter(|x| !x.iter().all(|y| y.iter().all(|z| *z == 0.0)))
         .collect();
 
-    // println!(
-    //     "{:<4} {:<4} {:<10} {:<20} {:<20}",
-    //     "k_1", "k_2", "#samples", "mean nu", "std dev nu"
-    // );
+    println!(
+        "{:<4} {:<4} {:<10} {:<20} {:<20}",
+        "k_1", "k_2", "#samples", "mean nu", "std dev nu"
+    );
 
-    // for k1 in K1..=K2 {
-    //     for k2 in k1..=K2 {
-    //         let u: Vec<f64> = nu_min_m2
-    //             .iter()
-    //             .map(|x| x[k1 - K1][k2 - K1])
-    //             .filter(|x| *x != 0.0)
-    //             .collect();
+    for k1 in K1..=K2 {
+        for k2 in k1..=K2 {
+            let u: Vec<f64> = nu_min_m2
+                .iter()
+                .map(|x| x[k1 - K1][k2 - K1])
+                .filter(|x| *x != 0.0)
+                .collect();
 
-    //         println!(
-    //             "{:<4} {:<4} {:<10} {:<20} {:<20}",
-    //             k1,
-    //             k2,
-    //             u.len(),
-    //             mean(&u),
-    //             standard_deviation(&u)
-    //         );
-    //     }
-    // }
+            println!(
+                "{:<4} {:<4} {:<10} {:<20} {:<20}",
+                k1,
+                k2,
+                u.len(),
+                mean(&u),
+                standard_deviation(&u)
+            );
+        }
+    }
 }
 
 // Same as above, but using the number of steps until a collision is detected
