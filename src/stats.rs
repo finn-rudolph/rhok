@@ -80,7 +80,6 @@ fn get_predecessors(p: usize, k: usize, mtg: &Montgomery) -> Vec<Vec<usize>> {
 
     for i in 0..p {
         let next = f(i, k, mtg);
-        println!("p = {}, k = {}, x = {}, next = {}", p, k, i, next);
         pre[next].push(i);
     }
 
@@ -135,8 +134,6 @@ fn get_mu_lambda(
                     x = f(x, k, &mtg);
                 }
             }
-
-            println!("p = {}, k = {}, cycle {:?}", p, k, cycle_nodes);
 
             for x in &cycle_nodes {
                 let mut q: VecDeque<(usize, usize)> = VecDeque::new();
@@ -218,11 +215,11 @@ where
     for k in K1..=K2 {
         result[k - K1] = (
             mln.iter()
-                .filter(|(p, x)| x[k - K1].0 != 0.0)
+                .filter(|(_, x)| x[k - K1].0 != 0.0)
                 .map(|(p, _)| *p)
                 .collect::<Vec<usize>>(),
             mln.iter()
-                .map(|(p, x)| x[k - K1].0)
+                .map(|(_, x)| x[k - K1].0)
                 .filter(|x| *x != 0.0)
                 .collect::<Vec<f64>>(),
             mln.iter()
@@ -239,21 +236,16 @@ where
     result
 }
 
-pub fn iota_individual() {
-    const A: usize = 1 << 16;
-    const B: usize = (1 << 16) + (1 << 12);
-    const K1: usize = 1;
-    const K2: usize = 12;
-
+pub fn iota_individual(a: usize, b: usize, k_1: usize, k_2: usize) {
     println!(
         "{:<20}{:<16}{:<16}{:<20}{}",
         "", "k", "gcd(2k, p - 1)", "iota std dev", "iota histogram"
     );
-    for p in A..=B {
+    for p in a..=b {
         println!("p = {}", p,);
         let mtg = Montgomery::new(p as u64);
 
-        for k in K1..=K2 {
+        for k in k_1..=k_2 {
             let iota = get_iota(p, k, &mtg);
             let iota_hist = create_histogram(&iota);
 
@@ -290,12 +282,7 @@ pub fn iota_individual() {
     }
 }
 
-pub fn mu_lambda_nu_individual() {
-    const A: usize = 1;
-    const B: usize = 100;
-    const K1: usize = 1;
-    const K2: usize = 3;
-
+pub fn mu_lambda_nu_individual(a: usize, b: usize, k_1: usize, k_2: usize) {
     println!(
         "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}{}\n",
         "",
@@ -310,7 +297,7 @@ pub fn mu_lambda_nu_individual() {
         "nu histogram"
     );
 
-    (A..=B).for_each(|p| {
+    (a..=b).for_each(|p| {
         if !miller_rabin(p as u64) {
             return;
         }
@@ -319,12 +306,10 @@ pub fn mu_lambda_nu_individual() {
 
         let mtg = Montgomery::new(p as u64);
 
-        for k in K1..=K2 {
+        for k in k_1..=k_2 {
             let (mu, lambda) = get_mu_lambda(p, k, &mtg);
             let nu: Vec<usize> =
                 mu.iter().zip(lambda.iter()).map(|(x, y)| x + y).collect();
-
-            println!("{:?}\n{:?}", mu, lambda);
 
             println!(
                 "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20} {:?}",
@@ -345,18 +330,19 @@ pub fn mu_lambda_nu_individual() {
 
 // Calculates the mean and standard deviation of mu / lambda / nu for a fixed
 // gcd over and for multiple k over primes in an interval.
-pub fn mu_lambda_nu_summary() {
-    const A: usize = 2;
-    const B: usize = 17;
-    const K1: usize = 1;
-    const K2: usize = 3;
-    const GCD: usize = 2;
-    const NORMALIZE: bool = true;
-
+pub fn mu_lambda_nu_summary<const K1: usize, const K2: usize>(
+    a: usize,
+    b: usize,
+    k_gcd: usize,
+    normalize: bool,
+) where
+    [(); K2 - K1 + 1]:,
+    [(Vec<usize>, Vec<f64>, Vec<f64>, Vec<f64>); K2 - K1 + 1]: Default,
+{
     println!(
         "A = {}, B = {}, K1 = {}, K2 = {}\n\
         gcd(p - 1, 2k) = {}\nnormalization by sqrt p: {}\n",
-        A, B, K1, K2, GCD, NORMALIZE
+        a, b, K1, K2, k_gcd, normalize
     );
 
     println!(
@@ -371,7 +357,7 @@ pub fn mu_lambda_nu_summary() {
         "nu std dev",
     );
 
-    let mln = get_mu_lambda_nu_mean::<K1, K2>(A, B, GCD, NORMALIZE);
+    let mln = get_mu_lambda_nu_mean::<K1, K2>(a, b, k_gcd, normalize);
 
     for k in K1..=K2 {
         let (_, mu, lambda, nu) = &mln[k - K1];
@@ -428,18 +414,19 @@ where
     z
 }
 
-pub fn mu_lambda_nu_correlation() {
-    const A: usize = 1 << 14;
-    const B: usize = 1 << 15;
-    const K1: usize = 1;
-    const K2: usize = 3;
-    const GCD: usize = 2;
-    const NORMALIZE: bool = true;
-
+pub fn mu_lambda_nu_correlation<const K1: usize, const K2: usize>(
+    a: usize,
+    b: usize,
+    k_gcd: usize,
+    normalize: bool,
+) where
+    [(); K2 - K1 + 1]:,
+    [(Vec<usize>, Vec<f64>, Vec<f64>, Vec<f64>); K2 - K1 + 1]: Default,
+{
     println!(
         "A = {}, B = {}, K1 = {}, K2 = {}\n\
         gcd(p - 1, 2k) = {}\nnormalization by sqrt p: {}\n",
-        A, B, K1, K2, GCD, NORMALIZE
+        a, b, K1, K2, k_gcd, normalize
     );
 
     println!(
@@ -447,18 +434,18 @@ pub fn mu_lambda_nu_correlation() {
         "k_1", "k_2", "#samples", "mu corr", "lambda corr", "nu corr",
     );
 
-    let mln = get_mu_lambda_nu_mean::<K1, K2>(A, B, GCD, NORMALIZE);
+    let mln = get_mu_lambda_nu_mean::<K1, K2>(a, b, k_gcd, normalize);
 
-    for k1 in K1..=K2 {
-        for k2 in k1 + 1..=K2 {
-            let (p1, mu1, lambda1, nu1) = &mln[k1 - K1];
-            let (p2, mu2, lambda2, nu2) = &mln[k2 - K1];
+    for k in K1..=K2 {
+        for l in k + 1..=K2 {
+            let (p1, mu1, lambda1, nu1) = &mln[k - K1];
+            let (p2, mu2, lambda2, nu2) = &mln[l - K1];
             let q = sorted_seq_intersection(p1, p2);
 
             println!(
                 "{:<6}{:<6}{:<10}{:<24}{:<24}{:<24}",
-                k1,
-                k2,
+                k,
+                l,
                 q.len(),
                 correlation(
                     &subsequence(mu1, p1, &q),
@@ -477,17 +464,17 @@ pub fn mu_lambda_nu_correlation() {
     }
 }
 
-pub fn cc_summary() {
-    const A: usize = 1 << 16;
-    const B: usize = 1 << 17;
-    const K1: usize = 1;
-    const K2: usize = 30;
-    const GCD: usize = 2;
-
+pub fn cc_summary<const K1: usize, const K2: usize>(
+    a: usize,
+    b: usize,
+    k_gcd: usize,
+) where
+    [(); K2 - K1 + 1]:,
+{
     println!(
         "A = {}, B = {}, K1 = {}, K2 = {}\n\
         gcd(p - 1, 2k) = {}\n",
-        A, B, K1, K2, GCD
+        a, b, K1, K2, k_gcd
     );
 
     println!(
@@ -500,7 +487,7 @@ pub fn cc_summary() {
         "cc size std dev"
     );
 
-    let cc_num_mean_size: Vec<[(usize, f64); K2 - K1 + 1]> = (A..=B)
+    let cc_num_mean_size: Vec<[(usize, f64); K2 - K1 + 1]> = (a..=b)
         .into_par_iter()
         .map(|p| {
             let mut cc_num_mean_size = [(0usize, 0f64); K2 - K1 + 1];
@@ -511,7 +498,7 @@ pub fn cc_summary() {
             let mtg = Montgomery::new(p as u64);
 
             for k in K1..=K2 {
-                if gcd(p as u64 - 1, 2 * k as u64) as usize != GCD {
+                if gcd(p as u64 - 1, 2 * k as u64) as usize != k_gcd {
                     continue;
                 }
 
@@ -609,15 +596,18 @@ where
 // running two machines in parallel and ignoring the higher costs of
 // exponentiation when k != 1, but also requiring that the gcd(p - 1, 2k) = 2.
 // Calculated over all possible assignments of k.
-pub fn nu_min_expectation_m2_gcd2() {
-    const A: usize = 2;
-    const B: usize = 100;
-    const K1: usize = 1;
-    const K2: usize = 3;
+pub fn nu_min_expectation_m2_gcd2<const K1: usize, const K2: usize>(
+    a: usize,
+    b: usize,
+) where
+    [(); K2 - K1 + 1]:,
+{
+    println!(
+        "{:<12}{:<4} {:<4} {}",
+        "", "k_1", "k_2", "E(min(nu_1, nu_2))"
+    );
 
-    println!("{:<12}{:<4} {:<4} {}", "", "k_1", "k_2", "E");
-
-    let nu_min_m2: Vec<[[f64; K2 - K1 + 1]; K2 - K1 + 1]> = (A..=B)
+    let _nu_min_m2: Vec<[[f64; K2 - K1 + 1]; K2 - K1 + 1]> = (a..=b)
         .into_iter()
         .map(|p| {
             let mut expectation = [[0.0; K2 - K1 + 1]; K2 - K1 + 1];
@@ -693,15 +683,18 @@ pub fn nu_min_expectation_m2_gcd2() {
 
 // Same as above, but using the number of steps until a collision is detected
 // by Floyd's algorithm instead.
-pub fn floyd_iteration_min_expectation_m2_gcd2() {
-    const A: usize = 1 << 16;
-    const B: usize = 1 << 17;
-    const K1: usize = 1;
-    const K2: usize = 3;
-
+pub fn floyd_iteration_min_expectation_m2_gcd2<
+    const K1: usize,
+    const K2: usize,
+>(
+    a: usize,
+    b: usize,
+) where
+    [(); K2 - K1 + 1]:,
+{
     // println!("{:<4} {:<4} {}", "k_1", "k_2", "E");
 
-    let floyd_min_m2: Vec<[[f64; K2 - K1 + 1]; K2 - K1 + 1]> = (A..=B)
+    let floyd_min_m2: Vec<[[f64; K2 - K1 + 1]; K2 - K1 + 1]> = (a..=b)
         .into_par_iter()
         .map(|p| {
             let mut expectation = [[0.0; K2 - K1 + 1]; K2 - K1 + 1];
@@ -815,6 +808,7 @@ where
     println!("min(y, y): {}", min_expectation_var2(&_y, &_y));
 }
 
+#[cfg(test)]
 mod test {
     use super::*;
 
