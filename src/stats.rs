@@ -4,21 +4,19 @@ use num_traits::AsPrimitive;
 use rayon::prelude::*;
 
 use crate::{
+    fenwick_tree::FenwickTree,
     miller_rabin::miller_rabin,
     montgomery::Montgomery,
     single::{self, gcd},
 };
 
-pub static mut GRAPH: [[[usize; 10000]; 3]; 5000] = [[[0; 10000]; 3]; 5000];
-
 fn f(x: usize, k: usize, mtg: &Montgomery) -> usize {
-    // let r = mtg.out_of_montgomery_space(mtg.add(
-    //     mtg.pow(mtg.to_montgomery_space(x as u64), (k as u64) << 1),
-    //     mtg.one(),
-    // ));
-    // assert!(r < 2 * mtg.n());
-    // (r - if r >= mtg.n() { mtg.n() } else { 0 }) as usize
-    unsafe { GRAPH[mtg.n() as usize - 5000][k - 1][x] }
+    let r = mtg.out_of_montgomery_space(mtg.add(
+        mtg.pow(mtg.to_montgomery_space(x as u64), (k as u64) << 1),
+        mtg.one(),
+    ));
+    assert!(r < 2 * mtg.n());
+    (r - if r >= mtg.n() { mtg.n() } else { 0 }) as usize
 }
 
 fn create_histogram(x: &Vec<usize>) -> Vec<usize> {
@@ -109,6 +107,63 @@ fn get_iota(p: usize, k: usize, mtg: &Montgomery) -> Vec<usize> {
     iota
 }
 
+fn get_cycle_nodes(
+    start: usize,
+    k: usize,
+    mtg: &Montgomery,
+    visited: &mut Vec<bool>,
+) -> Vec<usize> {
+    let mut cycle_nodes: Vec<usize> = Vec::new();
+
+    let (mut x, mut y) = (start, f(start, k, &mtg));
+    while x != y {
+        x = f(x, k, &mtg);
+        y = f(f(y, k, &mtg), k, &mtg);
+    }
+
+    while cycle_nodes.is_empty() || x != cycle_nodes[0] {
+        cycle_nodes.push(x);
+        visited[x] = true;
+        x = f(x, k, &mtg);
+    }
+
+    cycle_nodes
+}
+
+fn get_connected_component(
+    start: usize,
+    k: usize,
+    mtg: &Montgomery,
+    pre: &Vec<Vec<usize>>,
+    visited: &mut Vec<bool>,
+) -> Vec<usize> {
+    let mut q = VecDeque::new();
+    let mut cc: Vec<usize> = Vec::new();
+    q.push_back(start);
+    visited[start] = true;
+
+    while !q.is_empty() {
+        let u = *q.front().unwrap();
+        cc.push(u);
+        q.pop_front();
+
+        for v in &pre[u] {
+            if !visited[*v] {
+                visited[*v] = true;
+                q.push_back(*v);
+            }
+        }
+
+        let next = f(u, k, &mtg);
+        if !visited[next] {
+            visited[next] = true;
+            q.push_back(next);
+        }
+    }
+
+    cc
+}
+
 fn get_mu_lambda(
     p: usize,
     k: usize,
@@ -121,22 +176,7 @@ fn get_mu_lambda(
 
     for i in 0..p {
         if !visited[i] {
-            let mut cycle_nodes: Vec<usize> = Vec::new();
-
-            {
-                // mark cycle nodes
-                let (mut x, mut y) = (i, f(i, k, &mtg));
-                while x != y {
-                    x = f(x, k, &mtg);
-                    y = f(f(y, k, &mtg), k, &mtg);
-                }
-
-                while cycle_nodes.is_empty() || x != cycle_nodes[0] {
-                    cycle_nodes.push(x);
-                    visited[x] = true;
-                    x = f(x, k, &mtg);
-                }
-            }
+            let cycle_nodes = get_cycle_nodes(i, k, mtg, &mut visited);
 
             for x in &cycle_nodes {
                 let mut q: VecDeque<(usize, usize)> = VecDeque::new();
@@ -286,49 +326,67 @@ pub fn iota_individual(a: usize, b: usize, k_1: usize, k_2: usize) {
 }
 
 pub fn mu_lambda_nu_individual(a: usize, b: usize, k_1: usize, k_2: usize) {
-    println!(
-        "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}{}\n",
-        "",
-        "k",
-        "gcd(2k, p - 1)",
-        "mu mean",
-        "mu std dev",
-        "lambda mean",
-        "lambda std dev",
-        "nu mean",
-        "nu std dev",
-        "nu histogram"
-    );
+    // println!(
+    //     "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20}{}\n",
+    //     "",
+    //     "k",
+    //     "gcd(2k, p - 1)",
+    //     "mu mean",
+    //     "mu std dev",
+    //     "lambda mean",
+    //     "lambda std dev",
+    //     "nu mean",
+    //     "nu std dev",
+    //     "nu histogram"
+    // );
 
-    (a..=b).for_each(|p| {
-        if !miller_rabin(p as u64) {
-            return;
+    let maxima: Vec<(usize, f64)> = (a..=b)
+        .into_par_iter()
+        .map(|p| {
+            if !miller_rabin(p as u64) {
+                return (p, 0.0);
+            }
+
+            // println!("{}", p);
+
+            let mtg = Montgomery::new(p as u64);
+
+            for k in k_1..=k_2 {
+                let (mu, _) = get_mu_lambda(p, k, &mtg);
+                let curr_max =
+                    *mu.iter().max().unwrap() as f64 / (p as f64).sqrt();
+                return (p, curr_max);
+
+                // let nu: Vec<usize> =
+                //     mu.iter().zip(lambda.iter()).map(|(x, y)| x + y).collect();
+
+                // println!(
+                //     "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20} {:?}",
+                //     "",
+                //     k,
+                //     gcd(2 * k as u64, p as u64 - 1),
+                //     mean(&mu),
+                //     standard_deviation(&mu),
+                //     mean(&lambda),
+                //     standard_deviation(&lambda),
+                //     mean(&nu),
+                //     standard_deviation(&nu),
+                //     create_histogram(&nu),
+                // );
+            }
+
+            return (p, 0.0);
+        })
+        .filter(|x| x.1 != 0.0)
+        .collect();
+
+    let mut max_lambda_by_sqrt: f64 = 0.0;
+    for (p, l) in maxima {
+        if l > max_lambda_by_sqrt {
+            println!("new max at p = {}, max = {}", p, l);
+            max_lambda_by_sqrt = l;
         }
-
-        println!("{}", p);
-
-        let mtg = Montgomery::new(p as u64);
-
-        for k in k_1..=k_2 {
-            let (mu, lambda) = get_mu_lambda(p, k, &mtg);
-            let nu: Vec<usize> =
-                mu.iter().zip(lambda.iter()).map(|(x, y)| x + y).collect();
-
-            println!(
-                "{:<12}{:<4}{:<16}{:<20}{:<20}{:<20}{:<20}{:<20}{:<20} {:?}",
-                "",
-                k,
-                gcd(2 * k as u64, p as u64 - 1),
-                mean(&mu),
-                standard_deviation(&mu),
-                mean(&lambda),
-                standard_deviation(&lambda),
-                mean(&nu),
-                standard_deviation(&nu),
-                create_histogram(&nu),
-            );
-        }
-    });
+    }
 }
 
 // Calculates the mean and standard deviation of mu / lambda / nu for a fixed
@@ -473,29 +531,32 @@ pub fn cc_summary<const K1: usize, const K2: usize>(
     k_gcd: usize,
 ) where
     [(); K2 - K1 + 1]:,
+    [(usize, Vec<usize>); K2 - K1 + 1]: Default,
 {
-    println!(
-        "A = {}, B = {}, K1 = {}, K2 = {}\n\
-        gcd(p - 1, 2k) = {}\n",
-        a, b, K1, K2, k_gcd
-    );
+    // println!(
+    //     "A = {}, B = {}, K1 = {}, K2 = {}\n\
+    //     gcd(p - 1, 2k) = {}\n",
+    //     a, b, K1, K2, k_gcd
+    // );
 
-    println!(
-        "{:<6}{:<10}{:<24}{:<24}{:<24}{:<24}\n",
-        "k",
-        "#samples",
-        "#cc mean",
-        "#cc std dev",
-        "cc size mean",
-        "cc size std dev"
-    );
+    // println!(
+    //     "{:<6}{:<10}{:<24}{:<24}{:<24}{:<24}\n",
+    //     "k",
+    //     "#samples",
+    //     "#cc mean",
+    //     "#cc std dev",
+    //     "cc size mean",
+    //     "cc size std dev"
+    // );
 
-    let cc_num_mean_size: Vec<[(usize, f64); K2 - K1 + 1]> = (a..=b)
+    let cc_num_size_distr: Vec<[(usize, Vec<usize>); K2 - K1 + 1]> = (a..=b)
+        .collect::<Vec<usize>>()
         .into_par_iter()
         .map(|p| {
-            let mut cc_num_mean_size = [(0usize, 0f64); K2 - K1 + 1];
+            let mut cc_num_sizes: [(usize, Vec<usize>); K2 - K1 + 1] =
+                Default::default();
             if !miller_rabin(p as u64) {
-                return cc_num_mean_size;
+                return cc_num_sizes;
             }
 
             let mtg = Montgomery::new(p as u64);
@@ -508,64 +569,58 @@ pub fn cc_summary<const K1: usize, const K2: usize>(
                 let pre = get_predecessors(p, k, &mtg);
                 let mut visited = vec![false; p];
                 let mut num_ccs: usize = 0;
+                let mut cc_sizes: Vec<usize> = Vec::new();
 
                 for x in 0..p {
                     if !visited[x] {
                         num_ccs += 1;
-
-                        let mut q = VecDeque::new();
-                        q.push_back(x);
-                        visited[x] = true;
-
-                        while !q.is_empty() {
-                            let u = *q.front().unwrap();
-                            q.pop_front();
-
-                            for v in &pre[u] {
-                                if !visited[*v] {
-                                    visited[*v] = true;
-                                    q.push_back(*v);
-                                }
-                            }
-
-                            let next = f(u, k, &mtg);
-                            if !visited[next] {
-                                visited[next] = true;
-                                q.push_back(next);
-                            }
-                        }
+                        cc_sizes.push(
+                            get_connected_component(
+                                x,
+                                k,
+                                &mtg,
+                                &pre,
+                                &mut visited,
+                            )
+                            .len(),
+                        );
                     }
                 }
 
-                cc_num_mean_size[k - K1] = (num_ccs, p as f64 / num_ccs as f64);
+                cc_num_sizes[k - K1] = (num_ccs, cc_sizes);
             }
 
-            cc_num_mean_size
+            cc_num_sizes
         })
+        .filter(|x| x[0].0 != 0)
         .collect();
 
-    for k in K1..=K2 {
-        let cc_num: Vec<usize> = cc_num_mean_size
-            .iter()
-            .map(|x| x[k - K1].0)
-            .filter(|x| *x != 0)
-            .collect();
-        let cc_mean_size: Vec<f64> = cc_num_mean_size
-            .iter()
-            .map(|x| x[k - K1].1)
-            .filter(|x| *x != 0.0)
-            .collect();
-
-        println!(
-            "{:<6}{:<10}{:<24}{:<24}{:<24}{:<24}",
-            k,
-            cc_num.len(),
-            mean(&cc_num),
-            standard_deviation(&cc_num),
-            mean(&cc_mean_size),
-            standard_deviation(&cc_mean_size),
-        );
+    for c in cc_num_size_distr {
+        println!("{:?}", c);
     }
+
+    // for k in K1..=K2 {
+    //     let cc_num: Vec<usize> = cc_num_mean_size
+    //         .iter()
+    //         .map(|x| x[k - K1].0)
+    //         .filter(|x| *x != 0)
+    //         .collect();
+    //     let cc_mean_size: Vec<f64> = cc_num_mean_size
+    //         .iter()
+    //         .map(|x| x[k - K1].1)
+    //         .filter(|x| *x != 0.0)
+    //         .collect();
+
+    //     println!(
+    //         "{:<6}{:<10}{:<24}{:<24}{:<24}{:<24}",
+    //         k,
+    //         cc_num.len(),
+    //         mean(&cc_num),
+    //         standard_deviation(&cc_num),
+    //         mean(&cc_mean_size),
+    //         standard_deviation(&cc_mean_size),
+    //     );
+    // }
 }
 
 // Takes two sorted sequences of samples of random variables X, Y and returns
@@ -611,7 +666,7 @@ pub fn nu_min_expectation_m2_gcd2<const K1: usize, const K2: usize>(
     // );
 
     let nu_min_m2: Vec<[[f64; K2 - K1 + 1]; K2 - K1 + 1]> = (a..=b)
-        .into_iter()
+        .into_par_iter()
         .map(|p| {
             let mut expectation = [[0.0; K2 - K1 + 1]; K2 - K1 + 1];
 
@@ -641,7 +696,8 @@ pub fn nu_min_expectation_m2_gcd2<const K1: usize, const K2: usize>(
                         && gcd(k2 as u64, (p as u64 - 1) / 2) == 1
                     {
                         expectation[k1 - K1][k2 - K1] =
-                            min_expectation_var2(&nu[k1 - K1], &nu[k2 - K1]);
+                            min_expectation_var2(&nu[k1 - K1], &nu[k2 - K1])
+                                / (p as f64).sqrt();
 
                         // println!(
                         //     "{:<12}{:<4} {:<4} {}",
@@ -682,6 +738,68 @@ pub fn nu_min_expectation_m2_gcd2<const K1: usize, const K2: usize>(
             );
         }
     }
+}
+
+pub fn disj(a: usize, b: usize, k: usize) {
+    let proportion_disj: Vec<f64> = (a..=b)
+        .into_par_iter()
+        .map(|p| {
+            if !miller_rabin(p as u64) {
+                return -1.0;
+            }
+
+            let mtg = Montgomery::new(p as u64);
+            let pre = &get_predecessors(p, k, &mtg);
+            let mut num_non_disj: usize = 0;
+
+            let (mu, lambda) = get_mu_lambda(p, k, &mtg);
+
+            let mut tree: FenwickTree<isize> = FenwickTree::new(p);
+            let mut visited = vec![false; p];
+
+            for i in 0..p {
+                if !visited[i] {
+                    let cc =
+                        get_connected_component(i, k, &mtg, pre, &mut visited);
+
+                    // First find all mu-nu-pairs in the current connected
+                    // component and sort them by nu. We'll sweep over nu.
+                    let mut nu_mu: Vec<(usize, usize)> = cc
+                        .iter()
+                        .map(|node| (mu[*node] + lambda[*node], mu[*node]))
+                        .collect();
+                    nu_mu.sort();
+
+                    for (nu, mu) in nu_mu.iter().rev() {
+                        // Paths from different trees are non-disjoint when the
+                        // other node hits the cycle before I collide.
+                        num_non_disj += tree.prefix_sum(*nu) as usize;
+                        tree.update(*mu, 1);
+                    }
+
+                    // We currently ignore that paths can also be non-disjoint
+                    // when the other mu is > my nu but both are in the same
+                    // tree.
+
+                    // Clear the Fenwick Tree.
+                    for (_, mu) in nu_mu {
+                        tree.update(mu, -1);
+                    }
+                }
+            }
+
+            // Account for two possible orderings of each starting pair and
+            // add p, since when both start at the same node, the paths are
+            // also non-disjoint.
+            ((2 * num_non_disj + p) as f64) / ((p * p) as f64)
+        })
+        .filter(|x| *x != -1.0)
+        .collect();
+
+    println!(
+        "proportion of non-disjoint pairs of paths: {}",
+        proportion_disj.iter().sum::<f64>() / proportion_disj.len() as f64
+    );
 }
 
 // Same as above, but using the number of steps until a collision is detected
