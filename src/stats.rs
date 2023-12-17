@@ -760,10 +760,16 @@ pub fn count_disjoint_paths(a: usize, b: usize, k: usize) {
             let mut num_non_disj: usize = 0;
 
             let (mu, lambda) = get_mu_lambda(p, k, &mtg);
+            let nu: Vec<usize> = mu
+                .iter()
+                .zip(lambda.iter())
+                .map(|(mu, lambda)| *mu + *lambda)
+                .collect();
 
-            let mut tree: FenwickTree<isize> = FenwickTree::new(p);
+            let mut ftree: FenwickTree<isize> = FenwickTree::new(p);
             let mut visited = vec![false; p];
-            let mut num_with_depth: Vec<Vec<usize>> = vec![Vec::new(); p];
+            let mut is_cycle_node = vec![false; p];
+            let mut num_desc_with_dis: Vec<Vec<usize>> = vec![Vec::new(); p];
 
             for i in 0..p {
                 if !visited[i] {
@@ -783,25 +789,58 @@ pub fn count_disjoint_paths(a: usize, b: usize, k: usize) {
                     for (nu, mu) in nu_mu.iter().rev() {
                         // Paths from different trees are non-disjoint when the
                         // other node hits the cycle before I collide.
-                        num_non_disj += tree.prefix_sum(*nu) as usize;
-                        tree.update(*mu, 1);
+                        num_non_disj += ftree.prefix_sum(*nu) as usize;
+                        ftree.update(*mu, 1);
                     }
 
                     // Clear the Fenwick Tree.
                     for (_, mu) in nu_mu {
-                        tree.update(mu, -1);
+                        ftree.update(mu, -1);
                     }
 
                     // Now count the number of nodes in the same tree whose mu
-                    // is > our nu, but who still reach our path.y
-                    // let cycle_nodes = get_cycle_nodes(i, k, &mtg);
-                    // for (cycle_pre, cycle_node) in cycle_nodes.iter().zip(
-                    //     cycle_nodes[1..]
-                    //         .iter()
-                    //         .chain(iter::once(cycle_nodes[0])),
-                    // ) {
-                    //     let tree = get_tree(cycle_node, pre);
-                    // }
+                    // is > our nu, but who still reach our path.
+                    let cycle_nodes = get_cycle_nodes(i, k, &mtg);
+                    for node in &cycle_nodes {
+                        is_cycle_node[*node] = true;
+                    }
+                    for (cycle_pre, cycle_node) in cycle_nodes.iter().zip(
+                        cycle_nodes[1..]
+                            .iter()
+                            .chain(iter::once(&cycle_nodes[0])),
+                    ) {
+                        let tree = get_tree(*cycle_node, *cycle_pre, pre);
+
+                        // Sweep over nu descending and keep in each node, how
+                        // many descendants with a particular distance it has.
+                        for node in tree.iter().rev() {
+                            let mut u = *node;
+
+                            // Go over all ancestors, collect the number of
+                            // nodes that will hit the path of `node` and
+                            // update the counts.
+                            let mut i = 0;
+                            while !is_cycle_node[u] {
+                                // Only count the nodes that _just_ manage to
+                                // reach that ancestor. (other nodes will be
+                                // counted by higher ancestors already)
+                                if num_desc_with_dis[u].len() > nu[u] {
+                                    num_non_disj += num_desc_with_dis[u][nu[u]];
+                                }
+                                if num_desc_with_dis[u].len() <= i {
+                                    num_desc_with_dis[u].resize(i + 1, 0);
+                                }
+                                num_desc_with_dis[u][i] += 1;
+
+                                u = f(u, k, &mtg);
+                                i += 1;
+                            }
+                        }
+
+                        for node in tree {
+                            num_desc_with_dis[node] = Vec::new();
+                        }
+                    }
                 }
             }
 
