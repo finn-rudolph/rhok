@@ -2,6 +2,7 @@ use std::collections::VecDeque;
 
 use num_traits::AsPrimitive;
 use rayon::prelude::*;
+use std::iter;
 
 use crate::{
     fenwick_tree::FenwickTree,
@@ -107,12 +108,8 @@ fn get_iota(p: usize, k: usize, mtg: &Montgomery) -> Vec<usize> {
     iota
 }
 
-fn get_cycle_nodes(
-    start: usize,
-    k: usize,
-    mtg: &Montgomery,
-    visited: &mut Vec<bool>,
-) -> Vec<usize> {
+// Returns the cycle of the CC of `start` in order.
+fn get_cycle_nodes(start: usize, k: usize, mtg: &Montgomery) -> Vec<usize> {
     let mut cycle_nodes: Vec<usize> = Vec::new();
 
     let (mut x, mut y) = (start, f(start, k, &mtg));
@@ -123,11 +120,30 @@ fn get_cycle_nodes(
 
     while cycle_nodes.is_empty() || x != cycle_nodes[0] {
         cycle_nodes.push(x);
-        visited[x] = true;
         x = f(x, k, &mtg);
     }
 
     cycle_nodes
+}
+
+// Returns all nodes in the tree in the functional graph with root `cycle_node`
+// in BFS order. (so `cycle_node`` itself is at index 0, then all it's children,
+// and so on)
+fn get_tree(
+    cycle_node: usize,
+    cycle_pre: usize,
+    pre: &Vec<Vec<usize>>,
+) -> Vec<usize> {
+    let mut tree: Vec<usize> = pre[cycle_node].clone();
+    tree.swap_remove(tree.iter().position(|node| *node == cycle_pre).unwrap());
+
+    let mut i = 0;
+    while i < tree.len() {
+        let u = tree[i];
+        tree.extend(pre[u]);
+    }
+
+    tree
 }
 
 fn get_connected_component(
@@ -135,33 +151,18 @@ fn get_connected_component(
     k: usize,
     mtg: &Montgomery,
     pre: &Vec<Vec<usize>>,
-    visited: &mut Vec<bool>,
 ) -> Vec<usize> {
-    let mut q = VecDeque::new();
-    let mut cc: Vec<usize> = Vec::new();
-    q.push_back(start);
-    visited[start] = true;
+    let cycle_nodes = get_cycle_nodes(start, k, mtg);
 
-    while !q.is_empty() {
-        let u = *q.front().unwrap();
-        cc.push(u);
-        q.pop_front();
-
-        for v in &pre[u] {
-            if !visited[*v] {
-                visited[*v] = true;
-                q.push_back(*v);
-            }
-        }
-
-        let next = f(u, k, &mtg);
-        if !visited[next] {
-            visited[next] = true;
-            q.push_back(next);
-        }
-    }
-
-    cc
+    // Iterate over all cycle nodes and their predecessors and flatten the trees
+    // in a single vector.
+    cycle_nodes
+        .iter()
+        .zip(cycle_nodes[1..].iter().chain(iter::once(&cycle_nodes[0])))
+        .flat_map(|(cycle_pre, cycle_node)| {
+            get_tree(*cycle_node, *cycle_pre, pre)
+        })
+        .collect()
 }
 
 fn get_mu_lambda(
@@ -176,7 +177,10 @@ fn get_mu_lambda(
 
     for i in 0..p {
         if !visited[i] {
-            let cycle_nodes = get_cycle_nodes(i, k, mtg, &mut visited);
+            let cycle_nodes = get_cycle_nodes(i, k, mtg);
+            for node in &cycle_nodes {
+                visited[*node] = true;
+            }
 
             for x in &cycle_nodes {
                 let mut q: VecDeque<(usize, usize)> = VecDeque::new();
@@ -574,16 +578,11 @@ pub fn cc_summary<const K1: usize, const K2: usize>(
                 for x in 0..p {
                     if !visited[x] {
                         num_ccs += 1;
-                        cc_sizes.push(
-                            get_connected_component(
-                                x,
-                                k,
-                                &mtg,
-                                &pre,
-                                &mut visited,
-                            )
-                            .len(),
-                        );
+                        let cc = get_connected_component(x, k, &mtg, &pre);
+                        cc_sizes.push(cc.len());
+                        for node in cc {
+                            visited[node] = true;
+                        }
                     }
                 }
 
@@ -740,7 +739,7 @@ pub fn nu_min_expectation_m2_gcd2<const K1: usize, const K2: usize>(
     }
 }
 
-pub fn disj(a: usize, b: usize, k: usize) {
+pub fn count_disjoint_paths(a: usize, b: usize, k: usize) {
     let proportion_disj: Vec<f64> = (a..=b)
         .into_par_iter()
         .map(|p| {
@@ -756,11 +755,14 @@ pub fn disj(a: usize, b: usize, k: usize) {
 
             let mut tree: FenwickTree<isize> = FenwickTree::new(p);
             let mut visited = vec![false; p];
+            let mut num_with_depth: Vec<Vec<usize>> = vec![Vec::new(); p];
 
             for i in 0..p {
                 if !visited[i] {
-                    let cc =
-                        get_connected_component(i, k, &mtg, pre, &mut visited);
+                    let cc = get_connected_component(i, k, &mtg, pre);
+                    for node in cc {
+                        visited[node] = true;
+                    }
 
                     // First find all mu-nu-pairs in the current connected
                     // component and sort them by nu. We'll sweep over nu.
@@ -784,6 +786,13 @@ pub fn disj(a: usize, b: usize, k: usize) {
                     // Clear the Fenwick Tree.
                     for (_, mu) in nu_mu {
                         tree.update(mu, -1);
+                    }
+
+                    // Now count the number of nodes in the same tree whose mu
+                    // is > our nu, but they
+                    let cycle_nodes = get_cycle_nodes(i, k, &mtg);
+                    for cycle_node in cycle_nodes {
+                        let tree = get_tree(cycle_node, pre);
                     }
                 }
             }
