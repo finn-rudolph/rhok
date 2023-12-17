@@ -1,4 +1,8 @@
 - count proportion of disjoint paths on large primes by random sampling
+- see if the two models for M > 1 hold for truly random mappings (if they do,
+  that would be VERY interesting, since it would provide a "counterexample" to
+  the random mapping heuristic. if they don't, then hopefully one should be able
+  to find literature on that problem)
 - derive formula
   - random graphs
   - case distinction disjoint and non-disjoint paths
