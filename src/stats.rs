@@ -766,7 +766,7 @@ pub fn count_disjoint_paths(a: usize, b: usize, k: usize) {
                 .map(|(mu, lambda)| *mu + *lambda)
                 .collect();
 
-            let mut ftree: FenwickTree<isize> = FenwickTree::new(p);
+            let mut ftree: FenwickTree<isize> = FenwickTree::new(p + 1);
             let mut visited = vec![false; p];
             let mut is_cycle_node = vec![false; p];
             let mut num_desc_with_dis: Vec<Vec<usize>> = vec![Vec::new(); p];
