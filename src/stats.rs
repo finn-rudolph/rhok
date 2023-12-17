@@ -876,7 +876,7 @@ pub fn min_nu_disjoint_paths(a: usize, b: usize, k: usize) {
             let mut nu_sum_non_disj: usize = 0;
 
             let (mu, lambda) = get_mu_lambda(p, k, &mtg);
-            let nu: Vec<usize> = mu
+            let mut nu: Vec<usize> = mu
                 .iter()
                 .zip(lambda.iter())
                 .map(|(mu, lambda)| *mu + *lambda)
@@ -969,8 +969,13 @@ pub fn min_nu_disjoint_paths(a: usize, b: usize, k: usize) {
             // also non-disjoint.
             num_non_disj = 2 * num_non_disj + p;
             nu_sum_non_disj = 2 * nu_sum_non_disj + nu.iter().sum::<usize>();
+
+            nu.sort();
+            let total_nu_sum = min_expectation_var2(&nu, &nu);
+
             (
-                0.0,
+                ((total_nu_sum - nu_sum_non_disj) as f64)
+                    / (p * p - num_non_disj) as f64,
                 nu_sum_non_disj as f64 / num_non_disj as f64,
                 num_non_disj as f64 / ((p * p) as f64),
             )
