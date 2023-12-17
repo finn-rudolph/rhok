@@ -1,3 +1,7 @@
-- what distribution does iota follow?
-    - k = 2: is a "triangle"
-    - k > 2: looks similar for all k, but nothing regular like in k = 2
+- count proportion of disjoint paths on large primes by random sampling
+- derive formula
+  - random graphs
+  - case distinction disjoint and non-disjoint paths
+- look for some monotonicity
+- prove the iota binomial distribution
+- simplify k = 2 iota distribution proof
