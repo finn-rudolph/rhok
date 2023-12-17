@@ -867,7 +867,7 @@ pub fn min_nu_disjoint_paths(a: usize, b: usize, k: usize) {
         .into_par_iter()
         .map(|p| {
             if !miller_rabin(p as u64) {
-                return (0.0, 0.0, 0.0);
+                return (-1.0, 0.0, 0.0);
             }
 
             let mtg = Montgomery::new(p as u64);
@@ -902,10 +902,13 @@ pub fn min_nu_disjoint_paths(a: usize, b: usize, k: usize) {
                         .map(|node| (mu[*node] + lambda[*node], mu[*node]))
                         .collect();
                     nu_mu.sort();
+                    assert!(nu_mu
+                        .iter()
+                        .all(|(nu, mu)| *nu - *mu == nu_mu[0].0 - nu_mu[0].1));
 
                     for (nu, mu) in nu_mu.iter().rev() {
-                        // Paths from different trees are non-disjoint when the
-                        // other node hits the cycle before I collide.
+                        // Paths are non-disjoint when the other node hits the
+                        // cycle before I collide.
                         let num_cycle_coll = ftree.prefix_sum(*nu) as usize;
                         num_non_disj += num_cycle_coll;
                         nu_sum_non_disj += num_cycle_coll * nu;
@@ -943,10 +946,11 @@ pub fn min_nu_disjoint_paths(a: usize, b: usize, k: usize) {
                                 // Only count the nodes that _just_ manage to
                                 // reach that ancestor. (other nodes will be
                                 // counted by higher ancestors already)
-                                if num_desc_with_dis[u].len() > nu[u] {
-                                    num_non_disj += num_desc_with_dis[u][nu[u]];
+                                if num_desc_with_dis[u].len() > nu[*node] {
+                                    num_non_disj +=
+                                        num_desc_with_dis[u][nu[*node]];
                                     nu_sum_non_disj +=
-                                        nu[u] * num_desc_with_dis[u][nu[u]];
+                                        nu[u] * num_desc_with_dis[u][nu[*node]];
                                 }
                                 if num_desc_with_dis[u].len() <= i {
                                     num_desc_with_dis[u].resize(i + 1, 0);
@@ -969,19 +973,27 @@ pub fn min_nu_disjoint_paths(a: usize, b: usize, k: usize) {
             // add p, since when both start at the same node, the paths are
             // also non-disjoint.
             num_non_disj = 2 * num_non_disj + p;
+            assert!(num_non_disj <= p * p);
             nu_sum_non_disj = 2 * nu_sum_non_disj + nu.iter().sum::<usize>();
 
             nu.sort();
             let total_nu_sum = min_sum_var2(&nu, &nu);
+            assert!(nu_sum_non_disj <= total_nu_sum);
 
+            // If there are no disjoint paths, return -1.0 so the sample gets
+            // filtered out.
             (
-                ((total_nu_sum - nu_sum_non_disj) as f64)
-                    / (p * p - num_non_disj) as f64,
+                if num_non_disj != p * p {
+                    ((total_nu_sum - nu_sum_non_disj) as f64)
+                        / (p * p - num_non_disj) as f64
+                } else {
+                    -1.0
+                },
                 nu_sum_non_disj as f64 / num_non_disj as f64,
                 num_non_disj as f64 / ((p * p) as f64),
             )
         })
-        .filter(|x| x.0 != 0.0)
+        .filter(|x| x.0 != -1.0)
         .collect();
 
     let num_samples = disj_non_disj.len() as f64;
@@ -991,10 +1003,12 @@ pub fn min_nu_disjoint_paths(a: usize, b: usize, k: usize) {
         .unwrap();
 
     println!(
-        "mean disjoint = {}, mean non-disjoint = {}, disjoint ration = {}",
+        "mean disjoint = {}\nmean non-disjoint = {}\ndisjoint ration = {}\n\
+        #samples = {}",
         mean_disj / num_samples,
         mean_non_disj / num_samples,
-        disj_ratio / num_samples
+        disj_ratio / num_samples,
+        num_samples
     );
 }
 
