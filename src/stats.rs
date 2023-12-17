@@ -127,20 +127,28 @@ fn get_cycle_nodes(start: usize, k: usize, mtg: &Montgomery) -> Vec<usize> {
 }
 
 // Returns all nodes in the tree in the functional graph with root `cycle_node`
-// in BFS order. (so `cycle_node`` itself is at index 0, then all it's children,
+// in BFS order. (so `cycle_node` itself is at index 0, then all it's children,
 // and so on)
 fn get_tree(
     cycle_node: usize,
     cycle_pre: usize,
     pre: &Vec<Vec<usize>>,
 ) -> Vec<usize> {
-    let mut tree: Vec<usize> = pre[cycle_node].clone();
-    tree.swap_remove(tree.iter().position(|node| *node == cycle_pre).unwrap());
+    let mut tree: Vec<usize> = vec![cycle_node];
+    tree.extend(&pre[cycle_node]);
+    tree.remove(
+        tree.iter()
+            .skip(1)
+            .position(|node| *node == cycle_pre)
+            .unwrap()
+            + 1,
+    );
 
-    let mut i = 0;
+    let mut i = 1;
     while i < tree.len() {
         let u = tree[i];
-        tree.extend(pre[u]);
+        tree.extend(&pre[u]);
+        i += 1;
     }
 
     tree
@@ -760,8 +768,8 @@ pub fn count_disjoint_paths(a: usize, b: usize, k: usize) {
             for i in 0..p {
                 if !visited[i] {
                     let cc = get_connected_component(i, k, &mtg, pre);
-                    for node in cc {
-                        visited[node] = true;
+                    for node in &cc {
+                        visited[*node] = true;
                     }
 
                     // First find all mu-nu-pairs in the current connected
@@ -779,21 +787,21 @@ pub fn count_disjoint_paths(a: usize, b: usize, k: usize) {
                         tree.update(*mu, 1);
                     }
 
-                    // We currently ignore that paths can also be non-disjoint
-                    // when the other mu is > my nu but both are in the same
-                    // tree.
-
                     // Clear the Fenwick Tree.
                     for (_, mu) in nu_mu {
                         tree.update(mu, -1);
                     }
 
                     // Now count the number of nodes in the same tree whose mu
-                    // is > our nu, but they
-                    let cycle_nodes = get_cycle_nodes(i, k, &mtg);
-                    for cycle_node in cycle_nodes {
-                        let tree = get_tree(cycle_node, pre);
-                    }
+                    // is > our nu, but who still reach our path.y
+                    // let cycle_nodes = get_cycle_nodes(i, k, &mtg);
+                    // for (cycle_pre, cycle_node) in cycle_nodes.iter().zip(
+                    //     cycle_nodes[1..]
+                    //         .iter()
+                    //         .chain(iter::once(cycle_nodes[0])),
+                    // ) {
+                    //     let tree = get_tree(cycle_node, pre);
+                    // }
                 }
             }
 
