@@ -12,7 +12,7 @@ where
 
     pub fn update(&mut self, i: usize, delta: T) {
         let mut j = i as isize + 1;
-        while j != self.0.len() as isize {
+        while j <= self.0.len() as isize {
             self.0[j as usize - 1] += delta;
             j += j & -j;
         }
