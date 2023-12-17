@@ -984,12 +984,14 @@ pub fn min_nu_disjoint_paths(a: usize, b: usize, k: usize) {
             // filtered out.
             (
                 if num_non_disj != p * p {
-                    ((total_nu_sum - nu_sum_non_disj) as f64)
-                        / (p * p - num_non_disj) as f64
+                    (((total_nu_sum - nu_sum_non_disj) as f64)
+                        / (p * p - num_non_disj) as f64)
+                        / (p as f64).sqrt()
                 } else {
                     -1.0
                 },
-                nu_sum_non_disj as f64 / num_non_disj as f64,
+                nu_sum_non_disj as f64
+                    / (num_non_disj as f64 * (p as f64).sqrt()),
                 num_non_disj as f64 / ((p * p) as f64),
             )
         })
@@ -1003,7 +1005,7 @@ pub fn min_nu_disjoint_paths(a: usize, b: usize, k: usize) {
         .unwrap();
 
     println!(
-        "mean disjoint = {}\nmean non-disjoint = {}\ndisjoint ration = {}\n\
+        "mean disjoint = {}\nmean non-disjoint = {}\ndisjoint ratio = {}\n\
         #samples = {}",
         mean_disj / num_samples,
         mean_non_disj / num_samples,
