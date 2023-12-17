@@ -1,6 +1,6 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, ops::AddAssign};
 
-use num_traits::AsPrimitive;
+use num_traits::{AsPrimitive, Num};
 use rayon::prelude::*;
 use std::iter;
 
@@ -630,20 +630,21 @@ pub fn cc_summary<const K1: usize, const K2: usize>(
     // }
 }
 
-// Takes two sorted sequences of samples of random variables X, Y and returns
-// the expected value of min(X, Y) assuming each (x, y)-pair is equally likely.
-fn min_expectation_var2<'a, T>(x: &[T], y: &[T]) -> f64
+// Takes two sorted sequences of numbers x, y and returns the sum of all minima
+// of pairs (a, b), where a is in x and b is in y.
+fn min_sum_var2<'a, T>(x: &[T], y: &[T]) -> T
 where
-    T: std::cmp::PartialOrd + AsPrimitive<f64>,
+    T: std::cmp::PartialOrd + Num + AddAssign<T> + Copy + 'static,
+    usize: AsPrimitive<T>,
 {
-    let mut sum: f64 = 0.0;
+    let mut sum: T = T::zero();
 
     let mut p: usize = 0; // pointer for the two pointer method
     for x_i in x {
         while p < y.len() && y[p] < *x_i {
             p += 1;
         }
-        sum += <usize as AsPrimitive<f64>>::as_(y.len() - p) * x_i.as_()
+        sum += AsPrimitive::<T>::as_(y.len() - p) * *x_i
     }
 
     p = 0;
@@ -651,10 +652,10 @@ where
         while p < x.len() && x[p] <= *y_i {
             p += 1;
         }
-        sum += <usize as AsPrimitive<f64>>::as_(x.len() - p) * y_i.as_();
+        sum += (x.len() - p).as_() * *y_i;
     }
 
-    (sum as f64) / ((x.len() * y.len()) as f64)
+    sum
 }
 
 // The expected value of the number of steps until a collision occurs when
@@ -703,8 +704,8 @@ pub fn nu_min_expectation_m2_gcd2<const K1: usize, const K2: usize>(
                         && gcd(k2 as u64, (p as u64 - 1) / 2) == 1
                     {
                         expectation[k1 - K1][k2 - K1] =
-                            min_expectation_var2(&nu[k1 - K1], &nu[k2 - K1])
-                                / (p as f64).sqrt();
+                            min_sum_var2(&nu[k1 - K1], &nu[k2 - K1]) as f64
+                                / ((p * p) as f64 * (p as f64).sqrt());
 
                         // println!(
                         //     "{:<12}{:<4} {:<4} {}",
@@ -971,7 +972,7 @@ pub fn min_nu_disjoint_paths(a: usize, b: usize, k: usize) {
             nu_sum_non_disj = 2 * nu_sum_non_disj + nu.iter().sum::<usize>();
 
             nu.sort();
-            let total_nu_sum = min_expectation_var2(&nu, &nu);
+            let total_nu_sum = min_sum_var2(&nu, &nu);
 
             (
                 ((total_nu_sum - nu_sum_non_disj) as f64)
@@ -1058,10 +1059,12 @@ pub fn floyd_iteration_min_expectation_m2_gcd2<
                     if gcd(k1 as u64, (p as u64 - 1) / 2) == 1
                         && gcd(k2 as u64, (p as u64 - 1) / 2) == 1
                     {
-                        expectation[k1 - K1][k2 - K1] = min_expectation_var2(
+                        expectation[k1 - K1][k2 - K1] = min_sum_var2(
                             &floyd_iterations[k1 - K1],
                             &floyd_iterations[k2 - K1],
-                        );
+                        )
+                            as f64
+                            / (p * p) as f64;
 
                         // println!(
                         //     "{:<4} {:<4} {}",
@@ -1101,27 +1104,6 @@ pub fn floyd_iteration_min_expectation_m2_gcd2<
             );
         }
     }
-}
-
-pub fn analyze_distributions<'a, T>(x: &'a [T], y: &'a [T])
-where
-    T: std::cmp::PartialOrd
-        + std::cmp::Ord
-        + AsPrimitive<f64>
-        + std::iter::Sum<&'a T>,
-{
-    println!("mean x: {}", mean(x));
-    println!("mean y: {}", mean(y));
-    println!("std dev x: {}", standard_deviation(x));
-    println!("std dev y: {}", standard_deviation(y));
-    let mut _x: Vec<T> = x.iter().map(|a| a.clone()).collect();
-    let mut _y: Vec<T> = y.iter().map(|a| a.clone()).collect();
-    _x.sort();
-    _y.sort();
-
-    println!("min(x, y): {}", min_expectation_var2(&_x, &_y));
-    println!("min(x, x): {}", min_expectation_var2(&_x, &_x));
-    println!("min(y, y): {}", min_expectation_var2(&_y, &_y));
 }
 
 #[cfg(test)]
