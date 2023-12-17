@@ -858,6 +858,140 @@ pub fn count_disjoint_paths(a: usize, b: usize, k: usize) {
     );
 }
 
+// Computes the mean of min(nu_1, nu_2) for disjoint and non-disjoint paths
+// separately. Runs in expected O(p sqrt p) per prime.
+pub fn min_nu_disjoint_paths(a: usize, b: usize, k: usize) {
+    // mean of disjoint, mean of non-disjoint, proportion of non-disjoint
+    let disj_non_disj: Vec<(f64, f64, f64)> = (a..=b)
+        .into_par_iter()
+        .map(|p| {
+            if !miller_rabin(p as u64) {
+                return (0.0, 0.0, 0.0);
+            }
+
+            let mtg = Montgomery::new(p as u64);
+            let pre = &get_predecessors(p, k, &mtg);
+
+            let mut num_non_disj: usize = 0;
+            let mut nu_sum_non_disj: usize = 0;
+
+            let (mu, lambda) = get_mu_lambda(p, k, &mtg);
+            let nu: Vec<usize> = mu
+                .iter()
+                .zip(lambda.iter())
+                .map(|(mu, lambda)| *mu + *lambda)
+                .collect();
+
+            let mut ftree: FenwickTree<isize> = FenwickTree::new(p + 1);
+            let mut visited = vec![false; p];
+            let mut is_cycle_node = vec![false; p];
+            let mut num_desc_with_dis: Vec<Vec<usize>> = vec![Vec::new(); p];
+
+            for i in 0..p {
+                if !visited[i] {
+                    let cc = get_connected_component(i, k, &mtg, pre);
+                    for node in &cc {
+                        visited[*node] = true;
+                    }
+
+                    // First find all mu-nu-pairs in the current connected
+                    // component and sort them by nu. We'll sweep over nu.
+                    let mut nu_mu: Vec<(usize, usize)> = cc
+                        .iter()
+                        .map(|node| (mu[*node] + lambda[*node], mu[*node]))
+                        .collect();
+                    nu_mu.sort();
+
+                    for (nu, mu) in nu_mu.iter().rev() {
+                        // Paths from different trees are non-disjoint when the
+                        // other node hits the cycle before I collide.
+                        let num_cycle_coll = ftree.prefix_sum(*nu) as usize;
+                        num_non_disj += num_cycle_coll;
+                        nu_sum_non_disj += num_cycle_coll * nu;
+                        ftree.update(*mu, 1);
+                    }
+
+                    // Clear the Fenwick Tree.
+                    for (_, mu) in nu_mu {
+                        ftree.update(mu, -1);
+                    }
+
+                    // Now count the number of nodes in the same tree whose mu
+                    // is > our nu, but who still reach our path.
+                    let cycle_nodes = get_cycle_nodes(i, k, &mtg);
+                    for node in &cycle_nodes {
+                        is_cycle_node[*node] = true;
+                    }
+                    for (cycle_pre, cycle_node) in cycle_nodes.iter().zip(
+                        cycle_nodes[1..]
+                            .iter()
+                            .chain(iter::once(&cycle_nodes[0])),
+                    ) {
+                        let tree = get_tree(*cycle_node, *cycle_pre, pre);
+
+                        // Sweep over nu descending and keep in each node, how
+                        // many descendants with a particular distance it has.
+                        for node in tree.iter().rev() {
+                            let mut u = *node;
+
+                            // Go over all ancestors, collect the number of
+                            // nodes that will hit the path of `node` and
+                            // update the counts.
+                            let mut i = 0;
+                            while !is_cycle_node[u] {
+                                // Only count the nodes that _just_ manage to
+                                // reach that ancestor. (other nodes will be
+                                // counted by higher ancestors already)
+                                if num_desc_with_dis[u].len() > nu[u] {
+                                    num_non_disj += num_desc_with_dis[u][nu[u]];
+                                    nu_sum_non_disj +=
+                                        nu[u] * num_desc_with_dis[u][nu[u]];
+                                }
+                                if num_desc_with_dis[u].len() <= i {
+                                    num_desc_with_dis[u].resize(i + 1, 0);
+                                }
+                                num_desc_with_dis[u][i] += 1;
+
+                                u = f(u, k, &mtg);
+                                i += 1;
+                            }
+                        }
+
+                        for node in tree {
+                            num_desc_with_dis[node] = Vec::new();
+                        }
+                    }
+                }
+            }
+
+            // Account for two possible orderings of each starting pair and
+            // add p, since when both start at the same node, the paths are
+            // also non-disjoint.
+            num_non_disj = 2 * num_non_disj + p;
+            nu_sum_non_disj = 2 * nu_sum_non_disj + nu.iter().sum::<usize>();
+            (
+                0.0,
+                nu_sum_non_disj as f64 / num_non_disj as f64,
+                num_non_disj as f64 / ((p * p) as f64),
+            )
+        })
+        .filter(|x| x.0 != 0.0)
+        .collect();
+
+    let num_samples = disj_non_disj.len() as f64;
+    let (mean_disj, mean_non_disj, disj_ratio) = disj_non_disj
+        .into_iter()
+        .reduce(|acc, elem| (acc.0 + elem.0, acc.1 + elem.1, acc.2 + elem.2))
+        .unwrap();
+
+    println!(
+        "mean disjoint = {}, mean non-disjoint = {}, disjoint ration = {}",
+        mean_disj / num_samples,
+        mean_non_disj / num_samples,
+        disj_ratio / num_samples
+    );
+}
+
 // Same as above, but using the number of steps until a collision is detected
 // by Floyd's algorithm instead.
 pub fn floyd_iteration_min_expectation_m2_gcd2<
