@@ -16,6 +16,7 @@
 \date{03.01.2024}
 
 \addbibresource{rhok.bib}
+\nocite{*}
 
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
@@ -44,15 +45,9 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
     Sei $X$ eine endliche Menge und $f: X \to X$ eine Abbildung. Der funktionale Graph von $f$, geschrieben $\gamma(f)$, ist der gerichtete Graph mit Knotenmenge $X$ und Kantenmenge $E$, wobei die Kante $(x, y) \in X \times X$ genau dann in $E$ liegt, wenn $f(x) = y$.
 \end{definition}
 
-\noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(f)$ betrachtet startet $(x_n)_{n \in \N}$ mit $x_0$ in einem Baum und ,,läuft`` durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An einem Punkt wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_n)_{n \in \N}$ periodisch. Um $x_i, x_j$ mit $i \ne j$ und $\pi(x_i) = \pi(x_j)$ zu finden, wird Floyds Algorithmus zum Finden des Zyklus in der Zusammenhangskomponente von $\pi(x_0)$ in $\gamma(\pi(f))$ verwendet.
-
-Die Laufzeit der Rho-Methode hängt also von der Distanz von $x_0$ zur Wurzel seines Baumes und der Zykellänge seines Zusammenhangskomponenten ab.
+\noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(f)$ betrachtet startet $(x_n)_{n \in \N}$ mit $x_0$ in einem Baum und ,,läuft`` durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An einem Punkt wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_n)_{n \in \N}$ periodisch. Um $x_i, x_j$ mit $i \ne j$ und $\pi(x_i) = \pi(x_j)$ zu finden, wird Floyds Algorithmus zum Finden des Zyklus in der Zusammenhangskomponente von $\pi(x_0)$ in $\gamma(\pi(f))$ verwendet. Floyds Algorithmus macht sich zunutze, dass es ein $r \in \N, 1 \le r \ge 1$ mit $\pi(x)_r = \pi(x)_{2r}$ geben muss. Für das minimale solcher $r$ gilt außerdem $r \le \mu + \lambda$, wobei $\mu$ die Höhe von $x_0$ in seinem Baum und $\lambda$ die Länge des Zyklus ist (Knuth, 2014, S. 7). Indem man die Folgen $(x_n)_{n \in \N}$ und $(x_{2n})_{n \in \N}$ gleichzeitig berechnet, stößt man in maximal $\mu + \lambda$ Schritten auf gewünschte $x_i, x_j$. Das Überprüfen in jedem Schritt, ob $\pi(x_i) = \pi(x_{2i})$ geschieht natürlich nicht explizit, da $p$ unbekannt ist, aber indirekt durch Berechnung von $\gcd(n, x_i - x_{2i})$.
 
 \subsection{Parallelisierung der Rho-Methode}
-
-\section{Theoretische Grundlagen}
-
-z.b. random mapping assumption, GFs
 
 \section{Die erwartete Rho-Länge in zufälligen Funktionen}
 
