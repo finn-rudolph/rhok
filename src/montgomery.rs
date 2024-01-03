@@ -25,7 +25,7 @@ impl Montgomery {
                 ((two_to_64_mod_n * two_to_64_mod_n) % n as u128) as u64
             },
         };
-        mtg.one = mtg.to_montgomery_space(1);
+        mtg.one = mtg.strict(mtg.to_montgomery_space(1));
         mtg
     }
 
@@ -104,5 +104,41 @@ impl Montgomery {
     #[inline(always)]
     pub const fn one(&self) -> u64 {
         self.one
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use rand_xoshiro::{
+        rand_core::{RngCore, SeedableRng},
+        Xoshiro256PlusPlus,
+    };
+
+    use super::*;
+
+    const P: u64 = 4611685941117976577;
+
+    #[test]
+    fn test_montgomery_mul() {
+        let mut rng = Xoshiro256PlusPlus::seed_from_u64(42);
+        let mtg = Montgomery::new(P);
+
+        for _ in 0..100000 {
+            let (x, y) = (rng.next_u64() % (2 * P), rng.next_u64() % (2 * P));
+            assert_eq!(
+                ((x as u128 * y as u128) % P as u128) as u64,
+                mtg.out_of_montgomery_space(mtg.mul(
+                    mtg.to_montgomery_space(x),
+                    mtg.to_montgomery_space(y)
+                )) % P
+            );
+            assert_eq!(
+                0u64,
+                mtg.out_of_montgomery_space(mtg.mul(
+                    mtg.to_montgomery_space(0),
+                    mtg.to_montgomery_space(y)
+                )) % P
+            );
+        }
     }
 }
