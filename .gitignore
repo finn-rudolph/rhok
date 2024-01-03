@@ -1,1 +1,13 @@
 /target
+*.py
+*.aux
+*.bbl
+*.bcf
+*.fdb_latexmk
+*.fls
+*.run.xml
+*.gz
+*.out
+*.log
+*.toc
+*.vscode
