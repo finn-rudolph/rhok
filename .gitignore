@@ -2,6 +2,7 @@
 *.py
 *.aux
 *.bbl
+*.blg
 *.bcf
 *.fdb_latexmk
 *.fls
