@@ -1,21 +1,26 @@
-use rand_xoshiro::rand_core::{RngCore, SeedableRng};
+use rhok::{miller_rabin::miller_rabin, montgomery::Montgomery};
 
 fn main() {
-    let a = 5000;
-    let b = 10000;
+    rhok::single::bench_single_rho();
+    // for p in 1 << 22..1 << 23 {
+    //     if (p - 1) & 3 != 0 || !miller_rabin(p) {
+    //         continue;
+    //     }
 
-    let mut rng = rand_xoshiro::Xoshiro256PlusPlus::seed_from_u64(42);
-    unsafe {
-        for i in a..b {
-            for k in 0..3 {
-                let mut unused: Vec<usize> = (0..i).collect();
-                for j in 0..i {
-                    let next_index = rng.next_u64() as usize % unused.len();
-                    rhok::stats::GRAPH[i - a][k][j] = unused[next_index];
-                    unused.swap_remove(next_index);
-                }
-            }
-        }
-    }
-    rhok::stats::nu_min_expectation_m2_gcd2::<1, 3>(a, b - 1);
+    //     let mtg = Montgomery::new(p);
+    //     let mut cnt = 0;
+    //     let mut w = 0;
+    //     let neg_one = mtg.to_montgomery_space(p - 1);
+    //     let mut z = neg_one;
+    //     for _ in 1..p / 2 {
+    //         if mtg.strict(mtg.pow(w, (p - 1) >> 2)) == mtg.one()
+    //             && mtg.strict(mtg.pow(z, (p - 1) >> 2)) == mtg.one()
+    //         {
+    //             cnt += 1;
+    //         }
+    //         w = mtg.add(w, mtg.one());
+    //         z = mtg.add(z, neg_one);
+    //     }
+    //     println!("c = {}, (p - 1) / 32 = {}", cnt, (p - 1) >> 5);
+    // }
 }

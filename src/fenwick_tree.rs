@@ -28,7 +28,7 @@ where
         x
     }
 
-    pub fn range_sum(&self, i: usize, j: usize) -> T {
+    pub fn _range_sum(&self, i: usize, j: usize) -> T {
         if i == 0 {
             self.prefix_sum(j)
         } else {
