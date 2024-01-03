@@ -1,0 +1,75 @@
+\documentclass[a4paper, 10pt, ngerman]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ngerman]{babel}
+\usepackage[backend=biber,style=alphabetic,]{biblatex}
+\usepackage[left = 2.5cm, right = 2.5cm, top = 2.5cm, bottom = 2.cm]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{sectsty}
+
+\allsectionsfont{\sffamily}
+
+\title{\sffamily{\textbf{Parametrisierung von Pollards Rho-Methode}}}
+\author{Finn Rudolph}
+\date{03.01.2024}
+
+\addbibresource{rhok.bib}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newtheorem{definition}{Definition}
+
+\begin{document}
+
+\maketitle
+
+\section*{Projektüberblick}
+
+\tableofcontents
+
+\section{Zusammenfassung}
+
+\section{Motivation und Fragestellung}
+
+Während für Rekordfaktorisierungen mittlerweile ausschließlich das Zahlkörpersieb verwendet wird, bleibt Pollards Rho-Algorithmus einer schnellsten Algorithmen zur Faktorisierung kleiner Zahlen bis ca. $2^{64}$. Da Leistungssteigerungen bei modernen Computern häufig durch verbesserete Nebenläufigkeit (z. B. durch mehr Prozessorkerne) erzielt werden, ist es eine interessante Frage, wie Pollards Rho-Methode am besten parallel ausgeführt wird. Bevor die Fragestellung präzise gestellt werden kann, soll jedoch Pollards Rho-Methode erklärt werden.
+
+\subsection{Pollards Rho-Methode}
+
+Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_n)_{n \in \N}$ definiert durch $x_n = f(x_{n - 1})$ für einen Parameter $1 \le k \in \N$. Da $(x_n)_{n \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee von Pollards Rho-Algorithmus ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Wir nehmen heuristisch an, dass die Periodenlänge von $(x_n)_{n \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, sodass es ausreicht, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Diese Annahme begründet sich darin, dass für den kleinsten Primfaktor $p \le \sqrt n$ gilt. Zum Finden solcher $x_i, x_j$ betrachten wir den funktionalen Graphen von $\pi(f)$, wobei $\pi(f)$ die Abbildung $f$ projeziert auf $\Z/p\Z$ ist.
+
+\begin{definition}[Funktionaler Graph]
+    Sei $X$ eine endliche Menge und $f: X \to X$ eine Abbildung. Der funktionale Graph von $f$, geschrieben $\gamma(f)$, ist der gerichtete Graph mit Knotenmenge $X$ und Kantenmenge $E$, wobei die Kante $(x, y) \in X \times X$ genau dann in $E$ liegt, wenn $f(x) = y$.
+\end{definition}
+
+\noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(f)$ betrachtet startet $(x_n)_{n \in \N}$ mit $x_0$ in einem Baum und ,,läuft`` durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An einem Punkt wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_n)_{n \in \N}$ periodisch. Um $x_i, x_j$ mit $i \ne j$ und $\pi(x_i) = \pi(x_j)$ zu finden, wird Floyds Algorithmus zum Finden des Zyklus in der Zusammenhangskomponente von $\pi(x_0)$ in $\gamma(\pi(f))$ verwendet.
+
+Die Laufzeit der Rho-Methode hängt also von der Distanz von $x_0$ zur Wurzel seines Baumes und der Zykellänge seines Zusammenhangskomponenten ab.
+
+\subsection{Parallelisierung der Rho-Methode}
+
+\section{Theoretische Grundlagen}
+
+z.b. random mapping assumption, GFs
+
+\section{Die erwartete Rho-Länge in zufälligen Funktionen}
+
+\subsection{Der Fall zweier Startpunkte}
+
+\subsection{Mögliche Methoden für den allgemeinen Fall}
+
+\section{Bestimmung optimaler Exponenten für die Rho-Methode}
+
+\subsection{Der Fall einer Maschine}
+
+\subsection{Der Fall zweier Maschinen}
+
+\section{Experimentelle Ergebnisse}
+
+\section{Fazit}
+
+\printbibliography
+
+\end{document}
