@@ -23,6 +23,7 @@
 
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
+\newcommand{\E}{\mathbb{E}}
 
 \newtheorem{definition}{Definition}
 
@@ -48,7 +49,7 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
     Sei $X$ eine endliche Menge und $f: X \to X$ eine Abbildung. Der funktionale Graph von $f$, geschrieben $\gamma(f)$, ist der gerichtete Graph mit Knotenmenge $X$ und Kantenmenge $E$, wobei die Kante $(x, y) \in X \times X$ genau dann in $E$ liegt, wenn $f(x) = y$.
 \end{definition}
 
-\noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(f)$ betrachtet startet $(x_n)_{n \in \N}$ mit $x_0$ in einem Baum und "`läuft"' durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An der Wurzel des Baums von $x_0$ wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_n)_{n \in \N}$ periodisch. Um $x_i, x_j$ mit $i \ne j$ und $\pi(x_i) = \pi(x_j)$ zu finden, wird Floyds Algorithmus zum Finden des Zyklus in der Zusammenhangskomponente von $\pi(x_0)$ in $\gamma(\pi(f))$ verwendet. Floyds Algorithmus macht sich zunutze, dass es ein $r \in \N, 1 \le r \ge 1$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss. Für das minimale solcher $r$ gilt außerdem $r \le \mu + \lambda$, wobei $\mu$ die Höhe von $x_0$ in seinem Baum und $\lambda$ die Länge des Zyklus ist (Knuth, 2014, S. 7). Indem man die Folgen $(x_n)_{n \in \N}$ und $(x_{2n})_{n \in \N}$ gleichzeitig Glied für Glied berechnet, stößt man in maximal $\mu + \lambda$ Schritten auf gewünschte $x_i, x_j$. Das Überprüfen in jedem Schritt, ob $\pi(x_i) = \pi(x_{2i})$ geschieht natürlich nicht explizit, da $p$ unbekannt ist, aber implizit durch Berechnung von $\gcd(n, x_i - x_{2i})$.
+\noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(f)$ betrachtet startet $(x_n)_{n \in \N}$ mit $x_0$ in einem Baum und "`läuft"' durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An der Wurzel des Baums von $x_0$ wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_n)_{n \in \N}$ periodisch. Um $x_i, x_j$ mit $i \ne j$ und $\pi(x_i) = \pi(x_j)$ zu finden, wird Floyds Algorithmus zum Finden des Zyklus in der Zusammenhangskomponente von $\pi(x_0)$ in $\gamma(\pi(f))$ verwendet. Floyds Algorithmus macht sich zunutze, dass es ein $r \in \N, 1 \le r \ge 1$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss. Für das minimale solcher $r$ gilt außerdem $r \le \mu + \lambda$, wobei $\mu$ die Höhe von $x_0$ in seinem Baum und $\lambda$ die Länge des Zyklus ist (Knuth, 2014, S. 7). Wir nennen $\lambda + \mu$ auch die Rho-Länge von $x_0$. Indem man die Folgen $(x_n)_{n \in \N}$ und $(x_{2n})_{n \in \N}$ gleichzeitig Glied für Glied berechnet, stößt man in maximal $\mu + \lambda$ Schritten auf gewünschte $x_i, x_j$. Das Überprüfen in jedem Schritt, ob $\pi(x_i) = \pi(x_{2i})$ geschieht natürlich nicht explizit, da $p$ unbekannt ist, aber implizit durch Berechnung von $\gcd(n, x_i - x_{2i})$.
 
 \begin{algorithm*}
     $x \gets $ zufällige natürliche Zahl zwischen $0$ und $n - 1$ \;
@@ -71,7 +72,13 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
 
 \subsection{Parallelisierung der Rho-Methode}
 
-Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: Wie wählt man den Parameter $k$ für jede Maschine optimal, sodass die Laufzeit
+Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen? Eine Zuordnung von $k$-Werten für $M$ Maschinen schreiben wir als Tupel $K = (k_1, k_2, \dots, k_M), 1 \le k_i \in \N$. Wir bezeichnen mit $E(K)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten gegeben durch $K$, also
+\begin{align*}
+    E(K) = \E \bigg ( \min_{1 \le i \le M} X_i \lg 2k_i \bigg )
+\end{align*}
+wobei $X_i$ die Zufallsvariable ist, die dem Anfangswert der $i$-ten Maschine dessen Rho-Länge zuordnet.
+
+\section{Eine Formel für unabhängige Maschinen}
 
 \section{Die erwartete Rho-Länge in zufälligen Funktionen}
 
