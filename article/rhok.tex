@@ -1,5 +1,6 @@
 \documentclass[a4paper, 10pt, ngerman]{article}
 
+\usepackage[algoruled, nosemicolon]{algorithm2e}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage[ngerman]{babel}
@@ -18,6 +19,8 @@
 \addbibresource{rhok.bib}
 \nocite{*}
 
+\renewcommand{\thealgocf}{}
+
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
 
@@ -35,19 +38,40 @@
 
 \section{Motivation und Fragestellung}
 
-Während für Rekordfaktorisierungen mittlerweile ausschließlich das Zahlkörpersieb verwendet wird, bleibt Pollards Rho-Algorithmus einer schnellsten Algorithmen zur Faktorisierung kleiner Zahlen bis ca. $2^{64}$. Da Leistungssteigerungen bei modernen Computern häufig durch verbesserete Nebenläufigkeit (z. B. durch mehr Prozessorkerne) erzielt werden, ist es eine interessante Frage, wie Pollards Rho-Methode am besten parallel ausgeführt wird. Bevor die Fragestellung präzise gestellt werden kann, soll jedoch Pollards Rho-Methode erklärt werden.
+Während für Rekordfaktorisierungen mittlerweile ausschließlich das Zahlkörpersieb verwendet wird, bleibt Pollards Rho-Algorithmus einer schnellsten Algorithmen zur Faktorisierung von Zahlen bis ca. $2^{64}$. Da Leistungssteigerungen bei modernen Computern häufig durch verbesserete Nebenläufigkeit (z. B. durch mehr Prozessorkerne) erzielt werden, ist es eine interessante Frage, wie Pollards Rho-Methode am besten parallel ausgeführt werden kann. Bevor die Fragestellung präzise formuliert werden kann, soll jedoch Pollards Rho-Methode erklärt werden.
 
 \subsection{Pollards Rho-Methode}
 
-Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_n)_{n \in \N}$ definiert durch $x_n = f(x_{n - 1})$ für einen Parameter $1 \le k \in \N$. Da $(x_n)_{n \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee von Pollards Rho-Algorithmus ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Wir nehmen heuristisch an, dass die Periodenlänge von $(x_n)_{n \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, sodass es ausreicht, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Diese Annahme begründet sich darin, dass für den kleinsten Primfaktor $p \le \sqrt n$ gilt. Zum Finden solcher $x_i, x_j$ betrachten wir den funktionalen Graphen von $\pi(f)$, wobei $\pi(f)$ die Abbildung $f$ projeziert auf $\Z/p\Z$ ist.
+Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen zufälligen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_n)_{n \in \N}$ definiert durch $x_n = f(x_{n - 1})$ für einen Parameter $1 \le k \in \N$. Da $(x_n)_{n \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee von Pollards Rho-Algorithmus ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Nimmt man nun heuristisch an, dass die Periodenlänge von $(x_n)_{n \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Diese Annahme begründet sich darin, dass für den kleinsten Primfaktor $p \le \sqrt n$ gilt. Zum Finden solcher $x_i, x_j$ betrachten wir den funktionalen Graphen von $\pi(f)$, wobei $\pi(f)$ die Abbildung $f$ betrachtet in $\Z/p\Z$ ist.
 
 \begin{definition}[Funktionaler Graph]
     Sei $X$ eine endliche Menge und $f: X \to X$ eine Abbildung. Der funktionale Graph von $f$, geschrieben $\gamma(f)$, ist der gerichtete Graph mit Knotenmenge $X$ und Kantenmenge $E$, wobei die Kante $(x, y) \in X \times X$ genau dann in $E$ liegt, wenn $f(x) = y$.
 \end{definition}
 
-\noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(f)$ betrachtet startet $(x_n)_{n \in \N}$ mit $x_0$ in einem Baum und ,,läuft`` durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An einem Punkt wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_n)_{n \in \N}$ periodisch. Um $x_i, x_j$ mit $i \ne j$ und $\pi(x_i) = \pi(x_j)$ zu finden, wird Floyds Algorithmus zum Finden des Zyklus in der Zusammenhangskomponente von $\pi(x_0)$ in $\gamma(\pi(f))$ verwendet. Floyds Algorithmus macht sich zunutze, dass es ein $r \in \N, 1 \le r \ge 1$ mit $\pi(x)_r = \pi(x)_{2r}$ geben muss. Für das minimale solcher $r$ gilt außerdem $r \le \mu + \lambda$, wobei $\mu$ die Höhe von $x_0$ in seinem Baum und $\lambda$ die Länge des Zyklus ist (Knuth, 2014, S. 7). Indem man die Folgen $(x_n)_{n \in \N}$ und $(x_{2n})_{n \in \N}$ gleichzeitig berechnet, stößt man in maximal $\mu + \lambda$ Schritten auf gewünschte $x_i, x_j$. Das Überprüfen in jedem Schritt, ob $\pi(x_i) = \pi(x_{2i})$ geschieht natürlich nicht explizit, da $p$ unbekannt ist, aber indirekt durch Berechnung von $\gcd(n, x_i - x_{2i})$.
+\noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(f)$ betrachtet startet $(x_n)_{n \in \N}$ mit $x_0$ in einem Baum und "`läuft"' durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An der Wurzel des Baums von $x_0$ wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_n)_{n \in \N}$ periodisch. Um $x_i, x_j$ mit $i \ne j$ und $\pi(x_i) = \pi(x_j)$ zu finden, wird Floyds Algorithmus zum Finden des Zyklus in der Zusammenhangskomponente von $\pi(x_0)$ in $\gamma(\pi(f))$ verwendet. Floyds Algorithmus macht sich zunutze, dass es ein $r \in \N, 1 \le r \ge 1$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss. Für das minimale solcher $r$ gilt außerdem $r \le \mu + \lambda$, wobei $\mu$ die Höhe von $x_0$ in seinem Baum und $\lambda$ die Länge des Zyklus ist (Knuth, 2014, S. 7). Indem man die Folgen $(x_n)_{n \in \N}$ und $(x_{2n})_{n \in \N}$ gleichzeitig Glied für Glied berechnet, stößt man in maximal $\mu + \lambda$ Schritten auf gewünschte $x_i, x_j$. Das Überprüfen in jedem Schritt, ob $\pi(x_i) = \pi(x_{2i})$ geschieht natürlich nicht explizit, da $p$ unbekannt ist, aber implizit durch Berechnung von $\gcd(n, x_i - x_{2i})$.
+
+\begin{algorithm*}
+    $x \gets $ zufällige natürliche Zahl zwischen $0$ und $n - 1$ \;
+    $y \gets x$ \;
+    \While{\emph{\sc{true}}}
+    {
+        $x \gets x^{2k} + 1 \mod n$ \;
+        $y \gets (y^{2k} + 1)^{2k} + 1 \mod n$ \;
+        $g \gets \gcd(n, x - y)$ \;
+        \If{$g \ne 1 \text{\emph{\textbf{ and }}} g \ne n$}
+        {
+            \Return{$g$} \;
+        }
+    }
+
+    \caption{Pollards Rho-Algorithmus}
+\end{algorithm*}
+
+\noindent Später wird gezeigt, dass die erwartete Anzahl an Iterationen der while-Schleife für $\sqrt{\pi p / 2}$ ist, falls $k = 1$.
 
 \subsection{Parallelisierung der Rho-Methode}
+
+Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: Wie wählt man den Parameter $k$ für jede Maschine optimal, sodass die Laufzeit
 
 \section{Die erwartete Rho-Länge in zufälligen Funktionen}
 
