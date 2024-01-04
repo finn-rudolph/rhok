@@ -67,7 +67,7 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
     \caption{Pollards Rho-Algorithmus}
 \end{algorithm*}
 
-\noindent Später wird gezeigt, dass die erwartete Anzahl an Iterationen der while-Schleife für $\sqrt{\pi p / 2}$ ist, falls $k = 1$.
+\noindent Später wird gezeigt, dass für $k = 1$ die erwartete Anzahl an Iterationen der while-Schleife unter heuristischen Annahmen $\sqrt{\pi p / 2}$ ist. Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation nach Brent (1980) können die Kosten des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert. Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $3/2 \lg 2k$ Schritten möglich ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet. Ebenfalls unter heuristischen Annahmen wurde von Brent und Pollard (1981, S. 1 -- 2) gezeigt, dass die Anzahl an Iterationen durch Veränderung von $k$ um einen Faktor $1/\sqrt{\gcd(p - 1, 2k) - 1}$ verringert wird, die Kosten pro Iteration wegen der Berechnung von $x^{2k}$ aber um einen Faktor $\lg 2k$ steigen.
 
 \subsection{Parallelisierung der Rho-Methode}
 
