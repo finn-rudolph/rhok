@@ -4,8 +4,8 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage[ngerman]{babel}
-\usepackage[backend=biber,style=alphabetic,]{biblatex}
-\usepackage[left = 2.5cm, right = 2.5cm, top = 2.5cm, bottom = 2.cm]{geometry}
+\usepackage[backend=biber, style=apa]{biblatex}
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.cm]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage[onehalfspacing]{setspace}
 \usepackage{sectsty}
@@ -17,7 +17,6 @@
 \date{03.01.2024}
 
 \addbibresource{rhok.bib}
-\nocite{*}
 
 \renewcommand{\thealgocf}{}
 
@@ -26,6 +25,7 @@
 \newcommand{\E}{\mathbb{E}}
 
 \newtheorem{definition}{Definition}
+\newtheorem{assumption}{Annahme}
 
 \begin{document}
 
@@ -49,7 +49,7 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
     Sei $X$ eine endliche Menge und $f: X \to X$ eine Abbildung. Der funktionale Graph von $f$, geschrieben $\gamma(f)$, ist der gerichtete Graph mit Knotenmenge $X$ und Kantenmenge $E$, wobei die Kante $(x, y) \in X \times X$ genau dann in $E$ liegt, wenn $f(x) = y$.
 \end{definition}
 
-\noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(f)$ betrachtet startet $(x_n)_{n \in \N}$ mit $x_0$ in einem Baum und "`läuft"' durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An der Wurzel des Baums von $x_0$ wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_n)_{n \in \N}$ periodisch. Um $x_i, x_j$ mit $i \ne j$ und $\pi(x_i) = \pi(x_j)$ zu finden, wird Floyds Algorithmus zum Finden des Zyklus in der Zusammenhangskomponente von $\pi(x_0)$ in $\gamma(\pi(f))$ verwendet. Floyds Algorithmus macht sich zunutze, dass es ein $r \in \N, 1 \le r \ge 1$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss. Für das minimale solcher $r$ gilt außerdem $r \le \mu + \lambda$, wobei $\mu$ die Höhe von $x_0$ in seinem Baum und $\lambda$ die Länge des Zyklus ist (Knuth, 2014, S. 7). Wir nennen $\lambda + \mu$ auch die Rho-Länge von $x_0$. Indem man die Folgen $(x_n)_{n \in \N}$ und $(x_{2n})_{n \in \N}$ gleichzeitig Glied für Glied berechnet, stößt man in maximal $\mu + \lambda$ Schritten auf gewünschte $x_i, x_j$. Das Überprüfen in jedem Schritt, ob $\pi(x_i) = \pi(x_{2i})$ geschieht natürlich nicht explizit, da $p$ unbekannt ist, aber implizit durch Berechnung von $\gcd(n, x_i - x_{2i})$.
+\noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(f)$ betrachtet startet $(x_n)_{n \in \N}$ mit $x_0$ in einem Baum und "`läuft"' durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An der Wurzel des Baums von $x_0$ wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_n)_{n \in \N}$ periodisch. Um $x_i, x_j$ mit $i \ne j$ und $\pi(x_i) = \pi(x_j)$ zu finden, wird Floyds Algorithmus zum Finden des Zyklus in der Zusammenhangskomponente von $\pi(x_0)$ in $\gamma(\pi(f))$ verwendet. Floyds Algorithmus macht sich zunutze, dass es ein $r \in \N, 1 \le r \ge 1$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss. Für das minimale solcher $r$ gilt außerdem $r \le \mu + \lambda$, wobei $\mu$ die Höhe von $x_0$ in seinem Baum und $\lambda$ die Länge des Zyklus ist (\cite{knu98}, S. 7). Wir nennen $\lambda + \mu$ auch die Rho-Länge von $x_0$. Indem man die Folgen $(x_n)_{n \in \N}$ und $(x_{2n})_{n \in \N}$ gleichzeitig Glied für Glied berechnet, stößt man in maximal $\mu + \lambda$ Schritten auf gewünschte $x_i, x_j$. Das Überprüfen in jedem Schritt, ob $\pi(x_i) = \pi(x_{2i})$ geschieht natürlich nicht explizit, da $p$ unbekannt ist, aber implizit durch Berechnung von $\gcd(n, x_i - x_{2i})$.
 
 \begin{algorithm*}
     $x \gets $ zufällige natürliche Zahl zwischen $0$ und $n - 1$ \;
@@ -68,7 +68,7 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
     \caption{Pollards Rho-Algorithmus}
 \end{algorithm*}
 
-\noindent Später wird gezeigt, dass für $k = 1$ die erwartete Anzahl an Iterationen der while-Schleife unter heuristischen Annahmen $\sqrt{\pi p / 2}$ ist. Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation nach Brent (1980) können die Kosten des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert. Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $3/2 \lg 2k$ Schritten möglich ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet. Ebenfalls unter heuristischen Annahmen wurde von Brent und Pollard (1981, S. 1 -- 2) gezeigt, dass die Anzahl an Iterationen durch Veränderung von $k$ um einen Faktor $1/\sqrt{\gcd(p - 1, 2k) - 1}$ verringert wird, die Kosten pro Iteration wegen der Berechnung von $x^{2k}$ aber um einen Faktor $\lg 2k$ steigen.
+\noindent Für $k = 1$ ist die erwartete Anzahl an Iterationen der while-Schleife unter heuristischen Annahmen $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation können die Kosten des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $3/2 \lg 2k$ Schritten möglich ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet. Ebenfalls unter heuristischen Annahmen wird die Anzahl an Iterationen durch Veränderung von $k$ um einen Faktor $1/\sqrt{\gcd(p - 1, 2k) - 1}$ verringert (\cite{bp81}). Die Kosten pro Iteration steigen wegen der Berechnung von $x^{2k}$ aber um einen Faktor $\lg 2k$.
 
 \subsection{Parallelisierung der Rho-Methode}
 
@@ -78,7 +78,11 @@ Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht z
 \end{align*}
 wobei $X_i$ die Zufallsvariable ist, die dem Anfangswert der $i$-ten Maschine dessen Rho-Länge zuordnet.
 
+// MAYBE SAGEN DASS MAN HIER WIEDER IRGENDNE RANDOM ANNAHME MACHT
+
 \section{Eine Formel für unabhängige Maschinen}
+
+In diesem Abschnitt wird eine Formel für $E(K)$ hergleitet werden, die im Fall paarweise verschiedener $k$-Werte gilt.
 
 \section{Die erwartete Rho-Länge in zufälligen Funktionen}
 
