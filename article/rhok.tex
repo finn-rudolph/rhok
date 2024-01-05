@@ -82,10 +82,26 @@ wobei $X_i$ die Zufallsvariable ist, die dem Anfangswert der $i$-ten Maschine di
 
 In diesem Abschnitt wird eine Formel für $E(K)$ hergleitet werden, die im Fall paarweise verschiedener $k$-Werte gilt. Der Analyse der Rho-Methode liegt die Annhame zugrunde, dass sich die Abbildung $f : x \mapsto x^{2k} + 1$ bezüglich der durchschnittlichen Rho-Länge wie eine zufällig gewählte Abbildung verhält (\cite{pol75}, S. 332). Für den Fall mehrerer Maschinen postulieren wir zusätzlich, dass $X_i$ von $X_j$ stochastisch unabhängig ist, wenn $k_i \ne k_j$. Für $k_i = k_j$ gilt das nicht, da die zwei Maschinen die selbe Funktion $f$ iterieren und nur die Anfangswerte unabhängig sind. Wenn aber $k_i \ne k_j$ und sich $x \mapsto x^{2k_i} + 1$ und $x \mapsto x^{2k_j} + 1$ bezüglich der Rho-Länge wie zufällig gewählte Abbildung verhalten, ist es vertretbar, die Unabhängigkeit von $X_i$ und $X_j$ anzunehmen. Das kann experimentell unerstützt werden (siehe Abschnitt \ref{sec:ex}).
 
-Folgendes Argument basiert auf dem von \cite{bp81}, S. 627 -- 628, angepasst für mehrere Maschinen. Wir bezeichnen mit $\Z/p\Z^*$ die Gruppe der Einheiten in $\Z/p\Z$. Man beobachte, dass $\psi : \Z/p\Z^\times \to \Z/p\Z^\times$ mit $\psi : x \mapsto x^{2k}$ ein Gruppenendomorphismus mit $[\Z/p\Z : \text{Im} f] = \gcd(p - 1, 2k)$ ist. Daher haben genau $(p - 1) / \gcd(p - 1, 2k)$ Knoten in $\gamma(f)$ Eingangsgrad $\gcd(p - 1, 2k)$, und alle anderen Eingangsgrad 0. Knoten 1 als Einzelfall mit Eingangsgrad ignorieren wir. Wir wollen nun die die Wahrscheinlichkeit betrachten, dass für eine Algorithmus nach genau $t$ Zeiteinheiten terminiert, wobei eine Zeiteinheit die Dauer einer Iteration im Fall $k = 1$ ist. Eine Maschine mit Parameter $k$ schafft in $t$ Zeiteinheiten also $\lfloor t / \lg 2k \rfloor$ Iterationen. Die Wahrscheinlichkeit, dass im $i$-ten Schritt zu einem Vorgänger eines bere der erste Zyklus nach $t$ Schritten gefunden wird, ist
+Folgendes Argument basiert auf dem von \cite{bp81}, S. 627 -- 628, angepasst für mehrere Maschinen. Wir bezeichnen mit $\Z/p\Z^*$ die Gruppe der Einheiten in $\Z/p\Z$. Man beobachte, dass $\psi : \Z/p\Z^\times \to \Z/p\Z^\times$ mit $\psi : x \mapsto x^{2k}$ ein Gruppenendomorphismus mit $[\Z/p\Z : \text{Im} f] = \gcd(p - 1, 2k)$ ist. Daher haben genau $(p - 1) / \gcd(p - 1, 2k)$ Knoten in $\gamma(f)$ Eingangsgrad $\gcd(p - 1, 2k)$, und alle anderen Eingangsgrad 0. Knoten 1 als Einzelfall mit Eingangsgrad ignorieren wir. Wir wollen nun die die Wahrscheinlichkeit betrachten, dass nach genau $t$ Zeiteinheiten erstmalig eine Kollision bei einer Maschine auftritt. Die Wahrscheinlichkeit, dass im $i$-ten Schritt zu einem Vorgänger eines bereits besuchten Knotens gegangen wird, ist $i(\gcd(p - 1, 2k) - 1)/(p - 1)$. Folglich ist die Wahrscheinlichkeit, dass bei einer Maschine mit Paramter $k$ nach $t$ Zeiteinheiten noch keine Kollision aufgetreten ist
 \begin{align*}
-    \prod_{i = 1}^M \prod_{j = 0}^{\lfloor t / \lg 2k_i \rfloor -1} \bigg ( 1 - \frac {i} {p / (\gcd(p - 1, 2k) - 1)}\bigg)
+    \prod_{j = 0}^{\lfloor t / \lg 2k \rfloor} \bigg (1 - \frac {j} {p / (\gcd(p - 1, 2k) - 1)} \bigg )
 \end{align*}
+Wir lassen im Folgenden die Gaußklammern weg, da sie asymptotisch nichts verändern und verwenden Taylors Näherung $1 + x \approx \exp x$ für $|x|$ klein. Sei $h_i = p / (\gcd(p - 1, 2k_i) - 1)$. Wenn $h_i$ groß sind sowie $t$ deutlich kleiner als $p$ ist, ist die Wahrscheinlichkeit, dass nach genau $t$ Zeiteinheiten die erste Kollision auftritt
+\begin{align*}
+    \prod_{i = 1}^M \prod_{j = 0}^{t / \lg k_i - 1}
+     & \Bigg (1 - \frac {j} {h_i} \Bigg ) \cdot \Bigg (1 - \prod_{i = 1}^M \Bigg (1 - \frac {t / \lg 2k_i} {h_i} \Bigg ) \Bigg )                                                         \\
+     & \approx \prod_{i = 1}^M \prod_{j = 0}^{t / \lg k_i - 1} \exp \Bigg ( \frac {-j}{h_i} \Bigg ) \cdot \Bigg (1 - \prod_{i = 1}^M \exp \Bigg (\frac {-t}{h_i \lg 2k_i} \Bigg )\Bigg ) \\
+     & = \exp \Bigg ({- \sum_{i = 1}^M \sum_{j = 0}^{t/\lg 2k_i - 1} \frac j {h_i}} \Bigg ) \cdot \Bigg (1 - \exp \Bigg ( -\sum_{i = 1}^M \frac t {h_i \lg 2k_i} \Bigg ) \Bigg )         \\
+     & \approx \exp \Bigg (- \sum_{i = 1}^M \frac {(t/\lg 2k_i)(t/\lg 2k_i - 1)} {2h_i} \Bigg ) \cdot t \cdot \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg )                       \\
+     & \approx \exp \Bigg (- \frac {t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \cdot t \cdot \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg )
+\end{align*}
+Um nun eine Formel für den Erwartungswert zu erhalten, wird $\sum_{a = 1}^p t \mathbb{P}(t = a)$ durch $\int_{0}^\infty t \mathbb{P}(t = a) \; dt$ angenähert, was wegen der schnellen Konvergenz von $e^{-t^2} \to 0$ wenn $t \to \infty$ vertetbar ist.
+\begin{align*}
+    E(K)
+     & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \int_{0}^{\infty} t^2 \exp \Bigg (- \frac {t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \\
+     & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \sqrt {\pi/2} \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2}
+\end{align*}
+Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Auch wenn die Herleitung aufgrund der vielen Näherungen krude scheint, erklärt sie gut das Laufzeitverhalten im Fall unabhängiger Maschinen. Und setzt man $M = 1$ und $k_1 = 1$, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75} oder \cite{bp81}.
 
 \section{Die erwartete Rho-Länge in zufälligen Funktionen}
 
