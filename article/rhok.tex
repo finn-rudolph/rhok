@@ -150,31 +150,31 @@ Zuletzt wird noch der Begriff einer asymptotischen Näherung benötigt. Wir nenn
 \end{theorem}
 
 \begin{proof}
-    Seien $a$ und $b$ die zwei Startknoten. Zur Bestimmung von $\Psi(x, w)$ unterscheiden wir drei disjunkte Fälle. Es wird grundsätzlich angenommen, dass $\nu(f, a) \le \nu(f, b)$, und wenn $\nu(f, a) < \nu(f, b)$, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert.
+    Seien $a$ und $b$ die zwei Startknoten. Zur Bestimmung von $\Psi(x, w)$ unterscheiden wir drei disjunkte Fälle, die in Abbildung 1 dargestellt werden. Die Graphen werden grundsätzlich so konstruiert, dass $\nu(f, a) \le \nu(f, b)$, und wenn $\nu(f, a) < \nu(f, b)$, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert.
 
     \begin{figure}
         \begin{tabular}{ccc}
             \includesvg[width=150pt]{pics/alpha} & \includesvg[width=150pt]{pics/beta} & \includesvg[width=150pt]{pics/gamma} \\
             ($\alpha$)                           & ($\beta$)                           & ($\gamma$)
         \end{tabular}
-        \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Kanten stellen keine einzelne Kante dar, sondern einen beliebig langen (und möglicherweise leeren) Pfad. Beispielsweise steht die gelbe Kurve in ($\alpha$) für den Zyklus in dem Zusammenhangskomponenten von $a$.}
+        \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Kanten stellen keine einzelne Kante dar, sondern einen beliebig langen (und möglicherweise leeren) Pfad. Beispielsweise steht die Kurve $r$ in ($\alpha$) für den Zyklus in dem Zusammenhangskomponenten von $a$.}
     \end{figure}
 
-    \textbf{Fall 1.} (\emph{$a$ und $b$ liegen in unterschiedlichen Zusammenhangskomponenten.}) Dieser Fall wird erneut in die Fälle $\lambda(f, b) \le \nu(f, a)$ und $\lambda(f, b) > \nu(f, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall lautet
+    \textbf{Fall 1.} (\emph{$a$ und $b$ liegen in unterschiedlichen Zusammenhangskomponenten.}) Dieser Fall wird erneut in die Fälle $\lambda(f, b) \le \nu(f, a)$ und $\lambda(f, b) > \nu(f, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall ist
     \begin{align*}
         \alpha_1(x, w) = \frac {x^2w(1 + x^2w)} {(1 - x^2w)^3} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg ) = \frac {x^2w(1 + x)(1 + x^2w)} {(1 - x^2w)^3(1 - x)}
     \end{align*}
-    In diesem Fall ist es möglich, zuerst zwei $\rho$-Graphen mit gleicher Größe zu erzeugen und anschließend den Pfad von $b$ zu seinem Zyklus zu verlängern. Ein $\rho$-Graph ist ein Zusammenhangskomponent in Abbildung ($\alpha$), d.h. ein Zyklus mit einem Pfad anhängend. Es gibt genau $n! \cdot n$ $\rho$-Graphen mit $n$ Knoten, da es für jede Permutation der Knoten $n$ Möglichkeiten für die Größe des Zyklus gibt. Folglich gibt es für gerade $n$ genau $n! \cdot n^2/2$ Paare an $\rho$-Graphen, die beide $n/2$ Knoten besitzen. Die erzeugende Funktion von Paaren an $\rho$-Graphen ist also
+    In diesem Fall ist es möglich, zuerst zwei $\rho$-Graphen mit gleicher Größe zu erzeugen und anschließend den Pfad von $b$ zu seinem Zyklus zu verlängern. Ein $\rho$-Graph ist ein Zusammenhangskomponent in Abbildung ($\alpha$), d.h. ein Zyklus mit einem Pfad anhängend. Es gibt genau $n! \cdot n$ $\rho$-Graphen mit $n$ Knoten, da es für jede Permutation der Knoten $n$ Möglichkeiten für die Größe des Zyklus gibt. Folglich gibt es für gerade $n$ genau $n! \cdot n^2/2$ Paare an $\rho$-Graphen, die beide $n/2$ Knoten besitzen. Die erzeugende Funktion von Paaren an $\rho$-Graphen gleicher Größe ist also
     \begin{align*}
         \sum_{n = 0}^\infty x^n \cdot \frac {n^2} 4 \cdot \frac {1 + (-1)^n} 2 = \frac {x^2(1 + x^2)} {(1 - x^2)^3}
     \end{align*}
-    Um die halbe Anzahl an Knoten mit $w$ zu markieren, ersetze man $x$ durch $x \sqrt w$ und erhält $x^2w(1 + x^2w) / (1 - x^2w)^3$. Damit ist der erste Faktor in $\alpha_1(x, w)$ geklärt. Nun gibt es zwei Möglichkeiten: Wird der Pfad von $b$ zu seinem Zyklus nicht verlängert, gilt $\nu(f, a) = \nu(f, b)$, es gibt also genau eine Möglichkeit. Wird hingegen ein Pfad von Länge $\ge 1$, dessen erzeugende Funktion $x/(1 - x)$ ist angehängt, ergeben sich zwei Möglichkeiten durch Vertauschung von $a$ und $b$.
+    Um die halbe Anzahl an Knoten mit $w$ zu markieren, ersetze man $x$ durch $x \sqrt w$ und erhält $x^2w(1 + x^2w) / (1 - x^2w)^3$. Das erklärt den ersten Faktor in $\alpha_1(x, w)$. Nun gibt es zwei Möglichkeiten: Wird der Pfad von $b$ zu seinem Zyklus ($u$ in Abbildung 1 ($\alpha$)) nicht verlängert, gilt $\nu(f, a) = \nu(f, b)$, es ergibt sich durch Vertauschen von $a$ und $b$ also keine neue Möglichkeit. Wird hingegen ein Pfad von Länge $\ge 1$ angehängt, dessen erzeugende Funktion $x/(1 - x)$ ist, ergibt sich eine weitere Möglichkeit durch Vertauschen von $a$ und $b$.
 
     Im zweiten Fall ist die erzeugende Funktion
     \begin{align*}
         \alpha_2(x, w) = 2 \cdot \frac {x^2w} {(1 - x^2w)^2} \cdot  \frac x {1 - x} \cdot \frac {1}{1 - x} = \frac {2x^3w} {(1 - x^2w)^2 (1 - x)^2}
     \end{align*}
-    Der Faktor $x^2w$ repräsentiert die zwei Knoten, an denen $a$ und $b$ jeweils ihren Zyklus betreten, und der Knoten von $a$ ist mit $w$ markiert. Mit $1 / (1 - x^2w)^2$ erhält man zwei Paare an Pfaden mit gleicher Länge, deren Länge mit $w$ markiert wird. Ein Pfad von jeder Länge wird im Zusammenhangskomponenten von $a$ und ein Pfad von jeder Länge im Zusammenhangskomponenten von $b$ verbaut. Im Komponenten von $a$ werden die zwei Pfade für den gelben und violetten Teil in Abbildung 1 ($\alpha$) verwendet. Damit ist der Exponent von $w$ genau die Rho-Länge von $a$. Der Zyklus von $b$ besteht aus den zwei Kopien der Pfade und einem Pfad von Länge $\ge 1$, sodass $\lambda(f, b) > \nu(f, a)$ sichergestellt ist. Der übrige $1 / (1 - x)$-Term steht für den Pfad von $b$ zum Zyklus.
+    Der Faktor $x^2w$ repräsentiert die zwei Knoten, an denen $a$ und $b$ jeweils ihren Zyklus betreten, und der Knoten von $a$ ist mit $w$ markiert. Mit $1 / (1 - x^2w)^2$ erhält man vier Pfade $r, y, s, z$, sodass die Länge von $r$ gleich der Länge von $y$ und die Länge von $s$ gleich der Länge von $z$ ist. Die Summe der Längen von $r$ und $s$ wird von $w$ markiert. $r$ und $s$ werden wie in Abbildung 1 ($\alpha$) für den Zusammenhangskomponenten von $a$ verwendet. Damit ist der Exponent von $w$ genau die Rho-Länge von $a$. Der Zyklus von $b$ besteht aus $y, z$ und einem Pfad von Länge $\ge 1$, sodass $\lambda(f, b) > \nu(f, a)$ gilt. Der Term $1 / (1 - x)$ steht für den Pfad von $b$ zum Zyklus.
 
     Die erzeugende Funktion für Fall 1 ist also
     \begin{align*}
@@ -189,7 +189,7 @@ Zuletzt wird noch der Begriff einer asymptotischen Näherung benötigt. Wir nenn
         = xw \cdot \frac {xw} {1 - xw} \cdot \frac {1} {1 - xw} \cdot \frac {1} {1 - x^2w} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg )
         = \frac {x^2w^2(1 + x)} {(1 - xw)^2(1 - x^2w)(1 - x)}
     \end{align*}
-    Der Zyklusknoten, an dem der Baum von $a$ und $b$ anhängt, wird durch $xw$ repräsentiert. Der in Abbildung 1 ($\beta$) pinkfarbene Pfad muss mindestens Länge 1 haben, da der kleinste gemeinsame Vorfahre von $a$ und $b$ sonst die Wurzel wäre, was den Faktor $xw/(1 - xw)$ erklärt. Der Faktor $1/(1 - xw)$ steht für den Zyklus. Mit $1/(1 - x^2w)$ werden zwei gleich lange Pfade erzeugt, deren Länge durch $w$ markiert wird. Ein Pfad führt von $a$ zum kleinsten gemeinsamen Vorfahren, und der andere Pfad ist ein Teil des Pfads von $b$ zum kleinsten gemeinsamen Vorfahren. Nun gibt es wie in Fall 1 wieder die Option, den Pfad von $b$ zum kleinsten gemeinsamen Vorfahren echt zu verlängern, und so einen Faktor 2 für die mögliche Vertauschung von $a$ und $b$ zu erhalten, oder ihn zu lassen, wobei es wegen Symmetrie nur eine Möglichkeit gibt.
+    Der Zyklusknoten, an dem der Baum von $a$ und $b$ anhängt, wird durch $xw$ repräsentiert. Der Pfad $s$ in Abbildung 1 ($\beta$) muss mindestens Länge 1 haben, da der kleinste gemeinsame Vorfahre von $a$ und $b$ sonst die Wurzel wäre, was den Faktor $xw/(1 - xw)$ erklärt. Der Faktor $1/(1 - xw)$ steht für den Zyklus $r$. Mit $1/(1 - x^2w)$ werden zwei gleich lange Pfade erzeugt, deren Länge durch $w$ markiert wird. Ein Pfad ist $t$ in Abbildung 1 ($\beta$), und der andere ist ein Teil von $u$. Nun gibt es wie in Fall 1 wieder die Option, $u$ echt zu verlängern und so einen Faktor 2 für die mögliche Vertauschung von $a$ und $b$ zu erhalten, oder ihn zu lassen, wobei es wegen Symmetrie nur eine Möglichkeit gibt.
 
     \textbf{Fall 3.} (\emph{$a$ und $b$ liegen in verschiedenen Bäumen oder die Wurzel ist kleinster gemeinsamer Vorfahre.}) Die erzeugende Funktion ist hier
     \begin{align*}
@@ -197,7 +197,7 @@ Zuletzt wird noch der Begriff einer asymptotischen Näherung benötigt. Wir nenn
         = xw \cdot \frac {1} {(1 - xw)^2} \cdot \frac {1} {1 - x^2w} \cdot \Bigg (1 + \frac {2x}{1 - x} \Bigg )
         = \frac {xw(1 + x)} {(1 - xw)^2(1 - x^2w)(1 - x)}
     \end{align*}
-    $xw$ stellt den Zyklusknoten da, an dem der Baum von $a$ anhängt. Der Term $1/(1 - xw)^2$ repräsentiert die beiden Pfade von der Wurzel von $a$ zur Wurzel von $b$ und zurück (in Abbildung 1 ($\gamma$) der grün und der pink markierte Teil). Ähnlich wie in Fall 2 ist der Term $1/(1 - x^2w)$ ein Paar an gleich langen Pfaden, deren Länge von $w$ markiert wird. Einer der Pfade geht von $a$ zum Zyklus (in Abbildung 1 $\gamma$ violett), und der andere ist ein Teil des Pfades von $b$ zum Zyklus. Auch hier kann man die Länge von $b$ zum Zyklus unverändert lassen, in diesem Fall
+    $xw$ stellt den Zyklusknoten da, an dem der Baum von $a$ anhängt. Der Term $1/(1 - xw)^2$ repräsentiert die beiden Pfade von der Wurzel von $a$ zur Wurzel von $b$ und zurück ($r$ und $s$ in Abbildung 1 ($\gamma$)). Ähnlich wie in Fall 2 ist der Term $1/(1 - x^2w)$ ein Paar an gleich langen Pfaden, deren Länge von $w$ markiert wird. Einer der Pfade ist $u$ in Abbildung 1 ($\gamma$) und der andere ein Teil von $t$. Auch hier kann man die Länge von $t$ Zyklus unverändert lassen, in diesem Fall gibt es eine Möglichkeit, oder einen Pfad von Länge $\ge 1$ hinzufügen, sodass es zwei Möglichkeiten wegen Vertauschung von $a$ und $b$ gibt.
 \end{proof}
 
 \subsection{Mögliche Methoden für den allgemeinen Fall}
