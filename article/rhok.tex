@@ -14,7 +14,7 @@
 
 \title{\sffamily{\textbf{Parametrisierung von Pollards Rho-Methode}}}
 \author{Finn Rudolph}
-\date{03.01.2024}
+\date{27.01.2024}
 
 \addbibresource{rhok.bib}
 
@@ -88,14 +88,15 @@ Folgendes Argument basiert auf dem von \cite{bp81}, S. 627 -- 628, angepasst fü
 \end{align*}
 Wir lassen im Folgenden die Gaußklammern weg, da sie asymptotisch nichts verändern und verwenden Taylors Näherung $1 + x \approx \exp x$ für $|x|$ klein. Sei $h_i = p / (\gcd(p - 1, 2k_i) - 1)$. Wenn $h_i$ groß sind sowie $t$ deutlich kleiner als $p$ ist, ist die Wahrscheinlichkeit, dass nach genau $t$ Zeiteinheiten die erste Kollision auftritt
 \begin{align*}
-    \prod_{i = 1}^M \prod_{j = 0}^{t / \lg k_i - 1}
-     & \Bigg (1 - \frac {j} {h_i} \Bigg ) \cdot \Bigg (1 - \prod_{i = 1}^M \Bigg (1 - \frac {t / \lg 2k_i} {h_i} \Bigg ) \Bigg )                                                         \\
+    \mathbb{P}_t
+     & = \prod_{i = 1}^M \prod_{j = 0}^{t / \lg k_i - 1}
+    \Bigg (1 - \frac {j} {h_i} \Bigg ) \cdot \Bigg (1 - \prod_{i = 1}^M \Bigg (1 - \frac {t / \lg 2k_i} {h_i} \Bigg ) \Bigg )                                                            \\
      & \approx \prod_{i = 1}^M \prod_{j = 0}^{t / \lg k_i - 1} \exp \Bigg ( \frac {-j}{h_i} \Bigg ) \cdot \Bigg (1 - \prod_{i = 1}^M \exp \Bigg (\frac {-t}{h_i \lg 2k_i} \Bigg )\Bigg ) \\
      & = \exp \Bigg ({- \sum_{i = 1}^M \sum_{j = 0}^{t/\lg 2k_i - 1} \frac j {h_i}} \Bigg ) \cdot \Bigg (1 - \exp \Bigg ( -\sum_{i = 1}^M \frac t {h_i \lg 2k_i} \Bigg ) \Bigg )         \\
      & \approx \exp \Bigg (- \sum_{i = 1}^M \frac {(t/\lg 2k_i)(t/\lg 2k_i - 1)} {2h_i} \Bigg ) \cdot t \cdot \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg )                       \\
      & \approx \exp \Bigg (- \frac {t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \cdot t \cdot \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg )
 \end{align*}
-Um nun eine Formel für den Erwartungswert zu erhalten, wird $\sum_{a = 1}^p t \mathbb{P}(t = a)$ durch $\int_{0}^\infty t \mathbb{P}(t = a) \; dt$ angenähert, was wegen der schnellen Konvergenz von $e^{-t^2} \to 0$ wenn $t \to \infty$ vertetbar ist.
+Um nun eine Formel für den Erwartungswert zu erhalten, wird $\sum_{a = 1}^p t \mathbb{P}_t$ durch $\int_{0}^\infty t \mathbb{P}_t \; dt$ angenähert, was wegen der schnellen Konvergenz von $e^{-t^2} \to 0$ wenn $t \to \infty$ vertetbar ist.
 \begin{align*}
     E(K)
      & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \int_{0}^{\infty} t^2 \exp \Bigg (- \frac {t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \\
