@@ -10,6 +10,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage[onehalfspacing]{setspace}
 \usepackage{sectsty}
+\usepackage[inkscapeformat=pdf]{svg}
 
 \allsectionsfont{\sffamily}
 
@@ -149,7 +150,13 @@ Zuletzt wird noch der Begriff einer asymptotischen Näherung benötigt. Wir nenn
 \end{theorem}
 
 \begin{proof}
+    Zur Bestimmung von $\Psi(x, w)$ unterscheiden wir folgende drei disjunkte Fälle.
 
+    \begin{figure}
+        \begin{tabular}{ccc}
+            \includesvg[width=150pt]{pics/alpha} & \includesvg[width=150pt]{pics/beta} & \includesvg[width=150pt]{pics/gamma}
+        \end{tabular}
+    \end{figure}
 \end{proof}
 
 \subsection{Mögliche Methoden für den allgemeinen Fall}
