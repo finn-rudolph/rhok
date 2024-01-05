@@ -155,16 +155,16 @@ Zuletzt wird noch der Begriff einer asymptotischen Näherung benötigt. Wir nenn
     \begin{figure}
         \begin{tabular}{ccc}
             \includesvg[width=150pt]{pics/alpha} & \includesvg[width=150pt]{pics/beta} & \includesvg[width=150pt]{pics/gamma} \\
-            (a)                                  & (b)                                 & (c)
+            ($\alpha$)                           & ($\beta$)                           & ($\gamma$)
         \end{tabular}
-        \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Kanten stellen keine einzelne Kante dar, sondern einen beliebig langen (und möglicherweise leeren) Pfad. Beispielsweise steht die gelbe Kurve in (1) für den Zyklus in dem Zusammenhangskomponenten von $a$.}
+        \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Kanten stellen keine einzelne Kante dar, sondern einen beliebig langen (und möglicherweise leeren) Pfad. Beispielsweise steht die gelbe Kurve in ($\alpha$) für den Zyklus in dem Zusammenhangskomponenten von $a$.}
     \end{figure}
 
     \textbf{Fall 1.} (\emph{$a$ und $b$ liegen in unterschiedlichen Zusammenhangskomponenten.}) Dieser Fall wird erneut in die Fälle $\lambda(f, b) \le \nu(f, a)$ und $\lambda(f, b) > \nu(f, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall lautet
     \begin{align*}
         \alpha_1(x, w) = \frac {x^2w(1 + x^2w)} {(1 - x^2w)^3} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg ) = \frac {x^2w(1 + x)(1 + x^2w)} {(1 - x^2w)^3(1 - x)}
     \end{align*}
-    In diesem Fall ist es möglich, zuerst zwei $\rho$-Graphen mit gleicher Größe zu erzeugen und anschließend den Pfad von $b$ zu seinem Zyklus zu verlängern. Ein $\rho$-Graph ist ein Zusammenhangskomponent in Abbildung (a), d.h. ein Zyklus mit einem Pfad anhängend. Es gibt genau $n! \cdot n$ $\rho$-Graphen mit $n$ Knoten, da es für jede Permutation der Knoten $n$ Möglichkeiten für die Größe des Zyklus gibt. Folglich gibt es für gerade $n$ genau $n! \cdot n^2/2$ Paare an $\rho$-Graphen, die beide $n/2$ Knoten besitzen. Die erzeugende Funktion von Paaren an $\rho$-Graphen ist also
+    In diesem Fall ist es möglich, zuerst zwei $\rho$-Graphen mit gleicher Größe zu erzeugen und anschließend den Pfad von $b$ zu seinem Zyklus zu verlängern. Ein $\rho$-Graph ist ein Zusammenhangskomponent in Abbildung ($\alpha$), d.h. ein Zyklus mit einem Pfad anhängend. Es gibt genau $n! \cdot n$ $\rho$-Graphen mit $n$ Knoten, da es für jede Permutation der Knoten $n$ Möglichkeiten für die Größe des Zyklus gibt. Folglich gibt es für gerade $n$ genau $n! \cdot n^2/2$ Paare an $\rho$-Graphen, die beide $n/2$ Knoten besitzen. Die erzeugende Funktion von Paaren an $\rho$-Graphen ist also
     \begin{align*}
         \sum_{n = 0}^\infty x^n \cdot \frac {n^2} 4 \cdot \frac {1 + (-1)^n} 2 = \frac {x^2(1 + x^2)} {(1 - x^2)^3}
     \end{align*}
@@ -174,12 +174,20 @@ Zuletzt wird noch der Begriff einer asymptotischen Näherung benötigt. Wir nenn
     \begin{align*}
         \alpha_2(x, w) = 2 \cdot \frac {x^2w} {(1 - x^2w)^2} \cdot  \frac x {1 - x} \cdot \frac {1}{1 - x} = \frac {2x^3w} {(1 - x^2w)^2 (1 - x)^2}
     \end{align*}
-    Der Faktor $x^2w$ repräsentiert die zwei Knoten, an denen $a$ und $b$ jeweils ihren Zyklus betreten, und der Knoten von $a$ ist mit $w$ markiert. Mit $1 / (1 - x^2w)^2$ erhält man zwei Pfade, von denen jeweils eine Kopie angefertigt wird und die Länge mit $w$ markiert wird. Im Komponenten von $a$ werden diese zwei Pfade für den gelben und violetten Teil in Abbildung 1 (a) verwendet. Damit ist der Exponent von $w$ genau die Rho-Länge von $a$. Der Zyklus von $b$ besteht aus den zwei Kopien der Pfade und einem Pfad von Länge $\ge 1$, sodass $\lambda(f, b) > \nu(f, a)$ sichergestellt ist. Der übrige $1 / (1 - x)$-Term steht für den Pfad von $b$ zum Zyklus.
+    Der Faktor $x^2w$ repräsentiert die zwei Knoten, an denen $a$ und $b$ jeweils ihren Zyklus betreten, und der Knoten von $a$ ist mit $w$ markiert. Mit $1 / (1 - x^2w)^2$ erhält man zwei Pfade, von denen jeweils eine Kopie angefertigt wird und die Länge mit $w$ markiert wird. Im Komponenten von $a$ werden diese zwei Pfade für den gelben und violetten Teil in Abbildung 1 ($\alpha$) verwendet. Damit ist der Exponent von $w$ genau die Rho-Länge von $a$. Der Zyklus von $b$ besteht aus den zwei Kopien der Pfade und einem Pfad von Länge $\ge 1$, sodass $\lambda(f, b) > \nu(f, a)$ sichergestellt ist. Der übrige $1 / (1 - x)$-Term steht für den Pfad von $b$ zum Zyklus.
 
     Die erzeugende Funktion für Fall 1 ist also
     \begin{align*}
         \alpha(x, w) = \alpha_1(x, w) + \alpha_2(x, w) = \frac {x^2w(1 + 2x - x^2 + x^2w - 2x^3w - x^4w)} {(1 - x^2w)^3(1 - x)^2}
     \end{align*}
+
+    \textbf{Fall 2.} (\emph{$a$ und $b$ liegen im gleichen Baum und ihr kleinster gemeinsamer Vorfahre ist nicht die Wurzel.}) Anders formuliert: Betrachtet man die Pfade, die $a$ und $b$ durch wiederholtes Anwenden von $f$ in $\gamma(f)$ ablaufen, treffen diese sich nicht erstmals in einem Zyklusknoten. Die erzeugende Funktion lautet
+    \begin{align*}
+        \beta(x, w) = xw \cdot \frac {xw} {1 - xw} \cdot \frac {1} {1 - xw} \cdot \frac {1} {1 - x^2w} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg ) = \frac {x^2w^2} {(1 - xw)^2(1 - x^2w)} \Bigg (1 + \frac {2x} {1 - x} \Bigg )
+    \end{align*}
+    Der Zyklusknoten, an dem der Baum von $a$ und $b$ anhängt, wird durch $xw$ repräsentiert. Der in Abbildung 1 ($\beta$) pinkfarbene Pfad muss mindestens Länge 1 haben, da der kleinste gemeinsame Vorfahre von $a$ und $b$ sonst die Wurzel wäre, was den Faktor $xw/(1 - xw)$ erklärt. Der Faktor $1/(1 - xw)$ steht für den Zyklus. Mit $1/(1 - x^2w)$ werden zwei gleich lange Pfade erzeugt, von denen einer mit $w$ markiert wird. Der $w$-markierte Pfad führt von $a$ zum kleinsten gemeinsamen Vorfahren, und der andere Pfad ist ein Teil des Pfads vom kleinsten gemeinsamen Vorfahren zu $b$. Nun gibt es wie in Fall 1 wieder die Option, den Pfad von $b$ zum kleinsten gemeinsamen Vorfahren echt zu verlängern, und so einen Faktor 2 für die mögliche Vertauschung von $a$ und $b$ zu erhalten, oder ihn zu lassen, wobei es wegen Symmetrie nur eine Möglichkeit gibt.
+
+    \textbf{Fall 3.} (\emph{$a$ und $b$ liegen in verschiedenen Bäumen oder die Wurzel ist kleinster gemeinsamer Vorfahre.})
 \end{proof}
 
 \subsection{Mögliche Methoden für den allgemeinen Fall}
