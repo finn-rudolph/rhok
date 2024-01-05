@@ -112,11 +112,11 @@ Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwend
 
 \section{Die erwartete Rho-Länge in zufälligen Funktionen}
 
-Um $E(K)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (1) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \cdot \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden und einige Ideen für den Fall von beliebigem $M$ und $k_1 = k_2 = \dots = k_M$ entwickelt werden.
+Um $E(K)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (1) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \cdot \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden und einige Ideen für den Fall von beliebigem $M$ und $k_1 = k_2 = \dots = k_M$ entwickelt werden. Für letzteren Fall genügt es, den Fall $k_i = 1 \; (1 \le i \le M)$ zu betrachten. Denn wie bereits angemerkt wird für eine Maschine die durchschnittliche Rho-Länge durch Veränderung von $k$ um einen Faktor $1 / \sqrt {\gcd(p - 1, 2k) - 1}$ verringert, es gilt also $E(k_1, k_2, \dots, k_M) = E(1, 1, \dots, 1) / \sqrt{\gcd(p - 1, 2k)-1}$. Nach (A2) reduziert sich das Problem auf folgende Frage: \emph{Gegeben ein zufälliges Element $f$ aus $A_p$ und $M$ zufällige Elemente $x_{i, 0} \in Z/p\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
 
 \subsection{Der Fall zweier Startpunkte}
 
-Es soll nun $E(k_1, k_2)$ mit $k_1 = k_2$ bestimmt werden. Wir nehmen $k_1 = k_2 = 1$ an, denn wie bereits angemerkt, wird die Laufzeit
+
 
 \subsection{Mögliche Methoden für den allgemeinen Fall}
 
