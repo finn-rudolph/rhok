@@ -3,6 +3,7 @@
 \usepackage[algoruled, nosemicolon]{algorithm2e}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage[ngerman]{babel}
 \usepackage[backend=biber, style=apa]{biblatex}
 \usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.cm]{geometry}
@@ -25,7 +26,7 @@
 \newcommand{\E}{\mathbb{E}}
 
 \newtheorem{definition}{Definition}
-\newtheorem{assumption}{Annahme}
+\newtheorem{theorem}{Satz}
 
 \begin{document}
 
@@ -114,13 +115,42 @@ Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwend
 
 Um $L(K)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (1) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \cdot \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden und einige Ideen für den Fall von beliebigem $M$ und $k_1 = k_2 = \dots = k_M$ entwickelt werden. Für letzteren Fall genügt es, den Fall $k_i = 1 \; (1 \le i \le M)$ zu betrachten. Denn wie bereits angemerkt wird für eine Maschine die durchschnittliche Rho-Länge durch Veränderung von $k$ um einen Faktor $1 / \sqrt {\gcd(p - 1, 2k) - 1}$ verringert, es gilt also $L(k_1, k_2, \dots, k_M) = L(1, 1, \dots, 1) / \sqrt{\gcd(p - 1, 2k)-1}$. Mit $k_i = 1 \; (1 \le i \le M)$ reduziert sich das Problem nach (A2) auf folgende Frage: \emph{Gegeben ein zufälliges Element $f$ aus $A(p)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/p\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
 
-\subsection{Der Fall zweier Anfangswerte}
+\subsection{Theoretischer Hintergrund: Erzeugende Funktionen}
 
-Obige Frage soll hier für den Fall $M = 2$ beantwortet werden. Der Ansatz ist, die Summe der Rho-Längen über alle Elemente von $A(p)$ und Paare an Anfangswerten zu bestimmen. Dafür soll eine erzeugende Funktion $\Psi(x, w)$ hergeleitet werden, in der die Variable $x$ die Größe des Graphen und die Variable $w$ die kleinere der beiden Rho-Längen markiert. Dann gilt nämlich
+Der grundlegende Ansatz zur Beantwortung obiger Frage für $M = 2$ ist, die Summe der minimalen Rho-Längen über alle Elemente von $A(p)$ und Paare an Anfangswerten zu bestimmen. Dafür soll eine erzeugende Funktion $\Psi(x, w)$ hergeleitet werden, in der die Variable $x$ die Größe des Graphen und die Variable $w$ die minimale Rho-Länge markiert. Dann gilt nämlich
 \begin{align*}
     L(1, 1) = \frac {n!}{n^{n + 2}} [x^n] \Bigg (\frac {\partial} {\partial w} \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
 \end{align*}
 wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet.
+
+Da funktionale Graphen beschriftet sind, werden stets erzeugende Funktionen von exponentiellem Typ (EF) verwendet. Folgende Komponenten eines funktionalen Graphen werden als Grundlage verwendet, um einen funktionalen Graphen zu konstruieren (\cite{fo90}, S. 333).
+\begin{align*}
+    T(x) = x \exp T(x) \quad (\text{Baum}) \qquad\qquad C(x) = \log \frac {1} {1 - x} \quad (\text{Zyklus})
+\end{align*}
+Ein funktionaler Graph ist nun eine Menge an Zyklen von Bäumen, also ist die EF für funktionale Graphen
+\begin{align*}
+    F(x) = \exp C(T(x)) = \exp \log \frac 1 {1 - T(x)} = \frac 1 {1 - T(x)}
+\end{align*}
+
+Zuletzt wird noch der Begriff einer asymptotischen Näherung benötigt. Wir nennen $f(x)$ genau dann asymptotisch zu $g(x)$ und schreiben $f(x) \sim g(x)$, wenn
+\begin{align*}
+    \lim_{x \to \infty} \frac {f(x)} {g(x)} = 1
+\end{align*}
+
+// Erklären warum eine asymptotische Abschätzung sinnvoll ist und wir nicht O-Notation verwenden
+
+\subsection{Der Fall zweier Anfangswerte}
+
+\begin{theorem}
+    Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$. Dann gilt
+    \begin{align*}
+        \frac 1 {n^{n + 2}} \sum_{f \in A(n)} \; \sum_{a \in \Z/n\Z} \; \sum_{b \in \Z/n\Z} \min(\nu(f, a), \nu(f, b)) \sim \frac {25} {32} \sqrt{\pi n / 2}
+    \end{align*}
+\end{theorem}
+
+\begin{proof}
+
+\end{proof}
 
 \subsection{Mögliche Methoden für den allgemeinen Fall}
 
