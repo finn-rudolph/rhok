@@ -68,7 +68,7 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
     \caption{Pollards Rho-Algorithmus}
 \end{algorithm*}
 
-\noindent Der Analyse der Rho-Methode liegt die Annhame zugrunde, dass sich die Abbildung $f : x \mapsto x^{2k} + 1$ bezüglich der durchschnittlichen Rho-Länge wie eine zufällig gewählte Abbildung $\Z/p\Z \to \Z/p\Z$ verhält (\cite{pol75}, S. 332). Sei $A_n = \{f : \Z/n\Z \to \Z/n\}$ Um die Anzahl an Iterationen der while-Schleife abzuschätzen, wird außerdem vereinfachend das durchschnittliche $\mu + \lambda$ über alle Elemente von $A_p$ und Startwerte $x_0 \in \Z/p\Z$ betrachtet. Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation können die Kosten des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $3/2 \lg 2k$ Schritten möglich ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet. Die Anzahl an Iterationen der while-Schleife wird durch Veränderung von $k$ um einen Faktor $1/\sqrt{\gcd(p - 1, 2k) - 1}$ verringert (\cite{bp81}).
+\noindent Der Analyse der Rho-Methode liegt die Annhame zugrunde, dass sich die Abbildung $f : x \mapsto x^{2k} + 1$ bezüglich der durchschnittlichen Rho-Länge wie eine zufällig gewählte Abbildung $\Z/p\Z \to \Z/p\Z$ verhält (\cite{pol75}, S. 332). Sei $A_n = \{f : \Z/n\Z \to \Z/n\}$ Um die Anzahl an Iterationen der while-Schleife abzuschätzen, wird außerdem vereinfachend das durchschnittliche $\mu + \lambda$ über alle Elemente von $A_p$ und Startwerte $x_0 \in \Z/p\Z$ betrachtet. Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation können die Kosten des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $3/2 \lg 2k$ Schritten möglich ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet. Der Faktor $3/2$ wird im Folgenden ignoriert, da er für den Vergleich verschiedener Werte für $k$ irrelevant ist. Die Anzahl an Iterationen der while-Schleife wird durch Veränderung von $k$ um einen Faktor $1/\sqrt{\gcd(p - 1, 2k) - 1}$ verringert (\cite{bp81}).
 
 \subsection{Parallelisierung der Rho-Methode}
 
@@ -95,14 +95,16 @@ Wir lassen im Folgenden die Gaußklammern weg, da sie asymptotisch nichts verän
      & \approx \exp \Bigg (- \frac {t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \cdot t \cdot \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg )
 \end{align*}
 Um nun eine Formel für den Erwartungswert zu erhalten, wird $\sum_{a = 1}^p t \mathbb{P}_t$ durch $\int_{0}^\infty t \mathbb{P}_t \; dt$ angenähert, was wegen der schnellen Konvergenz von $e^{-t^2} \to 0$ wenn $t \to \infty$ vertetbar ist.
-\begin{align*}
+\begin{align}
     E(K)
-     & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \int_{0}^{\infty} t^2 \exp \Bigg (- \frac {t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \\
+     & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \int_{0}^{\infty} t^2 \exp \Bigg (- \frac {t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \nonumber \\
      & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \sqrt {\pi/2} \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2}
-\end{align*}
-Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Auch wenn die Herleitung aufgrund der vielen Näherungen krude scheint, erklärt sie gut das Laufzeitverhalten im Fall unabhängiger Maschinen. Und setzt man $M = 1$ und $k_1 = 1$, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75} oder \cite{bp81}.
+\end{align}
+Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Auch wenn die Herleitung aufgrund der vielen Näherungen krude scheint, erklärt sie gut das Laufzeitverhalten im Fall unabhängiger Maschinen. Und setzt man $M = 1$ und $k_1 = 1$, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}.
 
 \section{Die erwartete Rho-Länge in zufälligen Funktionen}
+
+Um $E(K)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (1) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $32/25 \cdot \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden und einige Ideen für den Fall von beliebigem $M$ und $k_1 = k_2 = \dots = k_M$ entwickelt werden.
 
 \subsection{Der Fall zweier Startpunkte}
 
