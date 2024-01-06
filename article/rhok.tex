@@ -125,12 +125,13 @@ Um nun eine Formel für den Erwartungswert zu erhalten, wird $\sum_{a = 1}^p t \
     L_K(p)
      & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \int_{0}^{\infty} t^2 \exp \Bigg (- \frac {t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \nonumber \\
      & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \sqrt {\pi/2} \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2}
+    \label{lkp}
 \end{align}
 Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Auch wenn die Herleitung aufgrund der vielen Näherungen krude scheint, erklärt sie gut das Laufzeitverhalten im Fall unabhängiger Maschinen. Setzt man beispielsweise $M = 1$ und $k_1 = 1$, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}. Für $M = 1$ und beliebiges $k_1$ erhält man $\sqrt{\pi p / 2} \cdot \lg^2 2k_1 / \sqrt{\gcd(p-1, 2k_1) - 1}$. Daraus folgt, dass die Anzahl an Iterationen im Fall einer Maschine um einen Faktor $1/\sqrt{\gcd(p - 1, 2k) - 1}$ im Vergleich zu $k = 1$ reduziert wird. Dieses Ergebnis erhielten auch \cite{bp81}.
 
 \section{Die erwartete minimale Rho-Länge bei mehreren Anfangswerten}
 
-Um $L_K(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (1) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \cdot \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden und einige Ideen für den Fall von beliebigem $M$ und $k_1 = k_2 = \dots = k_M$ entwickelt werden. Für letzteren Fall genügt es, den Fall $k_i = 1 \; (1 \le i \le M)$ zu betrachten. Denn wie bereits angemerkt wird für eine Maschine die durchschnittliche Rho-Länge durch Veränderung von $k$ um einen Faktor $1 / \sqrt {\gcd(p - 1, 2k) - 1}$ verringert, es gilt also $L_{k, k, \dots, k}(p) = L_{1, 1, \dots, 1}(p) / \sqrt{\gcd(p - 1, 2k)-1}$. Mit $k_i = 1 \; (1 \le i \le M)$ reduziert sich das Problem nach (A2) auf folgende Frage: \emph{Gegeben ein zufälliges Element $f$ aus $A(p)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/p\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
+Um $L_K(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{lkp}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \cdot \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden und einige Ideen für den Fall von beliebigem $M$ und $k_1 = k_2 = \dots = k_M$ entwickelt werden. Für letzteren Fall genügt es, den Fall $k_i = 1 \; (1 \le i \le M)$ zu betrachten. Denn wie bereits angemerkt wird für eine Maschine die durchschnittliche Rho-Länge durch Veränderung von $k$ um einen Faktor $1 / \sqrt {\gcd(p - 1, 2k) - 1}$ verringert, es gilt also $L_{k, k, \dots, k}(p) = L_{1, 1, \dots, 1}(p) / \sqrt{\gcd(p - 1, 2k)-1}$. Mit $k_i = 1 \; (1 \le i \le M)$ reduziert sich das Problem nach (A2) auf folgende Frage: \emph{Gegeben ein zufälliges Element $f$ aus $A(p)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/p\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
 
 \subsection{Theoretischer Hintergrund: Erzeugende Funktionen}
 
@@ -269,7 +270,7 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
 
 \section{Bestimmung optimaler Exponenten für die Rho-Methode}
 
-In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt wird. Mit Formel (1) und Satz 2 konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Es wird noch folgendes Lemma benöigt.
+In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt wird. Mit Formel (\ref{lkp}) und Satz 2 konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Es wird noch folgendes Lemma benöigt.
 
 \begin{lemma}
     Sei $1 \le n \in \N$ und $m$ eine zufällige natürliche Zahl, sodass $0 \le m \le n - 1$. Dann gilt für $d \in \N$
@@ -290,7 +291,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 \end{theorem}
 
 \begin{proof}
-    Durch Einsetzen von $M = 1$ in (1) erhalten wir
+    Durch Einsetzen von $M = 1$ in (\ref{lkp}) erhalten wir
     \begin{align*}
         L_k(p) = \sqrt {\pi p / 2} \lg^2 2k \cdot \frac {1} {\sqrt{\gcd(p - 1, 2k) - 1}}
     \end{align*}
@@ -307,14 +308,14 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
         Y = \prod_{i = 1}^r Y_i
     \end{align*}
     Da die $q_i^{e_i}$ teilerfremd sind, sind $Y_1, Y_2, \dots, Y_r$ stochastisch unabhängig und folglich gilt
-    \begin{align*}
+    \begin{align}
         \E(L_k)
-         & = \E \left ( \sqrt{\pi p / 2} \lg^2 2k \cdot \frac {1} {\sqrt{2Y - 1}} \right )                     \\
-         & = \sqrt{\pi p / 2} \lg^2 2k \cdot \E \left ( \frac 1 {\sqrt{2Y - 1}} \right )                       \\
-         & \ge \sqrt{\pi p / 4} \lg^2 2k \cdot \E \left ( \frac 1 {\sqrt{Y}} \right )                          \\
-         & = \sqrt{\pi p / 4} \lg^2 2k \cdot \prod_{i = 1}^r \E \left ( \frac 1 {\sqrt {Y_i}} \right ) \tag{2}
-    \end{align*}
-    Wir wollen nun $\prod_{i = 1}^r \E(1/\sqrt{Y_i})$ bestimmen. Es gilt $\mathbb{P}(Y_i = d) = 0$, wenn $d$ keine Potenz von $q_i$ ist. Andernfalls gilt nach Lemma 1
+         & = \E \left ( \sqrt{\pi p / 2} \lg^2 2k \cdot \frac {1} {\sqrt{2Y - 1}} \right ) \nonumber               \\
+         & = \sqrt{\pi p / 2} \lg^2 2k \cdot \E \left ( \frac 1 {\sqrt{2Y - 1}} \right ) \nonumber                 \\
+         & \ge \sqrt{\pi p / 4} \lg^2 2k \cdot \E \left ( \frac 1 {\sqrt{Y}} \right ) \nonumber                    \\
+         & = \sqrt{\pi p / 4} \lg^2 2k \cdot \prod_{i = 1}^r \E \left ( \frac 1 {\sqrt {Y_i}} \right ) \label{elk}
+    \end{align}
+    Es wird nun $\prod_{i = 1}^r \E(1/\sqrt{Y_i})$ bestimmt. Wenn $d$ keine Potenz von $q_i$ ist, gilt $\mathbb{P}(Y_i = d) = 0$. Andernfalls folt aus Lemma 1
     \begin{equation*}
         \mathbb{P}(Y_i = q_i^{h})
         = \frac {\varphi(q_i^{e_i} / q_i^h)}{q_i^{e_i}}
@@ -324,7 +325,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
             \frac {1} {q_i^{e_i}}         & \quad $h = e_i$              \\
         \end{dcases*}
     \end{equation*}
-    Daraus folgt
+    Daraus schließt man
     \begin{align*}
         \prod_{i = 1}^r \E \left ( \frac 1 {\sqrt {Y_i}} \right )
          & = \prod_{i = 1}^r \sum_{j = 0}^{e_i} \mathbb{P}(Y_i = q_i^j) \frac {1} {\sqrt{q_i^j}}                                                                                                                                                                                      \\
@@ -342,11 +343,11 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
     \begin{align*}
         \frac {\prod_{n = 2}^\infty \Big ( \frac {n - 1} {n} \Big ) \Big ( \frac {n + 1} n \Big )} {\prod_{i = 1}^r \left ( 1 + \frac 1 {q_i} \right )} \ge \frac {1}{2\lg 2k}
     \end{align*}
-    Durch Einsetzen in (2) ergibt sich insgesamt
+    Durch Einsetzen in (\ref{elk}) ergibt sich insgesamt
     \begin{align*}
-        \E(L_k) > \sqrt{\pi p / 4} \lg^2 2k \frac {1} {2 \lg 2k} = \sqrt {\pi p / 2} \cdot \frac {\lg 2k} {2 \sqrt 2}
+        \E(L_k) > \sqrt{\pi p / 4} \lg^2 2k \cdot \frac {1} {2 \lg 2k} = \sqrt {\pi p / 2} \cdot \frac {\lg 2k} {2 \sqrt 2}
     \end{align*}
-    was für $k \ge 4$ die gewünschte Ungleichung liefert.
+    was für $k \ge 4$ die gewünschte Ungleichung liefert. Durch Rechnung erhält man $\E(L_2(p)) \approx \sqrt{\pi p / 2} \cdot 3.1547$ und $\E(L_3(p)) \approx \sqrt{\pi p /2} \cdot 5.4508$, woraus die Optimaität von $k = 1$ folgt.
 \end{proof}
 
 \subsection{Der Fall zweier Maschinen}
