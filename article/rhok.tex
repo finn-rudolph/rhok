@@ -22,10 +22,11 @@
 
 \renewcommand{\thealgocf}{}
 
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\E}{\mathbb{E}}
 \newcommand{\C}{\mathbb{C}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
 
 \newtheorem{definition}{Definition}
 \newtheorem{theorem}{Satz}
@@ -71,7 +72,7 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
     \caption{Pollards Rho-Algorithmus}
 \end{algorithm*}
 
-\noindent Nun soll Pollards Rho-Algorithmus analysiert werden. Sei $\Z/p\Z^*$ die Gruppe der Einheiten in $\Z/p\Z$ und $g$ = $\gcd(p - 1, 2k)$. Man beobachte, dass $\psi : \Z/p\Z^\times \to \Z/p\Z^\times$ mit $\psi : x \mapsto x^{2k}$ ein Gruppenendomorphismus mit $[\Z/p\Z : \text{Im} f] = g$ ist. Daher haben genau $(p - 1) / g$ Knoten in $\gamma(f)$ Eingangsgrad $g$ und alle anderen Eingangsgrad 0. Knoten 1 als Einzelfall mit Eingangsgrad 1 ignorieren wir. Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$ und $A(n, g)$ die Teilmenge von $A(n)$, in der $(p - 1) / g$ Knoten Eingangsgrad $g$ und alle anderen Eingangsgrad 0 haben. Der Analyse der Rho-Methode liegen folgende Annhamen zugrunde:
+\noindent Nun soll Pollards Rho-Algorithmus analysiert werden. Sei $\Z/p\Z^*$ die Gruppe der Einheiten in $\Z/p\Z$ und $g$ = $\gcd(p - 1, 2k)$. Man beobachte, dass $\psi : \Z/p\Z^\times \to \Z/p\Z^\times$ mit $\psi : x \mapsto x^{2k}$ ein Gruppenenhomorphismus mit $[\Z/p\Z : \text{Im} f] = g$ ist. Daher haben genau $(p - 1) / g$ Knoten in $\gamma(f)$ Eingangsgrad $g$ und alle anderen Eingangsgrad 0. Knoten 1 als Einzelfall mit Eingangsgrad 1 ignorieren wir. Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$ und $A(n, g)$ die Teilmenge von $A(n)$, in der $(p - 1) / g$ Knoten Eingangsgrad $g$ und alle anderen Eingangsgrad 0 haben. Der Analyse der Rho-Methode liegen folgende Annhamen zugrunde:
 \begin{itemize}
     \item[(A1)] Die Abbildung $f : x \mapsto x^{2k} + 1$ verhält sich bezüglich der Verteilung der Rho-Längen wie eine zufällig gewählte Abbildung aus $A(p, g)$.
     \item[(A2)] Die Abbildung $f : x \mapsto x^{2} + 1$ verhält sich bezüglich der Verteilung der Rho-Längen wie eine zufällig gewählte Abbildung aus $A(p)$.
@@ -81,7 +82,19 @@ Diese Annahmen werden auch von \cite{pol75} und \cite{bp81} getroffen. Eine rigo
 
 \subsection{Parallelisierung der Rho-Methode}
 
-Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Vereinfachend wird nicht die Zeit betrachtet, die Floyds Algorithmus zum Finden eines Zyklus benötigt, sondern die Zeit, bis in der Folge $(x_n)_{n \in \N}$ eine Kollision auftritt, d.h. ein Wert erneut angenommen wird, der bereits angenommen wurde. Eine Zeiteinheit ist hier die Dauer einer Iteration im Fall $k = 1$, d.h. eine Maschine mit Paramter $k$ führt in $t$ Zeiteinheiten $\lfloor t / \lg 2k \rfloor$ Iterationen aus. Eine Zuordnung von $k$-Werten für $M$ Maschinen schreiben wir als Tupel $K = (k_1, k_2, \dots, k_M), 1 \le k_i \in \N$.  Wir bezeichnen mit $L_K(p)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten gegeben durch $K$. Mit (A1) und (A3) gilt also
+Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Eine Zeiteinheit ist hier die Dauer einer Iteration im Fall $k = 1$, d.h. eine Maschine mit Paramter $k$ führt in $t$ Zeiteinheiten $\lfloor t / \lg 2k \rfloor$ Iterationen aus. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich wird die Laufzeit nicht $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt.
+
+\begin{definition}[Asymptotische Näherung]
+    Eine Funktion $f : \R \to \R$ heißt genau dann asymptotische Näherung von einer Funktion $g : \R \to \R$, oder asymptotisch zu $g$, wenn
+    \begin{align*}
+        \lim_{x \to \infty} \frac {f(x)} {g(x)} = 1
+    \end{align*}
+    In diesem Fall schreiben wir $f \sim g$.
+\end{definition}
+
+\noindent Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
+
+Eine Zuordnung von $k$-Werten für $M$ Maschinen wird als Tupel $K = (k_1, k_2, \dots, k_M), 1 \le k_i \in \N$ geschrieben.  Wir bezeichnen mit $L_K(p)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten gegeben durch $K$. Mit (A1) und (A3) gilt also
 \begin{align*}
     L_K(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
 \end{align*}
@@ -127,17 +140,13 @@ wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehend
 
 Da funktionale Graphen beschriftet sind, werden stets erzeugende Funktionen von exponentiellem Typ (EF) verwendet. Folgende Komponenten eines funktionalen Graphen werden als Grundlage verwendet, um einen funktionalen Graphen zu konstruieren (\cite{fo90}, S. 333).
 \begin{align*}
-    T(x) = x \exp T(x) \quad (\text{Baum}) \qquad\qquad C(x) = \log \frac {1} {1 - x} \quad (\text{Zyklus})
+    T(x) = x \exp T(x) \quad (\text{Baum}) \qquad\qquad C(x) = \ln \frac {1} {1 - x} \quad (\text{Zyklus})
 \end{align*}
 Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF für funktionale Graphen
 \begin{align*}
-    F(x) = \exp C(T(x)) = \exp \log \frac 1 {1 - T(x)} = \frac 1 {1 - T(x)}
+    F(x) = \exp C(T(x)) = \exp \ln \frac 1 {1 - T(x)} = \frac 1 {1 - T(x)}
 \end{align*}
 
-Es wird noch der Begriff einer asymptotischen Näherung benötigt. Wir nennen $f(x)$ genau dann asymptotisch zu $g(x)$ und schreiben $f(x) \sim g(x)$, wenn
-\begin{align*}
-    \lim_{x \to \infty} \frac {f(x)} {g(x)} = 1
-\end{align*}
 Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird später eine asymptotische Näherung bestimmt. Dafür wird folgender Satz von \cite{fo90} verwendet, der hier der Vollständigkeit halber erneut formuliert wird.
 
 \begin{theorem}[\cite{fo90}]
@@ -149,7 +158,7 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
     \begin{align*}
         f(x) \sim \sigma \bigg ( \frac 1 {1 - x/s} \bigg )
     \end{align*}
-    wenn $x \to s$ in $D$, wobei $\sigma(x) = x^\alpha \log^\beta x$ und $\alpha \notin \{0, -1, -2, \dots\}$. Dann gilt für die Koeffizienten der Taylorreihe von $f$
+    wenn $x \to s$ in $D$, wobei $\sigma(x) = x^\alpha \ln^\beta x$ und $\alpha \notin \{0, -1, -2, \dots\}$. Dann gilt für die Koeffizienten der Taylorreihe von $f$
     \begin{align*}
         [x^n]f(x) \sim s^{-n} \frac {\sigma(n)}{n\Gamma(\alpha)}
     \end{align*}
@@ -260,7 +269,7 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
 
 \section{Bestimmung optimaler Exponenten für die Rho-Methode}
 
-In diesem Abschnitt wird die Frage nach den optimalen Werten für den Parameter $k$ behandelt.
+In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt wird.
 
 \subsection{Der Fall einer Maschine}
 
