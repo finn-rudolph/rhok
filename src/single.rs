@@ -1,5 +1,5 @@
 use core::cmp;
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use rand::{seq::SliceRandom, thread_rng, Rng};
 use rand_xoshiro::{
@@ -40,7 +40,7 @@ pub fn gcd(mut a: u64, mut b: u64) -> u64 {
 // Pollard's Rho algorithm with Brent's optimization, taken from Sergey Slotin's
 // book "Algorithms for Modern Hardware". (the gcd above is also from there)
 pub fn pollard_rho(n: u64, k: u64, rng: &mut Xoshiro256PlusPlus) -> u64 {
-    const BATCH_SIZE: u64 = 1 << 8;
+    const BATCH_SIZE: u64 = 1 << 6;
     const LENGTH_LIMIT: u64 = 1 << 17;
 
     let mtg = Montgomery::new(n);
@@ -186,8 +186,10 @@ pub fn pollard_slow_iteration_count(
 
     loop {
         iterations += 1;
-        x = mtg.add(mtg.pow(x, _k), mtg.one());
-        y = mtg.add(mtg.pow(mtg.add(mtg.pow(y, _k), mtg.one()), _k), mtg.one());
+        x = mtg.strict(mtg.add(mtg.pow(x, _k), mtg.one()));
+        y = mtg.strict(
+            mtg.add(mtg.pow(mtg.add(mtg.pow(y, _k), mtg.one()), _k), mtg.one()),
+        );
         if x == y {
             return iterations;
         }
@@ -208,20 +210,18 @@ fn _random_prime(bits: u32, rng: &mut Xoshiro256PlusPlus) -> u64 {
 // seems that when one prime factor is rather small, adding 2s and 3s helps
 // something but WHY?
 
-const K: [u64; 2] = [1, 1];
+const K: u64 = 3;
 
 pub fn bench_single_rho() {
-    const A: usize = 1 << 16;
-    const B: usize = 1 << 17;
+    const A: usize = 1 << 42;
+    const B: usize = (1 << 42) + (1 << 14);
     const ITER: usize = 100;
-    const MAX_K: usize = 2;
 
-    let samples: Vec<[f64; MAX_K]> = (A..=B)
-        .into_iter()
-        .map(|p| {
-            let mut avg = [0f64; MAX_K];
-            if !miller_rabin(p as u64) || gcd((p as u64 - 1) >> 1, 2) != 1 {
-                return avg;
+    let samples: Vec<f64> = (A..=B)
+        .into_par_iter()
+        .map(|n| {
+            if miller_rabin(n as u64) {
+                return 0.0;
             }
 
             let mut rng = Xoshiro256PlusPlus::seed_from_u64(
@@ -231,33 +231,20 @@ pub fn bench_single_rho() {
                     .as_nanos() as u64,
             );
 
-            // let function: Vec<usize> =
-            //     (0..p).map(|_| rng.next_u64() as usize % p).collect();
-
-            // for l in 0..MAX_K {
+            let start = Instant::now();
             for _ in 0..ITER {
-                let mut min_time = f64::MAX;
-                for k in K {
-                    min_time = min_time.min(pollard_slow_iteration_count(
-                        p as u64, k, &mut rng,
-                    ) as f64);
-                }
-                avg[0] += min_time;
+                pollard_rho(n as u64, K, &mut rng);
             }
-            // }
 
-            for x in avg.iter_mut() {
-                *x /= ITER as f64 * (p as f64).sqrt();
-            }
-            avg
+            start.elapsed().as_nanos() as f64
+                / (ITER as f64 * (n as f64).sqrt())
         })
+        .filter(|x| *x != 0.0)
         .collect();
 
-    for k in 0..MAX_K {
-        println!(
-            "{}",
-            samples.iter().fold(0.0, |acc, elem| acc + elem[k])
-                / samples.len() as f64
-        );
-    }
+    println!(
+        "{:?}",
+        (samples.iter().fold(0.0, |acc, elem| acc + elem)
+            / samples.len() as f64)
+    );
 }
