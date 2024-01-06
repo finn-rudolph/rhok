@@ -8,6 +8,7 @@
 \usepackage[backend=biber, style=apa]{biblatex}
 \usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.cm]{geometry}
 \usepackage[hidelinks]{hyperref}
+\usepackage{mathtools}
 \usepackage[onehalfspacing]{setspace}
 \usepackage{sectsty}
 \usepackage[inkscapeformat=pdf]{svg}
@@ -273,11 +274,11 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
 In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt wird. Mit Formel (1) und Satz 2 konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Es wird noch folgendes Lemma benöigt.
 
 \begin{lemma}
-    Sei $1 \le n \in \N$ und $m$ eine zufällige natürliche Zahl, sodass $0 \le m \le n - 1$. Dann gilt
+    Sei $1 \le n \in \N$ und $m$ eine zufällige natürliche Zahl, sodass $0 \le m \le n - 1$. Dann gilt für $d \in \N$
     \begin{align*}
         \mathbb{P}(\gcd(n, m) = d) = \frac {\varphi(n / d)} n
     \end{align*}
-    wobei $\varphi$ die eulersche Phifunktion ist.
+    wobei $\varphi$ die eulersche Phifunktion ist. Für $n/d \notin \N$ wird $\varphi(n/d) = 0$ definiert.
 \end{lemma}
 
 \begin{proof}
@@ -291,9 +292,37 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 \end{theorem}
 
 \begin{proof}
-    Durch Einsetzen von $M = 1$ mit $k = k_1$ in (1) gilt
+    Durch Einsetzen von $M = 1$ in (1) erhalten wir
     \begin{align*}
         L_k(p) = \sqrt {\pi p / 2} \lg^2 2k \cdot \frac {1} {\sqrt{\gcd(p - 1, 2k) - 1}}
+    \end{align*}
+    Der Einfachheit halber wird hier $k$ für $k_1$ geschrieben. Der Erwartungswert von $L_k(p)$ wird über jede Möglichkeit von $\gcd(p - 1, 2k)$ gebildet. Da $p - 1$ gerade ist, gilt $\gcd(p - 1, 2k) = 2 \gcd((p - 1)/2, k)$. Sei $Y$ die Zufallsvariable von $\gcd((p - 1)/2, k)$, also $\mathbb{P}(Y = d) = \mathbb{P}(\gcd((p - 1)/2, k) = d)$. Unter der Annahme, dass jeder Rest von $(p - 1)/2 \bmod k$ gleich wahrscheinlich ist, was für eine Abschätzung der durchschnittlichen Laufzeit sinnvoll ist, ist die Verteilung von $Y$ durch Lemma 1 mit $n = k$ gegeben, d.h. $\mathbb{P}(Y = d) = \varphi(k/d)/k$. Nach dem Fundamentalsatz der Arithmetik ist es möglich
+    \begin{align*}
+        k = q_1^{e_1} \cdot q_2^{e_2} \cdots q_r^{e_r}
+    \end{align*}
+    für Primzahlen $q_1, q_2, \dots, q_r$ zu schreiben. Man definiere Zufallsvariablen $Y_1, Y_2, \dots, Y_r$ mit
+    \begin{align*}
+        \mathbb{P}(Y_i = d) = \mathbb{P}(\gcd(q_i^{e_i}, m) = d) \qquad 1 \le i \le r
+    \end{align*}
+    für eine zufällige natürliche Zahl $0 \le m \le q_i^{e_i} - 1$. Aus dem chinesischen Restsatz folgt
+    \begin{align*}
+        Y = \prod_{i = 1}^r Y_i
+    \end{align*}
+    Es gilt $\mathbb{P}(Y_i = d) = 0$, wenn $d$ keine Potenz von $q_i$ ist. Andernfalls gilt nach Lemma 1
+    \begin{equation*}
+        \mathbb{P}(Y_i = q_i^{h})
+        = \frac {\varphi(q_i^{e_i} / q_i^h)}{q_i^{e_i}}
+        = \frac{\varphi(q_i^{e_i - h})}{q_i^{e_i}}
+        = \begin{dcases*}
+            \frac {q_i - 1} {q_i^{h + 1}} & \quad $h < e_i$ \\
+            \frac {1} {q_i^{e_i}}         & \quad $h = e_i$ \\
+        \end{dcases*}
+    \end{equation*}
+    Da die $q_i^{e_i}$ teilerfremd sind, sind $Y_1, Y_2, \dots, Y_r$ stochastisch unabhängig und folglich gilt
+    \begin{align*}
+        \E(Y)
+         & = \E \left ( \prod_{i = 1}^r Y_i \right ) = \prod_{i = 1}^r \E(Y_i) \\
+         & = \prod_{i = 1}^r \sum_{j = 0}^{e_i} \mathbb{P}(\gcd(p - 1)/2, k)
     \end{align*}
 \end{proof}
 
