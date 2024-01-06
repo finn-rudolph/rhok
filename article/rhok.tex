@@ -30,6 +30,7 @@
 
 \newtheorem{definition}{Definition}
 \newtheorem{theorem}{Satz}
+\newtheorem{lemma}{Lemma}
 
 \begin{document}
 
@@ -269,9 +270,32 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
 
 \section{Bestimmung optimaler Exponenten für die Rho-Methode}
 
-In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt wird.
+In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt wird. Mit Formel (1) und Satz 2 konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Es wird noch folgendes Lemma benöigt.
+
+\begin{lemma}
+    Sei $1 \le n \in \N$ und $m$ eine zufällige natürliche Zahl, sodass $0 \le m \le n - 1$. Dann gilt
+    \begin{align*}
+        \mathbb{P}(\gcd(n, m) = d) = \frac {\varphi(n / d)} n
+    \end{align*}
+    wobei $\varphi$ die eulersche Phifunktion ist.
+\end{lemma}
+
+\begin{proof}
+    Jede natürliche Zahl $m$ mit $\gcd(n, m) = d$ lässt sich als $m = da$ schreiben. Dabei muss $\gcd(a, n / d) = 1$ gelten, sonst wäre $\gcd(n, m) > d$. Auch gilt $0 \le a \le n/d - 1$. Umgekehrt gilt $\gcd(n, da) = d$ für jedes $0 \le a \le n/d - 1$ mit $\gcd(n/d, a) = 1$. Die Anzahl an $m \in \N$ mit $0 \le m \le n - 1$ mit $\gcd(n, m) = d$ ist also genau die Anzahl an $a \in \N$ mit $0 \le a \le  n / d - 1$ und $\gcd(n / d, a) = 1$. Diese Zahl ist aber genau $\varphi(n/d)$.
+\end{proof}
 
 \subsection{Der Fall einer Maschine}
+
+\begin{theorem}
+    Für Pollards Rho-Algorithmus auf einer Maschine ist $k = 1$ optimal.
+\end{theorem}
+
+\begin{proof}
+    Durch Einsetzen von $M = 1$ mit $k = k_1$ in (1) gilt
+    \begin{align*}
+        L_k(p) = \sqrt {\pi p / 2} \lg^2 2k \cdot \frac {1} {\sqrt{\gcd(p - 1, 2k) - 1}}
+    \end{align*}
+\end{proof}
 
 \subsection{Der Fall zweier Maschinen}
 
