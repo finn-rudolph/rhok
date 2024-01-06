@@ -166,8 +166,6 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
     \end{align*}
 \end{theorem}
 
-// Erklären warum eine asymptotische Abschätzung sinnvoll ist und wir nicht O-Notation verwenden
-
 \subsection{Der Fall zweier Anfangswerte}
 
 \begin{theorem}
@@ -178,7 +176,7 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
 \end{theorem}
 
 \begin{proof}
-    Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie bereits definiert. Zur Bestimmung von $\Psi(x, w)$ unterscheiden wir drei disjunkte Fälle, die in Abbildung 1 dargestellt werden. Die Graphen werden grundsätzlich so konstruiert, dass $\nu(f, a) \le \nu(f, b)$, und wenn $\nu(f, a) < \nu(f, b)$, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert.
+    Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie bereits definiert. Zur Bestimmung von $\Psi(x, w)$ unterscheiden wir drei disjunkte Fälle, die in Abbildung 1 dargestellt sind. Die Graphen werden grundsätzlich so konstruiert, dass $\nu(f, a) \le \nu(f, b)$, und wenn $\nu(f, a) < \nu(f, b)$, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert.
 
     \begin{figure}
         \begin{tabular}{ccc}
@@ -296,7 +294,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
     \begin{align*}
         L_k(p) = \sqrt {\pi p / 2} \lg^2 2k \cdot \frac {1} {\sqrt{\gcd(p - 1, 2k) - 1}}
     \end{align*}
-    Der Einfachheit halber wird hier $k$ für $k_1$ geschrieben. Der Erwartungswert von $L_k(p)$ wird über jede Möglichkeit von $\gcd(p - 1, 2k)$ gebildet. Da $p - 1$ gerade ist, gilt $\gcd(p - 1, 2k) = 2 \gcd((p - 1)/2, k)$. Sei $Y$ die Zufallsvariable von $\gcd((p - 1)/2, k)$, also $\mathbb{P}(Y = d) = \mathbb{P}(\gcd((p - 1)/2, k) = d)$. Unter der Annahme, dass jeder Rest von $(p - 1)/2 \bmod k$ gleich wahrscheinlich ist, was für eine Abschätzung der durchschnittlichen Laufzeit sinnvoll ist, ist die Verteilung von $Y$ durch Lemma 1 mit $n = k$ gegeben, d.h. $\mathbb{P}(Y = d) = \varphi(k/d)/k$. Nach dem Fundamentalsatz der Arithmetik ist es möglich
+    Der Einfachheit halber wird hier $k$ für $k_1$ geschrieben. Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Der Erwartungswert von $L_k(p)$ wird über jede Möglichkeit von $\gcd(p - 1, 2k)$ gebildet. Da $p - 1$ gerade ist, gilt $\gcd(p - 1, 2k) = 2 \gcd((p - 1)/2, k)$. Sei $Y$ die Zufallsvariable von $\gcd((p - 1)/2, k)$, also $\mathbb{P}(Y = d) = \mathbb{P}(\gcd((p - 1)/2, k) = d)$. Unter der Annahme, dass jeder Rest von $(p - 1)/2 \bmod k$ gleich wahrscheinlich ist, was für eine Abschätzung der durchschnittlichen Laufzeit sinnvoll ist, ist die Verteilung von $Y$ durch Lemma 1 mit $n = k$ gegeben, d.h. $\mathbb{P}(Y = d) = \varphi(k/d)/k$. Nach dem Fundamentalsatz der Arithmetik ist es möglich
     \begin{align*}
         k = q_1^{e_1} \cdot q_2^{e_2} \cdots q_r^{e_r}
     \end{align*}
@@ -308,25 +306,52 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
     \begin{align*}
         Y = \prod_{i = 1}^r Y_i
     \end{align*}
-    Es gilt $\mathbb{P}(Y_i = d) = 0$, wenn $d$ keine Potenz von $q_i$ ist. Andernfalls gilt nach Lemma 1
+    Da die $q_i^{e_i}$ teilerfremd sind, sind $Y_1, Y_2, \dots, Y_r$ stochastisch unabhängig und folglich gilt
+    \begin{align*}
+        \E(L_k)
+         & = \E \left ( \sqrt{\pi p / 2} \lg^2 2k \cdot \frac {1} {\sqrt{2Y - 1}} \right )                     \\
+         & = \sqrt{\pi p / 2} \lg^2 2k \cdot \E \left ( \frac 1 {\sqrt{2Y - 1}} \right )                       \\
+         & \ge \sqrt{\pi p / 4} \lg^2 2k \cdot \E \left ( \frac 1 {\sqrt{Y}} \right )                          \\
+         & = \sqrt{\pi p / 4} \lg^2 2k \cdot \prod_{i = 1}^r \E \left ( \frac 1 {\sqrt {Y_i}} \right ) \tag{2}
+    \end{align*}
+    Wir wollen nun $\prod_{i = 1}^r \E(1/\sqrt{Y_i})$ bestimmen. Es gilt $\mathbb{P}(Y_i = d) = 0$, wenn $d$ keine Potenz von $q_i$ ist. Andernfalls gilt nach Lemma 1
     \begin{equation*}
         \mathbb{P}(Y_i = q_i^{h})
         = \frac {\varphi(q_i^{e_i} / q_i^h)}{q_i^{e_i}}
         = \frac{\varphi(q_i^{e_i - h})}{q_i^{e_i}}
         = \begin{dcases*}
-            \frac {q_i - 1} {q_i^{h + 1}} & \quad $h < e_i$ \\
-            \frac {1} {q_i^{e_i}}         & \quad $h = e_i$ \\
+            \frac {q_i - 1} {q_i^{h + 1}} & \quad $h < e_i$ \vspace{2mm} \\
+            \frac {1} {q_i^{e_i}}         & \quad $h = e_i$              \\
         \end{dcases*}
     \end{equation*}
-    Da die $q_i^{e_i}$ teilerfremd sind, sind $Y_1, Y_2, \dots, Y_r$ stochastisch unabhängig und folglich gilt
+    Daraus folgt
     \begin{align*}
-        \E(Y)
-         & = \E \left ( \prod_{i = 1}^r Y_i \right ) = \prod_{i = 1}^r \E(Y_i) \\
-         & = \prod_{i = 1}^r \sum_{j = 0}^{e_i} \mathbb{P}(\gcd(p - 1)/2, k)
+        \prod_{i = 1}^r \E \left ( \frac 1 {\sqrt {Y_i}} \right )
+         & = \prod_{i = 1}^r \sum_{j = 0}^{e_i} \mathbb{P}(Y_i = q_i^j) \frac {1} {\sqrt{q_i^j}}                                                                                                                                                                                      \\
+         & = \prod_{i = 1}^r \left ( \frac {q_i - 1} {q_i} \cdot \frac {1} {\sqrt{1}} + \frac{q_i - 1} {q_i^2} \cdot \frac 1 {\sqrt{q_i}} + \dots + \frac {q_i - 1} {q_i^{e_i}} \cdot \frac 1 {\sqrt{q_i^{e_i- 1}}} + \frac {1} {q_i^{e_i}} \cdot \frac 1 {\sqrt{q_i^{e_i}}} \right ) \\
+         & \ge \prod_{i = 1}^r \left ( \frac {q_i - 1} {q_i} \right )
     \end{align*}
+    Folgende Methode, um das Produkt auszuwerten, stammt von \cite{phi}.
+    \begin{align*}
+        \prod_{i = 1}^r \left ( \frac {q_i - 1} {q_i} \right )
+        = \frac{\prod_{i = 1}^r \left ( 1 - \frac 1 {q_i^2} \right )}{\prod_{i = 1}^r \left ( 1 + \frac 1 {q_i} \right )}
+        > \frac {\prod_{n = 2}^\infty \Big ( 1 - \frac 1 {n^2} \Big )} {\prod_{i = 1}^r \left ( 1 + \frac 1 {q_i} \right )}
+        = \frac {\prod_{n = 2}^\infty \Big ( \frac {n - 1} {n} \Big ) \Big ( \frac {n + 1} n \Big )} {\prod_{i = 1}^r \left ( 1 + \frac 1 {q_i} \right )}
+    \end{align*}
+    Der Zähler ist ein Teleskopprodukt und folglich gleich dem ersten Faktor $1/2$. Sei $k' = \prod_{i = 1}^r q_i$. Der Nenner ist kleiner gleich $\sum_{n = 1}^{k'} 1/n$ und kann folglich mit $1 + \ln k' \le 1 + \ln k \le 1 + \lg k = \lg 2k$ nach oben begrenzt werden. Es gilt also
+    \begin{align*}
+        \frac {\prod_{n = 2}^\infty \Big ( \frac {n - 1} {n} \Big ) \Big ( \frac {n + 1} n \Big )} {\prod_{i = 1}^r \left ( 1 + \frac 1 {q_i} \right )} \ge \frac {1}{2\lg 2k}
+    \end{align*}
+    Durch Einsetzen in (2) ergibt sich insgesamt
+    \begin{align*}
+        \E(L_k) > \sqrt{\pi p / 4} \lg^2 2k \frac {1} {2 \lg 2k} = \sqrt {\pi p / 2} \cdot \frac {\lg 2k} {2 \sqrt 2}
+    \end{align*}
+    was für $k \ge 4$ die gewünschte Ungleichung liefert.
 \end{proof}
 
 \subsection{Der Fall zweier Maschinen}
+
+// + unter der Wurzel rauswerfen (den Summanden von kleinerem $k$ droppen)
 
 \section{Experimentelle Ergebnisse}\label{sec:ex}
 
@@ -335,6 +360,8 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 \subsection{Vergleich verschiedener Werte für den Parameter K}
 
 \section{Fazit}
+
+// TODO: Gleichungsnummer rausnehmen, wenn keine weiteren
 
 \printbibliography
 
