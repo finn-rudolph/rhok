@@ -81,15 +81,15 @@ Diese Annahmen werden auch von \cite{pol75} und \cite{bp81} getroffen. Eine rigo
 
 \subsection{Parallelisierung der Rho-Methode}
 
-Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Vereinfachend wird nicht die Zeit betrachtet, die Floyds Algorithmus zum Finden eines Zyklus benötigt, sondern die Zeit, bis in der Folge $(x_n)_{n \in \N}$ eine Kollision auftritt, d.h. ein Wert erneut angenommen wird, der bereits angenommen wurde. Eine Zeiteinheit ist hier die Dauer einer Iteration im Fall $k = 1$, d.h. eine Maschine mit Paramter $k$ führt in $t$ Zeiteinheiten $\lfloor t / \lg 2k \rfloor$ Iterationen aus. Eine Zuordnung von $k$-Werten für $M$ Maschinen schreiben wir als Tupel $K = (k_1, k_2, \dots, k_M), 1 \le k_i \in \N$.  Wir bezeichnen mit $L(K)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten gegeben durch $K$. Mit (A1) und (A3) gilt also
+Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Vereinfachend wird nicht die Zeit betrachtet, die Floyds Algorithmus zum Finden eines Zyklus benötigt, sondern die Zeit, bis in der Folge $(x_n)_{n \in \N}$ eine Kollision auftritt, d.h. ein Wert erneut angenommen wird, der bereits angenommen wurde. Eine Zeiteinheit ist hier die Dauer einer Iteration im Fall $k = 1$, d.h. eine Maschine mit Paramter $k$ führt in $t$ Zeiteinheiten $\lfloor t / \lg 2k \rfloor$ Iterationen aus. Eine Zuordnung von $k$-Werten für $M$ Maschinen schreiben wir als Tupel $K = (k_1, k_2, \dots, k_M), 1 \le k_i \in \N$.  Wir bezeichnen mit $L_K(p)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten gegeben durch $K$. Mit (A1) und (A3) gilt also
 \begin{align*}
-    L(K) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
+    L_K(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
 \end{align*}
-wobei $X_i$ die gleichverteilte Zufallsvariable über $A(p, \gcd(p - 1, 2k_i)) \times \Z/p\Z$ mit $X_i(f, x_0) = \nu(f, x_0)$ ist. Eine Schwierigkeit in der Herleitung einer Formel für $L(K)$ ist, dass die Rho-Längen der $i$-ten und $j$-ten Maschine nicht unabhängig sind, wenn $k_i = k_j$, da sich die $i$-te und $j$-te Maschine in diesem Fall im gleichen funktionalen Graphen bewegen. Wenn beispielsweise der Startwert der $i$-ten Maschine fixiert wird, ist bereits klar, dass die Rho-Länge der $j$-ten Maschine größer gleich der Rho-Länge der $i$-ten Maschine sein wird, wenn der Startwert ein Vorfahre des Startwerts der $i$-ten Maschine in einem Baum von $\gamma(f)$ ist. Daher werden im Folgenden die zwei Fälle abhängiger und unabhängiger Maschinen unterschieden.
+wobei $X_i$ die gleichverteilte Zufallsvariable über $A(p, \gcd(p - 1, 2k_i)) \times \Z/p\Z$ mit $X_i(f, x_0) = \nu(f, x_0)$ ist. Eine Schwierigkeit in der Herleitung einer Formel für $L_K(p)$ ist, dass die Rho-Längen der $i$-ten und $j$-ten Maschine nicht unabhängig sind, wenn $k_i = k_j$, da sich die $i$-te und $j$-te Maschine in diesem Fall im gleichen funktionalen Graphen bewegen. Wenn beispielsweise der Startwert der $i$-ten Maschine fixiert wird, ist bereits klar, dass die Rho-Länge der $j$-ten Maschine größer gleich der Rho-Länge der $i$-ten Maschine sein wird, wenn der Startwert ein Vorfahre des Startwerts der $i$-ten Maschine in einem Baum von $\gamma(f)$ ist. Daher werden im Folgenden die zwei Fälle abhängiger und unabhängiger Maschinen unterschieden.
 
 \section{Eine Formel für den Fall unabhängiger Maschinen}
 
-In diesem Abschnitt wird eine Formel für $L(K)$ hergleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Für den Fall mehrerer Maschinen wird die Annahme getroffen, dass die Rho-Längen der $i$-ten und $j$-ten Maschine als Zufallsvariablen betrachtet stochastisch unabhängig sind, wenn $k_i \ne k_j$. Denn wenn $k_i \ne k_j$ und sich $x \mapsto x^{2k_i} + 1$ und $x \mapsto x^{2k_j} + 1$ bezüglich der Rho-Länge wie zufällig gewählte Abbildung verhalten, ist es vertretbar, die Unabhängigkeit der Rho-Längen anzunehmen.
+In diesem Abschnitt wird eine Formel für $L_K(p)$ hergleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Für den Fall mehrerer Maschinen wird die Annahme getroffen, dass die Rho-Längen der $i$-ten und $j$-ten Maschine als Zufallsvariablen betrachtet stochastisch unabhängig sind, wenn $k_i \ne k_j$. Denn wenn $k_i \ne k_j$ und sich $x \mapsto x^{2k_i} + 1$ und $x \mapsto x^{2k_j} + 1$ bezüglich der Rho-Länge wie zufällig gewählte Abbildung verhalten, ist es vertretbar, die Unabhängigkeit der Rho-Längen anzunehmen.
 
 Folgendes Argument basiert auf dem von \cite{bp81}, S. 627 -- 628, angepasst für mehrere Maschinen. Es wird die die Wahrscheinlichkeit betracht, dass nach genau $t$ Zeiteinheiten erstmalig eine Kollision bei einer Maschine auftritt. Die Wahrscheinlichkeit, dass im $i$-ten Schritt zu einem Vorgänger eines bereits besuchten Knotens gegangen wird (sodass im nächsten Schritt eine Kollision stattfände), ist $i \cdot (\gcd(p - 1, 2k) - 1)/(p - 1)$. Folglich ist die Wahrscheinlichkeit, dass bei einer Maschine mit Paramter $k$ nach $t$ Zeiteinheiten noch keine Kollision aufgetreten ist
 \begin{align*}
@@ -107,21 +107,21 @@ Wir lassen im Folgenden die Gaußklammern weg, da sie asymptotisch nichts verän
 \end{align*}
 Um nun eine Formel für den Erwartungswert zu erhalten, wird $\sum_{a = 1}^p t \mathbb{P}_t$ durch $\int_{0}^\infty t \mathbb{P}_t \; dt$ angenähert, was wegen der schnellen Konvergenz von $e^{-t^2} \to 0$ wenn $t \to \infty$ vertetbar ist.
 \begin{align}
-    L(K)
+    L_K(p)
      & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \int_{0}^{\infty} t^2 \exp \Bigg (- \frac {t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \nonumber \\
      & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \sqrt {\pi/2} \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2}
 \end{align}
 Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Auch wenn die Herleitung aufgrund der vielen Näherungen krude scheint, erklärt sie gut das Laufzeitverhalten im Fall unabhängiger Maschinen. Setzt man beispielsweise $M = 1$ und $k_1 = 1$, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}. Für $M = 1$ und beliebiges $k_1$ erhält man $\sqrt{\pi p / 2} \cdot \lg^2 2k_1 / \sqrt{\gcd(p-1, 2k_1) - 1}$. Daraus folgt, dass die Anzahl an Iterationen im Fall einer Maschine um einen Faktor $1/\sqrt{\gcd(p - 1, 2k) - 1}$ im Vergleich zu $k = 1$ reduziert wird. Dieses Ergebnis erhielten auch \cite{bp81}.
 
-\section{Die erwartete Rho-Länge in zufälligen Funktionen}
+\section{Die erwartete minimale Rho-Länge bei mehreren Anfangswerten}
 
-Um $L(K)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (1) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \cdot \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden und einige Ideen für den Fall von beliebigem $M$ und $k_1 = k_2 = \dots = k_M$ entwickelt werden. Für letzteren Fall genügt es, den Fall $k_i = 1 \; (1 \le i \le M)$ zu betrachten. Denn wie bereits angemerkt wird für eine Maschine die durchschnittliche Rho-Länge durch Veränderung von $k$ um einen Faktor $1 / \sqrt {\gcd(p - 1, 2k) - 1}$ verringert, es gilt also $L(k_1, k_2, \dots, k_M) = L(1, 1, \dots, 1) / \sqrt{\gcd(p - 1, 2k)-1}$. Mit $k_i = 1 \; (1 \le i \le M)$ reduziert sich das Problem nach (A2) auf folgende Frage: \emph{Gegeben ein zufälliges Element $f$ aus $A(p)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/p\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
+Um $L_K(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (1) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \cdot \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden und einige Ideen für den Fall von beliebigem $M$ und $k_1 = k_2 = \dots = k_M$ entwickelt werden. Für letzteren Fall genügt es, den Fall $k_i = 1 \; (1 \le i \le M)$ zu betrachten. Denn wie bereits angemerkt wird für eine Maschine die durchschnittliche Rho-Länge durch Veränderung von $k$ um einen Faktor $1 / \sqrt {\gcd(p - 1, 2k) - 1}$ verringert, es gilt also $L_{k, k, \dots, k}(p) = L_{1, 1, \dots, 1}(p) / \sqrt{\gcd(p - 1, 2k)-1}$. Mit $k_i = 1 \; (1 \le i \le M)$ reduziert sich das Problem nach (A2) auf folgende Frage: \emph{Gegeben ein zufälliges Element $f$ aus $A(p)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/p\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
 
 \subsection{Theoretischer Hintergrund: Erzeugende Funktionen}
 
 Der grundlegende Ansatz zur Beantwortung obiger Frage für $M = 2$ ist, die Summe der minimalen Rho-Längen über alle Elemente von $A(p)$ und Paare an Anfangswerten zu bestimmen. Dafür soll eine erzeugende Funktion $\Psi(x, w)$ hergeleitet werden, in der die Variable $x$ die Größe des Graphen und die Variable $w$ die minimale Rho-Länge markiert. Dann gilt nämlich
 \begin{align*}
-    L(1, 1) = \frac {n!}{n^{n + 2}} [x^n] \Bigg (\frac {\partial} {\partial w} \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
+    L_{1, 1}(n) = \frac {n!}{n^{n + 2}} [x^n] \Bigg (\frac {\partial} {\partial w} \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
 \end{align*}
 wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet.
 
@@ -129,7 +129,7 @@ Da funktionale Graphen beschriftet sind, werden stets erzeugende Funktionen von 
 \begin{align*}
     T(x) = x \exp T(x) \quad (\text{Baum}) \qquad\qquad C(x) = \log \frac {1} {1 - x} \quad (\text{Zyklus})
 \end{align*}
-Ein funktionaler Graph ist nun eine Menge an Zyklen von Bäumen, also ist die EF für funktionale Graphen
+Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF für funktionale Graphen
 \begin{align*}
     F(x) = \exp C(T(x)) = \exp \log \frac 1 {1 - T(x)} = \frac 1 {1 - T(x)}
 \end{align*}
@@ -162,12 +162,12 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
 \begin{theorem}
     Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$. Dann gilt
     \begin{align*}
-        \tau(n) = \frac 1 {n^{n + 2}} \sum_{f \in A(n)} \; \sum_{a \in \Z/n\Z} \; \sum_{b \in \Z/n\Z} \min(\nu(f, a), \nu(f, b)) \sim \frac {25} {32} \sqrt{\pi n / 2}
+        \frac 1 {n^{n + 2}} \sum_{f \in A(n)} \; \sum_{a \in \Z/n\Z} \; \sum_{b \in \Z/n\Z} \min(\nu(f, a), \nu(f, b)) \sim \frac {25} {32} \sqrt{\pi n / 2}
     \end{align*}
 \end{theorem}
 
 \begin{proof}
-    Seien $a$ und $b$ die zwei Startknoten. Zur Bestimmung von $\Psi(x, w)$ unterscheiden wir drei disjunkte Fälle, die in Abbildung 1 dargestellt werden. Die Graphen werden grundsätzlich so konstruiert, dass $\nu(f, a) \le \nu(f, b)$, und wenn $\nu(f, a) < \nu(f, b)$, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert.
+    Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie bereits definiert. Zur Bestimmung von $\Psi(x, w)$ unterscheiden wir drei disjunkte Fälle, die in Abbildung 1 dargestellt werden. Die Graphen werden grundsätzlich so konstruiert, dass $\nu(f, a) \le \nu(f, b)$, und wenn $\nu(f, a) < \nu(f, b)$, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert.
 
     \begin{figure}
         \begin{tabular}{ccc}
@@ -234,7 +234,7 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
     \begin{align*}
         \psi(x)
          & \sim \frac {T(e^{-1})(1 + 2T(e^{-1}) + 2(T(e^{-1}))^2)(1 + 5T(e^{-1}) + 3(T(e^{-1}))^2 + (T(e^{-1}))^3)} {(1 - (1 - \sqrt 2 \cdot \sqrt {1 - ez}))^6(1 + T(e^{-1}))^3} \\
-         & = \frac {(1 + 2 + 2)(1 + 5 + 3 + 1)} {2^3} \cdot \frac 1 {(\sqrt 2)^6 (\sqrt{1 - ez})^6}                                                                               \\
+         & = \frac {(1 + 2 + 2)(1 + 5 + 3 + 1)} {2^3} \cdot \frac 1 {(\sqrt 2 )^6 (\sqrt{1 - ez})^6}                                                                              \\
          & = \frac {50} {64} \cdot \frac 1 {(1 - ez)^3}
     \end{align*}
     Folglich gilt mit der Notation von Satz 1 $\sigma(x) = x^3$ und $\alpha = 3$. Aus Satz 1 folgt
@@ -245,7 +245,8 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
     \end{align*}
     und mit Stirlings Näherung $n! \sim \sqrt{2\pi n} (n/e)^n$
     \begin{align*}
-        \tau(n) =
+        \frac 1 {n^{n + 2}} \sum_{f \in A(n)} \;
+         & \sum_{a \in \Z/n\Z} \; \sum_{b \in \Z/n\Z} \min(\nu(f, a), \nu(f, b))    \\
          & \sim \frac {n!}{n^{n + 2}} \cdot \frac {25} {32} \cdot \frac {e^n n^2} 2 \\
          & = n! \bigg (\frac {e} {n} \bigg )^n \cdot \frac {25} {64}                \\
          & \sim \sqrt {2 \pi n} \cdot \frac {25}{64}                                \\
@@ -253,15 +254,23 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
     \end{align*}
 \end{proof}
 
+\noindent Mit obigen Annahmen über $L_K(p)$ folgt aus Satz 2 sofort $L_{1, 1}(p) \sim 25/32 \sqrt{2 \pi / 2}$. Man bemerke außerdem, dass Satz 2 unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf heuristischen Annahmen basiert.
+
 \subsection{Mögliche Methoden für den allgemeinen Fall}
 
 \section{Bestimmung optimaler Exponenten für die Rho-Methode}
+
+In diesem Abschnitt wird die Frage nach den optimalen Werten für den Parameter $k$ behandelt.
 
 \subsection{Der Fall einer Maschine}
 
 \subsection{Der Fall zweier Maschinen}
 
 \section{Experimentelle Ergebnisse}\label{sec:ex}
+
+\subsection{Die minimale Rho-Länge bei mehreren Anfangswerten}
+
+\subsection{Vergleich verschiedener Werte für den Parameter K}
 
 \section{Fazit}
 
