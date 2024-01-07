@@ -28,6 +28,7 @@
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
+\renewcommand{\P}{\mathbb{P}}
 
 \newtheorem{definition}{Definition}
 \newtheorem{theorem}{Satz}
@@ -74,13 +75,12 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
     \caption{Pollards Rho-Algorithmus}
 \end{algorithm*}
 
-\noindent Nun soll Pollards Rho-Algorithmus analysiert werden. Sei $\Z/p\Z^*$ die Gruppe der Einheiten in $\Z/p\Z$ und $g$ = $\gcd(p - 1, 2k)$. Man beobachte, dass $\psi : \Z/p\Z^\times \to \Z/p\Z^\times$ mit $\psi : x \mapsto x^{2k}$ ein Gruppenenhomorphismus mit $[\Z/p\Z : \text{Im} f] = g$ ist. Daher haben genau $(p - 1) / g$ Knoten in $\gamma(f)$ Eingangsgrad $g$ und alle anderen Eingangsgrad 0. Knoten 1 als Einzelfall mit Eingangsgrad 1 ignorieren wir. Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$ und $A(n, g)$ die Teilmenge von $A(n)$, in der $(p - 1) / g$ Knoten Eingangsgrad $g$ und alle anderen Eingangsgrad 0 haben. Der Analyse der Rho-Methode liegen folgende Annhamen zugrunde:
+\noindent Die Analyse von Pollards Rho-Algorithmus erweist sich als schwierig, es ist bis dato keine rigorose Laufzeitanalyse bekannt. Stattdessen werden heuristische Annahmen getroffen, die sich experimentell bestätigen lassen (siehe \cite{pol75}; \cite{bp81}). Zunächst wird anstatt der mittleren Anzahl an Iterationen von Floyds Algorithmus die mittlere Rho-Länge analysiert, mit der Annahme, dass sich diese zwei Werte für große $p$ nur um eine feste Konstante unterscheiden. Über die Verteilung der Rho-Längen wird Folgendes angenommen.
 \begin{itemize}
-    \item[(A1)] Die Abbildung $f : x \mapsto x^{2k} + 1$ verhält sich bezüglich der Verteilung der Rho-Längen wie eine zufällig gewählte Abbildung aus $A(p, g)$.
-    \item[(A2)] Die Abbildung $f : x \mapsto x^{2} + 1$ verhält sich bezüglich der Verteilung der Rho-Längen wie eine zufällig gewählte Abbildung aus $A(p)$.
-    \item[(A3)] Die durchschnittliche Anzahl an Iterationen der while-Schleife ist $\overline \nu$, bis auf eine feste Konstante, wobei $\overline \nu$ der Mittelwert von $\nu(f, x_0)$ über alle Elemente von $A(p)$ und Startwerte $x_0 \in \Z/p\Z$ ist.
+    \item[(A1)] \emph{Sei $p$ eine Primzahl und $f : \Z/p\Z \to \Z/p\Z$ mit $f : x \mapsto x^2 + 1$. Seien $x_0, y_0 \in\Z/p\Z$ zufällig und $g : \Z/p\Z \to \Z/p\Z$ eine zufällige Abbildung. Dann gilt $\P(\nu(f, x_0) = m) \sim \P(\nu(g, y_0) = m)$ für $p \to \infty$. }
+    \item[(A2)] \emph{Sei $f : x \mapsto x^{2k} + 1$ und $d = \gcd(p - 1, 2k)$. Seien $x_0 \in \Z/p\Z$ und $y_0 \in \Z/(p/(d - 1))\Z$ zufällig und $g : \Z/(p/(d - 1))\Z \to \Z/(p/(d - 1))\Z$ eine zufällige Abbildung. Dann gilt $\P(\nu(f, x_0) = m) \sim \P(\nu(g, y_0) = m)$ für $p \to \infty$.}
 \end{itemize}
-Diese Annahmen werden auch von \cite{pol75} und \cite{bp81} getroffen. Eine rigorose Analyse von Pollards Rho-Algorithmus ist nicht bekannt, die Annahmen lassen sich allerdings experimentell bestätigen. Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation können die Kosten des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $3/2 \lg 2k$ Schritten möglich ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet. Der Faktor $3/2$ wird im Folgenden ignoriert, da er für den Vergleich verschiedener Werte für $k$ irrelevant ist.
+In anderen Worten sagt (A1), dass sich die Verteilung der Rho-Längen von $f : x \mapsto x^2 + 1$ wie bei einer zufälligen Funktion verhält. Die Aussage von (A2) ist, dass die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ gleich der Verteilung der Rho-Längen einer zufälligen Funktion $\Z/(p/(d - 1))\Z \to \Z/(p/(d - 1))\Z$ ist. Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation können die Kosten des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $3/2 \lg 2k$ Schritten möglich ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet. Der Faktor $3/2$ wird im Folgenden ignoriert, da er für den Vergleich verschiedener Werte für $k$ irrelevant ist.
 
 \subsection{Parallelisierung der Rho-Methode}
 
@@ -101,6 +101,7 @@ Eine Zuordnung von $k$-Werten für $M$ Maschinen wird als Tupel $K = (k_1, k_2, 
     L_K(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
 \end{align*}
 wobei $X_i$ die gleichverteilte Zufallsvariable über $A(p, \gcd(p - 1, 2k_i)) \times \Z/p\Z$ mit $X_i(f, x_0) = \nu(f, x_0)$ ist. Eine Schwierigkeit in der Herleitung einer Formel für $L_K(p)$ ist, dass die Rho-Längen der $i$-ten und $j$-ten Maschine nicht unabhängig sind, wenn $k_i = k_j$, da sich die $i$-te und $j$-te Maschine in diesem Fall im gleichen funktionalen Graphen bewegen. Wenn beispielsweise der Startwert der $i$-ten Maschine fixiert wird, ist bereits klar, dass die Rho-Länge der $j$-ten Maschine größer gleich der Rho-Länge der $i$-ten Maschine sein wird, wenn der Startwert ein Vorfahre des Startwerts der $i$-ten Maschine in einem Baum von $\gamma(f)$ ist. Daher werden im Folgenden die zwei Fälle abhängiger und unabhängiger Maschinen unterschieden.
+
 
 \section{Eine Formel für den Fall unabhängiger Maschinen}
 
