@@ -33,6 +33,7 @@
 \newtheorem{definition}{Definition}
 \newtheorem{theorem}{Satz}
 \newtheorem{lemma}{Lemma}
+\newtheorem{assumption}{Annahme}
 
 \begin{document}
 
@@ -76,11 +77,12 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
 \end{algorithm*}
 
 \noindent Die Analyse von Pollards Rho-Algorithmus erweist sich als schwierig, es ist bis dato keine rigorose Laufzeitanalyse bekannt. Stattdessen werden heuristische Annahmen getroffen. Zunächst wird anstatt der mittleren Anzahl an Iterationen von Floyds Algorithmus die mittlere Rho-Länge analysiert, mit der Annahme, dass sich diese zwei Werte für große $p$ nur um eine feste Konstante unterscheiden. Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$ für $n \in \N$. Über die Verteilung der Rho-Längen wird Folgendes angenommen.
-\begin{itemize}
-    \item[(A1)] \emph{Sei $p$ eine Primzahl und $f : \Z/p\Z \to \Z/p\Z$ mit $f : x \mapsto x^2 + 1$. Seien $x_0, y_0 \in\Z/p\Z$ zufällig und $g \in A(p)$ zufällig. Dann gilt $\P(\nu(f, x_0) = m) \sim \P(\nu(g, y_0) = m)$ für $p \to \infty$. }
-    \item[(A2)] \emph{Sei $f : x \mapsto x^{2k} + 1$ und $d = \gcd(p - 1, 2k)$. Seien $x_0 \in \Z/p\Z$ und $y_0 \in \Z/(p/(d - 1))\Z$ zufällig und $g \in A(p/(d - 1))$ zufällig. Dann gilt $\P(\nu(f, x_0) = m) \sim \P(\nu(g, y_0) = m)$ für $p \to \infty$.}
-\end{itemize}
-In anderen Worten sagt (A1), dass sich die Verteilung der Rho-Längen von $f : x \mapsto x^2 + 1$ wie bei einer zufälligen Funktion verhält. Die Aussage von (A2) ist, dass die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ gleich der Verteilung der Rho-Längen einer zufälligen Funktion $\Z/(p/(d - 1))\Z \to \Z/(p/(d - 1))\Z$ ist. Annahmen (A1) und (A2) finden sich auch in \cite{pol75}, und \cite{bp81} geben eine Begründung für (A2).
+
+\begin{assumption}
+    Sei $f : x \mapsto x^{2k} + 1$ und $d = \gcd(p - 1, 2k)$. Seien $x_0 \in \Z/p\Z$ und $y_0 \in \Z/(p/(d - 1))\Z$ zufällig und $g \in A(p/(d - 1))$ zufällig. Dann gilt $\P(\nu(f, x_0) = m) \sim \P(\nu(g, y_0) = m)$ für $p \to \infty$.
+\end{assumption}
+
+\noindent In anderen Worten sagt Annahme 1, dass sich die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ wie bei einer zufälligen Funktion aus $A(p/(d - 1))$ verhält. Insbesondere verhält sich $x \mapsto x^2 + 1$ bezüglich der Rho-Längen wie ein zufällige Funktion $\Z/p\Z \to \Z/p\Z$. \cite{bp81} geben eine Begründung für Annahme 1.
 
 Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation können die Kosten des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $3/2 \lg 2k$ Schritten möglich ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet. Der Faktor $3/2$ wird im Folgenden ignoriert, da er für den Vergleich verschiedener Werte für $k$ irrelevant ist.
 
@@ -125,7 +127,7 @@ Im Folgenden werden die Gaußklammern weggelassen, da sie asymptotisch nichts ä
     \approx \exp \Bigg (- \frac {\lceil t / \lg 2k_i \rceil (\lceil t / \lg 2k_i \rceil - 1)} {2h_i} \Bigg )
     \approx \exp \Bigg ( - \frac {t^2} 2 \cdot \frac 1{h_i \lg^2 2k_i} \Bigg ) \label{ptiget}
 \end{align}
-Sei $t_{\min} = \min_{i = 1}^M t_i$. Die Wahrscheinlichkeit, dass bei mindestens einer Maschine bei Zeitpunkt $t$ eine Kollision auftritt, kann wegen $t / \lg 2k_i$ deutlich kleiner als $h_i$ durch $\sum_{i = 1}^M t/h_i\lg2k_i$ angenähert werden. Mit (\ref{ptiget}) schließt man
+Sei $t_{\min} = \min_{i = 1}^M t_i$. Die Wahrscheinlichkeit, dass bei mindestens einer Maschine bei Zeitpunkt $t$ eine Kollision auftritt, kann wegen $t / \lg 2k_i$ deutlich kleiner als $h_i$ und der Unabhängigkeit der Maschinen durch $\sum_{i = 1}^M t/h_i\lg2k_i$ angenähert werden. Mit (\ref{ptiget}) schließt man
 \begin{align*}
     \P(t_{\min} = t)
      & = \prod_{i = 1}^M \P(t_i \ge t) \cdot \sum_{i = 1}^M \frac {t} {h_i\lg2k_i}                                                            \\
@@ -143,7 +145,7 @@ Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwend
 
 \section{Die erwartete minimale Rho-Länge bei mehreren Anfangswerten}
 
-Um $L_K(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{lkp}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \cdot \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden und einige Ideen für den Fall von beliebigem $M$ und $k_1 = k_2 = \dots = k_M$ entwickelt werden. Für letzteren Fall genügt es, den Fall $k_i = 1 \; (1 \le i \le M)$ zu betrachten. Denn wie bereits angemerkt wird für eine Maschine die durchschnittliche Rho-Länge durch Veränderung von $k$ um einen Faktor $1 / \sqrt {\gcd(p - 1, 2k) - 1}$ verringert, es gilt also $L_{k, k, \dots, k}(p) = L_{1, 1, \dots, 1}(p) / \sqrt{\gcd(p - 1, 2k)-1}$. Mit $k_i = 1 \; (1 \le i \le M)$ reduziert sich das Problem nach (A2) auf folgende Frage: \emph{Gegeben ein zufälliges Element $f$ aus $A(p)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/p\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
+Um $L_K(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{lkp}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \cdot \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden. Im Fall $k_1 = k_2 = \dots = k_M$ genügt es, den Fall $k_i = 1 \; \forall(1 \le i \le M)$ zu betrachten. Denn nach (A1) ist die Verteilung angemerkt wird für eine Maschine die durchschnittliche Rho-Länge durch Veränderung von $k$ um einen Faktor $1 / \sqrt {\gcd(p - 1, 2k) - 1}$ verringert, es gilt also $L_{k, k, \dots, k}(p) = L_{1, 1, \dots, 1}(p) / \sqrt{\gcd(p - 1, 2k)-1}$. Mit $k_i = 1 \; (1 \le i \le M)$ reduziert sich das Problem nach (A2) auf folgende Frage: \emph{Gegeben ein zufälliges Element $f$ aus $A(p)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/p\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
 
 \subsection{Theoretischer Hintergrund: Erzeugende Funktionen}
 
