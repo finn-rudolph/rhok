@@ -96,7 +96,7 @@ Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht z
 
 \noindent Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
 
-Eine Zuordnung von $k$-Werten für $M$ Maschinen wird als Tupel $K = (k_1, k_2, \dots, k_M), 1 \le k_i \in \N$ geschrieben.  Wir bezeichnen mit $L_K(p)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten gegeben durch $K$. Mit (A1) und (A3) gilt also
+Eine Zuordnung von $k$-Werten für $M$ Maschinen wird als Tupel $K = (k_1, k_2, \dots, k_M), 1 \le k_i \in \N$ geschrieben.  Wir bezeichnen mit $L_K(p)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten gegeben durch $K$ und fixiertem $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$. Der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optk} behandelt. Mit (A1) und (A3) gilt also
 \begin{align*}
     L_K(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
 \end{align*}
@@ -177,6 +177,9 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
 \end{theorem}
 
 \begin{proof}
+    // Maybe bezug von $\Psi$ zu obiger Summe noch einmal klar machen
+
+
     Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie bereits definiert. Zur Bestimmung von $\Psi(x, w)$ unterscheiden wir drei disjunkte Fälle, die in Abbildung 1 dargestellt sind. Die Graphen werden grundsätzlich so konstruiert, dass $\nu(f, a) \le \nu(f, b)$, und wenn $\nu(f, a) < \nu(f, b)$, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert.
 
     \begin{figure}
@@ -266,11 +269,9 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
 
 \noindent Mit obigen Annahmen über $L_K(p)$ folgt aus Satz 2 sofort $L_{1, 1}(p) \sim 25/32 \sqrt{2 \pi / 2}$. Man bemerke außerdem, dass Satz 2 unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf heuristischen Annahmen basiert.
 
-\subsection{Mögliche Methoden für den allgemeinen Fall}
+\section{Bestimmung optimaler Exponenten für die Rho-Methode}\label{sec:optk}
 
-\section{Bestimmung optimaler Exponenten für die Rho-Methode}
-
-In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt wird. Mit Formel (\ref{lkp}) und Satz 2 konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Es wird noch folgendes Lemma benöigt.
+In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{lkp}) und Satz 2 konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_K(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Zur Berechnung der Wahrscheinlichkeit, dass $\gcd(p - 1, 2k_i)$ einen bestimmten Wert annimmt, wird folgendes Lemma benötigt.
 
 \begin{lemma}
     Sei $1 \le n \in \N$ und $m$ eine zufällige natürliche Zahl, sodass $0 \le m \le n - 1$. Dann gilt für $d \in \N$
@@ -347,7 +348,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
     \begin{align*}
         \E(L_k) > \sqrt{\pi p / 4} \lg^2 2k \cdot \frac {1} {2 \lg 2k} = \sqrt {\pi p / 2} \cdot \frac {\lg 2k} {2 \sqrt 2}
     \end{align*}
-    was für $k \ge 4$ die gewünschte Ungleichung liefert. Durch Rechnung erhält man $\E(L_2(p)) \approx \sqrt{\pi p / 2} \cdot 3.1547$ und $\E(L_3(p)) \approx \sqrt{\pi p /2} \cdot 5.4508$, woraus die Optimaität von $k = 1$ folgt.
+    was für $k \ge 4$ die gewünschte Ungleichung liefert. Durch Rechnung erhält man $\E(L_2(p)) \approx \sqrt{\pi p / 2} \cdot 3.1547$ und $\E(L_3(p)) \approx \sqrt{\pi p /2} \cdot 5.4508$, woraus die Optimalität von $k = 1$ folgt.
 \end{proof}
 
 \subsection{Der Fall zweier Maschinen}
@@ -358,11 +359,9 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 
 \subsection{Die minimale Rho-Länge bei mehreren Anfangswerten}
 
-\subsection{Vergleich verschiedener Werte für den Parameter K}
+\subsection{Experimentelle Bestimmung optimaler Parameter}
 
 \section{Fazit}
-
-// TODO: Gleichungsnummer rausnehmen, wenn keine weiteren
 
 \printbibliography
 
