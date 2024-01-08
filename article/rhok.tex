@@ -137,7 +137,7 @@ Sei $t_{\min} = \min_{i = 1}^M t_i$. Die Wahrscheinlichkeit, dass bei mindestens
 Um nun eine Formel für den Erwartungswert von $t_{\min}$ zu erhalten, wird $\sum_{a = 1}^p t \cdot \P(t_{\min} = t)$ durch $\int_{0}^\infty t \cdot \P(t_{\min} = t) \; dt$ angenähert, was wegen der schnellen Konvergenz von $e^{-t^2} \to 0$ wenn $t \to \infty$ vertetbar ist.
 \begin{align}
     L_K(p)
-     & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \int_{0}^{\infty} t^2 \exp \Bigg (- \frac {t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \nonumber \\
+     & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \int_{0}^{\infty} t^2 \exp \Bigg (- \frac {t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \ dt \nonumber \\
      & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \sqrt {\pi/2} \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2}
     \label{lkp}
 \end{align}
@@ -310,64 +310,36 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
     \begin{align*}
         L_k(p) = \sqrt {\pi p / 2} \lg^2 2k \cdot \frac {1} {\sqrt{\gcd(p - 1, 2k) - 1}}
     \end{align*}
-    Der Einfachheit halber wird hier $k$ für $k_1$ geschrieben. Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Der Erwartungswert von $L_k(p)$ wird über jede Möglichkeit von $\gcd(p - 1, 2k)$ gebildet. Da $p - 1$ gerade ist, gilt $\gcd(p - 1, 2k) = 2 \gcd((p - 1)/2, k)$. Sei $Y$ die Zufallsvariable von $\gcd((p - 1)/2, k)$, also $\mathbb{P}(Y = d) = \mathbb{P}(\gcd((p - 1)/2, k) = d)$. Unter der Annahme, dass jeder Rest von $(p - 1)/2 \bmod k$ gleich wahrscheinlich ist, was für eine Abschätzung der durchschnittlichen Laufzeit sinnvoll ist, ist die Verteilung von $Y$ durch Lemma 1 mit $n = k$ gegeben, d.h. $\mathbb{P}(Y = d) = \varphi(k/d)/k$. Nach dem Fundamentalsatz der Arithmetik ist es möglich
-    \begin{align*}
-        k = q_1^{e_1} \cdot q_2^{e_2} \cdots q_r^{e_r}
-    \end{align*}
-    für Primzahlen $q_1, q_2, \dots, q_r$ zu schreiben. Man definiere Zufallsvariablen $Y_1, Y_2, \dots, Y_r$ mit
-    \begin{align*}
-        \mathbb{P}(Y_i = d) = \mathbb{P}(\gcd(q_i^{e_i}, m) = d) \qquad 1 \le i \le r
-    \end{align*}
-    für eine zufällige natürliche Zahl $0 \le m \le q_i^{e_i} - 1$. Aus dem chinesischen Restsatz folgt
-    \begin{align*}
-        Y = \prod_{i = 1}^r Y_i
-    \end{align*}
-    Da die $q_i^{e_i}$ teilerfremd sind, sind $Y_1, Y_2, \dots, Y_r$ stochastisch unabhängig und folglich gilt
+    Der Einfachheit halber wird hier $k$ für $k_1$ geschrieben. Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Der Erwartungswert von $L_k(p)$ wird über jede Möglichkeit von $\gcd(p - 1, 2k)$ gebildet. Da $p - 1$ gerade ist, gilt $\gcd(p - 1, 2k) = 2 \gcd((p - 1)/2, k)$. Sei $Y$ die Zufallsvariable von $\gcd((p - 1)/2, k)$, also $\mathbb{P}(Y = d) = \mathbb{P}(\gcd((p - 1)/2, k) = d)$. Unter der Annahme, dass jeder Rest von $(p - 1)/2 \bmod k$ gleich wahrscheinlich ist, was für eine Abschätzung der durchschnittlichen Laufzeit sinnvoll ist, ist die Verteilung von $Y$ durch Lemma 1 mit $n = k$ gegeben, d.h. $\mathbb{P}(Y = d) = \varphi(k/d)/k$. Es gilt also
     \begin{align}
-        \E(L_k)
-         & = \E \left ( \sqrt{\pi p / 2} \lg^2 2k \cdot \frac {1} {\sqrt{2Y - 1}} \right ) \nonumber               \\
-         & = \sqrt{\pi p / 2} \lg^2 2k \cdot \E \left ( \frac 1 {\sqrt{2Y - 1}} \right ) \nonumber                 \\
-         & \ge \sqrt{\pi p / 4} \lg^2 2k \cdot \E \left ( \frac 1 {\sqrt{Y}} \right ) \nonumber                    \\
-         & = \sqrt{\pi p / 4} \lg^2 2k \cdot \prod_{i = 1}^r \E \left ( \frac 1 {\sqrt {Y_i}} \right ) \label{elk}
+        \E(L_k(p))
+         & = \sqrt{\pi p / 2} \lg^2 2k \cdot \sum_{d | k} \P(Y = d) \frac 1 { \sqrt {2d - 1}} \nonumber \\
+         & \ge \sqrt{\pi p / 2} \lg^2 2k \cdot \frac {\varphi(k)} k \label{elk}
     \end{align}
-    Es wird nun $\prod_{i = 1}^r \E(1/\sqrt{Y_i})$ bestimmt. Wenn $d$ keine Potenz von $q_i$ ist, gilt $\mathbb{P}(Y_i = d) = 0$. Andernfalls folt aus Lemma 1
-    \begin{equation*}
-        \mathbb{P}(Y_i = q_i^{h})
-        = \frac {\varphi(q_i^{e_i} / q_i^h)}{q_i^{e_i}}
-        = \frac{\varphi(q_i^{e_i - h})}{q_i^{e_i}}
-        = \begin{dcases*}
-            \frac {q_i - 1} {q_i^{h + 1}} & \quad $h < e_i$ \vspace{2mm} \\
-            \frac {1} {q_i^{e_i}}         & \quad $h = e_i$              \\
-        \end{dcases*}
-    \end{equation*}
-    Daraus schließt man
+    Sei $k = q_1^{e_1} q_2^{e_2} \cdots q_r^{e_r}$ für Primzahlen $q_i$. Folgende Methode, um $\varphi(k)/k$ nach unten zu beschränken, stammt von \cite{phi}.
     \begin{align*}
-        \prod_{i = 1}^r \E \left ( \frac 1 {\sqrt {Y_i}} \right )
-         & = \prod_{i = 1}^r \sum_{j = 0}^{e_i} \mathbb{P}(Y_i = q_i^j) \frac {1} {\sqrt{q_i^j}}                                                                                                                                                                                      \\
-         & = \prod_{i = 1}^r \left ( \frac {q_i - 1} {q_i} \cdot \frac {1} {\sqrt{1}} + \frac{q_i - 1} {q_i^2} \cdot \frac 1 {\sqrt{q_i}} + \dots + \frac {q_i - 1} {q_i^{e_i}} \cdot \frac 1 {\sqrt{q_i^{e_i- 1}}} + \frac {1} {q_i^{e_i}} \cdot \frac 1 {\sqrt{q_i^{e_i}}} \right ) \\
-         & \ge \prod_{i = 1}^r \left ( \frac {q_i - 1} {q_i} \right )
-    \end{align*}
-    Folgende Methode, um das Produkt auszuwerten, stammt von \cite{phi}.
-    \begin{align*}
-        \prod_{i = 1}^r \left ( \frac {q_i - 1} {q_i} \right )
+        \frac {\varphi(k)} k = \prod_{i = 1}^r \left ( \frac {q_i - 1} {q_i} \right )
         = \frac{\prod_{i = 1}^r \left ( 1 - \frac 1 {q_i^2} \right )}{\prod_{i = 1}^r \left ( 1 + \frac 1 {q_i} \right )}
         > \frac {\prod_{n = 2}^\infty \Big ( 1 - \frac 1 {n^2} \Big )} {\prod_{i = 1}^r \left ( 1 + \frac 1 {q_i} \right )}
         = \frac {\prod_{n = 2}^\infty \Big ( \frac {n - 1} {n} \Big ) \Big ( \frac {n + 1} n \Big )} {\prod_{i = 1}^r \left ( 1 + \frac 1 {q_i} \right )}
     \end{align*}
-    Der Zähler ist ein Teleskopprodukt und folglich gleich dem ersten Faktor $1/2$. Sei $k' = \prod_{i = 1}^r q_i$. Der Nenner ist kleiner gleich $\sum_{n = 1}^{k'} 1/n$ und kann folglich mit $1 + \ln k' \le 1 + \ln k \le 1 + \lg k = \lg 2k$ nach oben begrenzt werden. Es gilt also
+    Der Zähler ist ein Teleskopprodukt und folglich gleich dem ersten Faktor $1/2$. Der Nenner ist kleiner gleich $\sum_{n = 1}^{k} 1/n$ und kann folglich mit $1 + \ln k \le 1 + \lg k = \lg 2k$ nach oben begrenzt werden. Es gilt also
     \begin{align*}
-        \frac {\prod_{n = 2}^\infty \Big ( \frac {n - 1} {n} \Big ) \Big ( \frac {n + 1} n \Big )} {\prod_{i = 1}^r \left ( 1 + \frac 1 {q_i} \right )} \ge \frac {1}{2\lg 2k}
+        \frac {\varphi(k)} k
+        > \frac {\prod_{n = 2}^\infty \Big ( \frac {n - 1} {n} \Big ) \Big ( \frac {n + 1} n \Big )} {\prod_{i = 1}^r \left ( 1 + \frac 1 {q_i} \right )}
+        \ge \frac {1}{2\lg 2k}
     \end{align*}
     Durch Einsetzen in (\ref{elk}) ergibt sich insgesamt
     \begin{align*}
-        \E(L_k) > \sqrt{\pi p / 4} \lg^2 2k \cdot \frac {1} {2 \lg 2k} = \sqrt {\pi p / 2} \cdot \frac {\lg 2k} {2 \sqrt 2}
+        \E(L_k) > \sqrt{\pi p / 2} \lg^2 2k \cdot \frac {1} {2 \lg 2k} = \sqrt {\pi p / 2} \cdot \frac {\lg 2k} {2}
     \end{align*}
-    was für $k \ge 4$ die gewünschte Ungleichung liefert. Durch Rechnung erhält man $\E(L_2(p)) \approx \sqrt{\pi p / 2} \cdot 3.1547$ und $\E(L_3(p)) \approx \sqrt{\pi p /2} \cdot 5.4508$, woraus die Optimalität von $k = 1$ folgt.
+    was für $k \ge 2$ die gewünschte Ungleichung liefert.
 \end{proof}
 
 \subsection{Der Fall zweier Maschinen}
 
 // + unter der Wurzel rauswerfen (den Summanden von kleinerem $k$ droppen)
+// Simplify proof for M = 1, immediately to phi(n) / n
 
 \section{Experimentelle Ergebnisse}\label{sec:ex}
 
