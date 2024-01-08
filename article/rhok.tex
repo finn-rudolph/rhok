@@ -181,7 +181,7 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
     \end{align*}
 \end{theorem}
 
-\subsection{Der Fall zweier Anfangswerte}
+\subsection{Der Fall zweier Anfangswerte}\label{sec:start2}
 
 \begin{theorem}
     Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$. Dann gilt
@@ -310,10 +310,10 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
     \begin{align*}
         L_k(p) \sim \sqrt {\pi p / 2} \lg^2 2k \cdot \frac {1} {\sqrt{\gcd(p - 1, 2k) - 1}}
     \end{align*}
-    Der Einfachheit halber wird hier $k$ für $k_1$ geschrieben. Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Der Erwartungswert von $L_k(p)$ wird über jede Möglichkeit von $\gcd(p - 1, 2k)$ gebildet. Da $p - 1$ gerade ist, gilt $\gcd(p - 1, 2k) = 2 \gcd((p - 1)/2, k)$. Sei $Y$ die Zufallsvariable von $\gcd((p - 1)/2, k)$, also $\mathbb{P}(Y = d) = \mathbb{P}(\gcd((p - 1)/2, k) = d)$. Unter der Annahme, dass jeder Rest von $(p - 1)/2 \bmod k$ gleich wahrscheinlich ist, was für eine Abschätzung der durchschnittlichen Laufzeit sinnvoll ist, ist die Verteilung von $Y$ durch Lemma 1 mit $n = k$ gegeben, d.h. $\mathbb{P}(Y = d) = \varphi(k/d)/k$. Es gilt also
+    Der Einfachheit halber wird hier $k$ für $k_1$ geschrieben. Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Der Erwartungswert von $L_k(p)$ wird über jede Möglichkeit von $\gcd(p - 1, 2k)$ gebildet. Da $p - 1$ gerade ist, gilt $\gcd(p - 1, 2k) = 2 \gcd((p - 1)/2, k)$. Unter der Annahme, dass jeder Rest von $(p - 1)/2 \bmod k$ gleich wahrscheinlich ist, was für eine Abschätzung der durchschnittlichen Laufzeit sinnvoll ist, gilt $\mathbb{P}(\gcd((p - 1)/2, k) = d) = \varphi(k/d)/k$. Daraus folgt
     \begin{align}
         \E(L_k(p))
-         & = \sqrt{\pi p / 2} \lg^2 2k \cdot \sum_{d | k} \P(Y = d) \frac 1 { \sqrt {2d - 1}} \nonumber \\
+         & = \sqrt{\pi p / 2} \lg^2 2k \cdot \sum_{d | k} \P(\gcd((p - 1)/2, k) = d) \frac 1 { \sqrt {2d - 1}} \nonumber \\
          & \ge \sqrt{\pi p / 2} \lg^2 2k \cdot \frac {\varphi(k)} k \label{elk}
     \end{align}
     Sei $k = q_1^{e_1} q_2^{e_2} \cdots q_r^{e_r}$ für Primzahlen $q_i$. Folgende Methode, um $\varphi(k)/k$ nach unten zu beschränken, stammt von \cite{phi}.
@@ -345,7 +345,11 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 \begin{proof}
     Gleichung (\ref{lkp}) mit $M = 2$ liefert
     \begin{align*}
-        L_{k_1, k_2} =
+        L_{k_1, k_2}(p) \sim \sqrt{\pi / 2} \ \Bigg (\frac 1 {h_1 \lg 2k_1} + \frac 1 {h_2 \lg 2k_2} \Bigg ) \Bigg ( \frac 1 {h_1 \lg^2 2k_1} + \frac 1 {h_2 \lg^2 2k_2} \Bigg )^{-3/2}
+    \end{align*}
+    Nach Abschnitt \ref{sec:start2} gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also $\E(L_{k_1, k_2}) > 25/32 \sqrt{\pi p /2}$ für $k_1 \ne 1$ oder $k_2 \ne 1$ zu zeigen. Es gilt
+    \begin{align*}
+        \E(L_{k_1, k_2}) \sim \sqrt{\pi / 2} \sum_{d_1 | k_1} \P(\gcd(p - 1))
     \end{align*}
 \end{proof}
 
