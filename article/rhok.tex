@@ -96,7 +96,7 @@ Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$ für $n \in \N$. Über 
 
 Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife asymptotisch zu $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation können die Kosten des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $3/2 \lg 2k$ Schritten möglich ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet. Der Faktor $3/2$ in dieser Arbeit unwichtig und wird daher ignoriert.
 
-\subsection{Parallelisierung der Rho-Methode}
+\subsection{Parallelisierung der Rho-Methode}\label{sec:par}
 
 Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Eine Zeiteinheit ist hier die Dauer einer Iteration im Fall $k = 1$, d.h. eine Maschine mit Paramter $k$ führt in $t$ Zeiteinheiten $\lfloor t / \lg 2k \rfloor$ Iterationen aus. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich wird die Laufzeit nicht $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt. Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
 
@@ -184,6 +184,8 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
 \end{theorem}
 
 \subsection{Der Fall zweier Anfangswerte}\label{sec:start2}
+
+// Sagen dass wir erst nur den für a und b relevanten Teil des Graphen konstruieren.
 
 \begin{theorem}
     Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$. Dann gilt
@@ -304,7 +306,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 \subsection{Der Fall einer Maschine}
 
 \begin{theorem}
-    Für Pollards Rho-Algorithmus auf einer Maschine ist $k = 1$ optimal.
+    Sei $L_k(p)$ wie in Abschnitt \ref{sec:par} definiert. Es gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd((p - 1)/2, k)$ genommen wird.
 \end{theorem}
 
 \begin{proof}
@@ -340,24 +342,27 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 
 \subsection{Der Fall zweier Maschinen}
 
-// TODO: use more parentheses and less cdots
-// TODO: dont drop P(gcd) in M = 2
+Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1, k_2$ prim und $k_1 = k_2 > 1$. Es wird vermutet, dass $k_1 = k_2 = 1$ optimal ist, der Beweis scheint aber deutlich schwieriger als für $M = 1$. Während es im Fall $M = 1$ möglich war, nur mit dem Fall $\gcd((p - 1)/2, k) = 1$ eine ausreichend große untere Schranke zu erhalten, funktioniert das im Fall $M = 2$ nicht mehr.
 
 \begin{theorem}
-    Für Pollards Rho-Algorithmus mit zwei Maschinen sind die Parameter $k_1 = k_2 = 1$ optimal.
+    Sei $L_{k_1, k_2}(p)$ wie in Abschnitt \ref{sec:par} definiert. Im Folgenden wird der Erwartungswert von $L_{k_1, k_2}$ über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ genommen.
+    \begin{enumerate}
+        \item Wenn $q_1, q_2$ Primzahlen sind, gilt $\E(L_{1, 1}(p)) < \E(L_{q_1, q_2}(p))$.
+        \item Wenn $1 < k \in \N$, gilt $\E(L_{1, 1}(p)) < \E(L_{k, k}(p))$.
+    \end{enumerate}
 \end{theorem}
 
 \begin{proof}
-    Gleichung (\ref{lkp}) mit $M = 2$ liefert
+    Es wird zunächst Teil 1 gezeigt. Gleichung (\ref{lkp}) mit $M = 2$ liefert
     \begin{align*}
         L_{k_1, k_2}(p) \sim \sqrt{\pi / 2} \ \Bigg (\frac 1 {h_1 \lg 2k_1} + \frac 1 {h_2 \lg 2k_2} \Bigg ) \Bigg ( \frac 1 {h_1 \lg^2 2k_1} + \frac 1 {h_2 \lg^2 2k_2} \Bigg )^{-3/2}
     \end{align*}
     Nach Abschnitt \ref{sec:start2} gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also $\E(L_{k_1, k_2}) > 25/32 \sqrt{\pi p /2}$ für $k_1 \ne 1$ oder $k_2 \ne 1$ zu zeigen. Wie im Fall $M = 1$ bilden wir den Erwartungswert über alle möglichen $\gcd((p - 1)/2, k_i)$.
     \begin{align*}
         \E(L_{k_1, k_2})
-         & \sim \sqrt{\pi / 2} \sum_{d_1 | k_1} \P(\gcd((p - 1)/2, k_2) = d_1) \sum_{d_2 | k_2} \P(\gcd((p - 1)/2, k_2) = d_2)                                                                      \\
-         & \qquad \Bigg (\frac 1 {p / d_1 \cdot \lg 2k_1} + \frac 1 {p / d_2 \cdot \lg 2k_2} \Bigg ) \Bigg ( \frac 1 {p / d_1 \cdot \lg^2 2k_1} + \frac 1 {p / d_2 \cdot \lg^2 2k_2} \Bigg )^{-3/2} \\
-         & \ge \sqrt{\pi p / 2} \Bigg (\frac 1 {\lg 2k_1} + \frac 1 {\lg 2k_2} \Bigg ) \Bigg ( \frac 1 {\lg^2 2k_1} + \frac 1 {\lg^2 2k_2} \Bigg )^{-3/2}                                           \\
+         & \sim \sqrt{\pi / 2} \sum_{d_1 | k_1} \P(\gcd((p - 1)/2, k_2) = d_1) \sum_{d_2 | k_2} \P(\gcd((p - 1)/2, k_2) = d_2)                                                                                           \\
+         & \qquad \Bigg (\frac 1 {p / (2d_1-1)  \cdot \lg 2k_1} + \frac 1 {p / (2d_2-1) \cdot \lg 2k_2} \Bigg ) \Bigg ( \frac 1 {p / (2d_1-1) \cdot \lg^2 2k_1} + \frac 1 {p / (2d_2-1) \cdot \lg^2 2k_2} \Bigg )^{-3/2} \\
+         & \ge \sqrt{\pi p / 2} \ \frac {\varphi(k_1)} {k_1} \ \frac {\varphi(k_2)} {k_2} \, \Bigg (\frac 1 {\lg 2k_1} + \frac 1 {\lg 2k_2} \Bigg ) \Bigg ( \frac 1 {\lg^2 2k_1} + \frac 1 {\lg^2 2k_2} \Bigg )^{-3/2}   \\
          & = \sqrt {\pi p / 2} \lg^2 2k_1 \cdot \lg^2 2k_2 \cdot \frac {\lg 2k_1 + \lg 2k_2} {(\lg^2 2k_1 + \lg^2 2k_2)^{3/2}}
     \end{align*}
     Nach der Dreiecksungleichung und $k_i \ge 1$ gilt $\lg 2k_1 + \lg 2k_2 > \sqrt{\lg^2 2k_1 + \lg^2 2k_2}$.
