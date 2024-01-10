@@ -342,35 +342,41 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 
 \subsection{Der Fall zweier Maschinen}
 
-Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1, k_2$ prim und $k_1 = k_2 > 1$. Es wird vermutet, dass $k_1 = k_2 = 1$ optimal ist, der Beweis scheint aber deutlich schwieriger als für $M = 1$. Während es im Fall $M = 1$ möglich war, nur mit dem Fall $\gcd((p - 1)/2, k) = 1$ eine ausreichend große untere Schranke zu erhalten, funktioniert das im Fall $M = 2$ nicht mehr.
+Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1, k_2$ prim und $k_1 = k_2 > 1$. Es wird vermutet, dass $k_1 = k_2 = 1$ optimal ist, der Beweis scheint aber deutlich schwieriger als für $M = 1$. Während es im Fall $M = 1$ möglich war, nur mit dem Fall $\gcd((p - 1)/2, k) = 1$ eine ausreichend große untere Schranke zu erhalten, funktioniert das im Fall $M = 2$ für allgemeine $k_i$ nicht mehr.
 
 \begin{theorem}
     Sei $L_{k_1, k_2}(p)$ wie in Abschnitt \ref{sec:par} definiert. Im Folgenden wird der Erwartungswert von $L_{k_1, k_2}$ über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ genommen.
     \begin{enumerate}
-        \item Wenn $q_1, q_2$ Primzahlen sind, gilt $\E(L_{1, 1}(p)) < \E(L_{q_1, q_2}(p))$.
+        \item Wenn $k_1, k_2$ unterschiedliche Primzahlen sind, gilt $\E(L_{1, 1}(p)) < \E(L_{k_1, k_2}(p))$.
         \item Wenn $1 < k \in \N$, gilt $\E(L_{1, 1}(p)) < \E(L_{k, k}(p))$.
     \end{enumerate}
 \end{theorem}
 
 \begin{proof}
-    Es wird zunächst Teil 1 gezeigt. Gleichung (\ref{lkp}) mit $M = 2$ liefert
+    Nach Abschnitt \ref{sec:start2} gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also in beiden Fällen zu zeigen, dass der Erwartungswert jeweils größer ist. Zunächst wird Teil 1 gezeigt. Da $q_1 \ne q_2$, können wir Gleichung (\ref{lkp}) mit $M = 2$ verwenden.
     \begin{align*}
         L_{k_1, k_2}(p) \sim \sqrt{\pi / 2} \ \Bigg (\frac 1 {h_1 \lg 2k_1} + \frac 1 {h_2 \lg 2k_2} \Bigg ) \Bigg ( \frac 1 {h_1 \lg^2 2k_1} + \frac 1 {h_2 \lg^2 2k_2} \Bigg )^{-3/2}
     \end{align*}
-    Nach Abschnitt \ref{sec:start2} gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also $\E(L_{k_1, k_2}) > 25/32 \sqrt{\pi p /2}$ für $k_1 \ne 1$ oder $k_2 \ne 1$ zu zeigen. Wie im Fall $M = 1$ bilden wir den Erwartungswert über alle möglichen $\gcd((p - 1)/2, k_i)$.
+    Wie im Fall $M = 1$ bilden wir den Erwartungswert über alle möglichen $\gcd((p - 1)/2, k_i)$.
     \begin{align*}
         \E(L_{k_1, k_2})
-         & \sim \sqrt{\pi / 2} \sum_{d_1 | k_1} \P(\gcd((p - 1)/2, k_2) = d_1) \sum_{d_2 | k_2} \P(\gcd((p - 1)/2, k_2) = d_2)                                                                                           \\
-         & \qquad \Bigg (\frac 1 {p / (2d_1-1)  \cdot \lg 2k_1} + \frac 1 {p / (2d_2-1) \cdot \lg 2k_2} \Bigg ) \Bigg ( \frac 1 {p / (2d_1-1) \cdot \lg^2 2k_1} + \frac 1 {p / (2d_2-1) \cdot \lg^2 2k_2} \Bigg )^{-3/2} \\
-         & \ge \sqrt{\pi p / 2} \ \frac {\varphi(k_1)} {k_1} \ \frac {\varphi(k_2)} {k_2} \, \Bigg (\frac 1 {\lg 2k_1} + \frac 1 {\lg 2k_2} \Bigg ) \Bigg ( \frac 1 {\lg^2 2k_1} + \frac 1 {\lg^2 2k_2} \Bigg )^{-3/2}   \\
-         & = \sqrt {\pi p / 2} \lg^2 2k_1 \cdot \lg^2 2k_2 \cdot \frac {\lg 2k_1 + \lg 2k_2} {(\lg^2 2k_1 + \lg^2 2k_2)^{3/2}}
+         & \sim \sqrt{\pi / 2} \sum_{d_1 | k_1} \P(\gcd((p - 1)/2, k_2) = d_1) \sum_{d_2 | k_2} \P(\gcd((p - 1)/2, k_2) = d_2)                                                                                              \\
+         & \qquad \Bigg (\frac 1 {h_1 \lg 2k_1} + \frac 1 {h_2 \lg 2k_2} \Bigg ) \Bigg ( \frac 1 {h_1 \lg^2 2k_1} + \frac 1 {h_2 \lg^2 2k_2} \Bigg )^{-3/2}                                                                 \\
+         & \ge \sqrt{\pi / 2} \ \frac {\varphi(k_1) \varphi(k_2)} {k_1k_2} \Bigg (\frac 1 {p\lg 2k_1} + \frac 1 {p \lg 2k_2} \Bigg ) \Bigg ( \frac 1 {p \lg^2 2k_1} + \frac 1 {p \lg^2 2k_2} \Bigg )^{-3/2}                 \\
+         & = \sqrt {\pi p / 2} \  \frac {(k_1 - 1)(k_2 - 1)} {k_1 k_2} \Bigg ( \frac {\lg 2k_2 + \lg 2k_1} {\lg 2k_1 \, \lg 2k_2} \Bigg ) \Bigg ( \frac {\lg^2 2k_2 + \lg^2 2k_1} {\lg^2 2k_1 \, \lg^2 2k_2} \Bigg )^{-3/2} \\
+         & = \sqrt {\pi p / 2} \ \frac {(k_1 - 1)(k_2 - 1)} {k_1 k_2} \, (\lg^2 2k_1) (\lg^2 2k_2) \, \frac {\lg 2k_1 + \lg 2k_2} {(\lg^2 2k_1 + \lg^2 2k_2)^{3/2}}
     \end{align*}
     Nach der Dreiecksungleichung und $k_i \ge 1$ gilt $\lg 2k_1 + \lg 2k_2 > \sqrt{\lg^2 2k_1 + \lg^2 2k_2}$.
     \begin{align*}
-        \sqrt {\pi p / 2} \ \lg^2 (2k_1) \lg^2 (2k_2) \ \frac {\lg 2k_1 + \lg 2k_2} {(\lg^2 2k_1 + \lg^2 2k_2)^{3/2}}
-         & >  \sqrt {\pi p / 2} \ \frac {\lg^2 (2k_1) \lg^2 (2k_2)} {\lg^2 2k_1 + \lg^2 2k_2}
+        \E(L_{k_1, k_2}(p)) > \sqrt {\pi p / 2} \ \frac {(k_1 - 1)(k_2 - 1)} {k_1 k_2} \, \, \frac { (\lg^2 2k_1) (\lg^2 2k_2)} {\lg^2 2k_1 + \lg^2 2k_2}
     \end{align*}
-    Falls $k_1, k_2 \ge 2$, gilt $\lg^2 2k_i \ge 2 \ (i = 1, 2)$
+    Falls $k_1 = 2, k_2 = 3$ gilt damit $E(L_{2, 3}(p)) > 0.8340 \sqrt{\pi p /2}  > 25 / 32 \sqrt{\pi p / 2}$. Die Terme $(k_i - 1)/k_i$ sind aber streng monoton steigend mit $k_i$ für $i = 1, 2$. Ebenso ist der nachfolgende Bruch streng monoton steigend mit jedem der $k_i$. Sei dafür $x = \lg^2 2k_1, y = \lg^2 2k_2$ und $x' > x$. Dann gilt
+    \begin{align*}
+        \frac {x'y} {x' + y}
+        = \frac {x'y} {x' + y} \, \frac {x + y} {xy} \, \frac {xy} {x + y}
+        = \frac {xx'y + x'y^2} {xx'y + xy^2} \, \frac {xy} {x + y} > \frac {xy} {x + y}
+    \end{align*}
+    da $x, x', y > 0$ und $x < x'$. Da $k_1 = 2, k_2 = 3$ der kleinstmögliche Fall ist, folgt für jedes Paar an verschiedenen Primzahlen $k_1, k_2$, dass $\E(L_{k_1, k_2}(p)) > 25 / 32 \sqrt{\pi p / 2}$.
 \end{proof}
 
 \section{Experimentelle Ergebnisse}\label{sec:ex}
