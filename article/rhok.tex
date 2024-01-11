@@ -164,7 +164,20 @@ schreiben. Im Fall $r_i > h_i^{3/5}$ gilt
      & \sim \frac {r_i} {h_i} \exp \frac {- \Big \lfloor h_i^{3/5} \Big \rfloor^2 } {2h_i}                                \\
      & \le \frac {r_i} {h_i} \exp \frac {- h_i^{1/5}} {2}
 \end{align*}
-Da immer $r_i < h_i$ gilt, geht das gegen 0 für $h_i \to \infty$. Das reicht allerdings noch nicht, um zu zeigen, dass Terme in (\ref{etmin}) mit $r_i > h_i^{3/5}$ gegen 0 gehen für $h_i \to \infty$. Da $\min_{i = 1}^M (r_i \lg 2k_i)$ durch $p$ beschränkt ist, folgt dies aber sofort.
+Da immer $r_i < h_i$ gilt, geht das gegen 0 für $h_i \to \infty$. Da $\min_{i = 1}^M (r_i \lg 2k_i)$ durch $p$ beschränkt ist, folgt direkt, dass Terme in (\ref{etmin}) gegen 0 gehen, in denen $r_i > h_i^{2/3}$ gilt. Insgesamt folgt daraus
+\begin{align*}
+    \E(t_{\min}) \sim \sum_{r_1 = 1}^{h_1} \frac {r_1} {h_1} \exp \frac {-r_1^2} {2h_1} \, \cdots \sum_{r_M = 1}^{h_M} \frac {r_M} {h_M} \exp \frac {-r_M^2} {2h_M} \, \bigg ( \min_{i = 1}^M {r_i \lg 2k_i} \bigg )
+\end{align*}
+Die Summen werden nun durch Integrale angenähert. Der Beweis, dass man damit ebenfalls eine asymptotische Näherung für $\E(t_{\min})$ erhält wird hier nicht vorgestellt, da er relativ aufwändig und nicht besonders interessant ist. Intuitiv ist diese Näherung deswegen möglich, weil die Funktionen in den Summen stetig sind, und damit ihr Wert an einem einzelnen Punkt eine relativ gute Näherung für die Werte um diesen Punkt herum ist. Nun gilt
+\begin{align*}
+    \E(t_{\min})
+     & \sim \int_{1}^{h_1} \frac {r_1} {h_1} \exp \bigg (\frac {-r_1^2} {2h_1} \bigg ) \cdots \int_{1}^{h_M} \frac {r_M} {h_M} \exp \bigg ( \frac {-r_M^2} {2h_M} \bigg ) \bigg ( \min_{i = 1}^M {r_i \lg 2k_i} \bigg ) \ d r_M \cdots dr_1        \\
+     & \sim \int_{1}^{\infty} \frac {r_1} {h_1} \exp \bigg ( \frac {-r_1^2} {2h_1} \bigg ) \cdots \int_{1}^{\infty} \frac {r_M} {h_M} \exp \bigg ( \frac {-r_M^2} {2h_M} \bigg ) \bigg ( \min_{i = 1}^M {r_i \lg 2k_i} \bigg ) \ d r_M \cdots dr_1
+\end{align*}
+da bereits gezeigt wurde, dass Terme in denen $r_i > h_i^{3/5}$ für den asymptotischen Wert von $\E(t_{\min})$ irrelevant sind. Für den nächsten Schritt ist es nötig, dass in jedem Integral über $t_i$ integriert wird. Da aber $r_i \lg 2k_i = t_i$, kann das durch eine einfache Variablensubstitution erreicht werden. Da $ dr_i = dt_i / \lg 2k_i$ gilt
+\begin{align*}
+    \E(t_{\min}) \sim \int_{1}^{\infty} \frac {t_1} {h_1 \lg 2k_1} \exp \frac {-t_1^2} {2h_1 \lg^2 2k_1} \, \cdots \int_{1}^{\infty} \frac {t_M} {h_M \lg 2k_M} \exp \frac {-t_M^2} {2h_M \lg^2 2k_M} \, \bigg ( \min_{i = 1}^M {t_i} \bigg ) \ \frac {dt_M \cdots dt_1} {\lg 2k_M \cdots \lg 2k_1}
+\end{align*}
 
 \begin{align}
     \P(t_i \ge t)
