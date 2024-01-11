@@ -174,40 +174,16 @@ Daraus folgt, dass wenn $t / \lg 2k_i > h_i^{3/5}$ für ein $i$ in (\ref{etmin})
 Die Wahrscheinlichkeit, dass bei mindestens einer der Maschinen bei Zeit $t$ eine Kollision auftritt, wird nun durch $\sum_{i = 1}^M t/(h_i \lg 2k_i)$ angenähert. Das ist vertetbar, da bereits gezeigt wurde, dass ein Term im Erwartungswert asymptotisch irrelevant ist, wenn $t/\lg 2k_i > h_i^{3/5}$. Und wenn $t / \lg 2k_i \le h_i^{3/5}$ für alle $i$ gilt für jeden weggelassen Term
 \begin{align*}
     \frac {t} {h_{i_1} \lg 2k_{i_1}} \, \frac {t} {h_{i_2} \lg 2k_{i_2}} \, \cdots \, \frac {t} {h_{i_m} \lg 2k_{i_m}}
-    \le \frac 1 {h_{i_1}^{2/5}} \, \frac {t} {h_{i_2}^{2/5}} \, \cdots \, \frac {t} {h_{i_m}^{2/5}} \qquad m \ge 2, \ 1 \le i_j \le M
+    \le \frac 1 {h_{i_1}^{2/5}} \, \frac 1 {h_{i_2}^{2/5}} \, \cdots \, \frac 1 {h_{i_m}^{2/5}} \qquad m \ge 2, \ 1 \le i_j \le M
 \end{align*}
-Die Summen werden nun durch Integrale angenähert. Der Beweis, dass man damit ebenfalls eine asymptotische Näherung für $\E(t_{\min})$ erhält wird hier nicht vorgestellt, da er relativ aufwändig und nicht besonders interessant ist. Intuitiv ist diese Näherung deswegen möglich, weil die Funktionen in den Summen stetig sind, und damit ihr Wert an einem einzelnen Punkt eine relativ gute Näherung für die Werte um diesen Punkt herum ist. Nun gilt
-\begin{align*}
-    \E(t_{\min})
-     & \sim \int_{0}^{h_1} \frac {r_1} {h_1} \exp \bigg (\frac {-r_1^2} {2h_1} \bigg ) \cdots \int_{0}^{h_M} \frac {r_M} {h_M} \exp \bigg ( \frac {-r_M^2} {2h_M} \bigg ) \bigg ( \min_{i = 1}^M {s \lg 2k_i} \bigg ) \ d r_M \cdots dr_1        \\
-     & \sim \int_{0}^{\infty} \frac {r_1} {h_1} \exp \bigg ( \frac {-r_1^2} {2h_1} \bigg ) \cdots \int_{0}^{\infty} \frac {r_M} {h_M} \exp \bigg ( \frac {-r_M^2} {2h_M} \bigg ) \bigg ( \min_{i = 1}^M {s \lg 2k_i} \bigg ) \ d r_M \cdots dr_1
-\end{align*}
-da bereits gezeigt wurde, dass Terme in denen $s > h_i^{3/5}$ für den asymptotischen Wert von $\E(t_{\min})$ irrelevant sind. Für den nächsten Schritt ist es nötig, dass in jedem Integral über $t_i$ integriert wird. Da $r_i \lg 2k_i = t_i$, kann das durch eine einfache Variablensubstitution erreicht werden. Da $ dr_i = dt_i / \lg 2k_i$ gilt
-\begin{align*}
-    \E(t_{\min}) \sim \int_{0}^{\infty} \frac {t_1} {h_1 \lg 2k_1} \exp \frac {-t_1^2} {2h_1 \lg^2 2k_1} \, \cdots \int_{0}^{\infty} \frac {t_M} {h_M \lg 2k_M} \exp \frac {-t_M^2} {2h_M \lg^2 2k_M} \, \bigg ( \min_{i = 1}^M {t_i} \bigg ) \ \frac {dt_M \cdots dt_1} {\lg 2k_M \cdots \lg 2k_1}
-\end{align*}
-Anstatt über die $t_i$ zu integrieren, soll nun über das Minimum der $t_i$ integriert werden und mit der Wahrscheinlichkeit, dass dieses Minimum eintritt, multipliziert werden. Wenn $t_{\min} = t$, muss $t_i > t - 1$ für jedes $1 \le i \le M$ und bei mindestens einer Maschine muss in der $i$-ten Iteration eine Kollision stattfinden.
-
+Jeder weggelassene Term ist also um eine Größenordnung von $p$ kleiner als $\sum_{i = 1}^M t/(h_i \lg 2k_i)$ und damit asymptotisch irrelevant. Als letzten Schritt wird die Summe über alle $t$ durch ein Integral angenähert. Die intuitive Erklärung dafür, dass das am asymptotischen Wert nichts ändert ist, dass das Argument der Summe stetig in $t$ ist, sodass der Wert an einem Punkt ähnlich zu Werten nahe dieses Punktes ist. Ein Beweis wäre relativ aufwändig und wird daher hier nicht durchgeführt. Nach einem ähnlichen Argument wie dem dafür, dass Terme mit $t/\lg 2k_i > h_i^{3/5}$ für ein $i$ asymptotisch irrelevant sind, kann die obere Integralgrenze bis $\infty$ geöffnet werden. Man erhält also
 \begin{align}
-    \P(t_i \ge t)
-    \approx \exp \Bigg (- \frac {\lceil t / \lg 2k_i \rceil (\lceil t / \lg 2k_i \rceil - 1)} {2h_i} \Bigg )
-    \approx \exp \Bigg ( - \frac {t^2} 2 \cdot \frac 1{h_i \lg^2 2k_i} \Bigg ) \label{ptiget}
+    L_{k_1, \dots k_M}(p) = \E(t_{\min})
+     & \sim \int_{0}^{\infty} t \, \exp \Bigg ( \sum_{i = 1}^M \frac {-t^2} {2h_i \lg^2 2k_i} \Bigg ) \Bigg (\sum_{i = 1}^M \frac {t} {h_i \lg 2k_i} \Bigg ) \, dt \nonumber      \\
+     & = \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \int_0^\infty t^2 \, \exp \Bigg ( \frac {-t^2} 2 \, \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \, dt \nonumber \\
+     & = \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \; \sqrt {\pi / 2}  \ \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2} \label{lkp}
 \end{align}
-Sei $t_{\min} = \min_{i = 1}^M t_i$. Die Wahrscheinlichkeit, dass bei mindestens einer Maschine bei Zeitpunkt $t$ eine Kollision auftritt, kann wegen $t / \lg 2k_i$ deutlich kleiner als $h_i$ und der Unabhängigkeit der Maschinen durch $\sum_{i = 1}^M t/h_i\lg2k_i$ angenähert werden. Mit (\ref{ptiget}) schließt man
-\begin{align*}
-    \P(t_{\min} = t)
-     & = \prod_{i = 1}^M \P(t_i \ge t) \cdot \sum_{i = 1}^M \frac {t} {h_i\lg2k_i}                                                            \\
-     & \approx \prod_{i = 1}^M \exp \Bigg ( - \frac {t^2} 2 \cdot \frac 1{h_i \lg^2 2k_i} \Bigg ) \cdot \sum_{i = 1}^M \frac {t} {h_i\lg2k_i} \\
-     & = \exp \Bigg ( - \frac {t^2} 2 \sum_{i = 1}^M \frac 1{h_i \lg^2 2k_i} \Bigg ) \cdot \sum_{i = 1}^M \frac {t} {h_i\lg2k_i}              \\
-\end{align*}
-Um nun eine Formel für den Erwartungswert von $t_{\min}$ zu erhalten, wird $\sum_{a = 1}^p t \cdot \P(t_{\min} = t)$ durch $\int_{0}^\infty t \cdot \P(t_{\min} = t) \; dt$ angenähert, was wegen der schnellen Konvergenz von $e^{-t^2} \to 0$ wenn $t \to \infty$ vertetbar ist.
-\begin{align}
-    L_K(p)
-     & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \int_{0}^{\infty} t^2 \exp \Bigg (- \frac {t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \ dt \nonumber \\
-     & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg 2k_i} \Bigg ) \sqrt {\pi/2} \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2}
-    \label{lkp}
-\end{align}
-Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Auch wenn die Herleitung aufgrund der vielen Näherungen krude scheint, erklärt sie gut das Laufzeitverhalten im Fall unabhängiger Maschinen. Setzt man beispielsweise $M = 1$ und $k_1 = 1$, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}. Für $M = 1$ und beliebiges $k_1$ erhält man $\sqrt{\pi p / 2} \cdot \lg^2 2k_1 / \sqrt{\gcd(p-1, 2k_1) - 1}$. Daraus folgt, dass die Anzahl an Iterationen im Fall einer Maschine um einen Faktor $1/\sqrt{\gcd(p - 1, 2k) - 1}$ im Vergleich zu $k = 1$ reduziert wird. Dieses Ergebnis erhielten auch \cite{bp81}.
+Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Die Formel ist verträglich mit bereits bekannten Laufzeitabschätzungen für Pollards Rho-Algorithmus. Setzt man beispielsweise $M = 1$ und $k_1 = 1$, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}. Für $M = 1$ und beliebiges $k_1$ erhält man $\sqrt{\pi p / 2} \cdot \lg^2 2k_1 / \sqrt{\gcd(p-1, 2k_1) - 1}$. Daraus folgt, dass die Anzahl an Iterationen im Fall einer Maschine um einen Faktor $1/\sqrt{\gcd(p - 1, 2k) - 1}$ im Vergleich zu $k = 1$ reduziert wird. Dieses Ergebnis erhielten auch \cite{bp81}.
 
 \section{Die erwartete minimale Rho-Länge bei mehreren Anfangswerten}
 
@@ -272,7 +248,7 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
         \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Kanten stellen keine einzelne Kante dar, sondern einen beliebig langen (und möglicherweise leeren) Pfad. Beispielsweise steht die Kurve $r$ in ($\alpha$) für den Zyklus in dem Zusammenhangskomponenten von $a$.}
     \end{figure}
 
-    \textbf{Fall 1.} (\emph{$a$ und $b$ liegen in unterschiedlichen Zusammenhangskomponenten.}) Dieser Fall wird erneut in die Fälle $\lambda(f, b) \le \nu(f, a)$ und $\lambda(f, b) > \nu(f, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall ist
+    \paragraph{Fall 1.} (\emph{$a$ und $b$ liegen in unterschiedlichen Zusammenhangskomponenten.}) Dieser Fall wird erneut in die Fälle $\lambda(f, b) \le \nu(f, a)$ und $\lambda(f, b) > \nu(f, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall ist
     \begin{align*}
         \alpha_1(x, w) = \frac {x^2w(1 + x^2w)} {(1 - x^2w)^3} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg ) = \frac {x^2w(1 + x)(1 + x^2w)} {(1 - x^2w)^3(1 - x)}
     \end{align*}
@@ -295,7 +271,7 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
         = \frac {x^2w(1 + 2x - x^2 + x^2w - 2x^3w - x^4w)} {(1 - x^2w)^3(1 - x)^2}
     \end{align*}
 
-    \textbf{Fall 2.} (\emph{$a$ und $b$ liegen im gleichen Baum und ihr kleinster gemeinsamer Vorfahre ist nicht die Wurzel.}) Anders formuliert: Betrachtet man die Pfade, die $a$ und $b$ durch wiederholtes Anwenden von $f$ in $\gamma(f)$ ablaufen, treffen diese sich nicht erstmals in einem Zyklusknoten. Die erzeugende Funktion lautet
+    \paragraph*{Fall 2.} (\emph{$a$ und $b$ liegen im gleichen Baum und ihr kleinster gemeinsamer Vorfahre ist nicht die Wurzel.}) Anders formuliert: Betrachtet man die Pfade, die $a$ und $b$ durch wiederholtes Anwenden von $f$ in $\gamma(f)$ ablaufen, treffen diese sich nicht erstmals in einem Zyklusknoten. Die erzeugende Funktion lautet
     \begin{align*}
         \beta(x, w)
         = xw \cdot \frac {xw} {1 - xw} \cdot \frac {1} {1 - xw} \cdot \frac {1} {1 - x^2w} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg )
@@ -303,7 +279,7 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
     \end{align*}
     Der Zyklusknoten, an dem der Baum von $a$ und $b$ anhängt, wird durch $xw$ repräsentiert. Der Pfad $s$ in Abbildung 1 ($\beta$) muss mindestens Länge 1 haben, da der kleinste gemeinsame Vorfahre von $a$ und $b$ sonst die Wurzel wäre, was den Faktor $xw/(1 - xw)$ erklärt. Der Faktor $1/(1 - xw)$ steht für den Zyklus $r$. Mit $1/(1 - x^2w)$ werden zwei gleich lange Pfade erzeugt, deren Länge durch $w$ markiert wird. Ein Pfad ist $t$ in Abbildung 1 ($\beta$), und der andere ist ein Teil von $u$. Nun gibt es wie in Fall 1 wieder die Option, $u$ echt zu verlängern und so einen Faktor 2 für die mögliche Vertauschung von $a$ und $b$ zu erhalten, oder ihn zu lassen, wobei es wegen Symmetrie nur eine Möglichkeit gibt.
 
-    \textbf{Fall 3.} (\emph{$a$ und $b$ liegen in verschiedenen Bäumen oder die Wurzel ist kleinster gemeinsamer Vorfahre.}) Die erzeugende Funktion ist hier
+    \paragraph{Fall 3.} (\emph{$a$ und $b$ liegen in verschiedenen Bäumen oder die Wurzel ist kleinster gemeinsamer Vorfahre.}) Die erzeugende Funktion ist hier
     \begin{align*}
         \gamma(x, w)
         = xw \cdot \frac {1} {(1 - xw)^2} \cdot \frac {1} {1 - x^2w} \cdot \Bigg (1 + \frac {2x}{1 - x} \Bigg )
