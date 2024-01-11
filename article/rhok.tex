@@ -104,26 +104,35 @@ Eine Zuordnung von $k$-Werten für $M$ Maschinen wird als Tupel $K = (k_1, k_2, 
 \begin{align*}
     L_K(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
 \end{align*}
-wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ mit $X_i(f, x_0) = \nu(f, x_0)$ ist. Eine Schwierigkeit in der Herleitung einer Formel für $L_K(p)$ ist, dass die Rho-Längen der $i$-ten und $j$-ten Maschine nicht unabhängig sind, wenn $k_i = k_j$, da sich die $i$-te und $j$-te Maschine in diesem Fall im gleichen funktionalen Graphen bewegen. Wenn beispielsweise der Startwert der $i$-ten Maschine fixiert wird, ist bereits klar, dass die Rho-Länge der $j$-ten Maschine größer gleich der Rho-Länge der $i$-ten Maschine sein wird, wenn der Startwert ein Vorfahre des Startwerts der $i$-ten Maschine in einem Baum von $\gamma(f)$ ist. Daher werden im Folgenden die Fälle abhängiger und unabhängiger Maschinen unterschieden.
+wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ mit $X_i(f, x_0) = \nu(f, x_0)$ ist. Eine Schwierigkeit in der Herleitung einer Formel für $L_K(p)$ ist, dass $X_i$ und $X_j$ nicht unabhängig sind, wenn $k_i = k_j$, da sich die $i$-te und $j$-te Maschine in diesem Fall im gleichen funktionalen Graphen bewegen. Wenn beispielsweise der Startwert der $i$-ten Maschine fixiert wird, ist bereits klar, dass die Rho-Länge der $j$-ten Maschine größer gleich der Rho-Länge der $i$-ten Maschine sein wird, wenn der Startwert ein Vorfahre des Startwerts der $i$-ten Maschine in einem Baum von $\gamma(f)$ ist. Daher werden im Folgenden die Fälle abhängiger und unabhängiger Maschinen unterschieden.
 
 
 \section{Eine Formel für den Fall unabhängiger Maschinen}
 
-// Make the argument more streamlined, clear and rigorous
+In diesem Abschnitt wird eine Formel für $L_K(p)$ hergleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Aus Annahme 1 folgt, dass die Rho-Längen der $i$-ten und $j$-ten Maschine als Zufallsvariablen betrachtet stochastisch unabhängig sind, wenn $k_i \ne k_j$.
 
-In diesem Abschnitt wird eine Formel für $L_K(p)$ hergleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Wenn $k_i \ne k_j$, wird angenommen, dass die Rho-Längen der $i$-ten und $j$-ten Maschine als Zufallsvariablen betrachtet stochastisch unabhängig sind.
+Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist also die Bestimmung von $\E(t_{\min})$. Dafür wird zunächst $\P(s_i > s)$ bestimmt.
 
-Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $t_i$ die Anzahl an Zeiteinheiten, nach der bei der $i$-ten Maschine erstmals eine Kollision auftritt. Maschine $i$ führt in $t$ Zeiteinheiten $\lceil t / \lg 2k_i \rceil$ Iterationen durch. Nach Annahme 1 gilt $\P(t_i \ge t) = \P(\nu(f, x_0) \ge \lceil t / \lg 2k_i \rceil)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$. Für eine zufällige Funktion $f \in A(h_i)$ gilt, dass die Wahrscheinlichkeit einer Kollision im $i$-ten Schritt $i/h_i$ ist, wenn in den ersten $i-1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $i$ von ihnen zu einer Kollision führen. Folglich gilt
+Nach Annahme 1 gilt $\P(s_i = s) = \P(\nu(f, x_0) = s)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $i$-ten Schritt $i/h_i$, wenn in den ersten $i-1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $i$ von ihnen zu einer Kollision führen. Die Wahrscheinlichkeit, dass in den ersten $s$ Schritten keine Kollision auftritt ist also
 \begin{align*}
-    \P(t_i \ge t) = \P(\nu(f, x_0) \ge \lceil t / \lg 2k_i \rceil) = \prod_{j = 0}^{\lceil t / \lg k_i - 1 \rceil} \bigg (1 - \frac {j} {h_i} \bigg )
+    \P(s_i > s) = \P(\nu(f, x_0) > s) = \prod_{j = 0}^s \bigg (1 - \frac {j} {h_i} \bigg )
 \end{align*}
-Nun wird Taylors Näherung $1 + x \approx \exp x$, wenn $|x|$ klein, für $1 - j/h_i$ verwendet. Da in allen praktischen Fällen $t/\lg 2k_i$ deutlich kleiner als $h_i$ ist (nach obiger Diskussion erwarten wir $t/\lg 2k_i \approx \sqrt{h_i}$), ist dies vertretbar.
+Daraus folgt sofort
 \begin{align*}
-    \prod_{j = 0}^{\lceil t / \lg k_i - 1 \rceil} \bigg (1 - \frac {j} {h_i} \bigg )
-    \approx \exp \Bigg (-\sum_{j = 0}^{\lceil t / \lg k_i - 1 \rceil} \frac j {h_i} \Bigg )
-    = \exp \Bigg (- \frac {\lceil t / \lg 2k_i \rceil (\lceil t / \lg 2k_i \rceil - 1)} {2h_i} \Bigg )
+    \P(s_i = s)
+     & = \P(s_i > s - 1) - \P(s_i > s)                                                                                 \\
+     & = \prod_{j = 0}^{s - 1} \bigg (1 - \frac {j} {h_i} \bigg ) - \prod_{j = 0}^s \bigg (1 - \frac {j} {h_i} \bigg ) \\
+     & = \frac s {h_i} \prod_{j = 0}^{s - 1} \bigg (1 - \frac {j} {h_i} \bigg )
 \end{align*}
-Im Folgenden werden die Gaußklammern weggelassen, da sie asymptotisch nichts ändern und $t/\lg2k_i \cdot (t/\lg2k_i - 1)$ durch $(t/\lg2k_i)^2$ angenähert.
+Nun wird die Restgliedabschätzung $\exp x = 1 + x + O(x^2)$ für $|x| < 1$ mit $x = -j/h_i$ angewandt.
+\begin{align*}
+    \P(s_i > s) = \prod_{j = 0}^s \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg ) \qquad
+    \P(s_i = s) = \frac s {h_i} \prod_{j = 0}^{s - 1} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )
+\end{align*}
+Damit kann $\E(t_{\min})$ wie folgt ausgedrückt werden.
+\begin{align*}
+    \E(t_{\min}) = \sum_{r_1 = 1}^{h_1} \P(s_1 = r_1) \sum_{r_2 = 1}^{h_2} \P(s_2 = r_2) \, \cdots \sum_{r_M = 1}^{h_M} \P(s_M = r_M) \, \min_{i = 1}^M (r_i \lg 2k_i)
+\end{align*}
 \begin{align}
     \P(t_i \ge t)
     \approx \exp \Bigg (- \frac {\lceil t / \lg 2k_i \rceil (\lceil t / \lg 2k_i \rceil - 1)} {2h_i} \Bigg )
@@ -147,7 +156,7 @@ Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwend
 
 \section{Die erwartete minimale Rho-Länge bei mehreren Anfangswerten}
 
-Um $L_K(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{lkp}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \cdot \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden. Für den Fall $k_1 = k_2 = \dots = k_M$, sei $k = k_1$ und $h = \gcd(p - 1, 2k)$. Nach Annahme 1 die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ für $p \to \infty$ asymptotisch zur Verteilung der Rho-Längen zufälliger Elemente in $A(h)$. Da sich die $M$ Maschinen im Fall $k_1 = k_2 = \dots = k_M$ alle im gleichen funktionalen Graphen bewegen, reduziert sich das Problem der Bestimmung einer asymptotischen Näherung von $L_{k, k, \dots, k}$ auf folgende Frage: \emph{Für $n \in \N$, gegeben ein zufälliges Element $f$ aus $A(n)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/n\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
+Um $L_K(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{lkp}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden. Für den Fall $k_1 = k_2 = \dots = k_M$, sei $k = k_1$ und $h = \gcd(p - 1, 2k)$. Nach Annahme 1 die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ für $p \to \infty$ asymptotisch zur Verteilung der Rho-Längen zufälliger Elemente in $A(h)$. Da sich die $M$ Maschinen im Fall $k_1 = k_2 = \dots = k_M$ alle im gleichen funktionalen Graphen bewegen, reduziert sich das Problem der Bestimmung einer asymptotischen Näherung von $L_{k, k, \dots, k}$ auf folgende Frage: \emph{Für $n \in \N$, gegeben ein zufälliges Element $f$ aus $A(n)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/n\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
 
 \subsection{Theoretischer Hintergrund: Erzeugende Funktionen}
 
@@ -285,7 +294,7 @@ Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird
     \end{align*}
 \end{proof}
 
-\noindent Mit obigen Annahmen über $L_K(p)$ folgt aus Satz 2 sofort $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p / 2}$. Man bemerke außerdem, dass Satz 2 unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf heuristischen Annahmen basiert.
+\noindent Aus der Definition von $L_K(p)$ folgt sofort $L_{k, k}(p) \sim 25/32 \sqrt{\pi p / (2\gcd(p - 1, k))}$. Man bemerke außerdem, dass Satz 2 unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf heuristischen Annahmen basiert.
 
 \section{Bestimmung optimaler Exponenten für die Rho-Methode}\label{sec:optk}
 
@@ -377,6 +386,13 @@ Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1
         = \frac {xx'y + x'y^2} {xx'y + xy^2} \, \frac {xy} {x + y} > \frac {xy} {x + y}
     \end{align*}
     da $x, x', y > 0$ und $x < x'$. Da $k_1 = 2, k_2 = 3$ der kleinstmögliche Fall ist, folgt für jedes Paar an verschiedenen Primzahlen $k_1, k_2$, dass $\E(L_{k_1, k_2}(p)) > 25 / 32 \sqrt{\pi p / 2}$.
+
+    Für $L_{k, k}(p)$ gilt nach Abschnitt \ref{sec:start2}
+    \begin{align*}
+        E(s) = \int_{i = 0}^p P(i)i \\
+        E(t) = \int_{i = 0}^p P(i \lg) i \lg \ di = \int_{j = 0}^{p \lg} P(j)j \ di
+    \end{align*}
+    $j = \lg i$, $dj = \lg di$
 \end{proof}
 
 \section{Experimentelle Ergebnisse}\label{sec:ex}
