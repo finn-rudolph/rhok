@@ -111,73 +111,82 @@ wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ m
 
 In diesem Abschnitt wird eine Formel für $L_K(p)$ hergleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Aus Annahme 1 folgt, dass die Rho-Längen der $i$-ten und $j$-ten Maschine als Zufallsvariablen betrachtet stochastisch unabhängig sind, wenn $k_i \ne k_j$.
 
-Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist also die Bestimmung von $\E(t_{\min})$. Dafür wird zunächst $\P(s_i > s)$ bestimmt.
+Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
 
-Nach Annahme 1 gilt $\P(s_i = s) = \P(\nu(f, x_0) = s)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $i$-ten Schritt $i/h_i$, wenn in den ersten $i-1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $i$ von ihnen zu einer Kollision führen. Die Wahrscheinlichkeit, dass in den ersten $s$ Schritten keine Kollision auftritt ist also
+
+\paragraph{Formel für $\pmb{\P(s_i > s)}$} Nach Annahme 1 gilt $\P(s_i = s) = \P(\nu(f, x_0) = s)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $i$-ten Schritt $i/h_i$, wenn in den ersten $i-1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $i$ von ihnen zu einer Kollision führen. Die Wahrscheinlichkeit, dass in den ersten $s$ Schritten keine Kollision auftritt ist also
 \begin{align*}
     \P(s_i > s) = \P(\nu(f, x_0) > s) = \prod_{j = 0}^s \bigg (1 - \frac {j} {h_i} \bigg )
 \end{align*}
-Daraus folgt sofort
-\begin{align*}
-    \P(s_i = s)
-     & = \P(s_i > s - 1) - \P(s_i > s)                                                                                 \\
-     & = \prod_{j = 0}^{s - 1} \bigg (1 - \frac {j} {h_i} \bigg ) - \prod_{j = 0}^s \bigg (1 - \frac {j} {h_i} \bigg ) \\
-     & = \frac s {h_i} \prod_{j = 0}^{s - 1} \bigg (1 - \frac {j} {h_i} \bigg )
-\end{align*}
-Nun wird die Restgliedabschätzung $\exp x = 1 + x + O(x^2)$ für $|x| < 1$ mit $x = -j/h_i$ angewandt.
+Da die $i$-te Maschine in $t$ Zeiteinheiten $\lfloor t / \lg 2k_i \rfloor$ Schritte ausführt gilt $\P(t_i > t) \sim \P(s_i > t / \lg 2k_i)$ für große $t$. Das Weglassen der Gaußklammern lässt sich damit rechtfertigen, dass für ausreichend großes $p$ nur große $t$ relevant für den Erwartungswert von $t_{\min}$ sind, bei denen es kaum einen Unterschied macht. Nun wird die Restgliedabschätzung $\exp x = 1 + x + O(x^2)$ für $|x| < 1$ mit $x = -j/h_i$ angewandt.
 \begin{align}
-    \P(s_i > s) = \prod_{j = 0}^s \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg ) \qquad
-    \P(s_i = s) = \frac s {h_i} \prod_{j = 0}^{s - 1} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )
+    \P(s_i > s) = \prod_{j = 0}^{s} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )
     \label{ps}
 \end{align}
-Damit kann $\E(t_{\min})$ wie folgt ausgedrückt werden.
+$\E(t_{\min})$ lässt sich nun wie folgt ausdrücken, wobei $t_{\max} = p \, \max_{i = 0}^M \lg 2k_i$ ist die maximal mögliche Anzahl an Zeiteinheiten ist.
 \begin{align}
-    \E(t_{\min}) = \sum_{r_1 = 1}^{h_1} \P(s_1 = r_1) \sum_{r_2 = 1}^{h_2} \P(s_2 = r_2) \, \cdots \sum_{r_M = 1}^{h_M} \P(s_M = r_M) \, \min_{i = 1}^M (r_i \lg 2k_i) \label{etmin}
+    \E(t_{\min})
+     & \sim \sum_{t = 0}^{t_{\max}} t \, \Bigg ( \prod_{i = 1}^M \P(t_i > t - 1) \Bigg ) \Bigg (1 - \prod_{i = 1}^M \frac {t / \lg 2k_i} {h_i} \Bigg ) \nonumber                                                                                                         \\
+     & = \sum_{t = 0}^{t_{\max}} t \, \Bigg ( \prod_{i = 1}^M \prod_{j = 0}^{t / \lg 2k_i} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )\Bigg ) \Bigg (1 - \prod_{i = 1}^M \frac {t} {h_i \lg 2k_i} \Bigg ) \label{etmin}
 \end{align}
-Die Behauptung ist nun, dass zur Bestimmung einer asymptotischen Näherung von $\E(t_{\min})$ die $O(j^2/h_i^2)$-Terme in $\P(s_i = s)$ weggelassen werden können. Intuitiv ist der Grund dafür, dass wenn $r_i$ deutlich kleiner als $h_i$ ist, auch $j$ deutlich kleiner als $h_i$ und damit $j^2/h_i^2$ nahe 0 ist. Wenn dagegen $r_i$ nahe $h_i$ ist, ist $\P(s_i = r_i)$ sehr klein, sodass der Beitrag zum Erwartungswert vernachlässigbar ist. Präzise lässt sich das wie folgt begründen. Wenn $r_i \le h_{i}^{3/5}$, sieht man durch Ausmultiplizieren des Produkts in (\ref{ps})
+Der erste Faktor ist die Wahrscheinlichkeit, dass vor Zeitpunkt $t$ keine Kollision auftrat, und der zweite Faktor die Wahrscheinlichkeit, dass bei Zeitpunkt $t$ mindestens eine Kollision auftritt.
+
+
+\paragraph*{Weglassen von $\pmb{O(j^2/h_i^2)}$} Die Behauptung ist nun, dass zur Bestimmung einer asymptotischen Näherung von $\E(t_{\min})$ die $O(j^2/h_i^2)$-Terme in $\P(s_i > s)$ weggelassen werden können. Intuitiv ist der Grund dafür, dass wenn $s$ deutlich kleiner als $h_i$ ist, auch $j$ deutlich kleiner als $h_i$ und damit $j^2/h_i^2$ nahe 0 ist. Wenn dagegen $s$ nahe $h_i$ ist, ist $\P(s_i > s)$ sehr klein, sodass der Beitrag zum Erwartungswert vernachlässigbar ist. Präzise lässt sich das wie folgt begründen. Wenn $s \le h_{i}^{3/5}$, sieht man durch Ausmultiplizieren des Produkts in (\ref{ps})
 \begin{align*}
-         & \Bigg \vert \frac {r_i} {h_i} \prod_{j = 0}^{r_i - 1} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg ) - \frac {r_i} {h_i} \prod_{j = 0}^{r_i - 1} \exp \bigg ( \frac {-j}{h_i} \bigg ) \Bigg \vert \\
-    = \, & \frac {r_i} {h_i} \Bigg \vert - \sum_{a = 0}^{r_i - 1} O \bigg ( \frac {a^2} {h_i^2} \bigg ) \prod_{j = 0, j \ne a}^{r_i - 1} \exp \bigg ( \frac {-j}{h_i} \bigg ) +
-    \sum_{a = 0}^{r_i - 1} \sum_{b = a + 1}^{r_i - 1} O \bigg ( \frac {a^2b^2} {h_i^4} \bigg ) \prod_{j = 0, j \ne a, j \ne b}^{r_i - 1} \exp \bigg ( \frac {-j}{h_i} \bigg ) - \cdots \Bigg \vert
+         & \Bigg \vert \prod_{j = 0}^{s} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg ) - \prod_{j = 0}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg ) \Bigg \vert \\
+    = \, & \Bigg \vert - \sum_{a = 0}^{s} O \bigg ( \frac {a^2} {h_i^2} \bigg ) \prod_{j = 0, j \ne a}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg ) +
+    \sum_{a = 0}^{s} \sum_{b = a + 1}^{s} O \bigg ( \frac {a^2b^2} {h_i^4} \bigg ) \prod_{j = 0, j \ne a, j \ne b}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg ) - \cdots \Bigg \vert
 \end{align*}
 Die Terme des ausmultiplizierten Produkts werden hier nach der Anzahl an $-O(j^2/h_i^2)$-Faktoren gruppiert. Nach der Dreiecksungleichung erhält man eine obere Schranke, wenn die Vorzeichen der Summen jeweils weggelassen werden. Die Produke von $\exp(-j/h_i)$ sind alle kleiner als 1 und können für eine obere Schranke auch weggelassen werden. Obiger Term wird also durch Folgenden nach oben beschränkt.
 \begin{align*}
-           & \frac {r_i} {h_i} \Bigg \vert \sum_{a = 0}^{r_i - 1} O \bigg ( \frac {a^2} {h_i^2} \bigg ) +
-    \sum_{a = 0}^{r_i - 1} \sum_{b = a + 1}^{r_i - 1} O \bigg ( \frac {a^2b^2} {h_i^4} \bigg ) + \sum_{a = 0}^{r_i - 1} \sum_{b = a + 1}^{r_i-1} \sum_{c = b + 1}^{r_i - 1} O \bigg ( \frac {a^2b^2c^2} {h_i^6} \bigg ) + \cdots \Bigg \vert \\
-    \le \, & \frac {r_i} {h_i} \Bigg \vert \, r_i \ O \bigg ( \frac {r_i^2} {h_i^2} \bigg ) +
-    r_i^2 \, O \bigg ( \frac {r_i^4} {h_i^4} \bigg ) + r_i^3 \,  O \bigg ( \frac {r_i^6} {h_i^6} \bigg ) \cdots \Bigg \vert                                                                                                                  \\
-    < \,   & \frac {r_i} {h_i} \Bigg \vert \, \ O \bigg ( \frac 1 {h_i^{1/5}} \bigg ) + \, O \bigg ( \frac 1 {h_i^{2/5}} \bigg ) +  O \bigg ( \frac 1 {h_i^{3/5}} \bigg ) + \cdots \Bigg \vert
+           & \Bigg \vert \sum_{a = 0}^{s} O \bigg ( \frac {a^2} {h_i^2} \bigg ) +
+    \sum_{a = 0}^{s} \sum_{b = a + 1}^{s} O \bigg ( \frac {a^2b^2} {h_i^4} \bigg ) + \sum_{a = 0}^{s} \sum_{b = a + 1}^{s} \sum_{c = b + 1}^{s} O \bigg ( \frac {a^2b^2c^2} {h_i^6} \bigg ) + \cdots \Bigg \vert \\
+    \le \, & \Bigg \vert \, s \ O \bigg ( \frac {s^2} {h_i^2} \bigg ) +
+    s^2 \, O \bigg ( \frac {s^4} {h_i^4} \bigg ) + s^3 \,  O \bigg ( \frac {s^6} {h_i^6} \bigg ) \cdots \Bigg \vert                                                                                              \\
+    \le \, & \Bigg \vert \, \ O \bigg ( \frac 1 {h_i^{1/5}} \bigg ) + \, O \bigg ( \frac 1 {h_i^{2/5}} \bigg ) +  O \bigg ( \frac 1 {h_i^{3/5}} \bigg ) + \cdots \Bigg \vert
 \end{align*}
-was klar gegen 0 geht, wenn $h_i \to \infty$. (Eigentlich lassen wir $p \to \infty$ gehen, aber da $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ gilt $h_i = \Theta(p)$ und damit $h_i \to \infty \Longleftrightarrow p \to \infty$.) Im Fall $r_i < h_i^{3/5}$ können wir also
+Dieser geht klar gegen 0, wenn $h_i \to \infty$. (Eigentlich lassen wir $p \to \infty$ gehen, aber da $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ gilt $h_i = \Theta(p)$ und damit $h_i \to \infty \Longleftrightarrow p \to \infty$.) Im Fall $s < h_i^{3/5}$ können wir also
 \begin{align*}
-    \P(s_i = r_i)
-     & \sim \frac {r_i} {h_i} \prod_{j = 0}^{r_i - 1} \exp \bigg ( \frac {-j}{h_i} \bigg )
-    \frac {r_i} {h_i} \exp \sum_{j = 0}^{r_i - 1} \frac {-j} {h_i}                         \\
-     & = \frac {r_i} {h_i} \exp \frac {-r_i (r_i - 1)} {2h_i}                              \\
-     & \sim \frac {r_i} {h_i} \exp \frac {-r_i^2} {2h_i}
+    \P(s_i > s)
+     & \sim \prod_{j = 0}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg ) \\
+     & =\exp \sum_{j = 0}^{s} \frac {-j} {h_i}                     \\
+     & = \exp \frac {-s (s + 1)} {2h_i}                            \\
+     & \sim \exp \frac {-s^2} {2h_i}
 \end{align*}
-schreiben. Im Fall $r_i > h_i^{3/5}$ gilt
+schreiben. Letzte Annäherung gilt für große $s$, für ausreichend große $p$ sind aber fast alle $s$ im Erwartungswert von $t_{\min}$ groß. Im Fall $s > h_i^{3/5}$ gilt
 \begin{align*}
-    \P(s_i = r_i)
-     & = \frac {r_i} {h_i} \prod_{j = 0}^{r_i - 1} \exp \bigg ( \frac {-j}{h_i} \bigg )                                   \\
-     & \le \frac {r_i} {h_i} \prod_{j = 0}^{\big \lfloor h_i^{3/5} \big \rfloor - 1} \exp \bigg ( \frac {-j}{h_i} \bigg ) \\
-     & \sim \frac {r_i} {h_i} \exp \frac {- \Big \lfloor h_i^{3/5} \Big \rfloor^2 } {2h_i}                                \\
-     & \le \frac {r_i} {h_i} \exp \frac {- h_i^{1/5}} {2}
+    \P(s_i > s)
+     & = \prod_{j = 0}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg )                                     \\
+     & \le \prod_{j = 0}^{\big \lfloor h_i^{3/5} \big \rfloor} \exp \bigg ( \frac {-j}{h_i} \bigg ) \\
+     & \sim \exp \frac {- \Big \lfloor h_i^{3/5} \Big \rfloor^2 } {2h_i}                            \\
+     & \le \exp \frac {- h_i^{1/5}} {2}
 \end{align*}
-Da immer $r_i < h_i$ gilt, geht das gegen 0 für $h_i \to \infty$. Da $\min_{i = 1}^M (r_i \lg 2k_i)$ durch $p$ beschränkt ist, folgt direkt, dass Terme in (\ref{etmin}) gegen 0 gehen, in denen $r_i > h_i^{2/3}$ gilt. Insgesamt folgt daraus
+Daraus folgt, dass wenn $t / \lg 2k_i > h_i^{3/5}$ für ein $i$ in (\ref{etmin}) gilt, dass dann der gesamte Term in der Summe gegen 0 geht, für $p \to \infty$. Die anderen Wahrscheinlichkeiten sind alle durch 1 begrenzt und $t$ ist $O(p)$. Da aber $h_i = \Theta(p)$ und $\lim_{p \to \infty} O(p) e^{-\Theta(p)^{1/5}} = 0$, geht der Summand dann gegen 0. Insgesamt bedeutet das, dass man durch Weglassen der $O(j^2/h_i^2)$-Terme in (\ref{ps}) entweder eine asymptotisch genaue Annäherung erhält, oder der Term, in dem man die Annäherung verwendet, sowieso gegen 0 geht.
+
+
+\paragraph*{Finale Formel} Für $\E(t_{\min})$ gilt also
 \begin{align*}
-    \E(t_{\min}) \sim \sum_{r_1 = 1}^{h_1} \frac {r_1} {h_1} \exp \frac {-r_1^2} {2h_1} \, \cdots \sum_{r_M = 1}^{h_M} \frac {r_M} {h_M} \exp \frac {-r_M^2} {2h_M} \, \bigg ( \min_{i = 1}^M {r_i \lg 2k_i} \bigg )
+    \E(t_{\min})
+     & \sim \sum_{t = 0}^{t_{\max}} t \, \Bigg ( \prod_{i = 1}^M \exp \bigg (\frac {-t^2} {2h_i \lg^2 2k_i} \bigg ) \Bigg ) \Bigg (1 - \prod_{i = 1}^M \frac {t} {h_i \lg 2k_i} \Bigg ) \\
+     & = \sum_{t = 0}^{t_{\max}} t \; \exp \Bigg ( \sum_{i = 1}^M \frac {-t^2} {2h_i \lg^2 2k_i} \Bigg ) \Bigg (1 - \prod_{i = 1}^M \frac {t} {h_i \lg 2k_i} \Bigg )
+\end{align*}
+Die Wahrscheinlichkeit, dass bei mindestens einer der Maschinen bei Zeit $t$ eine Kollision auftritt, wird nun durch $\sum_{i = 1}^M t/(h_i \lg 2k_i)$ angenähert. Das ist vertetbar, da bereits gezeigt wurde, dass ein Term im Erwartungswert asymptotisch irrelevant ist, wenn $t/\lg 2k_i > h_i^{3/5}$. Und wenn $t / \lg 2k_i \le h_i^{3/5}$ für alle $i$ gilt für jeden weggelassen Term
+\begin{align*}
+    \frac {t} {h_{i_1} \lg 2k_{i_1}} \, \frac {t} {h_{i_2} \lg 2k_{i_2}} \, \cdots \, \frac {t} {h_{i_m} \lg 2k_{i_m}}
+    \le \frac 1 {h_{i_1}^{2/5}} \, \frac {t} {h_{i_2}^{2/5}} \, \cdots \, \frac {t} {h_{i_m}^{2/5}} \qquad m \ge 2, \ 1 \le i_j \le M
 \end{align*}
 Die Summen werden nun durch Integrale angenähert. Der Beweis, dass man damit ebenfalls eine asymptotische Näherung für $\E(t_{\min})$ erhält wird hier nicht vorgestellt, da er relativ aufwändig und nicht besonders interessant ist. Intuitiv ist diese Näherung deswegen möglich, weil die Funktionen in den Summen stetig sind, und damit ihr Wert an einem einzelnen Punkt eine relativ gute Näherung für die Werte um diesen Punkt herum ist. Nun gilt
 \begin{align*}
     \E(t_{\min})
-     & \sim \int_{1}^{h_1} \frac {r_1} {h_1} \exp \bigg (\frac {-r_1^2} {2h_1} \bigg ) \cdots \int_{1}^{h_M} \frac {r_M} {h_M} \exp \bigg ( \frac {-r_M^2} {2h_M} \bigg ) \bigg ( \min_{i = 1}^M {r_i \lg 2k_i} \bigg ) \ d r_M \cdots dr_1        \\
-     & \sim \int_{1}^{\infty} \frac {r_1} {h_1} \exp \bigg ( \frac {-r_1^2} {2h_1} \bigg ) \cdots \int_{1}^{\infty} \frac {r_M} {h_M} \exp \bigg ( \frac {-r_M^2} {2h_M} \bigg ) \bigg ( \min_{i = 1}^M {r_i \lg 2k_i} \bigg ) \ d r_M \cdots dr_1
+     & \sim \int_{0}^{h_1} \frac {r_1} {h_1} \exp \bigg (\frac {-r_1^2} {2h_1} \bigg ) \cdots \int_{0}^{h_M} \frac {r_M} {h_M} \exp \bigg ( \frac {-r_M^2} {2h_M} \bigg ) \bigg ( \min_{i = 1}^M {s \lg 2k_i} \bigg ) \ d r_M \cdots dr_1        \\
+     & \sim \int_{0}^{\infty} \frac {r_1} {h_1} \exp \bigg ( \frac {-r_1^2} {2h_1} \bigg ) \cdots \int_{0}^{\infty} \frac {r_M} {h_M} \exp \bigg ( \frac {-r_M^2} {2h_M} \bigg ) \bigg ( \min_{i = 1}^M {s \lg 2k_i} \bigg ) \ d r_M \cdots dr_1
 \end{align*}
-da bereits gezeigt wurde, dass Terme in denen $r_i > h_i^{3/5}$ für den asymptotischen Wert von $\E(t_{\min})$ irrelevant sind. Für den nächsten Schritt ist es nötig, dass in jedem Integral über $t_i$ integriert wird. Da aber $r_i \lg 2k_i = t_i$, kann das durch eine einfache Variablensubstitution erreicht werden. Da $ dr_i = dt_i / \lg 2k_i$ gilt
+da bereits gezeigt wurde, dass Terme in denen $s > h_i^{3/5}$ für den asymptotischen Wert von $\E(t_{\min})$ irrelevant sind. Für den nächsten Schritt ist es nötig, dass in jedem Integral über $t_i$ integriert wird. Da $r_i \lg 2k_i = t_i$, kann das durch eine einfache Variablensubstitution erreicht werden. Da $ dr_i = dt_i / \lg 2k_i$ gilt
 \begin{align*}
-    \E(t_{\min}) \sim \int_{1}^{\infty} \frac {t_1} {h_1 \lg 2k_1} \exp \frac {-t_1^2} {2h_1 \lg^2 2k_1} \, \cdots \int_{1}^{\infty} \frac {t_M} {h_M \lg 2k_M} \exp \frac {-t_M^2} {2h_M \lg^2 2k_M} \, \bigg ( \min_{i = 1}^M {t_i} \bigg ) \ \frac {dt_M \cdots dt_1} {\lg 2k_M \cdots \lg 2k_1}
+    \E(t_{\min}) \sim \int_{0}^{\infty} \frac {t_1} {h_1 \lg 2k_1} \exp \frac {-t_1^2} {2h_1 \lg^2 2k_1} \, \cdots \int_{0}^{\infty} \frac {t_M} {h_M \lg 2k_M} \exp \frac {-t_M^2} {2h_M \lg^2 2k_M} \, \bigg ( \min_{i = 1}^M {t_i} \bigg ) \ \frac {dt_M \cdots dt_1} {\lg 2k_M \cdots \lg 2k_1}
 \end{align*}
+Anstatt über die $t_i$ zu integrieren, soll nun über das Minimum der $t_i$ integriert werden und mit der Wahrscheinlichkeit, dass dieses Minimum eintritt, multipliziert werden. Wenn $t_{\min} = t$, muss $t_i > t - 1$ für jedes $1 \le i \le M$ und bei mindestens einer Maschine muss in der $i$-ten Iteration eine Kollision stattfinden.
 
 \begin{align}
     \P(t_i \ge t)
