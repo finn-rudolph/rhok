@@ -98,7 +98,7 @@ Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife as
 
 \subsection{Parallelisierung der Rho-Methode}\label{sec:par}
 
-Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Eine Zeiteinheit ist hier die Dauer einer Iteration im Fall $k = 1$, d.h. eine Maschine mit Paramter $k$ führt in $t$ Zeiteinheiten $\lfloor t / \lg 2k \rfloor$ Iterationen aus. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich wird die Laufzeit nicht $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt. Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
+Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Eine Zeiteinheit ist hier die Dauer einer Iteration im Fall $k = 1$, d.h. eine Maschine mit Paramter $k$ führt in $t$ Zeiteinheiten $\lfloor t / \lg 2k \rfloor$ Iterationen aus. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich wird die Laufzeit nicht $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt, wenn $p \to \infty$. Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
 
 Eine Zuordnung von $k$-Werten für $M$ Maschinen wird als Tupel $K = (k_1, k_2, \dots, k_M), 1 \le k_i \in \N$ geschrieben.  Wir bezeichnen mit $L_K(p)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten gegeben durch $K$ und fixiertem $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$. Der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optk} behandelt. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Mit Annahme 1 gilt
 \begin{align*}
@@ -125,14 +125,47 @@ Daraus folgt sofort
      & = \frac s {h_i} \prod_{j = 0}^{s - 1} \bigg (1 - \frac {j} {h_i} \bigg )
 \end{align*}
 Nun wird die Restgliedabschätzung $\exp x = 1 + x + O(x^2)$ für $|x| < 1$ mit $x = -j/h_i$ angewandt.
-\begin{align*}
+\begin{align}
     \P(s_i > s) = \prod_{j = 0}^s \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg ) \qquad
     \P(s_i = s) = \frac s {h_i} \prod_{j = 0}^{s - 1} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )
-\end{align*}
+    \label{ps}
+\end{align}
 Damit kann $\E(t_{\min})$ wie folgt ausgedrückt werden.
+\begin{align}
+    \E(t_{\min}) = \sum_{r_1 = 1}^{h_1} \P(s_1 = r_1) \sum_{r_2 = 1}^{h_2} \P(s_2 = r_2) \, \cdots \sum_{r_M = 1}^{h_M} \P(s_M = r_M) \, \min_{i = 1}^M (r_i \lg 2k_i) \label{etmin}
+\end{align}
+Die Behauptung ist nun, dass zur Bestimmung einer asymptotischen Näherung von $\E(t_{\min})$ die $O(j^2/h_i^2)$-Terme in $\P(s_i = s)$ weggelassen werden können. Intuitiv ist der Grund dafür, dass wenn $r_i$ deutlich kleiner als $h_i$ ist, auch $j$ deutlich kleiner als $h_i$ und damit $j^2/h_i^2$ nahe 0 ist. Wenn dagegen $r_i$ nahe $h_i$ ist, ist $\P(s_i = r_i)$ sehr klein, sodass der Beitrag zum Erwartungswert vernachlässigbar ist. Präzise lässt sich das wie folgt begründen. Wenn $r_i \le h_{i}^{3/5}$, sieht man durch Ausmultiplizieren des Produkts in (\ref{ps})
 \begin{align*}
-    \E(t_{\min}) = \sum_{r_1 = 1}^{h_1} \P(s_1 = r_1) \sum_{r_2 = 1}^{h_2} \P(s_2 = r_2) \, \cdots \sum_{r_M = 1}^{h_M} \P(s_M = r_M) \, \min_{i = 1}^M (r_i \lg 2k_i)
+         & \Bigg \vert \frac {r_i} {h_i} \prod_{j = 0}^{r_i - 1} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg ) - \frac {r_i} {h_i} \prod_{j = 0}^{r_i - 1} \exp \bigg ( \frac {-j}{h_i} \bigg ) \Bigg \vert \\
+    = \, & \frac {r_i} {h_i} \Bigg \vert - \sum_{a = 0}^{r_i - 1} O \bigg ( \frac {a^2} {h_i^2} \bigg ) \prod_{j = 0, j \ne a}^{r_i - 1} \exp \bigg ( \frac {-j}{h_i} \bigg ) +
+    \sum_{a = 0}^{r_i - 1} \sum_{b = a + 1}^{r_i - 1} O \bigg ( \frac {a^2b^2} {h_i^4} \bigg ) \prod_{j = 0, j \ne a, j \ne b}^{r_i - 1} \exp \bigg ( \frac {-j}{h_i} \bigg ) - \cdots \Bigg \vert
 \end{align*}
+Die Terme des ausmultiplizierten Produkts werden hier nach der Anzahl an $-O(j^2/h_i^2)$-Faktoren gruppiert. Nach der Dreiecksungleichung erhält man eine obere Schranke, wenn die Vorzeichen der Summen jeweils weggelassen werden. Die Produke von $\exp(-j/h_i)$ sind alle kleiner als 1 und können für eine obere Schranke auch weggelassen werden. Obiger Term wird also durch Folgenden nach oben beschränkt.
+\begin{align*}
+           & \frac {r_i} {h_i} \Bigg \vert \sum_{a = 0}^{r_i - 1} O \bigg ( \frac {a^2} {h_i^2} \bigg ) +
+    \sum_{a = 0}^{r_i - 1} \sum_{b = a + 1}^{r_i - 1} O \bigg ( \frac {a^2b^2} {h_i^4} \bigg ) + \sum_{a = 0}^{r_i - 1} \sum_{b = a + 1}^{r_i-1} \sum_{c = b + 1}^{r_i - 1} O \bigg ( \frac {a^2b^2c^2} {h_i^6} \bigg ) + \cdots \Bigg \vert \\
+    \le \, & \frac {r_i} {h_i} \Bigg \vert \, r_i \ O \bigg ( \frac {r_i^2} {h_i^2} \bigg ) +
+    r_i^2 \, O \bigg ( \frac {r_i^4} {h_i^4} \bigg ) + r_i^3 \,  O \bigg ( \frac {r_i^6} {h_i^6} \bigg ) \cdots \Bigg \vert                                                                                                                  \\
+    < \,   & \frac {r_i} {h_i} \Bigg \vert \, \ O \bigg ( \frac 1 {h_i^{1/5}} \bigg ) + \, O \bigg ( \frac 1 {h_i^{2/5}} \bigg ) +  O \bigg ( \frac 1 {h_i^{3/5}} \bigg ) + \cdots \Bigg \vert
+\end{align*}
+was klar gegen 0 geht, wenn $h_i \to \infty$. (Eigentlich lassen wir $p \to \infty$ gehen, aber da $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ gilt $h_i = \Theta(p)$ und damit $h_i \to \infty \Longleftrightarrow p \to \infty$.) Im Fall $r_i < h_i^{3/5}$ können wir also
+\begin{align*}
+    \P(s_i = r_i)
+     & \sim \frac {r_i} {h_i} \prod_{j = 0}^{r_i - 1} \exp \bigg ( \frac {-j}{h_i} \bigg )
+    \frac {r_i} {h_i} \exp \sum_{j = 0}^{r_i - 1} \frac {-j} {h_i}                         \\
+     & = \frac {r_i} {h_i} \exp \frac {-r_i (r_i - 1)} {2h_i}                              \\
+     & \sim \frac {r_i} {h_i} \exp \frac {-r_i^2} {2h_i}
+\end{align*}
+schreiben. Im Fall $r_i > h_i^{3/5}$ gilt
+\begin{align*}
+    \P(s_i = r_i)
+     & = \frac {r_i} {h_i} \prod_{j = 0}^{r_i - 1} \exp \bigg ( \frac {-j}{h_i} \bigg )                                   \\
+     & \le \frac {r_i} {h_i} \prod_{j = 0}^{\big \lfloor h_i^{3/5} \big \rfloor - 1} \exp \bigg ( \frac {-j}{h_i} \bigg ) \\
+     & \sim \frac {r_i} {h_i} \exp \frac {- \Big \lfloor h_i^{3/5} \Big \rfloor^2 } {2h_i}                                \\
+     & \le \frac {r_i} {h_i} \exp \frac {- h_i^{1/5}} {2}
+\end{align*}
+Da immer $r_i < h_i$ gilt, geht das gegen 0 für $h_i \to \infty$. Das reicht allerdings noch nicht, um zu zeigen, dass Terme in (\ref{etmin}) mit $r_i > h_i^{3/5}$ gegen 0 gehen für $h_i \to \infty$. Da $\min_{i = 1}^M (r_i \lg 2k_i)$ durch $p$ beschränkt ist, folgt dies aber sofort.
+
 \begin{align}
     \P(t_i \ge t)
     \approx \exp \Bigg (- \frac {\lceil t / \lg 2k_i \rceil (\lceil t / \lg 2k_i \rceil - 1)} {2h_i} \Bigg )
