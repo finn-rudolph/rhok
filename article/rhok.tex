@@ -33,7 +33,7 @@
 \newtheorem{definition}{Definition}
 \newtheorem{theorem}{Satz}
 \newtheorem{lemma}{Lemma}
-\newtheorem{assumption}{Annahme}
+\newtheorem*{assumption*}{Annahme}
 
 \newcommand*\uparagraph{%
         \par
@@ -83,7 +83,7 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
     \caption{Pollards Rho-Algorithmus}
 \end{algorithm*}
 
-\noindent Die Analyse von Pollards Rho-Algorithmus erweist sich als schwierig, es ist bis dato keine rigorose Laufzeitanalyse bekannt. Stattdessen werden heuristische Annahmen getroffen. Anstatt der mittleren Anzahl an Iterationen von Floyds Algorithmus wird die mittlere Rho-Länge analysiert, mit der Annahme, dass sich diese zwei Werte für große $p$ nur um eine feste Konstante unterscheiden. Um die zentrale Annahme über Pollards Rho-Algorithmus zu formulieren, wird der Begriff einer asymptotischen Näherung benötigt.
+\noindent Die Analyse von Pollards Rho-Algorithmus erweist sich als schwierig, es ist bis dato keine rigorose Laufzeitanalyse bekannt. Stattdessen wird eine Laufzeitanalyse basierend auf heuristischen Annahmen durchgeführt. Anstatt der mittleren Anzahl an Iterationen von Floyds Algorithmus wird die mittlere Rho-Länge analysiert, mit der Annahme, dass sich diese zwei Werte für große $p$ nur um eine feste Konstante unterscheiden. Um die zentrale Annahme über Pollards Rho-Algorithmus zu formulieren, wird der Begriff einer asymptotischen Näherung benötigt.
 
 \begin{definition}[Asymptotische Näherung]
     Eine Funktion $f : \R \to \R$ heißt genau dann asymptotische Näherung von einer Funktion $g : \R \to \R$, oder asymptotisch zu $g$, wenn
@@ -93,13 +93,13 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
     In diesem Fall schreiben wir $f \sim g$.
 \end{definition}
 
-Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$ für $n \in \N$. Über die Verteilung der Rho-Längen wird Folgendes angenommen.
+Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$ für $n \in \N$. Über die Verteilung der Rho-Längen wird folgende Annahme getroffen, die auch \emph{Random Mapping Assumption} (RMA) genannt wird.
 
-\begin{assumption}
+\begin{assumption*}[Random Mapping Assumption]
     Sei $f : x \mapsto x^{2k} + 1$ und $d = \gcd(p - 1, 2k)$. Seien $x_0 \in \Z/p\Z$ und $y_0 \in \Z/((p - 1)/d)\Z$ zufällig und $g \in A((p - 1)/d)$ zufällig. Dann gilt $\P(\nu(f, x_0) = m) \sim \P(\nu(g, y_0) = m)$ für $p \to \infty$.
-\end{assumption}
+\end{assumption*}
 
-\noindent In anderen Worten sagt Annahme 1, dass sich die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ wie bei einer zufälligen Funktion aus $A((p - 1)/d)$ verhält. Insbesondere verhält sich $x \mapsto x^2 + 1$ bezüglich der Rho-Längen wie ein zufällige Funktion $\Z/p\Z \to \Z/p\Z$. \cite{bp81} geben eine Begründung für Annahme 1. Im Folgenden wird statt $(p - 1)/d$ einfach $p/d$ verwendet, da $p \sim p - 1$ für $p \to \infty$.
+\noindent In anderen Worten sagt die Random Mapping Assumption, dass sich die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ wie bei einer zufälligen Funktion aus $A((p - 1)/d)$ verhält. Insbesondere verhält sich $x \mapsto x^2 + 1$ bezüglich der Rho-Längen wie ein zufällige Funktion $\Z/(p - 1)\Z \to \Z/(p - 1)\Z$. \cite{bp81} geben eine Begründung für RMA. Im Folgenden wird statt $(p - 1)/d$ einfach $p/d$ verwendet, da $p \sim p - 1$ für $p \to \infty$.
 
 Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife asymptotisch zu $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation können die Kosten des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $3/2 \lg 2k$ Schritten möglich ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet. Der Faktor $3/2$ in dieser Arbeit unwichtig und wird daher ignoriert.
 
@@ -107,7 +107,7 @@ Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife as
 
 Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Eine Zeiteinheit ist hier die Dauer einer Iteration im Fall $k = 1$, d.h. eine Maschine mit Paramter $k$ führt in $t$ Zeiteinheiten $\lfloor t / \lg 2k \rfloor$ Iterationen aus. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich wird die Laufzeit nicht $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt, wenn $p \to \infty$. Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
 
-Sei $k_1, k_2, \dots, k_M, 1 \le k_i \in \N$ eine Zuordnung von $k$-Werten für $M$ Maschinen.  Wir bezeichnen mit $L_{k_1, \dots, k_M}(p)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten dieser Zuordnung. Dabei ist $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ noch fixiert, der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optimal-k} behandelt. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Mit Annahme 1 gilt
+Sei $k_1, k_2, \dots, k_M, 1 \le k_i \in \N$ eine Zuordnung von $k$-Werten für $M$ Maschinen.  Wir bezeichnen mit $L_{k_1, \dots, k_M}(p)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten dieser Zuordnung. Dabei ist $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ noch fixiert, der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optimal-k} behandelt. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Mit RMA gilt
 \begin{align*}
     L_{k_1, \dots, k_M}(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
 \end{align*}
@@ -116,10 +116,10 @@ wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ m
 
 \section{Eine Formel für den Fall unabhängiger Maschinen}
 
-In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Aus Annahme 1 folgt, dass die Rho-Längen der $i$-ten und $j$-ten Maschine als Zufallsvariablen betrachtet stochastisch unabhängig sind, wenn $k_i \ne k_j$. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
+In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Aus RMA folgt, dass die Rho-Längen der $i$-ten und $j$-ten Maschine als Zufallsvariablen betrachtet stochastisch unabhängig sind, wenn $k_i \ne k_j$. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
 
 
-\paragraph{Eine Formel für $\pmb{\P(s_i > s)}$.} \space \space Nach Annahme 1 gilt $\P(s_i = s) = \P(\nu(f, x_0) = s)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $i$-ten Schritt $i/h_i$, wenn in den ersten $i-1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $i$ von ihnen zu einer Kollision führen. Die Wahrscheinlichkeit, dass in den ersten $s$ Schritten keine Kollision auftritt ist also
+\paragraph{Eine Formel für $\pmb{\P(s_i > s)}$.} Nach RMA gilt $\P(s_i = s) = \P(\nu(f, x_0) = s)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $i$-ten Schritt $i/h_i$, wenn in den ersten $i-1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $i$ von ihnen zu einer Kollision führen. Die Wahrscheinlichkeit, dass in den ersten $s$ Schritten keine Kollision auftritt ist also
 \begin{align*}
     \P(s_i > s) = \P(\nu(f, x_0) > s) = \prod_{j = 0}^s \bigg (1 - \frac {j} {h_i} \bigg )
 \end{align*}
@@ -217,7 +217,7 @@ Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwend
 
 \section{Die erwartete minimale Rho-Länge bei mehreren Anfangswerten}
 
-Um $L_{k_1, \dots, k_M}(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{expectation-tmin}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden. Für den Fall $k_1 = k_2 = \dots = k_M$, sei $k = k_1$ und $h = \gcd(p - 1, 2k)$. Nach Annahme 1 die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ für $p \to \infty$ asymptotisch zur Verteilung der Rho-Längen zufälliger Elemente in $A(h)$. Da sich die $M$ Maschinen im Fall $k_1 = k_2 = \dots = k_M$ alle im gleichen funktionalen Graphen bewegen, reduziert sich das Problem der Bestimmung einer asymptotischen Näherung von $L_{k, k, \dots, k}$ auf folgende Frage: \emph{Für $n \in \N$, gegeben ein zufälliges Element $f$ aus $A(n)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/n\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
+Um $L_{k_1, \dots, k_M}(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{expectation-tmin}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden. Für den Fall $k_1 = k_2 = \dots = k_M$, sei $k = k_1$ und $h = \gcd(p - 1, 2k)$. Nach der Random Mapping Assumption ist die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ für $p \to \infty$ asymptotisch zur Verteilung der Rho-Längen zufälliger Elemente in $A(h)$. Da sich die $M$ Maschinen im Fall $k_1 = k_2 = \dots = k_M$ alle im gleichen funktionalen Graphen bewegen, reduziert sich das Problem der Bestimmung einer asymptotischen Näherung von $L_{k, k, \dots, k}$ auf folgende Frage: \emph{Für $n \in \N$, gegeben ein zufälliges Element $f$ aus $A(n)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/n\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
 
 \subsection{Theoretischer Hintergrund: Erzeugende Funktionen}
 
@@ -354,13 +354,17 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     \end{align*}
 \end{proof}
 
-\noindent Aus der Definition von $L_{k_1, \dots, k_M}(p)$ folgt sofort $L_{k, k}(p) \sim 25/32 \sqrt{\pi p / (2\gcd(p - 1, k))}$. Man bemerke außerdem, dass Satz 2 unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf heuristischen Annahmen basiert.
+\noindent Aus Satz 2 folgt sofort, dass $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p / 2}$. Daraus lässt sich auch auf $L_{k, k}(p)$ schließen. Für $1 \le k \in \N$ wird nach RMA $p$ durch $p/(\gcd(p - 1, 2k) - 1)$ ersetzt. Die Laufzeit pro Iteration steigt bei jeder Maschine aber um einen Faktor $\lg 2k$, sodass sie auch insgesamt um einen Faktor $\lg 2k$ steigt. Es gilt also
+\begin{align}
+    L_{k, k}(p) \sim 32 / 25 \sqrt{\pi p /2} \ \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}} \label{lkkp}
+\end{align}
+Man bemerke, dass Satz 2 unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf der Random Mapping Assumption basiert.
 
 \section{Bestimmung optimaler Exponenten für die Rho-Methode}\label{sec:optimal-k}
 
-In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{expectation-tmin}) und Satz 2 konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Zur Berechnung der Wahrscheinlichkeit, dass $\gcd(p - 1, 2k_i)$ einen bestimmten Wert annimmt, wird folgendes Lemma benötigt.
+In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{expectation-tmin}) und Satz 2 konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Da $p - 1$ gerade ist, gilt $\gcd(p-1, 2k_i) = 2\gcd((p - 1)/2, k_i)$. Weitere Kongruenzen von $p - 1$ sind im Allgemeinen nicht bekannt, weshalb angenommen wird, dass jeder Rest von $(p- 1)/2$ modulo $k_i$ gleich wahrscheinlich ist. Zur Berechnung der Wahrscheinlichkeit, dass $\gcd((p - 1)/2, k_i)$ einen bestimmten Wert annimmt, wird folgendes Lemma benötigt.
 
-\begin{lemma}
+\begin{lemma}\label{lemma-gcd-probability}
     Sei $1 \le n \in \N$ und $m$ eine zufällige natürliche Zahl, sodass $0 \le m \le n - 1$. Dann gilt für $d \in \N$
     \begin{align*}
         \mathbb{P}(\gcd(n, m) = d) = \frac {\varphi(n / d)} n
@@ -375,7 +379,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 \subsection{Der Fall einer Maschine}
 
 \begin{theorem}
-    Sei $L_k(p)$ wie in Abschnitt \ref{sec:par} definiert. Es gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd(p - 1, 2k)$ genommen wird.
+    Sei $L_k(p)$ wie in Abschnitt \ref{sec:par} definiert. Es gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd((p - 1)/2, k)$ genommen wird.
 \end{theorem}
 
 \begin{proof}
@@ -383,7 +387,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
     \begin{align*}
         L_k(p) \sim \sqrt {\pi p / 2} \; \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}}
     \end{align*}
-    Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Der Erwartungswert von $L_k(p)$ wird über jede Möglichkeit von $\gcd(p - 1, 2k)$ gebildet. Da $p - 1$ gerade ist, gilt $\gcd(p - 1, 2k) = 2 \gcd((p - 1)/2, k)$. Unter der Annahme, dass jeder Rest von $(p - 1)/2 \bmod k$ gleich wahrscheinlich ist, was für eine Abschätzung der durchschnittlichen Laufzeit sinnvoll ist, gilt $\mathbb{P}(\gcd((p - 1)/2, k) = d) = \varphi(k/d)/k$. Daraus folgt
+    Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Nach Lemma \ref{lemma-gcd-probability} gilt
     \begin{align*}
         \E(L_k(p))
          & \sim \sqrt{\pi p / 2} \, \lg (2k) \, \sum_{d | k} \frac {\P(\gcd((p - 1)/2, k) = d)} { \sqrt {2d - 1}} \nonumber \\
@@ -393,7 +397,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
     \begin{align*}
         \frac {\varphi(k)} k > \frac 1 {e^\gamma \ln (\ln (k)) + 2.51 / \ln (\ln (k))}
     \end{align*}
-    für $k \ge 3$, wobei $\gamma \approx 0.5772$ die Euler-Mascheroni-Konstante ist. Für $\ln \ln k > 1$ bzw. $k \ge e^e \approx 15.1543$ gilt
+    für $k \ge 3$, wobei $\gamma \approx 0.5772$ die Euler-Mascheroni-Konstante ist. Für $\ln \ln k > 1$ bzw. $k \ge e^e \approx 15.1543$ folgt daraus
     \begin{align*}
         \frac {\varphi(k)} k > \frac 1 {e^\gamma \ln (\ln (k)) + 2.51}
     \end{align*}
@@ -406,7 +410,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 
 \subsection{Der Fall zweier Maschinen}
 
-Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1, k_2$ prim und $k_1 = k_2 > 1$. Es wird vermutet, dass $k_1 = k_2 = 1$ optimal ist, der Beweis scheint aber deutlich schwieriger als für $M = 1$. Während es im Fall $M = 1$ möglich war, nur mit dem Fall $\gcd((p - 1)/2, k) = 1$ eine ausreichend große untere Schranke zu erhalten, funktioniert das im Fall $M = 2$ für allgemeine $k_i$ nicht mehr.
+Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1, k_2$ prim und $k_1 = k_2 > 1$. Es wird vermutet, dass $k_1 = k_2 = 1$ optimal ist.
 
 \begin{theorem}
     Sei $L_{k_1, k_2}(p)$ wie in Abschnitt \ref{sec:par} definiert. Im Folgenden wird der Erwartungswert von $L_{k_1, k_2}$ über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ genommen.
@@ -417,39 +421,31 @@ Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1
 \end{theorem}
 
 \begin{proof}
-    Nach Abschnitt \ref{sec:start2} gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also in beiden Fällen zu zeigen, dass der Erwartungswert jeweils größer ist. Zunächst wird Teil 1 gezeigt. Da $q_1 \ne q_2$, können wir Gleichung (\ref{lkp}) mit $M = 2$ verwenden.
+    Nach Abschnitt \ref{sec:start2} gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also in beiden Fällen zu zeigen, dass der Erwartungswert jeweils größer ist. Zunächst wird Teil 1 bewiesen. Da $k_1 \ne k_2$, kann (\ref{expectation-tmin}) verwendet werden.
     \begin{align*}
-        L_{k_1, k_2}(p) \sim \sqrt{\pi / 2} \ \Bigg (\frac 1 {h_1 \lg 2k_1} + \frac 1 {h_2 \lg 2k_2} \Bigg ) \Bigg ( \frac 1 {h_1 \lg^2 2k_1} + \frac 1 {h_2 \lg^2 2k_2} \Bigg )^{-3/2}
+        L_{k_1, k_2}(p)
+         & \sim \sqrt{\pi p / 2} \ \Bigg ( \frac {\gcd(p - 1, 2k_1) - 1} {\lg^2 2k_1} + \frac {\gcd(p -1, 2k_2) - 1} {\lg^2 2k_2} \Bigg )^{-1/2}
     \end{align*}
-    Wie im Fall $M = 1$ bilden wir den Erwartungswert über alle möglichen $\gcd((p - 1)/2, k_i)$.
-    \begin{align*}
+    Durch Bilden des Erwartungswerts über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ erhält man
+    \begin{align}
         \E(L_{k_1, k_2})
-         & \sim \sqrt{\pi / 2} \sum_{d_1 | k_1} \P(\gcd((p - 1)/2, k_2) = d_1) \sum_{d_2 | k_2} \P(\gcd((p - 1)/2, k_2) = d_2)                                                                                              \\
-         & \qquad \Bigg (\frac 1 {h_1 \lg 2k_1} + \frac 1 {h_2 \lg 2k_2} \Bigg ) \Bigg ( \frac 1 {h_1 \lg^2 2k_1} + \frac 1 {h_2 \lg^2 2k_2} \Bigg )^{-3/2}                                                                 \\
-         & \ge \sqrt{\pi / 2} \ \frac {\varphi(k_1) \varphi(k_2)} {k_1k_2} \Bigg (\frac 1 {p\lg 2k_1} + \frac 1 {p \lg 2k_2} \Bigg ) \Bigg ( \frac 1 {p \lg^2 2k_1} + \frac 1 {p \lg^2 2k_2} \Bigg )^{-3/2}                 \\
-         & = \sqrt {\pi p / 2} \  \frac {(k_1 - 1)(k_2 - 1)} {k_1 k_2} \Bigg ( \frac {\lg 2k_2 + \lg 2k_1} {\lg 2k_1 \, \lg 2k_2} \Bigg ) \Bigg ( \frac {\lg^2 2k_2 + \lg^2 2k_1} {\lg^2 2k_1 \, \lg^2 2k_2} \Bigg )^{-3/2} \\
-         & = \sqrt {\pi p / 2} \ \frac {(k_1 - 1)(k_2 - 1)(\lg^2 2k_1) (\lg^2 2k_2)} {k_1 k_2} \, \frac {\lg 2k_1 + \lg 2k_2} {(\lg^2 2k_1 + \lg^2 2k_2)^{3/2}}
-    \end{align*}
-    Nach der Dreiecksungleichung und $k_i \ge 1$ gilt $\lg 2k_1 + \lg 2k_2 > \sqrt{\lg^2 2k_1 + \lg^2 2k_2}$.
-    \begin{align*}
-        \E(L_{k_1, k_2}(p)) > \sqrt {\pi p / 2} \ \frac {(k_1 - 1)(k_2 - 1)} {k_1 k_2} \, \, \frac { (\lg^2 2k_1) (\lg^2 2k_2)} {\lg^2 2k_1 + \lg^2 2k_2}
-    \end{align*}
-    Falls $k_1 = 2, k_2 = 3$ gilt damit $E(L_{2, 3}(p)) > 0.8340 \sqrt{\pi p /2}  > 25 / 32 \sqrt{\pi p / 2}$. Die Terme $(k_i - 1)/k_i$ sind aber streng monoton steigend mit $k_i$ für $i = 1, 2$. Ebenso ist der nachfolgende Bruch streng monoton steigend mit jedem der $k_i$. Um das zu zeigen, sei $x = \lg^2 2k_1, y = \lg^2 2k_2$ und $x' > x$. Dann gilt
+         & \sim \sqrt{\pi p / 2} \sum_{d_1 | k_1} \P(\gcd((p - 1)/2, k_1) = d_1) \nonumber                                                                                                                                                                   \\
+         & \qquad \sum_{d_2 | k_2} \P(\gcd((p - 1)/2, k_2) = d_2)                                                                                             \Bigg ( \frac {2d_1 - 1} {\lg^2 2k_1} + \frac {2d_2 - 1} {\lg^2 2k_2} \Bigg )^{-1/2} \nonumber \\
+         & \ge \sqrt{\pi p / 2} \ \frac {\varphi(k_1) \varphi(k_2)} {k_1k_2} \Bigg (\frac 1 {\lg^2 2k_1} + \frac 1 {\lg^2 2k_2} \Bigg )^{-1/2} \nonumber                                                                                                     \\
+         & = \sqrt{\pi p / 2} \ \frac {(k_1 - 1) (k_2- 1)} {k_1k_2} \sqrt{\frac{\lg^2(2k_1) \lg^2(2k_2)}{\lg^2(2k_1) + \lg^2(2k_2)}} \label{m2-expectation-lb}
+    \end{align}
+    Die Terme $(k_i - 1)/k_i$ sind streng monoton steigend mit $k_i$ für $i = 1, 2$. Ebenso ist das Argument der nachfolgenden Wurzel in (\ref{m2-expectation-lb}) streng monoton steigend mit jedem der $k_i$. Um das zu zeigen, sei $x = \lg^2 2k_1, y = \lg^2 2k_2$ und $x' > x$. Dann gilt
     \begin{align*}
         \frac {x'y} {x' + y}
         = \frac {x'y} {x' + y} \, \frac {x + y} {xy} \, \frac {xy} {x + y}
         = \frac {xx'y + x'y^2} {xx'y + xy^2} \, \frac {xy} {x + y} > \frac {xy} {x + y}
     \end{align*}
-    da $x, x', y > 0$ und $x < x'$. Da $k_1 = 2, k_2 = 3$ der kleinstmögliche Fall ist, folgt für jedes Paar an verschiedenen Primzahlen $k_1, k_2$, dass $\E(L_{k_1, k_2}(p)) > 25 / 32 \sqrt{\pi p / 2}$.
+    da $x, x', y > 0$ und $x < x'$. Da $x$ und $y$ symmetrisch in dem Term sind, folgt aus der Monotonie bzgl. $x$ die Monotonie bzgl. $y$. Da die Wurzelfunktion streng monoton steigt und die Verkettung streng monoton steigender Funktionen streng monoton steigt, folgt, dass die gesamte Wurzel auf der rechten Seite von (\ref{m2-expectation-lb}) streng monoton steigt. Weil nun jeder einzelne Faktor in (\ref{m2-expectation-lb}) streng monoton steigt und positiv ist, ist ganz (\ref{m2-expectation-lb}) streng monoton steigend in den $k_i$. Für $k_1 = 2, k_2 = 3$ gilt $E(L_{2, 3}(p)) \ge 0.8340 \sqrt{\pi p /2}  > 25 / 32 \sqrt{\pi p / 2}$. in Da $k_1 = 2, k_2 = 3$ der Fall mit minimalen $k_i$ ist, folgt für jedes Paar an verschiedenen Primzahlen $k_1, k_2$, dass $\E(L_{k_1, k_2}(p)) > 25 / 32 \sqrt{\pi p / 2}$.
 
-    Für $L_{k, k}(p)$ gilt nach Abschnitt \ref{sec:start2}
+    Nun zum Beweis von Teil 2. Aus (\ref{lkkp}) folgt $L_{k, k}(p) = 25 / 32 \cdot L_{k}(p)$ für $1 \le k \in \N$. Damit folgt Teil 2 des Satzes aus Satz 3.
 \end{proof}
 
 \section{Experimentelle Ergebnisse}\label{sec:ex}
-
-\subsection{Die minimale Rho-Länge bei mehreren Anfangswerten}
-
-\subsection{Experimentelle Bestimmung optimaler Parameter}
 
 \section{Fazit}
 
