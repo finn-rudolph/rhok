@@ -96,10 +96,10 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
 Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$ für $n \in \N$. Über die Verteilung der Rho-Längen wird Folgendes angenommen.
 
 \begin{assumption}
-    Sei $f : x \mapsto x^{2k} + 1$ und $d = \gcd(p - 1, 2k)$. Seien $x_0 \in \Z/p\Z$ und $y_0 \in \Z/(p/(d - 1))\Z$ zufällig und $g \in A(p/(d - 1))$ zufällig. Dann gilt $\P(\nu(f, x_0) = m) \sim \P(\nu(g, y_0) = m)$ für $p \to \infty$.
+    Sei $f : x \mapsto x^{2k} + 1$ und $d = \gcd(p - 1, 2k)$. Seien $x_0 \in \Z/p\Z$ und $y_0 \in \Z/((p - 1)/d)\Z$ zufällig und $g \in A((p - 1)/d)$ zufällig. Dann gilt $\P(\nu(f, x_0) = m) \sim \P(\nu(g, y_0) = m)$ für $p \to \infty$.
 \end{assumption}
 
-\noindent In anderen Worten sagt Annahme 1, dass sich die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ wie bei einer zufälligen Funktion aus $A(p/(d - 1))$ verhält. Insbesondere verhält sich $x \mapsto x^2 + 1$ bezüglich der Rho-Längen wie ein zufällige Funktion $\Z/p\Z \to \Z/p\Z$. \cite{bp81} geben eine Begründung für Annahme 1.
+\noindent In anderen Worten sagt Annahme 1, dass sich die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ wie bei einer zufälligen Funktion aus $A((p - 1)/d)$ verhält. Insbesondere verhält sich $x \mapsto x^2 + 1$ bezüglich der Rho-Längen wie ein zufällige Funktion $\Z/p\Z \to \Z/p\Z$. \cite{bp81} geben eine Begründung für Annahme 1. Im Folgenden wird statt $(p - 1)/d$ einfach $p/d$ verwendet, da $p \sim p - 1$ für $p \to \infty$.
 
 Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife asymptotisch zu $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation können die Kosten des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $3/2 \lg 2k$ Schritten möglich ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet. Der Faktor $3/2$ in dieser Arbeit unwichtig und wird daher ignoriert.
 
@@ -107,16 +107,16 @@ Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife as
 
 Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Eine Zeiteinheit ist hier die Dauer einer Iteration im Fall $k = 1$, d.h. eine Maschine mit Paramter $k$ führt in $t$ Zeiteinheiten $\lfloor t / \lg 2k \rfloor$ Iterationen aus. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich wird die Laufzeit nicht $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt, wenn $p \to \infty$. Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
 
-Eine Zuordnung von $k$-Werten für $M$ Maschinen wird als Tupel $K = (k_1, k_2, \dots, k_M), 1 \le k_i \in \N$ geschrieben.  Wir bezeichnen mit $L_K(p)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten gegeben durch $K$ und fixiertem $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$. Der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optk} behandelt. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Mit Annahme 1 gilt
+Sei $k_1, k_2, \dots, k_M, 1 \le k_i \in \N$ eine Zuordnung von $k$-Werten für $M$ Maschinen.  Wir bezeichnen mit $L_{k_1, \dots, k_M}(p)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten dieser Zuordnung. Dabei ist $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ noch fixiert, der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optimal-k} behandelt. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Mit Annahme 1 gilt
 \begin{align*}
-    L_K(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
+    L_{k_1, \dots, k_M}(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
 \end{align*}
-wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ mit $X_i(f, x_0) = \nu(f, x_0)$ ist. Eine Schwierigkeit in der Herleitung einer Formel für $L_K(p)$ ist, dass $X_i$ und $X_j$ nicht unabhängig sind, wenn $k_i = k_j$, da sich die $i$-te und $j$-te Maschine in diesem Fall im gleichen funktionalen Graphen bewegen. Wenn beispielsweise der Startwert der $i$-ten Maschine fixiert wird, ist bereits klar, dass die Rho-Länge der $j$-ten Maschine größer gleich der Rho-Länge der $i$-ten Maschine sein wird, wenn der Startwert ein Vorfahre des Startwerts der $i$-ten Maschine in einem Baum von $\gamma(f)$ ist. Daher werden im Folgenden die Fälle abhängiger und unabhängiger Maschinen unterschieden.
+wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ mit $X_i(f, x_0) = \nu(f, x_0)$ ist. Eine Schwierigkeit in der Herleitung einer Formel für $L_{k_1, \dots, k_M}(p)$ ist, dass $X_i$ und $X_j$ nicht unabhängig sind, wenn $k_i = k_j$, da sich die $i$-te und $j$-te Maschine in diesem Fall im gleichen funktionalen Graphen bewegen. Wenn beispielsweise der Startwert der $i$-ten Maschine fixiert wird, ist bereits klar, dass die Rho-Länge der $j$-ten Maschine größer gleich der Rho-Länge der $i$-ten Maschine sein wird, wenn der Startwert ein Vorfahre des Startwerts der $i$-ten Maschine in einem Baum von $\gamma(f)$ ist. Daher werden im Folgenden die Fälle abhängiger und unabhängiger Maschinen unterschieden.
 
 
 \section{Eine Formel für den Fall unabhängiger Maschinen}
 
-In diesem Abschnitt wird eine Formel für $L_K(p)$ hergleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Aus Annahme 1 folgt, dass die Rho-Längen der $i$-ten und $j$-ten Maschine als Zufallsvariablen betrachtet stochastisch unabhängig sind, wenn $k_i \ne k_j$. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
+In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Aus Annahme 1 folgt, dass die Rho-Längen der $i$-ten und $j$-ten Maschine als Zufallsvariablen betrachtet stochastisch unabhängig sind, wenn $k_i \ne k_j$. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
 
 
 \paragraph{Eine Formel für $\pmb{\P(s_i > s)}$.} \space \space Nach Annahme 1 gilt $\P(s_i = s) = \P(\nu(f, x_0) = s)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $i$-ten Schritt $i/h_i$, wenn in den ersten $i-1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $i$ von ihnen zu einer Kollision führen. Die Wahrscheinlichkeit, dass in den ersten $s$ Schritten keine Kollision auftritt ist also
@@ -213,11 +213,11 @@ Als letzter Schritt wird die Summe über $t$ durch ein Integral angenähert. Die
      & = \sqrt{\pi p / 2} \; \Bigg ( \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
     \label{expectation-tmin}
 \end{align}
-Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Die Formel ist verträglich mit bereits bekannten Laufzeitabschätzungen für Pollards Rho-Algorithmus. Setzt man beispielsweise $M = 1$ und $k_1 = 1$, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}.
+Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Man kann sich auf mehereren Wegen davon überzeugen, dass die Formel trotz der vielen Näherungen stimmt. Beispielsweise ist sie verträglich mit der bekannten Laufzeitabschätzung für Pollards Rho-Algorithmus im Fall $M = k_1 = 1$. Setzt man dies ein, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}. Lässt man in obigem Integral einen Faktor $t$ weg, erhält man statt des Erwartungswerts das Integral aller Wahrscheinlichkeiten. Dieses sollte natürlich 1 sein, und das ist es auch, wie man leicht nachrechnet.
 
 \section{Die erwartete minimale Rho-Länge bei mehreren Anfangswerten}
 
-Um $L_K(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{expectation-tmin}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden. Für den Fall $k_1 = k_2 = \dots = k_M$, sei $k = k_1$ und $h = \gcd(p - 1, 2k)$. Nach Annahme 1 die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ für $p \to \infty$ asymptotisch zur Verteilung der Rho-Längen zufälliger Elemente in $A(h)$. Da sich die $M$ Maschinen im Fall $k_1 = k_2 = \dots = k_M$ alle im gleichen funktionalen Graphen bewegen, reduziert sich das Problem der Bestimmung einer asymptotischen Näherung von $L_{k, k, \dots, k}$ auf folgende Frage: \emph{Für $n \in \N$, gegeben ein zufälliges Element $f$ aus $A(n)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/n\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
+Um $L_{k_1, \dots, k_M}(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{expectation-tmin}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden. Für den Fall $k_1 = k_2 = \dots = k_M$, sei $k = k_1$ und $h = \gcd(p - 1, 2k)$. Nach Annahme 1 die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ für $p \to \infty$ asymptotisch zur Verteilung der Rho-Längen zufälliger Elemente in $A(h)$. Da sich die $M$ Maschinen im Fall $k_1 = k_2 = \dots = k_M$ alle im gleichen funktionalen Graphen bewegen, reduziert sich das Problem der Bestimmung einer asymptotischen Näherung von $L_{k, k, \dots, k}$ auf folgende Frage: \emph{Für $n \in \N$, gegeben ein zufälliges Element $f$ aus $A(n)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/n\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
 
 \subsection{Theoretischer Hintergrund: Erzeugende Funktionen}
 
@@ -267,7 +267,6 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
 
 
     Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie bereits definiert. Zur Bestimmung von $\Psi(x, w)$ unterscheiden wir drei disjunkte Fälle, die in Abbildung 1 dargestellt sind. Die Graphen werden grundsätzlich so konstruiert, dass $\nu(f, a) \le \nu(f, b)$, und wenn $\nu(f, a) < \nu(f, b)$, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert.
-    \\
 
     \begin{figure}
         \begin{tabular}{ccc}
@@ -277,7 +276,7 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
         \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Kanten stellen keine einzelne Kante dar, sondern einen beliebig langen (und möglicherweise leeren) Pfad. Beispielsweise steht die Kurve $r$ in ($\alpha$) für den Zyklus in dem Zusammenhangskomponenten von $a$.}
     \end{figure}
 
-    \noindent \textbf{Fall 1.} (\emph{$a$ und $b$ liegen in unterschiedlichen Zusammenhangskomponenten.}) \space \space Dieser Fall wird erneut in die Fälle $\lambda(f, b) \le \nu(f, a)$ und $\lambda(f, b) > \nu(f, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall ist
+    \paragraph{Fall 1.} Hier liegen $a$ und $b$ in unterschiedlichen Zusammenhangskomponenten. Dieser Fall wird erneut in die Fälle $\lambda(f, b) \le \nu(f, a)$ und $\lambda(f, b) > \nu(f, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall ist
     \begin{align*}
         \alpha_1(x, w) = \frac {x^2w(1 + x^2w)} {(1 - x^2w)^3} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg ) = \frac {x^2w(1 + x)(1 + x^2w)} {(1 - x^2w)^3(1 - x)}
     \end{align*}
@@ -300,16 +299,16 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
         = \frac {x^2w(1 + 2x - x^2 + x^2w - 2x^3w - x^4w)} {(1 - x^2w)^3(1 - x)^2}
     \end{align*}
 
-    \noindent \textbf{Fall 2.} (\emph{$a$ und $b$ liegen im gleichen Baum und ihr kleinster gemeinsamer Vorfahre ist nicht die Wurzel.}) Anders formuliert: Betrachtet man die Pfade, die $a$ und $b$ durch wiederholtes Anwenden von $f$ in $\gamma(f)$ ablaufen, treffen diese sich nicht erstmals in einem Zyklusknoten. Die erzeugende Funktion lautet
+    \paragraph{Fall 2.}  In diesem Fall liegen $a$ und $b$ im gleichen Baum und ihr kleinster gemeinsamer Vorfahre ist nicht die Wurzel. Anders formuliert: Betrachtet man die Pfade, die $a$ und $b$ durch wiederholtes Anwenden von $f$ in $\gamma(f)$ ablaufen, treffen diese sich nicht erstmals in einem Zyklusknoten. Die erzeugende Funktion lautet
     \begin{align*}
         \beta(x, w)
         = xw \cdot \frac {xw} {1 - xw} \cdot \frac {1} {1 - xw} \cdot \frac {1} {1 - x^2w} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg )
         = \frac {x^2w^2(1 + x)} {(1 - xw)^2(1 - x^2w)(1 - x)}
     \end{align*}
     Der Zyklusknoten, an dem der Baum von $a$ und $b$ anhängt, wird durch $xw$ repräsentiert. Der Pfad $s$ in Abbildung 1 ($\beta$) muss mindestens Länge 1 haben, da der kleinste gemeinsame Vorfahre von $a$ und $b$ sonst die Wurzel wäre, was den Faktor $xw/(1 - xw)$ erklärt. Der Faktor $1/(1 - xw)$ steht für den Zyklus $r$. Mit $1/(1 - x^2w)$ werden zwei gleich lange Pfade erzeugt, deren Länge durch $w$ markiert wird. Ein Pfad ist $t$ in Abbildung 1 ($\beta$), und der andere ist ein Teil von $u$. Nun gibt es wie in Fall 1 wieder die Option, $u$ echt zu verlängern und so einen Faktor 2 für die mögliche Vertauschung von $a$ und $b$ zu erhalten, oder ihn zu lassen, wobei es wegen Symmetrie nur eine Möglichkeit gibt.
-    \\
 
-    \noindent \textbf{Fall 3.} (\emph{$a$ und $b$ liegen in verschiedenen Bäumen oder die Wurzel ist kleinster gemeinsamer Vorfahre.}) Die erzeugende Funktion ist hier
+
+    \paragraph{Fall 3.} Zuletzt bleibt der Fall, wenn $a$ und $b$ in verschiedenen Bäumen liegen oder die Wurzel ihr kleinster gemeinsamer Vorfahre ist. Eine andere Sichtweise ist, dass sich die Pfade von $a$ und $b$ bei wiederholtem Anwenden von $f$ erstmals bei einem Zyklusknoten treffen. Die erzeugende Funktion ist hier
     \begin{align*}
         \gamma(x, w)
         = xw \cdot \frac {1} {(1 - xw)^2} \cdot \frac {1} {1 - x^2w} \cdot \Bigg (1 + \frac {2x}{1 - x} \Bigg )
@@ -355,11 +354,11 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     \end{align*}
 \end{proof}
 
-\noindent Aus der Definition von $L_K(p)$ folgt sofort $L_{k, k}(p) \sim 25/32 \sqrt{\pi p / (2\gcd(p - 1, k))}$. Man bemerke außerdem, dass Satz 2 unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf heuristischen Annahmen basiert.
+\noindent Aus der Definition von $L_{k_1, \dots, k_M}(p)$ folgt sofort $L_{k, k}(p) \sim 25/32 \sqrt{\pi p / (2\gcd(p - 1, k))}$. Man bemerke außerdem, dass Satz 2 unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf heuristischen Annahmen basiert.
 
-\section{Bestimmung optimaler Exponenten für die Rho-Methode}\label{sec:optk}
+\section{Bestimmung optimaler Exponenten für die Rho-Methode}\label{sec:optimal-k}
 
-In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{lkp}) und Satz 2 konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_K(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Zur Berechnung der Wahrscheinlichkeit, dass $\gcd(p - 1, 2k_i)$ einen bestimmten Wert annimmt, wird folgendes Lemma benötigt.
+In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{expectation-tmin}) und Satz 2 konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Zur Berechnung der Wahrscheinlichkeit, dass $\gcd(p - 1, 2k_i)$ einen bestimmten Wert annimmt, wird folgendes Lemma benötigt.
 
 \begin{lemma}
     Sei $1 \le n \in \N$ und $m$ eine zufällige natürliche Zahl, sodass $0 \le m \le n - 1$. Dann gilt für $d \in \N$
@@ -376,19 +375,19 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 \subsection{Der Fall einer Maschine}
 
 \begin{theorem}
-    Sei $L_k(p)$ wie in Abschnitt \ref{sec:par} definiert. Es gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd((p - 1)/2, k)$ genommen wird.
+    Sei $L_k(p)$ wie in Abschnitt \ref{sec:par} definiert. Es gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd(p - 1, 2k)$ genommen wird.
 \end{theorem}
 
 \begin{proof}
-    Durch Einsetzen von $M = 1$ in (\ref{lkp}) erhalten wir
+    Durch Einsetzen von $M = 1$ in (\ref{expectation-tmin}) erhalten wir
     \begin{align*}
-        L_k(p) \sim \sqrt {\pi p / 2} \lg^2 2k \cdot \frac {1} {\sqrt{\gcd(p - 1, 2k) - 1}}
+        L_k(p) \sim \sqrt {\pi p / 2} \; \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}}
     \end{align*}
-    Der Einfachheit halber wird hier $k$ für $k_1$ geschrieben. Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Der Erwartungswert von $L_k(p)$ wird über jede Möglichkeit von $\gcd(p - 1, 2k)$ gebildet. Da $p - 1$ gerade ist, gilt $\gcd(p - 1, 2k) = 2 \gcd((p - 1)/2, k)$. Unter der Annahme, dass jeder Rest von $(p - 1)/2 \bmod k$ gleich wahrscheinlich ist, was für eine Abschätzung der durchschnittlichen Laufzeit sinnvoll ist, gilt $\mathbb{P}(\gcd((p - 1)/2, k) = d) = \varphi(k/d)/k$. Daraus folgt
+    Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Der Erwartungswert von $L_k(p)$ wird über jede Möglichkeit von $\gcd(p - 1, 2k)$ gebildet. Da $p - 1$ gerade ist, gilt $\gcd(p - 1, 2k) = 2 \gcd((p - 1)/2, k)$. Unter der Annahme, dass jeder Rest von $(p - 1)/2 \bmod k$ gleich wahrscheinlich ist, was für eine Abschätzung der durchschnittlichen Laufzeit sinnvoll ist, gilt $\mathbb{P}(\gcd((p - 1)/2, k) = d) = \varphi(k/d)/k$. Daraus folgt
     \begin{align}
         \E(L_k(p))
-         & = \sqrt{\pi p / 2} \lg^2 2k \cdot \sum_{d | k} \frac {\P(\gcd((p - 1)/2, k) = d)} { \sqrt {2d - 1}} \nonumber \\
-         & \ge \sqrt{\pi p / 2} \lg^2 2k \cdot \frac {\varphi(k)} k \label{elk}
+         & \sim \sqrt{\pi p / 2} \, \lg 2k \, \sum_{d | k} \frac {\P(\gcd((p - 1)/2, k) = d)} { \sqrt {2d - 1}} \nonumber \\
+         & \ge \sqrt{\pi p / 2} \, \lg 2k \, \frac {\varphi(k)} k \label{elk}
     \end{align}
     Sei $k = q_1^{e_1} q_2^{e_2} \cdots q_r^{e_r}$ für Primzahlen $q_i$. Folgende Methode, um $\varphi(k)/k$ nach unten zu beschränken, stammt von \cite{phi}.
     \begin{align*}
