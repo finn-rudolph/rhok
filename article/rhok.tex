@@ -103,14 +103,14 @@ Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$ für $n \in \N$. Über 
 
 Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife asymptotisch zu $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation können die Kosten des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $3/2 \lg 2k$ Schritten möglich ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet. Der Faktor $3/2$ in dieser Arbeit unwichtig und wird daher ignoriert.
 
-\subsection{Parallelisierung der Rho-Methode}\label{sec:par}
+\subsection{Parallelisierung der Rho-Methode}
 
 Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und auf jeder der $M$ Maschinen Pollards Rho-Algorithmus ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Eine Zeiteinheit ist hier die Dauer einer Iteration im Fall $k = 1$, d.h. eine Maschine mit Paramter $k$ führt in $t$ Zeiteinheiten $\lfloor t / \lg 2k \rfloor$ Iterationen aus. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich wird die Laufzeit nicht $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt, wenn $p \to \infty$. Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
 
 Sei $k_1, k_2, \dots, k_M, 1 \le k_i \in \N$ eine Zuordnung von $k$-Werten für $M$ Maschinen.  Wir bezeichnen mit $L_{k_1, \dots, k_M}(p)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten dieser Zuordnung. Dabei ist $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ noch fixiert, der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optimal-k} behandelt. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Mit RMA gilt
-\begin{align*}
-    L_{k_1, \dots, k_M}(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
-\end{align*}
+\begin{align}
+    L_{k_1, \dots, k_M}(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg ) \label{lk-definition}
+\end{align}
 wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ mit $X_i(f, x_0) = \nu(f, x_0)$ ist. Eine Schwierigkeit in der Herleitung einer Formel für $L_{k_1, \dots, k_M}(p)$ ist, dass $X_i$ und $X_j$ nicht unabhängig sind, wenn $k_i = k_j$, da sich die $i$-te und $j$-te Maschine in diesem Fall im gleichen funktionalen Graphen bewegen. Wenn beispielsweise der Startwert der $i$-ten Maschine fixiert wird, ist bereits klar, dass die Rho-Länge der $j$-ten Maschine größer gleich der Rho-Länge der $i$-ten Maschine sein wird, wenn der Startwert ein Vorfahre des Startwerts der $i$-ten Maschine in einem Baum von $\gamma(f)$ ist. Daher werden im Folgenden die Fälle abhängiger und unabhängiger Maschinen unterschieden.
 
 
@@ -251,7 +251,7 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     \end{align*}
 \end{theorem}
 
-\subsection{Der Fall zweier Anfangswerte}\label{sec:start2}
+\subsection{Der Fall zweier Anfangswerte}
 
 // Sagen dass wir erst nur den für a und b relevanten Teil des Graphen konstruieren.
 
@@ -379,7 +379,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 \subsection{Der Fall einer Maschine}
 
 \begin{theorem}
-    Sei $L_k(p)$ wie in Abschnitt \ref{sec:par} definiert. Es gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd((p - 1)/2, k)$ genommen wird.
+    Sei $L_k(p)$ wie in (\ref{lk-definition}) definiert. Es gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd((p - 1)/2, k)$ genommen wird.
 \end{theorem}
 
 \begin{proof}
@@ -413,7 +413,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1, k_2$ prim und $k_1 = k_2 > 1$. Es wird vermutet, dass $k_1 = k_2 = 1$ optimal ist.
 
 \begin{theorem}
-    Sei $L_{k_1, k_2}(p)$ wie in Abschnitt \ref{sec:par} definiert. Im Folgenden wird der Erwartungswert von $L_{k_1, k_2}$ über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ genommen.
+    Sei $L_{k_1, k_2}(p)$ wie in Abschnitt (\ref{lk-definition}) definiert. Im Folgenden wird der Erwartungswert von $L_{k_1, k_2}$ über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ genommen.
     \begin{enumerate}
         \item Wenn $k_1, k_2$ unterschiedliche Primzahlen sind, gilt $\E(L_{1, 1}(p)) < \E(L_{k_1, k_2}(p))$.
         \item Wenn $1 < k \in \N$, gilt $\E(L_{1, 1}(p)) < \E(L_{k, k}(p))$.
@@ -421,7 +421,7 @@ Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1
 \end{theorem}
 
 \begin{proof}
-    Nach Abschnitt \ref{sec:start2} gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also in beiden Fällen zu zeigen, dass der Erwartungswert jeweils größer ist. Zunächst wird Teil 1 bewiesen. Da $k_1 \ne k_2$, kann (\ref{expectation-tmin}) verwendet werden.
+    Nach Satz 1 gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also in beiden Fällen zu zeigen, dass der Erwartungswert jeweils größer ist. Zunächst wird Teil 1 bewiesen. Da $k_1 \ne k_2$, kann (\ref{expectation-tmin}) verwendet werden.
     \begin{align*}
         L_{k_1, k_2}(p)
          & \sim \sqrt{\pi p / 2} \ \Bigg ( \frac {\gcd(p - 1, 2k_1) - 1} {\lg^2 2k_1} + \frac {\gcd(p -1, 2k_2) - 1} {\lg^2 2k_2} \Bigg )^{-1/2}
@@ -445,7 +445,7 @@ Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1
     Nun zum Beweis von Teil 2. Aus (\ref{lkkp}) folgt $L_{k, k}(p) = 25 / 32 \cdot L_{k}(p)$ für $1 \le k \in \N$. Damit folgt Teil 2 des Satzes aus Satz 3.
 \end{proof}
 
-\section{Experimentelle Ergebnisse}\label{sec:ex}
+\section{Experimentelle Ergebnisse}
 
 \section{Fazit}
 
