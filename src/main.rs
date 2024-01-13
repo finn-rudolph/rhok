@@ -19,7 +19,17 @@ fn iterate_k_cartesian_product(
     j: usize,
 ) {
     if j == machines {
-        println!("k = {:?}", k);
+        for k_j in k {
+            print!("{:<5}", k_j);
+        }
+
+        println!(
+            " | {}",
+            match source {
+                Source::Real => 0.0,
+                Source::Formula => 0.0,
+            }
+        );
         return;
     }
 
