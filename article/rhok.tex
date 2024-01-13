@@ -109,46 +109,76 @@ Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht z
 
 Sei $k_1, k_2, \dots, k_M, 1 \le k_i \in \N$ eine Zuordnung von $k$-Werten für $M$ Maschinen.  Wir bezeichnen mit $L_{k_1, \dots, k_M}(p)$ die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit $k$-Werten dieser Zuordnung. Dabei ist $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ noch fixiert, der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optimal-k} behandelt. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Mit RMA gilt
 \begin{align}
-    L_{k_1, \dots, k_M}(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg ) \label{lk-definition}
+    L_{k_1, \dots, k_M}(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
+    \label{lk-definition}
 \end{align}
 wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ mit $X_i(f, x_0) = \nu(f, x_0)$ ist. Eine Schwierigkeit in der Herleitung einer Formel für $L_{k_1, \dots, k_M}(p)$ ist, dass $X_i$ und $X_j$ nicht unabhängig sind, wenn $k_i = k_j$, da sich die $i$-te und $j$-te Maschine in diesem Fall im gleichen funktionalen Graphen bewegen. Wenn beispielsweise der Startwert der $i$-ten Maschine fixiert wird, ist bereits klar, dass die Rho-Länge der $j$-ten Maschine größer gleich der Rho-Länge der $i$-ten Maschine sein wird, wenn der Startwert ein Vorfahre des Startwerts der $i$-ten Maschine in einem Baum von $\gamma(f)$ ist. Daher werden im Folgenden die Fälle abhängiger und unabhängiger Maschinen unterschieden.
-
 
 \section{Eine Formel für den Fall unabhängiger Maschinen}
 
 In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Aus RMA folgt, dass die Rho-Längen der $i$-ten und $j$-ten Maschine als Zufallsvariablen betrachtet stochastisch unabhängig sind, wenn $k_i \ne k_j$. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
 
-
 \paragraph{Eine Formel für $\pmb{\P(s_i > s)}$.} Nach RMA gilt $\P(s_i = s) = \P(\nu(f, x_0) = s)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $i$-ten Schritt $i/h_i$, wenn in den ersten $i-1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $i$ von ihnen zu einer Kollision führen. Die Wahrscheinlichkeit, dass in den ersten $s$ Schritten keine Kollision auftritt ist also
 \begin{align*}
-    \P(s_i > s) = \P(\nu(f, x_0) > s) = \prod_{j = 0}^s \bigg (1 - \frac {j} {h_i} \bigg )
+    \P(s_i > s)
+    = \P(\nu(f, x_0) > s)
+    = \prod_{j = 0}^s \bigg (1 - \frac {j} {h_i} \bigg )
 \end{align*}
 Da die $i$-te Maschine in $t$ Zeiteinheiten $\lfloor t / \lg 2k_i \rfloor$ Schritte ausführt gilt $\P(t_i > t) \sim \P(s_i > t / \lg 2k_i)$ für große $t$. Das Weglassen der Gaußklammern lässt sich damit rechtfertigen, dass für ausreichend großes $p$ nur große $t$ relevant für den Erwartungswert von $t_{\min}$ sind, bei denen es kaum einen Unterschied macht. Nun wird die Restgliedabschätzung $\exp x = 1 + x + O(x^2)$ für $|x| < 1$ mit $x = -j/h_i$ angewandt.
 \begin{align*}
-    \P(s_i > s) = \prod_{j = 0}^{s} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )
+    \P(s_i > s)
+    = \prod_{j = 0}^{s} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg )
+    - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )
 \end{align*}
 $\E(t_{\min})$ lässt sich nun wie folgt ausdrücken, wobei $t_{\max} = p \, \max_{i = 0}^M \lg 2k_i$ ist die maximal mögliche Anzahl an Zeiteinheiten ist.
 \begin{align*}
     \E(t_{\min})
-     & \sim \sum_{t = 0}^{t_{\max}} t \, \Bigg ( \prod_{i = 1}^M \P(t_i > t - 1) \Bigg ) \ \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)                                                                                                           \\
-     & = \sum_{t = 0}^{t_{\max}} t \, \Bigg ( \prod_{i = 1}^M \prod_{j = 0}^{(t-1) / \lg 2k_i} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )\Bigg ) \ \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
+     & \sim \sum_{t = 0}^{t_{\max}} t \,
+    \Bigg ( \prod_{i = 1}^M \P(t_i > t - 1) \Bigg ) \
+    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i) \\
+     & = \sum_{t = 0}^{t_{\max}} t \,
+    \Bigg ( \prod_{i = 1}^M \prod_{j = 0}^{(t-1) / \lg 2k_i}
+    \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg )
+        - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )\Bigg ) \
+    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
 \end{align*}
 Der erste Faktor ist die Wahrscheinlichkeit, dass vor Zeitpunkt $t$ keine Kollision aufgetreten ist. Der zweite Faktor ist die Wahrscheinlichkeit, dass bei Zeitpunkt $t$ mindestens eine Kollision auftritt. $\P_{t_i > t - 1}(t_i > t)$ steht für die Wahrscheinlichkeit, dass $t_i > t$, gegeben $t_i > t - 1$. Bevor diese Wahrscheinlichkeit bestimmt wird, soll gezeigt werden, dass der erste Faktor durch Weglassen der $O(j^2/h_i^2)$-Terme vereinfacht werden kann.
 
-
 \paragraph{Weglassen von $\pmb{O(j^2/h_i^2)}$.} Intuitiv lässt sich das Weglassen von $O(j^2/h_i^2)$ damit rechtfertigen, dass wenn $s$ deutlich kleiner als $h_i$ ist, auch $j$ deutlich kleiner als $h_i$ ist und damit $j^2/h_i^2$ nahe 0 ist. Wenn dagegen $s$ nahe $h_i$ ist, ist $\P(s_i > s)$ sehr klein, sodass der Beitrag zum Erwartungswert vernachlässigbar ist. Präzise lässt sich das wie folgt begründen. Zunächst wird $s \le h_{i}^{3/5}$ angenommen und gezeigt, dass dann $\prod_{j = 0}^{(t-1) / \lg 2k_i} (\exp (-j/h_i) - O (j^2/h_i^2)) \sim \prod_{j = 0}^{(t-1) / \lg 2k_i} \exp (-j/h_i)$. Durch Ausmultiplizieren des Produkts erhält man
 \begin{align*}
-         & \Bigg \vert \prod_{j = 0}^{s} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg ) - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg ) - \prod_{j = 0}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg ) \Bigg \vert \\
-    = \, & \Bigg \vert - \sum_{a = 0}^{s} O \bigg ( \frac {a^2} {h_i^2} \bigg ) \prod_{j = 0, j \ne a}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg ) +
-    \sum_{a = 0}^{s} \sum_{b = a + 1}^{s} O \bigg ( \frac {a^2b^2} {h_i^4} \bigg ) \prod_{j = 0, j \ne a, j \ne b}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg ) - \cdots \Bigg \vert
+         & \Bigg \vert
+    \prod_{j = 0}^{s} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg )
+    - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )
+    - \prod_{j = 0}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg )
+    \Bigg \vert        \\
+    = \, & \Bigg \vert
+    - \sum_{0 \le a \le s} O \bigg ( \frac {a^2} {h_i^2} \bigg )
+    \prod_{j = 0, j \notin \{a\}}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg )
+    + \sum_{0 \le a < b \le s} O \bigg ( \frac {a^2b^2} {h_i^4} \bigg )
+    \prod_{j = 0, j \notin \{a, b\}}^{s}
+    \exp \bigg ( \frac {-j}{h_i} \bigg ) - \cdots
+    \Bigg \vert
 \end{align*}
 Die Terme des ausmultiplizierten Produkts werden hier nach der Anzahl an $-O(j^2/h_i^2)$-Faktoren gruppiert. Nach der Dreiecksungleichung erhält man eine obere Schranke, wenn die Vorzeichen der Summen jeweils weggelassen werden. Die Produke von $\exp(-j/h_i)$ sind alle kleiner als 1 und können für eine obere Schranke auch weggelassen werden. Obiger Term wird also durch Folgenden nach oben beschränkt.
 \begin{align*}
-           & \Bigg \vert \sum_{a = 0}^{s} O \bigg ( \frac {a^2} {h_i^2} \bigg ) +
-    \sum_{a = 0}^{s} \sum_{b = a + 1}^{s} O \bigg ( \frac {a^2b^2} {h_i^4} \bigg ) + \sum_{a = 0}^{s} \sum_{b = a + 1}^{s} \sum_{c = b + 1}^{s} O \bigg ( \frac {a^2b^2c^2} {h_i^6} \bigg ) + \cdots \Bigg \vert \\
-    \le \, & \Bigg \vert \, s \ O \bigg ( \frac {s^2} {h_i^2} \bigg ) +
-    s^2 \, O \bigg ( \frac {s^4} {h_i^4} \bigg ) + s^3 \,  O \bigg ( \frac {s^6} {h_i^6} \bigg ) + \cdots \Bigg \vert                                                                                            \\
-    \le \, & \Bigg \vert \, \ O \bigg ( \frac 1 {h_i^{1/5}} \bigg ) + \, O \bigg ( \frac 1 {h_i^{2/5}} \bigg ) +  O \bigg ( \frac 1 {h_i^{3/5}} \bigg ) + \cdots \Bigg \vert
+           & \Bigg \vert
+    \sum_{0 \le a \le s} O \bigg ( \frac {a^2} {h_i^2} \bigg )
+    + \sum_{0 \le a < b \le s} O \bigg ( \frac {a^2b^2} {h_i^4} \bigg )
+    + \sum_{0 \le a < b < c \le s} O \bigg ( \frac {a^2b^2c^2} {h_i^6} \bigg )
+    + \cdots
+    \Bigg \vert             \\
+    \le \, & \Bigg \vert \,
+    s \, O \bigg ( \frac {s^2} {h_i^2} \bigg )
+    + s^2 \, O \bigg ( \frac {s^4} {h_i^4} \bigg )
+    + s^3 \,  O \bigg ( \frac {s^6} {h_i^6} \bigg )
+    + \cdots
+    \Bigg \vert             \\
+    \le \, & \Bigg \vert \,
+    O \bigg ( \frac 1 {h_i^{1/5}} \bigg )
+    + O \bigg ( \frac 1 {h_i^{2/5}} \bigg )
+    + O \bigg ( \frac 1 {h_i^{3/5}} \bigg )
+    + \cdots
+    \Bigg \vert
 \end{align*}
 Letzteres geht klar gegen 0, wenn $h_i \to \infty$. (Eigentlich lassen wir $p \to \infty$ gehen, aber da $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ gilt $h_i = \Theta(p)$ und damit $h_i \to \infty \Longleftrightarrow p \to \infty$.) Im Fall $s < h_i^{3/5}$ können wir also
 \begin{align*}
@@ -163,19 +193,30 @@ schreiben. Letzte Annäherung gilt für große $s$, für ausreichend große $p$ 
 Nun wird $s > h_i^{3/5}$ angenommen und gezeigt, dass dann der Summand in $\E(t_{\min})$ für $p \to \infty$ gegen 0 geht. Hier gilt
 \begin{align*}
     \P(s_i > s)
-     & = \prod_{j = 0}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg )                                     \\
-     & \le \prod_{j = 0}^{\big \lfloor h_i^{3/5} \big \rfloor} \exp \bigg ( \frac {-j}{h_i} \bigg ) \\
-     & \sim \exp \frac {- \Big \lfloor h_i^{3/5} \Big \rfloor^2 } {2h_i}                            \\
+     & = \prod_{j = 0}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg )          \\
+     & \le \prod_{j = 0}^{\big \lfloor h_i^{3/5} \big \rfloor}
+    \exp \bigg ( \frac {-j}{h_i} \bigg )                                 \\
+     & \sim \exp \frac {- \big \lfloor h_i^{3/5} \big \rfloor^2 } {2h_i} \\
      & \le \exp \frac {- h_i^{1/5}} {2}
 \end{align*}
 Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch 1 begrenzt und $t$ ist $O(p)$. Da aber $h_i = \Theta(p)$ und $\lim_{p \to \infty} O(p) e^{-\Theta(p)^{1/5}} = 0$, geht der Summand gegen 0. Insgesamt bedeutet das, dass man durch Weglassen der $O(j^2/h_i^2)$-Terme entweder eine asymptotisch genaue Annäherung erhält, oder der Term, in dem man die Annäherung verwendet, sowieso gegen 0 geht. Als Zwischenergebnis erhalten wir
 \begin{align}
     \E_{t_{\min}}
-     & \sim \sum_{t = 0}^{t_{\max}} t \, \Bigg ( \prod_{i = 1}^M \prod_{j = 0}^{(t-1) / \lg 2k_i} \exp \bigg ( \frac {-j}{h_i} \bigg ) \Bigg ) \ \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i) \nonumber \\
-     & = \sum_{t = 0}^{t_{\max}} t \, \exp \Bigg ( \sum_{i = 1}^M \sum_{j = 0}^{(t-1) / \lg 2k_i}  \frac {-j}{h_i} \Bigg ) \ \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i) \nonumber                     \\
-     & \sim \sum_{t = 0}^{t_{\max}} t \, \exp \Bigg ( \sum_{i = 1}^M \frac {-t^2} {2 h_i \lg^2 2k_i} \Bigg ) \ \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i) \label{expectation-tmin-intermed}
+     & \sim \sum_{t = 0}^{t_{\max}} t \,
+    \Bigg ( \prod_{i = 1}^M \prod_{j = 0}^{(t-1) / \lg 2k_i}
+    \exp \bigg ( \frac {-j}{h_i} \bigg ) \Bigg ) \
+    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
+    \nonumber                            \\
+     & = \sum_{t = 0}^{t_{\max}} t \,
+    \exp \Bigg ( \sum_{i = 1}^M \sum_{j = 0}^{(t-1) / \lg 2k_i}
+    \frac {-j}{h_i} \Bigg ) \
+    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
+    \nonumber                            \\
+     & \sim \sum_{t = 0}^{t_{\max}} t \,
+    \exp \Bigg ( \sum_{i = 1}^M \frac {-t^2} {2 h_i \lg^2 2k_i} \Bigg ) \
+    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
+    \label{expectation-tmin-intermed}
 \end{align}
-
 
 \paragraph{Die Wahrscheinlichkeit von mindestens einer Kollision bei Zeit $\pmb{t}$.} Hier soll
 \begin{align*}
@@ -185,8 +226,10 @@ aus (\ref{expectation-tmin-intermed}) asymptotisch angenähert werden. Die Wahrs
 \begin{align*}
     \P_{t_i > t - 1}(t_i = t) \sim
     \begin{cases}
-        t / h_i \lg 2k_i & \quad t = \lceil m \lg 2k_i \rceil, \ m \in \N   \\
-        0                & \quad t \ne \lceil m \lg 2k_i \rceil, \ m \in \N
+        t / h_i \lg 2k_i & \quad
+        t = \lceil m \lg 2k_i \rceil \text{ für ein } m \in \N \\
+        0                & \quad
+        t \ne \lceil m \lg 2k_i \rceil \text{ für jedes } m \in \N
     \end{cases}
 \end{align*}
 Der erste Fall tritt ein, wenn Zeiteinheit $t$ das Ende einer Iteration von Maschine $i$ enthält. Da bei Zeitpunkt $t$ bereits $t/\lg 2k_i$ Schritte durchgeführt wurden, trifft man im nächsten Schritt mit Wahrscheinlichkeit $t/h_i \lg 2k_i$ auf einen bereits besuchten Knoten. Im zweiten Fall befindet sich Maschine $i$ bei Zeiteinheit $t$ mitten in einer Iteration, es kann also keine Kollision auftreten. Zur Bestimmung von $\E_{t_{\min}}$ kann das durch
@@ -195,22 +238,33 @@ Der erste Fall tritt ein, wenn Zeiteinheit $t$ das Ende einer Iteration von Masc
 \end{align*}
 angenähert werden. Die Wahrscheinlichkeit einer Kollision an einem Zeitpunkt wird durch den zusätzlichen Faktor $\lg 2k_i$ auf die umliegenden Zeitpunkte "`verteilt"'. Pro Iteration von Maschine $i$ gibt es statt einem Zeitpunkt mit Kollisionswahrscheinlichkeit $t/h_i \lg 2k_i$ nun $\lg 2k_i$ Zeitpunkte mit Kollisionswahrscheinlichkeit $t/h_i \lg^2 2k_i$. Dass das eine asymptotische Näherung ist, lässt sich damit begründen, dass die Terme in (\ref{expectation-tmin-intermed}) stetig in $t$ sind, eine Veränderung von $t$ um maximal $\lg 2k_i$ macht also asymptotisch keinen Unterschied. Die Wahrscheinlichkeit, dass bei mindestens einer Maschine eine Kollision auftritt, kann asymptotisch durch die Summe der Wahrscheinlichkeiten $\P_{t_i > t - 1}(t_i = t)$ angenähert werden.
 \begin{align}
-    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i) \sim \sum_{i = 1}^M \frac t {h_i \lg^2 2k_i} = t \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \label{prob-at-least-one-coll}
+    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
+    \sim \sum_{i = 1}^M \frac t {h_i \lg^2 2k_i}
+    = t \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i}
+    \label{prob-at-least-one-coll}
 \end{align}
 Denn für alle relevanten $t$, d.h. $t \le h_i^{3/5} \, \forall i$ ist die Wahrscheinlichkeit, dass zwei oder mehr Maschinen bei Zeit $t$ kollidieren für $p \to \infty$ verschwindend klein.
 
-
-\paragraph*{Die finale Formel.} \space \space Für $\E(t_{\min})$ gilt mit (\ref{expectation-tmin-intermed}) und (\ref{prob-at-least-one-coll})
+\paragraph*{Die finale Formel.} Für $\E(t_{\min})$ gilt mit (\ref{expectation-tmin-intermed}) und (\ref{prob-at-least-one-coll})
 \begin{align*}
     \E(t_{\min})
-     & \sim \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \sum_{t = 0}^{t_{\max}} t^2 \, \exp \Bigg ( \frac {-t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
+     & \sim \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
+    \sum_{t = 0}^{t_{\max}} t^2 \, \exp \Bigg ( \frac {-t^2} 2
+    \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
 \end{align*}
 Als letzter Schritt wird die Summe über $t$ durch ein Integral angenähert. Die intuitive Erklärung dafür, dass das am asymptotischen Wert nichts ändert ist, dass das Argument der Summe stetig in $t$ ist, sodass der Wert an einem Punkt ähnlich zu Werten nahe dieses Punktes ist. Nach einem ähnlichen Argument wie dem dafür, dass Terme mit $t/\lg 2k_i > h_i^{3/5}$ für ein $i$ asymptotisch irrelevant sind, kann die obere Integralgrenze bis $\infty$ geöffnet werden. Man erhält also
 \begin{align}
     L_{k_1, \dots k_M}(p) = \E(t_{\min})
-     & \sim \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \int_{0}^{\infty} t^2 \, \exp \Bigg ( \frac {-t^2} 2 \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \; dt \nonumber \\
-     & = \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \, \sqrt {\pi / 2}  \ \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2} \nonumber                           \\
-     & = \sqrt{\pi p / 2} \; \Bigg ( \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
+     & \sim \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
+    \int_{0}^{\infty} t^2 \, \exp \Bigg ( \frac {-t^2} 2
+    \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \; dt
+    \nonumber                                                       \\
+     & = \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \,
+    \sqrt {\pi / 2} \
+    \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2}
+    \nonumber                                                       \\
+     & = \sqrt{\pi p / 2} \; \Bigg (
+    \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
     \label{expectation-tmin}
 \end{align}
 Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Man kann sich auf mehereren Wegen davon überzeugen, dass die Formel trotz der vielen Näherungen stimmt. Beispielsweise ist sie verträglich mit der bekannten Laufzeitabschätzung für Pollards Rho-Algorithmus im Fall $M = k_1 = 1$. Setzt man dies ein, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}. Lässt man in obigem Integral einen Faktor $t$ weg, erhält man statt des Erwartungswerts das Integral aller Wahrscheinlichkeiten. Dieses sollte natürlich 1 sein, und das ist es auch, wie man leicht nachrechnet.
@@ -227,7 +281,8 @@ Der grundlegende Ansatz zur Beantwortung obiger Frage für $M = 2$ ist, die Summ
 \end{align*}
 wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet. Da funktionale Graphen beschriftet sind, werden stets erzeugende Funktionen von exponentiellem Typ (EF) verwendet. Folgende Komponenten eines funktionalen Graphen werden als Grundlage verwendet, um einen funktionalen Graphen zu konstruieren (\cite{fo90}, S. 333).
 \begin{align*}
-    T(x) = x \exp T(x) \quad (\text{Baum}) \qquad\qquad C(x) = \ln \frac {1} {1 - x} \quad (\text{Zyklus})
+    T(x) = x \exp T(x) \quad (\text{Baum}) \qquad\qquad
+    C(x) = \ln \frac {1} {1 - x} \quad (\text{Zyklus})
 \end{align*}
 Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF für funktionale Graphen
 \begin{align*}
@@ -258,7 +313,9 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
 \begin{theorem}
     Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$. Dann gilt
     \begin{align*}
-        \frac 1 {n^{n + 2}} \sum_{f \in A(n)} \; \sum_{a \in \Z/n\Z} \; \sum_{b \in \Z/n\Z} \min(\nu(f, a), \nu(f, b)) \sim \frac {25} {32} \sqrt{\pi n / 2}
+        \frac 1 {n^{n + 2}}
+        \sum_{f \in A(n)} \; \sum_{a \in \Z/n\Z} \; \sum_{b \in \Z/n\Z}
+        \min(\nu(f, a), \nu(f, b)) \sim \frac {25} {32} \sqrt{\pi n / 2}
     \end{align*}
 \end{theorem}
 
@@ -282,13 +339,17 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     \end{align*}
     In diesem Fall ist es möglich, zuerst zwei $\rho$-Graphen mit gleicher Größe zu erzeugen und anschließend den Pfad von $b$ zu seinem Zyklus zu verlängern. Ein $\rho$-Graph ist ein Zusammenhangskomponent in Abbildung ($\alpha$), d.h. ein Zyklus mit einem Pfad anhängend. Es gibt genau $n! \cdot n$ $\rho$-Graphen mit $n$ Knoten, da es für jede Permutation der Knoten $n$ Möglichkeiten für die Größe des Zyklus gibt. Folglich gibt es für gerade $n$ genau $n! \cdot n^2/2$ Paare an $\rho$-Graphen, die beide $n/2$ Knoten besitzen. Die erzeugende Funktion von Paaren an $\rho$-Graphen gleicher Größe ist also
     \begin{align*}
-        \sum_{n = 0}^\infty x^n \cdot \frac {n^2} 4 \cdot \frac {1 + (-1)^n} 2 = \frac {x^2(1 + x^2)} {(1 - x^2)^3}
+        \sum_{n = 0}^\infty x^n \; \frac {n^2} 4 \, \frac {1 + (-1)^n} 2
+        = \frac {x^2(1 + x^2)} {(1 - x^2)^3}
     \end{align*}
     Um die halbe Anzahl an Knoten mit $w$ zu markieren, ersetze man $x$ durch $x \sqrt w$ und erhält $x^2w(1 + x^2w) / (1 - x^2w)^3$. Das erklärt den ersten Faktor in $\alpha_1(x, w)$. Nun gibt es zwei Möglichkeiten: Wird der Pfad von $b$ zu seinem Zyklus ($u$ in Abbildung 1 ($\alpha$)) nicht verlängert, gilt $\nu(f, a) = \nu(f, b)$, es ergibt sich durch Vertauschen von $a$ und $b$ also keine neue Möglichkeit. Wird hingegen ein Pfad von Länge $\ge 1$ angehängt, dessen erzeugende Funktion $x/(1 - x)$ ist, ergibt sich eine weitere Möglichkeit durch Vertauschen von $a$ und $b$.
 
     \noindent Im zweiten Fall ist die erzeugende Funktion
     \begin{align*}
-        \alpha_2(x, w) = 2 \cdot \frac {x^2w} {(1 - x^2w)^2} \cdot  \frac x {1 - x} \cdot \frac {1}{1 - x} = \frac {2x^3w} {(1 - x^2w)^2 (1 - x)^2}
+        \alpha_2(x, w) =
+        2 \; \frac {x^2w} {(1 - x^2w)^2} \, \frac x {1 - x} \,
+        \frac {1}{1 - x}
+        = \frac {2x^3w} {(1 - x^2w)^2 (1 - x)^2}
     \end{align*}
     Der Faktor $x^2w$ repräsentiert die zwei Knoten, an denen $a$ und $b$ jeweils ihren Zyklus betreten, und der Knoten von $a$ ist mit $w$ markiert. Mit $1 / (1 - x^2w)^2$ erhält man vier Pfade $r, y, s, z$, sodass die Länge von $r$ gleich der Länge von $y$ und die Länge von $s$ gleich der Länge von $z$ ist. Die Summe der Längen von $r$ und $s$ wird von $w$ markiert. $r$ und $s$ werden wie in Abbildung 1 ($\alpha$) für den Zusammenhangskomponenten von $a$ verwendet. Damit ist der Exponent von $w$ genau die Rho-Länge von $a$. Der Zyklus von $b$ besteht aus $y, z$ und einem Pfad von Länge $\ge 1$, sodass $\lambda(f, b) > \nu(f, a)$ gilt. Der Term $1 / (1 - x)$ steht für den Pfad von $b$ zum Zyklus.
 
@@ -296,13 +357,15 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     \begin{align*}
         \alpha(x, w)
         = \alpha_1(x, w) + \alpha_2(x, w)
-        = \frac {x^2w(1 + 2x - x^2 + x^2w - 2x^3w - x^4w)} {(1 - x^2w)^3(1 - x)^2}
+        = \frac {x^2w(1 + 2x - x^2 + x^2w - 2x^3w - x^4w)}
+        {(1 - x^2w)^3(1 - x)^2}
     \end{align*}
 
     \paragraph{Fall 2.}  In diesem Fall liegen $a$ und $b$ im gleichen Baum und ihr kleinster gemeinsamer Vorfahre ist nicht die Wurzel. Anders formuliert: Betrachtet man die Pfade, die $a$ und $b$ durch wiederholtes Anwenden von $f$ in $\gamma(f)$ ablaufen, treffen diese sich nicht erstmals in einem Zyklusknoten. Die erzeugende Funktion lautet
     \begin{align*}
         \beta(x, w)
-        = xw \cdot \frac {xw} {1 - xw} \cdot \frac {1} {1 - xw} \cdot \frac {1} {1 - x^2w} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg )
+        = xw \; \frac {xw} {1 - xw} \, \frac {1} {1 - xw} \,
+        \frac {1} {1 - x^2w} \, \Bigg (1 + \frac {2x} {1 - x} \Bigg )
         = \frac {x^2w^2(1 + x)} {(1 - xw)^2(1 - x^2w)(1 - x)}
     \end{align*}
     Der Zyklusknoten, an dem der Baum von $a$ und $b$ anhängt, wird durch $xw$ repräsentiert. Der Pfad $s$ in Abbildung 1 ($\beta$) muss mindestens Länge 1 haben, da der kleinste gemeinsame Vorfahre von $a$ und $b$ sonst die Wurzel wäre, was den Faktor $xw/(1 - xw)$ erklärt. Der Faktor $1/(1 - xw)$ steht für den Zyklus $r$. Mit $1/(1 - x^2w)$ werden zwei gleich lange Pfade erzeugt, deren Länge durch $w$ markiert wird. Ein Pfad ist $t$ in Abbildung 1 ($\beta$), und der andere ist ein Teil von $u$. Nun gibt es wie in Fall 1 wieder die Option, $u$ echt zu verlängern und so einen Faktor 2 für die mögliche Vertauschung von $a$ und $b$ zu erhalten, oder ihn zu lassen, wobei es wegen Symmetrie nur eine Möglichkeit gibt.
@@ -311,7 +374,8 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     \paragraph{Fall 3.} Zuletzt bleibt der Fall, wenn $a$ und $b$ in verschiedenen Bäumen liegen oder die Wurzel ihr kleinster gemeinsamer Vorfahre ist. Eine andere Sichtweise ist, dass sich die Pfade von $a$ und $b$ bei wiederholtem Anwenden von $f$ erstmals bei einem Zyklusknoten treffen. Die erzeugende Funktion ist hier
     \begin{align*}
         \gamma(x, w)
-        = xw \cdot \frac {1} {(1 - xw)^2} \cdot \frac {1} {1 - x^2w} \cdot \Bigg (1 + \frac {2x}{1 - x} \Bigg )
+        = xw \, \frac {1} {(1 - xw)^2} \, \frac {1} {1 - x^2w} \,
+        \Bigg (1 + \frac {2x}{1 - x} \Bigg )
         = \frac {xw(1 + x)} {(1 - xw)^2(1 - x^2w)(1 - x)}
     \end{align*}
     $xw$ stellt den Zyklusknoten da, an dem der Baum von $a$ anhängt. Der Term $1/(1 - xw)^2$ repräsentiert die beiden Pfade von der Wurzel von $a$ zur Wurzel von $b$ und zurück ($r$ und $s$ in Abbildung 1 ($\gamma$)). Ähnlich wie in Fall 2 ist der Term $1/(1 - x^2w)$ ein Paar an gleich langen Pfaden, deren Länge von $w$ markiert wird. Einer der Pfade ist $u$ in Abbildung 1 ($\gamma$) und der andere ein Teil von $t$. Auch hier kann man die Länge von $t$ Zyklus unverändert lassen, in diesem Fall gibt es eine Möglichkeit, oder einen Pfad von Länge $\ge 1$ hinzufügen, sodass es zwei Möglichkeiten wegen Vertauschung von $a$ und $b$ gibt.
@@ -319,48 +383,62 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     Ein funktionaler Graph besteht natürlich nicht nur aus einem Zyklus und den Pfaden von $a$ und $b$ zum Zyklus. Von jedem Knoten kann ein Baum ausgehen und es kann noch weitere Zusammenhangskomponenten geben. Durch Erstetzen von $x$ durch $T(x)$ und Hinzufügen einer beliebigen Menge weiterer Zusammenhangskomponenten erhält man also $\Psi(x, w)$.
     \begin{align*}
         \Psi(x, w)
-         & = (\alpha(T(x), w) + \beta(T(x), w) + \gamma(T(x), w)) \cdot \exp C(T(x)) \\
-         & = \frac {\alpha(T(x), w) + \beta(T(x), w) + \gamma(T(x), w)} {1 - T(x)}
+         & = (\alpha(T(x), w) + \beta(T(x), w) + \gamma(T(x), w)) \,
+        \exp C(T(x))                                                    \\
+         & = \frac {\alpha(T(x), w) + \beta(T(x), w) + \gamma(T(x), w)}
+        {1 - T(x)}
     \end{align*}
     Damit erhalten wir
     \begin{align*}
-        \psi(x) = \Bigg (\frac {\partial} {\partial w} \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1} = \frac {T(x)(1 + 2T(x) + 2(T(x))^2)(1 + 5T(x) + 3(T(x))^2 + (T(x))^3)} {(1 - T(x))^6(1 + T(x))^3}
+        \psi(x) = \Bigg (\frac {\partial} {\partial w}
+        \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
+        = \frac
+        {T(x)(1 + 2T(x) + 2(T(x))^2)(1 + 5T(x) + 3(T(x))^2 + (T(x))^3)}
+        {(1 - T(x))^6(1 + T(x))^3}
     \end{align*}
     Nun soll die Methode von \cite{fo90} verwendet werden, um eine asymptotische Abschätzung für die Koeffizienten der Reihe von $\psi(x)$ zu erhalten. Nach \cite{fo90}, S. 334, Proposition 1 ist die betragsmäßig (in $\C$) kleinste Singularität von $T(x)$ bei $x = e^{-1}$ und es gilt
     \begin{align*}
-        T(x) = 1 - \sqrt{2}\cdot \sqrt {1 - ex} - O(1 - ez)
+        T(x) = 1 - \sqrt{2} \; \sqrt {1 - ex} - O(1 - ez)
     \end{align*}
     für $x \to e^{-1}$. $\psi(x)$ hat keine betragsmäßig kleineren Singularitäten, denn wenn $1 - T(x) = 0$, rechnet man leicht nach, dass $x = e^{-1}$ gilt, und wenn $1 + T(x) = 0$, gilt $x = -e$. Es wird nun Satz 1 mit $s = e^{-1}$ verwendet. Wenn $x \to e^{-1}$, gilt
     \begin{align*}
         \psi(x)
-         & \sim \frac {T(e^{-1})(1 + 2T(e^{-1}) + 2(T(e^{-1}))^2)(1 + 5T(e^{-1}) + 3(T(e^{-1}))^2 + (T(e^{-1}))^3)} {(1 - (1 - \sqrt 2 \cdot \sqrt {1 - ez}))^6(1 + T(e^{-1}))^3} \\
-         & = \frac {(1 + 2 + 2)(1 + 5 + 3 + 1)} {2^3} \cdot \frac 1 {(\sqrt 2 )^6 (\sqrt{1 - ez})^6}                                                                              \\
-         & = \frac {50} {64} \cdot \frac 1 {(1 - ez)^3}
+         & \sim \frac {T(e^{-1})(1 + 2T(e^{-1})
+            + 2(T(e^{-1}))^2)(1 + 5T(e^{-1}) + 3(T(e^{-1}))^2 + (T(e^{-1}))^3)}
+        {(1 - (1 - \sqrt 2 \cdot \sqrt {1 - ez}))^6(1 + T(e^{-1}))^3} \\
+         & = \frac {(1 + 2 + 2)(1 + 5 + 3 + 1)} {2^3} \,
+        \frac 1 {(\sqrt 2 )^6 (\sqrt{1 - ez})^6}                      \\
+         & = \frac {50} {64} \, \frac 1 {(1 - ez)^3}
     \end{align*}
     Folglich gilt mit der Notation von Satz 1 $\sigma(x) = x^3$ und $\alpha = 3$. Aus Satz 1 folgt
     \begin{align*}
         [x^n] \psi(x)
-         & \sim \frac {50} {64} \cdot (e^{-1})^{-n} \cdot \frac {n^3} {n \Gamma(3)} \\
-         & = \frac {25} {32} \cdot \frac {e^n n^2} {2}
+         & \sim \frac {50} {64} \; (e^{-1})^{-n} \;
+        \frac {n^3} {n \Gamma(3)}                   \\
+         & = \frac {25} {32} \; \frac {e^n n^2} {2}
     \end{align*}
     und mit Stirlings Näherung $n! \sim \sqrt{2\pi n} (n/e)^n$
     \begin{align*}
         \frac 1 {n^{n + 2}} \sum_{f \in A(n)} \;
-         & \sum_{a \in \Z/n\Z} \; \sum_{b \in \Z/n\Z} \min(\nu(f, a), \nu(f, b))    \\
-         & \sim \frac {n!}{n^{n + 2}} \cdot \frac {25} {32} \cdot \frac {e^n n^2} 2 \\
-         & = n! \bigg (\frac {e} {n} \bigg )^n \cdot \frac {25} {64}                \\
-         & \sim \sqrt {2 \pi n} \cdot \frac {25}{64}                                \\
+         & \sum_{a \in \Z/n\Z} \; \sum_{b \in \Z/n\Z}
+        \min(\nu(f, a), \nu(f, b))                                           \\
+         & \sim \frac {n!}{n^{n + 2}} \, \frac {25} {32} \,\frac {e^n n^2} 2 \\
+         & = n! \bigg (\frac {e} {n} \bigg )^n \, \frac {25} {64}            \\
+         & \sim \sqrt {2 \pi n} \; \frac {25}{64}                            \\
          & = \frac {25} {32} \sqrt{\pi n/2}
     \end{align*}
 \end{proof}
 
 \noindent Aus Satz 2 folgt sofort, dass $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p / 2}$. Daraus lässt sich auch auf $L_{k, k}(p)$ schließen. Für $1 \le k \in \N$ wird nach RMA $p$ durch $p/(\gcd(p - 1, 2k) - 1)$ ersetzt. Die Laufzeit pro Iteration steigt bei jeder Maschine aber um einen Faktor $\lg 2k$, sodass sie auch insgesamt um einen Faktor $\lg 2k$ steigt. Es gilt also
 \begin{align}
-    L_{k, k}(p) \sim 32 / 25 \sqrt{\pi p /2} \ \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}} \label{lkkp}
+    L_{k, k}(p) \sim 25 / 32 \sqrt{\pi p /2} \
+    \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}}
+    \label{lkkp}
 \end{align}
 Man bemerke, dass Satz 2 unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf der Random Mapping Assumption basiert.
 
-\section{Bestimmung optimaler Exponenten für die Rho-Methode}\label{sec:optimal-k}
+\section{Bestimmung optimaler Exponenten für die Rho-Methode}
+\label{sec:optimal-k}
 
 In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{expectation-tmin}) und Satz 2 konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Da $p - 1$ gerade ist, gilt $\gcd(p-1, 2k_i) = 2\gcd((p - 1)/2, k_i)$. Weitere Kongruenzen von $p - 1$ sind im Allgemeinen nicht bekannt, weshalb angenommen wird, dass jeder Rest von $(p- 1)/2$ modulo $k_i$ gleich wahrscheinlich ist. Zur Berechnung der Wahrscheinlichkeit, dass $\gcd((p - 1)/2, k_i)$ einen bestimmten Wert annimmt, wird folgendes Lemma benötigt.
 
@@ -385,17 +463,21 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 \begin{proof}
     Durch Einsetzen von $M = 1$ in (\ref{expectation-tmin}) erhalten wir
     \begin{align*}
-        L_k(p) \sim \sqrt {\pi p / 2} \; \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}}
+        L_k(p) \sim \sqrt {\pi p / 2} \;
+        \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}}
     \end{align*}
     Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Nach Lemma \ref{lemma-gcd-probability} gilt
     \begin{align*}
         \E(L_k(p))
-         & \sim \sqrt{\pi p / 2} \, \lg (2k) \, \sum_{d | k} \frac {\P(\gcd((p - 1)/2, k) = d)} { \sqrt {2d - 1}} \nonumber \\
+         & \sim \sqrt{\pi p / 2} \, \lg (2k) \,
+        \sum_{d | k} \frac {\P(\gcd((p - 1)/2, k) = d)}
+        { \sqrt {2d - 1}} \nonumber                                 \\
          & \ge \sqrt{\pi p / 2} \, \lg (2k) \, \frac {\varphi(k)} k
     \end{align*}
     Nach \cite{rs62}, Theorem 15 gilt
     \begin{align*}
-        \frac {\varphi(k)} k > \frac 1 {e^\gamma \ln (\ln (k)) + 2.51 / \ln (\ln (k))}
+        \frac {\varphi(k)} k
+        > \frac 1 {e^\gamma \ln (\ln (k)) + 2.51 / \ln (\ln (k))}
     \end{align*}
     für $k \ge 3$, wobei $\gamma \approx 0.5772$ die Euler-Mascheroni-Konstante ist. Für $\ln \ln k > 1$ bzw. $k \ge e^e \approx 15.1543$ folgt daraus
     \begin{align*}
@@ -403,9 +485,11 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
     \end{align*}
     Indem nun gezeigt wird, dass $\lg 2k / (e^\gamma \ln \ln k + 2.51) > 1$ für $k \ge 16$ wird der Satz im Fall $k \ge 16$ bewiesen. Sei $f(x) = \lg 2x / (e^\gamma \ln \ln x + 2.51)$. Es gilt $f(16) \approx 1.1557$ und
     \begin{align*}
-        f'(x) = \frac {\ln (x)(\ln (\ln (x)) + 1.51) - \ln 2} {x \ln (2) \ln (x)(\ln(\ln(x)) + 2.51)^2}
+        f'(x)
+        = \frac {\ln (x)(\ln (\ln (x)) + 1.51) - \ln 2}
+        {x \ln (2) \ln (x)(\ln(\ln(x)) + 2.51)^2}
     \end{align*}
-    Für $x \ge 16$ ist der Nenner positiv, denn $x > 0$ und $\ln x > 0$, und da $\ln \ln x > 1$ für $x \ge 16$ ist der Term unter dem Quadrat positiv. Der Zähler ist ebenfalls positiv, da $\ln x \ge 1$ und $\ln \ln x \ge 1$. Damit gilt $\ln(x)(\ln(\ln(x)) + 1.51) \ge 1 \cdot (1 + 1.51) = 2.51 > \ln 2$. Also ist $f$ streng monoton steigend für $x \ge 16$, und da bereits $f(16) > 1$ gezeigt wurde, folgt $f(x) > 1$ für $x \ge 16$. Der Fall $k < 16$ wurde durch Ausrechnen von (\ref{expectation-tmin}) für $1 \le k \le 15$ überprüft.
+    Für $x \ge 16$ ist der Nenner von $f'$ positiv, denn $x > 0$ und $\ln x > 0$, und weil $\ln \ln x > 1$ für $x \ge 16$ ist der Term unter dem Quadrat positiv. Der Zähler ist ebenfalls positiv, da $\ln x \ge 1$ und $\ln \ln x \ge 1$. Damit gilt $\ln(x)(\ln(\ln(x)) + 1.51) \ge 1 \cdot (1 + 1.51) = 2.51 > \ln 2$. Also ist $f$ streng monoton steigend für $x \ge 16$, und da bereits $f(16) > 1$ gezeigt wurde, folgt $f(x) > 1$ für $x \ge 16$. Der Fall $k < 16$ wurde durch Ausrechnen von (\ref{expectation-tmin}) für $1 \le k \le 15$ überprüft.
 \end{proof}
 
 \subsection{Der Fall zweier Maschinen}
@@ -424,21 +508,35 @@ Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1
     Nach Satz 1 gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also in beiden Fällen zu zeigen, dass der Erwartungswert jeweils größer ist. Zunächst wird Teil 1 bewiesen. Da $k_1 \ne k_2$, kann (\ref{expectation-tmin}) verwendet werden.
     \begin{align*}
         L_{k_1, k_2}(p)
-         & \sim \sqrt{\pi p / 2} \ \Bigg ( \frac {\gcd(p - 1, 2k_1) - 1} {\lg^2 2k_1} + \frac {\gcd(p -1, 2k_2) - 1} {\lg^2 2k_2} \Bigg )^{-1/2}
+         & \sim \sqrt{\pi p / 2} \
+        \Bigg ( \frac {\gcd(p - 1, 2k_1) - 1} {\lg^2 2k_1} +
+        \frac {\gcd(p -1, 2k_2) - 1} {\lg^2 2k_2} \Bigg )^{-1/2}
     \end{align*}
     Durch Bilden des Erwartungswerts über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ erhält man
     \begin{align}
         \E(L_{k_1, k_2})
-         & \sim \sqrt{\pi p / 2} \sum_{d_1 | k_1} \P(\gcd((p - 1)/2, k_1) = d_1) \nonumber                                                                                                                                                                   \\
-         & \qquad \sum_{d_2 | k_2} \P(\gcd((p - 1)/2, k_2) = d_2)                                                                                             \Bigg ( \frac {2d_1 - 1} {\lg^2 2k_1} + \frac {2d_2 - 1} {\lg^2 2k_2} \Bigg )^{-1/2} \nonumber \\
-         & \ge \sqrt{\pi p / 2} \ \frac {\varphi(k_1) \varphi(k_2)} {k_1k_2} \Bigg (\frac 1 {\lg^2 2k_1} + \frac 1 {\lg^2 2k_2} \Bigg )^{-1/2} \nonumber                                                                                                     \\
-         & = \sqrt{\pi p / 2} \ \frac {(k_1 - 1) (k_2- 1)} {k_1k_2} \sqrt{\frac{\lg^2(2k_1) \lg^2(2k_2)}{\lg^2(2k_1) + \lg^2(2k_2)}} \label{m2-expectation-lb}
+         & \sim \sqrt{\pi p / 2}
+        \sum_{d_1 | k_1} \P(\gcd((p - 1)/2, k_1) = d_1)
+        \nonumber                                                 \\
+         & \qquad \sum_{d_2 | k_2} \P(\gcd((p - 1)/2, k_2) = d_2)
+        \Bigg ( \frac {2d_1 - 1} {\lg^2 2k_1}
+        + \frac {2d_2 - 1} {\lg^2 2k_2} \Bigg )^{-1/2}
+        \nonumber                                                 \\
+         & \ge \sqrt{\pi p / 2} \
+        \frac {\varphi(k_1) \varphi(k_2)} {k_1k_2}
+        \Bigg (\frac 1 {\lg^2 2k_1} + \frac 1 {\lg^2 2k_2} \Bigg )^{-1/2}
+        \nonumber                                                 \\
+         & = \sqrt{\pi p / 2} \
+        \frac {(k_1 - 1) (k_2- 1)} {k_1k_2}
+        \sqrt{\frac{\lg^2(2k_1) \lg^2(2k_2)}{\lg^2(2k_1) + \lg^2(2k_2)}}
+        \label{m2-expectation-lb}
     \end{align}
     Die Terme $(k_i - 1)/k_i$ sind streng monoton steigend mit $k_i$ für $i = 1, 2$. Ebenso ist das Argument der nachfolgenden Wurzel in (\ref{m2-expectation-lb}) streng monoton steigend mit jedem der $k_i$. Um das zu zeigen, sei $x = \lg^2 2k_1, y = \lg^2 2k_2$ und $x' > x$. Dann gilt
     \begin{align*}
         \frac {x'y} {x' + y}
         = \frac {x'y} {x' + y} \, \frac {x + y} {xy} \, \frac {xy} {x + y}
-        = \frac {xx'y + x'y^2} {xx'y + xy^2} \, \frac {xy} {x + y} > \frac {xy} {x + y}
+        = \frac {xx'y + x'y^2} {xx'y + xy^2} \, \frac {xy} {x + y}
+        > \frac {xy} {x + y}
     \end{align*}
     da $x, x', y > 0$ und $x < x'$. Da $x$ und $y$ symmetrisch in dem Term sind, folgt aus der Monotonie bzgl. $x$ die Monotonie bzgl. $y$. Da die Wurzelfunktion streng monoton steigt und die Verkettung streng monoton steigender Funktionen streng monoton steigt, folgt, dass die gesamte Wurzel auf der rechten Seite von (\ref{m2-expectation-lb}) streng monoton steigt. Weil nun jeder einzelne Faktor in (\ref{m2-expectation-lb}) streng monoton steigt und positiv ist, ist ganz (\ref{m2-expectation-lb}) streng monoton steigend in den $k_i$. Für $k_1 = 2, k_2 = 3$ gilt $E(L_{2, 3}(p)) \ge 0.8340 \sqrt{\pi p /2}  > 25 / 32 \sqrt{\pi p / 2}$. in Da $k_1 = 2, k_2 = 3$ der Fall mit minimalen $k_i$ ist, folgt für jedes Paar an verschiedenen Primzahlen $k_1, k_2$, dass $\E(L_{k_1, k_2}(p)) > 25 / 32 \sqrt{\pi p / 2}$.
 
