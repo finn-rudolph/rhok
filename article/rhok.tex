@@ -6,6 +6,7 @@
 \usepackage{amsthm}
 \usepackage[ngerman]{babel}
 \usepackage[backend=biber, style=apa]{biblatex}
+\usepackage{enumitem}
 \usepackage[left=3cm, right=3cm, top=2.5cm, bottom=2.5cm]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{mathtools}
@@ -15,7 +16,7 @@
 \usepackage[inkscapeformat=pdf]{svg}
 \usepackage{xcolor}
 
-\title{\textbf{Parametrisierung von Pollards Rho-Methode}}
+\title{Parametrisierung von Pollards Rho-Methode}
 \author{Finn Rudolph}
 \date{27.01.2024}
 
@@ -47,7 +48,22 @@
 
 \begin{document}
 
-\maketitle
+\noindent\rule{\textwidth}{0.4pt}
+
+\makeatletter
+\begin{flushleft}
+    \textbf{\Large{\@title}} \\
+    \vspace{1.5em}
+    Finn Rudolph \\
+    \vspace{1em}
+    Erarbeitungsort: Ferdinandstraße 42, 53127 Bonn \\
+    Fachgebiet: Mathmatik / Informatik \\
+    Wettbewerbssparte: Jugend forscht \\
+    Bundesland: Bayern \\
+    Wettbewerbsjahr: 2024
+\end{flushleft}
+
+\vspace{0.5em}
 
 \section*{Projektüberblick}
 
@@ -563,13 +579,14 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
     \paragraph{$\pmb{M = 1}$.} Es wurden $2^{20}$ zufällige Semiprimzahlen gewählt und die durchschnittliche Laufzeit berechnet. Die Messergebnisse für $1 \le k \le 30$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt. Die Laufzeit wird gut von (\ref{expectation-tmin}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert. Die dennoch vorhandenen Abweichungen sind möglicherweise durch die Näherung $\lg 2k$ für die Anzahl an Multiplikationen zur Berechnung von $x^{2k}$ zu erklären. Die Anzahl nötiger Multiplikationen von \emph{Square-And-Multiply} (der Standardalgorithmus zum Berechnen natürlicher Potenzen) hängt nämlich von der Zahl an Einsen in der Binärdarstellung von $2k$ ab. Das könnte die unerwartet geringe Laufzeit bei $k = 8$ und $k = 16$ erklären.
 
     \begin{figure}
+        \centering
         \begin{tikzpicture}
             \begin{axis}[
                     xlabel = {$k$},
                     xmin = 1,
                     xmax = 30,
                     xtick = {1, 5, 10, 15, 20, 25, 30},
-                    width = \textwidth,
+                    width = 0.8 * \textwidth,
                     legend pos = north west,
                     legend style = {draw = none},
                     legend cell align = left,
