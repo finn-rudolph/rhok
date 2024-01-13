@@ -560,7 +560,7 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
 
     Um zu demonstrieren, dass Formel (\ref{expectation-tmin}), Satz \ref{theorem:optimal-k-m1} und Satz \ref{theorem:optimal-k-m2} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreiben, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Als Testzahlen wurden 62-Bit Semiprimzahlen verwendet. Eine Semiprimzahl ist das Produkt zweier gleich großer Primzahlen, hier also zweier 31-Bit Primzahlen. Zahlen dieser Art sind ein \emph{worst-case-Input} für den Rho-Algorithmus, da der kleinste Primfaktor maximal groß im Verhältnis zur Zahl ist.
 
-    \paragraph{$\pmb{M = 1}$.} Es wurden $2^{20}$ zufällige Semiprimzahlen gewählt und die durchschnittliche Laufzeit berechnet. Die Messergebnisse für $1 \le k \le 30$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt.
+    \paragraph{$\pmb{M = 1}$.} Es wurden $2^{20}$ zufällige Semiprimzahlen gewählt und die durchschnittliche Laufzeit berechnet. Die Messergebnisse für $1 \le k \le 30$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt. Die Laufzeit wird gut von (\ref{expectation-tmin}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert. Die dennoch vorhandenen Abweichungen sind möglicherweise durch die Näherung $\lg 2k$ für die Anzahl an Multiplikationen zur Berechnung von $x^{2k}$ zu erklären. Die Anzahl nötiger Multiplikationen von \emph{Square-And-Multiply} (der Standardalgorithmus zum Berechnen natürlicher Potenzen) hängt nämlich von der Zahl an Einsen in der Binärdarstellung von $2k$ ab. Das könnte die unerwartet geringe Laufzeit bei $k = 8$ und $k = 16$ erklären.
 
     \begin{figure}
         \begin{tikzpicture}
@@ -645,7 +645,7 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
                 \legend{Formel (\ref{expectation-tmin}), Gemessene Laufzeit}
             \end{axis}
         \end{tikzpicture}
-        \caption{0}
+        \caption{Die durchschnittliche gemessene Laufzeit des Rho-Algorithmus für $M = 1$ und Werte von Formel (\ref{expectation-tmin}) für $1 \le k \le 30$. Beide wurden normalisiert, sodass bei $k = 1$ der Wert 1 ist.}
         \label{fig:measurements-m1}
     \end{figure}
 
@@ -653,11 +653,18 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
 
 \begin{figure}
     \begin{tabular}{cc}
+        \small
+        \begin{tabular}{cccccccc}
+            \textcolor[HTML]{ 0020ff }{ 0.71 } & \textcolor[HTML]{ 1320eb }{ 0.83 } & \textcolor[HTML]{ 1b20e3 }{ 0.87 } & \textcolor[HTML]{ 1c20e2 }{ 0.88 } & \textcolor[HTML]{ 2220dc }{ 0.91 } & \textcolor[HTML]{ 1d20e1 }{ 0.88 } & \textcolor[HTML]{ 2520d9 }{ 0.93 } & \textcolor[HTML]{ 2120dd }{ 0.91 } \\
+                                               & \textcolor[HTML]{ 3a20c4 }{ 1.06 } & \textcolor[HTML]{ 4e20b0 }{ 1.18 } & \textcolor[HTML]{ 5020ae }{ 1.19 } & \textcolor[HTML]{ 62209c }{ 1.30 } & \textcolor[HTML]{ 5320ab }{ 1.21 } & \textcolor[HTML]{ 6b2093 }{ 1.35 } & \textcolor[HTML]{ 5f209f }{ 1.28 } \\
+                                               &                                    & \textcolor[HTML]{ 6e2090 }{ 1.37 } & \textcolor[HTML]{ 71208d }{ 1.39 } & \textcolor[HTML]{ 8f206f }{ 1.57 } & \textcolor[HTML]{ 752089 }{ 1.42 } & \textcolor[HTML]{ 9f205f }{ 1.67 } & \textcolor[HTML]{ 8a2074 }{ 1.54 } \\
+                                               &                                    &                                    & \textcolor[HTML]{ 752089 }{ 1.42 } & \textcolor[HTML]{ 94206a }{ 1.60 } & \textcolor[HTML]{ 7a2084 }{ 1.44 } & \textcolor[HTML]{ a62058 }{ 1.71 } & \textcolor[HTML]{ 90206e }{ 1.57 } \\
+                                               &                                    &                                    &                                    & \textcolor[HTML]{ c1203d }{ 1.87 } & \textcolor[HTML]{ 9a2064 }{ 1.64 } & \textcolor[HTML]{ dc2022 }{ 2.04 } & \textcolor[HTML]{ bb2043 }{ 1.84 } \\
+                                               &                                    &                                    &                                    &                                    & \textcolor[HTML]{ 7e2080 }{ 1.47 } & \textcolor[HTML]{ ae2050 }{ 1.76 } & \textcolor[HTML]{ 962068 }{ 1.61 } \\
+                                               &                                    &                                    &                                    &                                    &                                    & \textcolor[HTML]{ ff2000 }{ 2.24 } & \textcolor[HTML]{ d62028 }{ 2.00 } \\
+                                               &                                    &                                    &                                    &                                    &                                    &                                    & \textcolor[HTML]{ b62048 }{ 1.80 } \\
+        \end{tabular}
         \begin{tabular}{cccccccccccc}
-            0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
-        \end{tabular} &
-        \begin{tabular}{cccccccccccc}
-            0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
         \end{tabular}
     \end{tabular}
 
