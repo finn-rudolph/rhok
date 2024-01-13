@@ -10,12 +10,9 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{mathtools}
 \usepackage[onehalfspacing]{setspace}
-\usepackage{sectsty}
 \usepackage[inkscapeformat=pdf]{svg}
 
-\allsectionsfont{\sffamily}
-
-\title{\sffamily{\textbf{Parametrisierung von Pollards Rho-Methode}}}
+\title{\textbf{Parametrisierung von Pollards Rho-Methode}}
 \author{Finn Rudolph}
 \date{27.01.2024}
 
@@ -58,7 +55,7 @@ Während für Rekordfaktorisierungen mittlerweile ausschließlich das Zahlkörpe
 
 \subsection{Pollards Rho-Methode}
 
-Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen zufälligen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_n)_{n \in \N}$ definiert durch $x_n = f(x_{n - 1})$ für einen Parameter $1 \le k \in \N$. Da $(x_n)_{n \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee von Pollards Rho-Algorithmus ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Nimmt man nun heuristisch an, dass die Periodenlänge von $(x_n)_{n \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Diese Annahme begründet sich darin, dass für den kleinsten Primfaktor $p \le \sqrt n$ gilt. Zum Finden solcher $x_i, x_j$ betrachten wir den funktionalen Graphen von $\pi(f)$, wobei $\pi(f)$ die Abbildung $f$ betrachtet in $\Z/p\Z$ ist.
+Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen zufälligen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_n)_{n \in \N}$ definiert durch $x_n = f(x_{n - 1})$ für einen Parameter $1 \le k \in \N$. Da $(x_n)_{n \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee von Pollards Rho-Algorithmus ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Nimmt man an, dass die Periodenlänge von $(x_n)_{n \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Diese Annahme begründet sich darin, dass für den kleinsten Primfaktor $p \le \sqrt n$ gilt. Zum Finden solcher $x_i, x_j$ betrachten wir den funktionalen Graphen von $\pi(f)$, wobei $\pi(f)$ die Abbildung $f$ betrachtet in $\Z/p\Z$ ist.
 
 \begin{definition}[Funktionaler Graph]
     Sei $X$ eine endliche Menge und $f: X \to X$ eine Abbildung. Der funktionale Graph von $f$, geschrieben $\gamma(f)$, ist der gerichtete Graph mit Knotenmenge $X$ und Kantenmenge $E$, wobei die Kante $(x, y) \in X \times X$ genau dann in $E$ liegt, wenn $f(x) = y$.
@@ -315,7 +312,7 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     \begin{align*}
         \frac 1 {n^{n + 2}}
         \sum_{f \in A(n)} \; \sum_{a \in \Z/n\Z} \; \sum_{b \in \Z/n\Z}
-        \min(\nu(f, a), \nu(f, b)) \sim \frac {25} {32} \sqrt{\pi n / 2}
+        \min\{\nu(f, a), \nu(f, b)\} \sim \frac {25} {32} \sqrt{\pi n / 2}
     \end{align*}
 \end{theorem}
 
@@ -421,7 +418,7 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     \begin{align*}
         \frac 1 {n^{n + 2}} \sum_{f \in A(n)} \;
          & \sum_{a \in \Z/n\Z} \; \sum_{b \in \Z/n\Z}
-        \min(\nu(f, a), \nu(f, b))                                           \\
+        \min\{\nu(f, a), \nu(f, b)\}                                         \\
          & \sim \frac {n!}{n^{n + 2}} \, \frac {25} {32} \,\frac {e^n n^2} 2 \\
          & = n! \bigg (\frac {e} {n} \bigg )^n \, \frac {25} {64}            \\
          & \sim \sqrt {2 \pi n} \; \frac {25}{64}                            \\
@@ -505,7 +502,7 @@ Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1
 \end{theorem}
 
 \begin{proof}
-    Nach Satz 1 gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also in beiden Fällen zu zeigen, dass der Erwartungswert jeweils größer ist. Zunächst wird Teil 1 bewiesen. Da $k_1 \ne k_2$, kann (\ref{expectation-tmin}) verwendet werden.
+    Nach Satz 1 gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also in beiden Teilen zu zeigen, dass der Erwartungswert größer ist. Zunächst wird Teil 1 bewiesen. Da $k_1 \ne k_2$, sind die zwei Maschinen unabhängig und (\ref{expectation-tmin}) kann verwendet werden.
     \begin{align*}
         L_{k_1, k_2}(p)
          & \sim \sqrt{\pi p / 2} \
@@ -538,7 +535,7 @@ Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1
         = \frac {xx'y + x'y^2} {xx'y + xy^2} \, \frac {xy} {x + y}
         > \frac {xy} {x + y}
     \end{align*}
-    da $x, x', y > 0$ und $x < x'$. Da $x$ und $y$ symmetrisch in dem Term sind, folgt aus der Monotonie bzgl. $x$ die Monotonie bzgl. $y$. Da die Wurzelfunktion streng monoton steigt und die Verkettung streng monoton steigender Funktionen streng monoton steigt, folgt, dass die gesamte Wurzel auf der rechten Seite von (\ref{m2-expectation-lb}) streng monoton steigt. Weil nun jeder einzelne Faktor in (\ref{m2-expectation-lb}) streng monoton steigt und positiv ist, ist ganz (\ref{m2-expectation-lb}) streng monoton steigend in den $k_i$. Für $k_1 = 2, k_2 = 3$ gilt $E(L_{2, 3}(p)) \ge 0.8340 \sqrt{\pi p /2}  > 25 / 32 \sqrt{\pi p / 2}$. in Da $k_1 = 2, k_2 = 3$ der Fall mit minimalen $k_i$ ist, folgt für jedes Paar an verschiedenen Primzahlen $k_1, k_2$, dass $\E(L_{k_1, k_2}(p)) > 25 / 32 \sqrt{\pi p / 2}$.
+    da $x, x', y > 0$ und $x < x'$. $x$ und $y$ sind symmetrisch in dem Term, daher ist er auch streng monoton steigend bzgl. $y$. Da die Wurzelfunktion streng monoton steigt und die Verkettung streng monoton steigender Funktionen streng monoton steigt, folgt, dass die gesamte Wurzel auf der rechten Seite von (\ref{m2-expectation-lb}) streng monoton steigt. Weil nun jeder einzelne Faktor in (\ref{m2-expectation-lb}) streng monoton steigt und positiv ist, ist ganz (\ref{m2-expectation-lb}) streng monoton steigend in den $k_i$. Indem man $k_1 = 3,\; k_2 = 5$ in (\ref{m2-expectation-lb}) einsetzt, sieht man, dass $E(L_{3, 5}(p)) \ge 1.0881 \sqrt{\pi p /2}  > 25 / 32 \sqrt{\pi p / 2}$. Weil (\ref{m2-expectation-lb}) symmetrisch in $k_1, k_2$ ist, kann $k_1 < k_2$ angenommen werden. Dann folgt aus der Monotonie von (\ref{m2-expectation-lb}), dass $E(L_{k_1, k_2}(p)) > \E(L_{1, 1}(p))$, wenn $k_1 \ge 3$. Es bleibt also lediglich der Fall $k_1 = 2$. Durch Einsetzen von $k_1 = 2, \; k_2 = 11$ in (\ref{m2-expectation-lb}) gilt $\E(L_{2, 11}(p)) \ge 0.8294 \sqrt{\pi p / 2} > 25 / 32 \sqrt{\pi p / 2}$. Aus der Monotonie von (\ref{m2-expectation-lb}) folgt $\E(L_{k_1, k_2}(p)) > \E(L_{1, 1}(p))$ für $k_1 = 2$ und $k_2 \ge 11$. Die übrigen Fälle $k_1 = 2$ und $k_2 = 3, 5, 7$ wurden nachgerechnet.
 
     Nun zum Beweis von Teil 2. Aus (\ref{lkkp}) folgt $L_{k, k}(p) = 25 / 32 \cdot L_{k}(p)$ für $1 \le k \in \N$. Damit folgt Teil 2 des Satzes aus Satz 3.
 \end{proof}
