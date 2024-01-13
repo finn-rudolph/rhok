@@ -10,6 +10,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{mathtools}
 \usepackage[onehalfspacing]{setspace}
+\usepackage{sectsty}
 \usepackage[inkscapeformat=pdf]{svg}
 
 \title{\textbf{Parametrisierung von Pollards Rho-Methode}}
@@ -37,7 +38,10 @@
         \nopagebreak
         \vskip3.25ex plus1ex minus.2ex
         \noindent
- }
+}
+
+\sectionfont{\large}
+\subsectionfont{\normalsize}
 
 \begin{document}
 
@@ -55,7 +59,7 @@ Während für Rekordfaktorisierungen mittlerweile ausschließlich das Zahlkörpe
 
 \subsection{Pollards Rho-Methode}
 
-Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen zufälligen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_n)_{n \in \N}$ definiert durch $x_n = f(x_{n - 1})$ für einen Parameter $1 \le k \in \N$. Da $(x_n)_{n \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee von Pollards Rho-Algorithmus ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Nimmt man an, dass die Periodenlänge von $(x_n)_{n \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Diese Annahme begründet sich darin, dass für den kleinsten Primfaktor $p \le \sqrt n$ gilt. Zum Finden solcher $x_i, x_j$ betrachten wir den funktionalen Graphen von $\pi(f)$, wobei $\pi(f)$ die Abbildung $f$ betrachtet in $\Z/p\Z$ ist.
+Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen zufälligen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_n)_{n \in \N}$ definiert durch $x_n = f(x_{n - 1})$ für einen Parameter $1 \le k \in \N$. Da $(x_n)_{n \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee von Pollards Rho-Algorithmus ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Nimmt man an, dass die Periodenlänge von $(x_n)_{n \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Diese Annahme begründet sich darin, dass für den kleinsten Primfaktor $p \le \sqrt n$ gilt. Im Folgenden wird $p$ also immer als kleinster Primfaktor von $n$ angenommen. Zum Finden solcher $x_i, x_j$ betrachten wir den funktionalen Graphen von $\pi(f)$, wobei $\pi(f)$ die Abbildung $f$ betrachtet in $\Z/p\Z$ ist.
 
 \begin{definition}[Funktionaler Graph]
     Sei $X$ eine endliche Menge und $f: X \to X$ eine Abbildung. Der funktionale Graph von $f$, geschrieben $\gamma(f)$, ist der gerichtete Graph mit Knotenmenge $X$ und Kantenmenge $E$, wobei die Kante $(x, y) \in X \times X$ genau dann in $E$ liegt, wenn $f(x) = y$.
@@ -66,7 +70,7 @@ Sei $n$ die zu faktorisierende Zahl und $f : \Z/n\Z \to \Z/n\Z$ mit $f : x \maps
 \begin{algorithm*}
     $x \gets $ zufällige natürliche Zahl zwischen $0$ und $n - 1$ \;
     $y \gets x$ \;
-    \While{\emph{\sc{true}}}
+    \While{\emph{\textsc{true}}}
     {
         $x \gets x^{2k} + 1 \mod n$ \;
         $y \gets (y^{2k} + 1)^{2k} + 1 \mod n$ \;
@@ -264,19 +268,42 @@ Als letzter Schritt wird die Summe über $t$ durch ein Integral angenähert. Die
     \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
     \label{expectation-tmin}
 \end{align}
-Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Man kann sich auf mehereren Wegen davon überzeugen, dass die Formel trotz der vielen Näherungen stimmt. Beispielsweise ist sie verträglich mit der bekannten Laufzeitabschätzung für Pollards Rho-Algorithmus im Fall $M = k_1 = 1$. Setzt man dies ein, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}. Lässt man in obigem Integral einen Faktor $t$ weg, erhält man statt des Erwartungswerts das Integral aller Wahrscheinlichkeiten. Dieses sollte natürlich 1 sein, und das ist es auch, wie man leicht nachrechnet.
+Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Man kann sich auf mehereren Wegen davon überzeugen, dass die Formel trotz der vielen Näherungen stimmt. Beispielsweise ist sie verträglich mit der bekannten Laufzeitabschätzung für Pollards Rho-Algorithmus im Fall $M = k_1 = 1$. Setzt man dies ein, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}. Lässt man in obigem Integral einen Faktor $t$ weg, erhält man statt des Erwartungswerts das Integral aller Wahrscheinlichkeiten. Dieses sollte natürlich 1 sein, und das ist es auch.
 
 \section{Die erwartete minimale Rho-Länge bei mehreren Anfangswerten}
 
-Um $L_{k_1, \dots, k_M}(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{expectation-tmin}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, k_1 = k_2$ gelöst werden. Für den Fall $k_1 = k_2 = \dots = k_M$, sei $k = k_1$ und $h = \gcd(p - 1, 2k)$. Nach der Random Mapping Assumption ist die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ für $p \to \infty$ asymptotisch zur Verteilung der Rho-Längen zufälliger Elemente in $A(h)$. Da sich die $M$ Maschinen im Fall $k_1 = k_2 = \dots = k_M$ alle im gleichen funktionalen Graphen bewegen, reduziert sich das Problem der Bestimmung einer asymptotischen Näherung von $L_{k, k, \dots, k}$ auf folgende Frage: \emph{Für $n \in \N$, gegeben ein zufälliges Element $f$ aus $A(n)$ und $M$ zufällige Elemente $x_{i, 0} \in Z/n\Z \; (1 \le i \le M)$, was ist der Erwartungswert von $\min_{i = 1}^M \nu(f, x_{i, 0})$?}
+Um $L_{k_1, \dots, k_M}(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{expectation-tmin}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \sqrt{\pi p / 2}$ Schritte benötigt werden, und letzterer Wert wird von Experimenten unterstützt. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, \, k_1 = k_2$ gelöst werden. In diesem Fall lässt sich das Problem folgendermaßen angehen. Sei $k = k_1 = k_2, \; h = p/(\gcd(p - 1, 2k) - 1)$ und $f : x \mapsto x^{2k} + 1$. Da die zwei Maschinen beide $f$ verwenden, bewegen sie sich beide im funktionalen Graphen $\gamma(f)$. Nach der Random Mapping Assumption ist die Verteilung der Rho-Längen von $f$ für $p \to \infty$ asymptotisch zur Verteilung der Rho-Längen eines zufälligen Elements aus $A(h)$. Das Problem reduziert sich daher auf folgende Frage: \emph{Für $n \in \N$, gegeben ein zufälliges Element $g$ aus $A(n)$ und zwei zufällige Elemente $a, b \in Z/n\Z$, was ist der Erwartungswert von $\min\{\nu(g, a), \nu(g, b)\}$?} Die Frage wird von folgendem Satz beantwortet, dessen Beweis das Ziel der nächsten zwei Abschnitte ist.
+
+\begin{theorem}
+    \label{theorem:min-rho-len-m2}
+    Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$. Wir bezeichnen mit
+    \begin{align*}
+        \tau_n =  \frac 1 {n^{n + 2}}
+        \sum_{g \in A(n)} \; \sum_{a, b \in \Z/n\Z}
+        \min\{\nu(g, a), \nu(g, b)\}
+    \end{align*}
+    die erwartete minimale Rho-Länge zweier zufälliger Knoten in einem funktionalen Graphen von Größe $n$. Es gilt
+    \begin{align*}
+        \tau_n \sim \frac {25} {32} \sqrt{\pi n / 2}
+    \end{align*}
+\end{theorem}
+
+\noindent Der Vorfaktor in der Definition von $\tau_n$ ist $1/n^{n + 2}$, da es $n^n$ Abbildungen $\Z/n\Z \to \Z/n\Z$ gibt und für jede von diesen $n^2$ Paare an Anfangswerten.
 
 \subsection{Theoretischer Hintergrund: Erzeugende Funktionen}
 
-Der grundlegende Ansatz zur Beantwortung obiger Frage für $M = 2$ ist, die Summe der minimalen Rho-Längen über alle Elemente von $A(p)$ und Paare an Anfangswerten zu bestimmen. Dafür soll eine erzeugende Funktion $\Psi(x, w)$ hergeleitet werden, in der die Variable $x$ die Größe des Graphen und die Variable $w$ die minimale Rho-Länge markiert. Dann gilt nämlich
+Der Ansatz zum Beweis von Satz \ref{theorem:min-rho-len-m2} ist, die Summe in der Definition von $\tau_n$ mithilfe einer erzeugenden Funktion $\Psi(x, w)$ zu bestimmen. In $\Psi(x, w)$ markiert die Variable $x$ die Größe des Graphen und die Variable $w$ die minimale Rho-Länge der zwei Anfangsknoten. Da funktionale Graphen beschriftet sind, werden stets erzeugende Funktionen von exponentiellem Typ (EF) verwendet. Also gilt
+\begin{align}
+    \Psi(x, w)
+    = \sum_{n = 0}^\infty \frac {x^n}{n!} \sum_{g \in A(n)}
+    \sum_{a, b \in \Z/n\Z} w^{\min\{\nu(g, a), \nu(g, b)\}}
+    \label{psi-definition}
+\end{align}
+Aus den Koeffizienten der Reihe von $\Psi$ kann dann wie folgt $L_{1, 1}(n)$ bestimmt werden.
 \begin{align*}
-    L_{1, 1}(n) = \frac {n!}{n^{n + 2}} [x^n] \Bigg (\frac {\partial} {\partial w} \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
+    \tau_n = \frac {n!}{n^{n + 2}} [x^n] \Bigg (\frac {\partial} {\partial w} \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
 \end{align*}
-wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet. Da funktionale Graphen beschriftet sind, werden stets erzeugende Funktionen von exponentiellem Typ (EF) verwendet. Folgende Komponenten eines funktionalen Graphen werden als Grundlage verwendet, um einen funktionalen Graphen zu konstruieren (\cite{fo90}, S. 333).
+wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet. Folgende Komponenten werden als Grundlage verwendet, um einen funktionalen Graphen zu konstruieren (\cite{fo90}, S. 333).
 \begin{align*}
     T(x) = x \exp T(x) \quad (\text{Baum}) \qquad\qquad
     C(x) = \ln \frac {1} {1 - x} \quad (\text{Zyklus})
@@ -286,9 +313,10 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     F(x) = \exp C(T(x)) = \exp \ln \frac 1 {1 - T(x)} = \frac 1 {1 - T(x)}
 \end{align*}
 
-\noindent Für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ wird später eine asymptotische Näherung bestimmt. Dafür wird folgender Satz von \cite{fo90} verwendet, der hier der Vollständigkeit halber erneut formuliert wird.
+\noindent Um für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ eine asymptotische Näherung zu bestimmen, wird folgender Satz von \cite{fo90} verwendet. Der Vollständigkeit halber wird er hier erneut formuliert.
 
 \begin{theorem}[\cite{fo90}]
+    \label{theorem:analytic-combinatorics}
     Sei $f(x)$ eine Funktion, die analytisch in
     \begin{align*}
         D = \{x : |x| \le s_1, \arg(x - s) > \pi/2 - \eta \}
@@ -305,22 +333,8 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
 
 \subsection{Der Fall zweier Anfangswerte}
 
-// Sagen dass wir erst nur den für a und b relevanten Teil des Graphen konstruieren.
-
-\begin{theorem}
-    Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$. Dann gilt
-    \begin{align*}
-        \frac 1 {n^{n + 2}}
-        \sum_{f \in A(n)} \; \sum_{a \in \Z/n\Z} \; \sum_{b \in \Z/n\Z}
-        \min\{\nu(f, a), \nu(f, b)\} \sim \frac {25} {32} \sqrt{\pi n / 2}
-    \end{align*}
-\end{theorem}
-
-\begin{proof}
-    // Maybe bezug von $\Psi$ zu obiger Summe noch einmal klar machen
-
-
-    Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie bereits definiert. Zur Bestimmung von $\Psi(x, w)$ unterscheiden wir drei disjunkte Fälle, die in Abbildung 1 dargestellt sind. Die Graphen werden grundsätzlich so konstruiert, dass $\nu(f, a) \le \nu(f, b)$, und wenn $\nu(f, a) < \nu(f, b)$, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert.
+\begin{proof}[Beweis von Satz \ref{theorem:min-rho-len-m2}]
+    Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie in (\ref{psi-definition}) definiert. Der Plan ist, zunächst einen geschlossenen Ausdruck für $\Psi(x, w)$ zu bestimmen, um dann die Ableitung nach $w$ zu bilden und Satz \ref{theorem:analytic-combinatorics} anzuwenden. Dafür werden drei Fälle unterschieden, die in Abbildung \ref{fig:psi-construction} dargestellt sind. In jedem der Fälle wird zunächst eine EF für funktionale Graphen bestimmt, die nur die für $a$ und $b$ relevanten Teile enthalten. Der "`relevante Teil"' besteht aus all den Knoten, die beim Ablaufen des Graphen besucht werden, also dem Zyklus und dem Pfad zum Zyklus. Der Rest des funktionalen Graphen wird später ergänzt. Grundsätzlich werden die Graphen so konstruiert, dass $\nu(f, a) \le \nu(f, b)$. Wenn dann $\nu(f, a) < \nu(f, b)$ gilt, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert. Im Fall $\nu(f, a) = \nu(f, b)$ darf man das nicht tun, weil der Graph sonst doppelt gezählt wird.
 
     \begin{figure}
         \begin{tabular}{ccc}
@@ -328,9 +342,10 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
             ($\alpha$)                           & ($\beta$)                           & ($\gamma$)
         \end{tabular}
         \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Kanten stellen keine einzelne Kante dar, sondern einen beliebig langen (und möglicherweise leeren) Pfad. Beispielsweise steht die Kurve $r$ in ($\alpha$) für den Zyklus in dem Zusammenhangskomponenten von $a$.}
+        \label{fig:psi-construction}
     \end{figure}
 
-    \paragraph{Fall 1.} Hier liegen $a$ und $b$ in unterschiedlichen Zusammenhangskomponenten. Dieser Fall wird erneut in die Fälle $\lambda(f, b) \le \nu(f, a)$ und $\lambda(f, b) > \nu(f, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall ist
+    \paragraph{Fall 1.} $a$ und $b$ liegen in unterschiedlichen Zusammenhangskomponenten. Dieser Fall wird erneut in die Fälle $\lambda(f, b) \le \nu(f, a)$ und $\lambda(f, b) > \nu(f, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall ist
     \begin{align*}
         \alpha_1(x, w) = \frac {x^2w(1 + x^2w)} {(1 - x^2w)^3} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg ) = \frac {x^2w(1 + x)(1 + x^2w)} {(1 - x^2w)^3(1 - x)}
     \end{align*}
@@ -397,7 +412,7 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     \begin{align*}
         T(x) = 1 - \sqrt{2} \; \sqrt {1 - ex} - O(1 - ez)
     \end{align*}
-    für $x \to e^{-1}$. $\psi(x)$ hat keine betragsmäßig kleineren Singularitäten, denn wenn $1 - T(x) = 0$, rechnet man leicht nach, dass $x = e^{-1}$ gilt, und wenn $1 + T(x) = 0$, gilt $x = -e$. Es wird nun Satz 1 mit $s = e^{-1}$ verwendet. Wenn $x \to e^{-1}$, gilt
+    für $x \to e^{-1}$. $\psi(x)$ hat keine betragsmäßig kleineren Singularitäten, denn wenn $1 - T(x) = 0$, rechnet man leicht nach, dass $x = e^{-1}$ gilt, und wenn $1 + T(x) = 0$, gilt $x = -e$. Es wird nun Satz \ref{theorem:analytic-combinatorics} mit $s = e^{-1}$ verwendet. Wenn $x \to e^{-1}$, gilt
     \begin{align*}
         \psi(x)
          & \sim \frac {T(e^{-1})(1 + 2T(e^{-1})
@@ -416,9 +431,7 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     \end{align*}
     und mit Stirlings Näherung $n! \sim \sqrt{2\pi n} (n/e)^n$
     \begin{align*}
-        \frac 1 {n^{n + 2}} \sum_{f \in A(n)} \;
-         & \sum_{a \in \Z/n\Z} \; \sum_{b \in \Z/n\Z}
-        \min\{\nu(f, a), \nu(f, b)\}                                         \\
+        \tau_n
          & \sim \frac {n!}{n^{n + 2}} \, \frac {25} {32} \,\frac {e^n n^2} 2 \\
          & = n! \bigg (\frac {e} {n} \bigg )^n \, \frac {25} {64}            \\
          & \sim \sqrt {2 \pi n} \; \frac {25}{64}                            \\
@@ -426,20 +439,20 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
     \end{align*}
 \end{proof}
 
-\noindent Aus Satz 2 folgt sofort, dass $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p / 2}$. Daraus lässt sich auch auf $L_{k, k}(p)$ schließen. Für $1 \le k \in \N$ wird nach RMA $p$ durch $p/(\gcd(p - 1, 2k) - 1)$ ersetzt. Die Laufzeit pro Iteration steigt bei jeder Maschine aber um einen Faktor $\lg 2k$, sodass sie auch insgesamt um einen Faktor $\lg 2k$ steigt. Es gilt also
+\noindent Aus Satz \ref{theorem:min-rho-len-m2} folgt sofort, dass $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p / 2}$. Daraus lässt sich auch auf $L_{k, k}(p)$ schließen. Für $1 \le k \in \N$ wird nach RMA $p$ durch $p/(\gcd(p - 1, 2k) - 1)$ ersetzt. Die Laufzeit pro Iteration steigt bei jeder Maschine aber um einen Faktor $\lg 2k$, sodass sie auch insgesamt um einen Faktor $\lg 2k$ steigt. Es gilt also
 \begin{align}
     L_{k, k}(p) \sim 25 / 32 \sqrt{\pi p /2} \
     \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}}
     \label{lkkp}
 \end{align}
-Man bemerke, dass Satz 2 unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf der Random Mapping Assumption basiert.
+Man bemerke, dass Satz \ref{theorem:min-rho-len-m2} unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf der Random Mapping Assumption basiert.
 
 \section{Bestimmung optimaler Exponenten für die Rho-Methode}
 \label{sec:optimal-k}
 
-In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{expectation-tmin}) und Satz 2 konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Da $p - 1$ gerade ist, gilt $\gcd(p-1, 2k_i) = 2\gcd((p - 1)/2, k_i)$. Weitere Kongruenzen von $p - 1$ sind im Allgemeinen nicht bekannt, weshalb angenommen wird, dass jeder Rest von $(p- 1)/2$ modulo $k_i$ gleich wahrscheinlich ist. Zur Berechnung der Wahrscheinlichkeit, dass $\gcd((p - 1)/2, k_i)$ einen bestimmten Wert annimmt, wird folgendes Lemma benötigt.
+In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{expectation-tmin}) und Satz \ref{theorem:min-rho-len-m2} konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Da $p - 1$ gerade ist, gilt $\gcd(p-1, 2k_i) = 2\gcd((p - 1)/2, k_i)$. Weitere Kongruenzen von $p - 1$ sind im Allgemeinen nicht bekannt, weshalb angenommen wird, dass jeder Rest von $(p- 1)/2$ modulo $k_i$ gleich wahrscheinlich ist. Zur Berechnung der Wahrscheinlichkeit, dass $\gcd((p - 1)/2, k_i)$ einen bestimmten Wert annimmt, wird folgendes Lemma benötigt.
 
-\begin{lemma}\label{lemma-gcd-probability}
+\begin{lemma}\label{lemma:gcd-probability}
     Sei $1 \le n \in \N$ und $m$ eine zufällige natürliche Zahl, sodass $0 \le m \le n - 1$. Dann gilt für $d \in \N$
     \begin{align*}
         \mathbb{P}(\gcd(n, m) = d) = \frac {\varphi(n / d)} n
@@ -463,7 +476,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
         L_k(p) \sim \sqrt {\pi p / 2} \;
         \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}}
     \end{align*}
-    Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Nach Lemma \ref{lemma-gcd-probability} gilt
+    Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Nach Lemma \ref{lemma:gcd-probability} gilt
     \begin{align*}
         \E(L_k(p))
          & \sim \sqrt{\pi p / 2} \, \lg (2k) \,
@@ -543,6 +556,8 @@ Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1
 \section{Experimentelle Ergebnisse}
 
 \section{Fazit}
+
+// was passiert bei semiprimes?
 
 \printbibliography
 
