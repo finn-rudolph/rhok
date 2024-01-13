@@ -55,7 +55,7 @@
 
 \section{Motivation und Fragestellung}
 
-Während für Rekordfaktorisierungen mittlerweile ausschließlich das Zahlkörpersieb verwendet wird, bleibt Pollards Rho-Algorithmus einer schnellsten Algorithmen zur Faktorisierung von Zahlen bis ca. $2^{64}$. Da Leistungssteigerungen bei modernen Computern häufig durch verbesserete Nebenläufigkeit (z. B. durch mehr Prozessorkerne) erzielt werden, ist es eine interessante Frage, wie Pollards Rho-Methode am besten parallel ausgeführt werden kann. Bevor die Fragestellung präzise formuliert werden kann, soll jedoch Pollards Rho-Methode erklärt werden.
+Während für Rekordfaktorisierungen mittlerweile ausschließlich das Zahlkörpersieb verwendet wird, bleibt Pollards Rho-Algorithmus einer schnellsten Algorithmen zur Faktorisierung von kleineren Zahlen. Da Leistungssteigerungen bei modernen Computern häufig durch verbesserete Nebenläufigkeit (z. B. durch mehr Prozessorkerne) erzielt werden, ist es eine interessante Frage, wie Pollards Rho-Methode am besten parallel ausgeführt werden kann. Bevor die Fragestellung präzise formuliert werden kann, soll jedoch Pollards Rho-Methode erklärt werden.
 
 \subsection{Pollards Rho-Methode}
 
@@ -337,7 +337,7 @@ Um für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ e
 \subsection{Der Fall zweier Anfangswerte}
 
 \begin{proof}[Beweis von Satz \ref{theorem:min-rho-len-m2}]
-    Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie in (\ref{psi-definition}) definiert. Der Plan ist, zunächst einen geschlossenen Ausdruck für $\Psi(x, w)$ zu bestimmen, um dann die Ableitung nach $w$ zu bilden und Satz \ref{theorem:analytic-combinatorics} anzuwenden. Dafür werden drei Fälle unterschieden, die in Abbildung \ref{fig:psi-construction} dargestellt sind. In jedem der Fälle wird zunächst eine EF für funktionale Graphen bestimmt, die nur die für $a$ und $b$ relevanten Teile enthalten. Der "`relevante Teil"' besteht aus all den Knoten, die beim Ablaufen des Graphen besucht werden, also dem Zyklus und dem Pfad zum Zyklus. Der Rest des funktionalen Graphen wird später ergänzt. Grundsätzlich werden die Graphen so konstruiert, dass $\nu(f, a) \le \nu(f, b)$. Wenn dann $\nu(f, a) < \nu(f, b)$ gilt, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert. Im Fall $\nu(f, a) = \nu(f, b)$ darf man das nicht tun, weil der Graph sonst doppelt gezählt wird. Zuletzt noch die Anmerkung, dass alle Zyklen im Folgenden mindestens einen ausgezeichneten Knoten besitzen, also nicht $C(x)$ sondern $S(x)$ als EF verwendet werden muss.
+    Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie in (\ref{psi-definition}) definiert. Der Plan ist, zunächst einen geschlossenen Ausdruck für $\Psi(x, w)$ zu bestimmen, um dann die Ableitung nach $w$ zu bilden und Satz \ref{theorem:analytic-combinatorics} anzuwenden. Dafür werden drei Fälle unterschieden, die in Abbildung \ref{fig:psi-construction} dargestellt sind. In jedem der Fälle wird zunächst eine EF für funktionale Graphen bestimmt, die nur die für $a$ und $b$ relevanten Teile enthalten. Der "`relevante Teil"' besteht aus all den Knoten, die beim Ablaufen des Graphen besucht werden, also dem Zyklus und dem Pfad zum Zyklus. Der Rest des funktionalen Graphen wird später ergänzt. Grundsätzlich werden die Graphen so konstruiert, dass $\nu(f, a) \le \nu(f, b)$. Wenn dann $\nu(f, a) < \nu(f, b)$ gilt, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert. Im Fall $\nu(f, a) = \nu(f, b)$ darf man das nicht tun, weil der Graph sonst doppelt gezählt wird. Schließlich noch die Anmerkung, dass alle Zyklen im Folgenden mindestens einen ausgezeichneten Knoten besitzen, also nicht $C(x)$ sondern $S(x)$ als EF verwendet werden muss.
 
     \begin{figure}
         \begin{tabular}{ccc}
@@ -470,6 +470,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 \subsection{Der Fall einer Maschine}
 
 \begin{theorem}
+    \label{theorem:optimal-k-m1}
     Sei $L_k(p)$ wie in (\ref{lk-definition}) definiert. Es gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd((p - 1)/2, k)$ genommen wird.
 \end{theorem}
 
@@ -510,6 +511,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1, k_2$ prim und $k_1 = k_2 > 1$. Es wird vermutet, dass $k_1 = k_2 = 1$ optimal ist.
 
 \begin{theorem}
+    \label{theorem:optimal-k-m2}
     Sei $L_{k_1, k_2}(p)$ wie in Abschnitt (\ref{lk-definition}) definiert. Im Folgenden wird der Erwartungswert von $L_{k_1, k_2}$ über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ genommen.
     \begin{enumerate}
         \item Wenn $k_1, k_2$ unterschiedliche Primzahlen sind, gilt $\E(L_{1, 1}(p)) < \E(L_{k_1, k_2}(p))$.
@@ -557,6 +559,12 @@ Im Fall $M = 2$ konnte bewiesen werden, dass $k_1 = k_2 = 1$ besser ist als $k_1
 \end{proof}
 
 \section{Experimentelle Ergebnisse}
+
+Um zu demonstrieren, dass Formel (\ref{expectation-tmin}), Satz \ref{theorem:optimal-k-m1} und Satz \ref{theorem:optimal-k-m2} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreiben, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt.
+
+\paragraph{$\pmb{M = 1}$.} Für zusammengesetzte Zahl $n$ mit $2^{60} \le n \le 2^{60} + 2^{16}$ wurde jeweils 50 Mal Pollards Rho-Algorithmus mit einem zufälligen Anfangswert ausgeführt und die durchschnittliche Laufzeit gemessen. Die Messergebnisse für $1 \le k \le 30$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in ? dargestellt.
+
+\paragraph{$\pmb{M = 2}$.} Es wurde für jedes zusammengesetzte $2^{60} \le n \le 2^{60} + 2^{16}$ jeweils 50 Mal Pollards Rho-Algorithmus mit zwei zufälligen Anfangswerten ausgeführt und der Mittelwert des Minimums der Laufzeit für beide Anfangswerte gebildet. Da Zahlen in der Größenordnung $2^{60}$ vom Rho-Algorithmus meist in weniger als 1 ms faktorisiert werden, wurde er nicht echt parallel ausgeführt, sondern zweimal hintereinander und zweimal die Laufzeit gemessen. Denn bei so geringen Laufzeiten würde die Zeit, um beispielsweise zwei Threads zu erstellen, das Messergebnis verfälschen. Die Ergebnisse für $1 \le k_1 \le k_2 \le 12$ sowie entsprechende Werte von (\ref{expectation-tmin}) zum Vergleich sind in ? dargestellt.
 
 \section{Fazit}
 
