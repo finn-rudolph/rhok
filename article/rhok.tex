@@ -303,17 +303,20 @@ Aus den Koeffizienten der Reihe von $\Psi$ kann dann wie folgt $L_{1, 1}(n)$ bes
 \begin{align*}
     \tau_n = \frac {n!}{n^{n + 2}} [x^n] \Bigg (\frac {\partial} {\partial w} \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
 \end{align*}
-wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet. Folgende Komponenten werden als Grundlage verwendet, um einen funktionalen Graphen zu konstruieren (\cite{fo90}, S. 333).
+wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet.
+
+Folgende Komponenten werden als Grundlage verwendet, um einen funktionalen Graphen zu konstruieren.
 \begin{align*}
-    T(x) = x \exp T(x) \quad (\text{Baum}) \qquad\qquad
-    C(x) = \ln \frac {1} {1 - x} \quad (\text{Zyklus})
+    S(x) & = \frac 1 {1 - x}       & \quad (\text{Pfad})   \\
+    T(x) & = x \exp T(x)           & \quad (\text{Baum})   \\
+    C(x) & = \ln \frac {1} {1 - x} & \quad (\text{Zyklus})
 \end{align*}
-Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF für funktionale Graphen
+Die letzten beiden Funktionen stammen von \cite{fo90}. Übersetzt bedeutet die EF für einen Baum: "`Ein Baum ist ein Knoten mit einer Menge an Bäumen"'. Die Erklärung für die EF eines Zyklus ist, dass ein Zyklus grundsätzlich ein Pfad ist, im Gegensatz zu einem Pfad aber rotationssymmetrisch ist, wofür der $\ln$ sorgt. Für einen Zyklus mit einem ausgezeichneten Knoten ist die EF allerdings $S(x)$, da ein solcher Zyklus nicht rotationssymmetrisch ist. Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen und wird also durch folgende EF beschrieben.
 \begin{align*}
     F(x) = \exp C(T(x)) = \exp \ln \frac 1 {1 - T(x)} = \frac 1 {1 - T(x)}
 \end{align*}
 
-\noindent Um für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ eine asymptotische Näherung zu bestimmen, wird folgender Satz von \cite{fo90} verwendet. Der Vollständigkeit halber wird er hier erneut formuliert.
+Um für die Koeffizienten von $((\partial / \partial w) \Psi(x, w)) |_{w = 1}$ eine asymptotische Näherung zu bestimmen, wird folgender Satz von \cite{fo90} verwendet. Der Vollständigkeit halber wird er hier erneut formuliert.
 
 \begin{theorem}[\cite{fo90}]
     \label{theorem:analytic-combinatorics}
@@ -334,7 +337,7 @@ Ein funktionaler Graph ist eine Menge an Zyklen von Bäumen, also ist die EF fü
 \subsection{Der Fall zweier Anfangswerte}
 
 \begin{proof}[Beweis von Satz \ref{theorem:min-rho-len-m2}]
-    Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie in (\ref{psi-definition}) definiert. Der Plan ist, zunächst einen geschlossenen Ausdruck für $\Psi(x, w)$ zu bestimmen, um dann die Ableitung nach $w$ zu bilden und Satz \ref{theorem:analytic-combinatorics} anzuwenden. Dafür werden drei Fälle unterschieden, die in Abbildung \ref{fig:psi-construction} dargestellt sind. In jedem der Fälle wird zunächst eine EF für funktionale Graphen bestimmt, die nur die für $a$ und $b$ relevanten Teile enthalten. Der "`relevante Teil"' besteht aus all den Knoten, die beim Ablaufen des Graphen besucht werden, also dem Zyklus und dem Pfad zum Zyklus. Der Rest des funktionalen Graphen wird später ergänzt. Grundsätzlich werden die Graphen so konstruiert, dass $\nu(f, a) \le \nu(f, b)$. Wenn dann $\nu(f, a) < \nu(f, b)$ gilt, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert. Im Fall $\nu(f, a) = \nu(f, b)$ darf man das nicht tun, weil der Graph sonst doppelt gezählt wird.
+    Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie in (\ref{psi-definition}) definiert. Der Plan ist, zunächst einen geschlossenen Ausdruck für $\Psi(x, w)$ zu bestimmen, um dann die Ableitung nach $w$ zu bilden und Satz \ref{theorem:analytic-combinatorics} anzuwenden. Dafür werden drei Fälle unterschieden, die in Abbildung \ref{fig:psi-construction} dargestellt sind. In jedem der Fälle wird zunächst eine EF für funktionale Graphen bestimmt, die nur die für $a$ und $b$ relevanten Teile enthalten. Der "`relevante Teil"' besteht aus all den Knoten, die beim Ablaufen des Graphen besucht werden, also dem Zyklus und dem Pfad zum Zyklus. Der Rest des funktionalen Graphen wird später ergänzt. Grundsätzlich werden die Graphen so konstruiert, dass $\nu(f, a) \le \nu(f, b)$. Wenn dann $\nu(f, a) < \nu(f, b)$ gilt, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert. Im Fall $\nu(f, a) = \nu(f, b)$ darf man das nicht tun, weil der Graph sonst doppelt gezählt wird. Zuletzt noch die Anmerkung, dass alle Zyklen im Folgenden mindestens einen ausgezeichneten Knoten besitzen, also nicht $C(x)$ sondern $S(x)$ als EF verwendet werden muss.
 
     \begin{figure}
         \begin{tabular}{ccc}
