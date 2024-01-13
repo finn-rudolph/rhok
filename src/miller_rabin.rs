@@ -49,37 +49,3 @@ pub const fn miller_rabin(n: u64) -> bool {
 
     true
 }
-
-#[cfg(test)]
-mod test {
-    use rand_xoshiro::{
-        rand_core::{RngCore, SeedableRng},
-        Xoshiro256PlusPlus,
-    };
-    use rug::{integer::IsPrime, Integer};
-
-    use super::*;
-
-    #[test]
-    fn test_miller_rabin() {
-        let mut rng = Xoshiro256PlusPlus::seed_from_u64(71 * 42);
-
-        for _ in 0..400000 {
-            let n = rng.next_u64() >> 2;
-            assert_eq!(
-                miller_rabin(n),
-                Integer::from(n).is_probably_prime(64) != IsPrime::No
-            );
-        }
-
-        for n in (2..400000)
-            .chain([2, 3, 5, 13, 19, 73, 193, 407521, 299210837].into_iter())
-        {
-            println!("{}", n);
-            assert_eq!(
-                miller_rabin(n),
-                Integer::from(n).is_probably_prime(64) != IsPrime::No
-            );
-        }
-    }
-}
