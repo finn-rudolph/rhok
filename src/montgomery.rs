@@ -29,10 +29,6 @@ impl Montgomery {
         mtg
     }
 
-    pub const fn n(&self) -> u64 {
-        self.n
-    }
-
     #[inline(always)]
     pub const fn to_montgomery_space(&self, x: u64) -> u64 {
         self.mul(x, self.two_to_128_mod_n)
@@ -100,19 +96,11 @@ impl Montgomery {
     pub const fn strict(&self, x: u64) -> u64 {
         x - if x >= self.n { self.n } else { 0 }
     }
-
-    #[inline(always)]
-    pub const fn one(&self) -> u64 {
-        self.one
-    }
 }
 
 #[cfg(test)]
 mod test {
-    use rand_xoshiro::{
-        rand_core::{RngCore, SeedableRng},
-        Xoshiro256PlusPlus,
-    };
+    use rand::{thread_rng, RngCore};
 
     use super::*;
 
@@ -120,7 +108,7 @@ mod test {
 
     #[test]
     fn test_montgomery_mul() {
-        let mut rng = Xoshiro256PlusPlus::seed_from_u64(42);
+        let mut rng = thread_rng();
         let mtg = Montgomery::new(P);
 
         for _ in 0..100000 {

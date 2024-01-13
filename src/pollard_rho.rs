@@ -1,16 +1,8 @@
 use core::cmp;
-use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
-use rand_xoshiro::{
-    rand_core::{RngCore, SeedableRng},
-    Xoshiro256PlusPlus,
-};
-use rayon::iter::{IntoParallelIterator, ParallelIterator};
+use rand::RngCore;
 
-use crate::{
-    miller_rabin::{self, miller_rabin},
-    montgomery::Montgomery,
-};
+use crate::montgomery::Montgomery;
 
 pub fn gcd(mut a: u64, mut b: u64) -> u64 {
     if a == 0 {
@@ -38,7 +30,7 @@ pub fn gcd(mut a: u64, mut b: u64) -> u64 {
 
 // Pollard's Rho algorithm with Brent's optimization, taken from Sergey Slotin's
 // book "Algorithms for Modern Hardware". (the gcd above is also from there)
-pub fn pollard_rho(n: u64, k: u64, rng: &mut Xoshiro256PlusPlus) -> u64 {
+pub fn pollard_rho(n: u64, k: u64, rng: &mut dyn RngCore) -> u64 {
     const BATCH_SIZE: u64 = 1 << 10;
     const LENGTH_LIMIT: u64 = 1 << 17;
 
@@ -63,7 +55,7 @@ pub fn pollard_rho(n: u64, k: u64, rng: &mut Xoshiro256PlusPlus) -> u64 {
                 }
 
                 let g = gcd(q, n);
-                if g != 1 {
+                if g != 1 && g != n {
                     return g;
                 }
 
@@ -71,55 +63,6 @@ pub fn pollard_rho(n: u64, k: u64, rng: &mut Xoshiro256PlusPlus) -> u64 {
             }
 
             l <<= 1;
-        }
-    }
-}
-
-pub fn bench_single_rho() {
-    const A: usize = 1 << 61;
-    const B: usize = (1 << 61) + (1 << 14);
-    const ITERATIONS: usize = 10;
-
-    for k1 in 1..17 {
-        for k2 in 1..17 {
-            let mut total_time = Duration::ZERO;
-            let mut num_composites = 0;
-
-            for n in A..=B {
-                if miller_rabin(n as u64) {
-                    continue;
-                }
-
-                num_composites += 1;
-
-                let mut rng = Xoshiro256PlusPlus::seed_from_u64(
-                    SystemTime::now()
-                        .duration_since(UNIX_EPOCH)
-                        .unwrap()
-                        .as_nanos() as u64,
-                );
-
-                for _ in 0..ITERATIONS {
-                    let mut min_time;
-
-                    let mut start = Instant::now();
-                    pollard_rho(n as u64, k1, &mut rng);
-                    min_time = start.elapsed();
-
-                    start = Instant::now();
-                    pollard_rho(n as u64, k2, &mut rng);
-                    min_time = min_time.min(start.elapsed());
-
-                    total_time += min_time;
-                }
-            }
-
-            println!(
-                "k1 = {:<5} | k2 = {:<5} | {:?}",
-                k1,
-                k2,
-                total_time / (num_composites * ITERATIONS) as u32
-            );
         }
     }
 }
