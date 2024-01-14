@@ -72,6 +72,16 @@ pub fn expected_time(
     i: usize,
     s: f64,
 ) -> f64 {
+    // Formel für abhängige Maschinen
+    if k.iter().all(|k_j| *k_j == k[0]) {
+        let mut expected = 0.0;
+        for d in PHI.divisors(k[0]) {
+            expected +=
+                PHI.gcd_probability(k[0], *d) / ((2 * d - 1) as f64).sqrt();
+        }
+        return (25.0 / 32.0) * (2.0 * k[0] as f64).log2() * expected;
+    }
+
     if i == machines {
         return 1.0 / s.sqrt();
     }
