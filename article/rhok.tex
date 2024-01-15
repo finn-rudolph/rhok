@@ -1,4 +1,4 @@
-\documentclass[a4paper, 10pt, ngerman]{article}
+\documentclass[a4paper, 11pt, ngerman]{article}
 
 \usepackage[algoruled, nosemicolon]{algorithm2e}
 \usepackage{amsmath}
@@ -9,7 +9,7 @@
 \usepackage{bm}
 \usepackage{caption}
 \usepackage{csquotes}
-\usepackage[left=2.89cm, right=2.89cm, top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2cm]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{mathtools}
 \usepackage{pgfplots}
@@ -59,20 +59,20 @@
         \vspace{1.5em}
         Finn Rudolph \\
         \vspace{1em}
-        Erarbeitungsort: Ferdinandstraße 42, 53127 Bonn \\
+        Erarbeitungsort: Hauptstraße 28, 96178 Pommersfelden \\
         Fachgebiet: Mathmatik / Informatik \\
         Wettbewerbssparte: Jugend forscht \\
         Bundesland: Bayern \\
         Wettbewerbsjahr: 2024
     \end{flushleft}
 
-    \vspace{0.5em}
+    \vspace{0.3em}
 
     \section*{Projektüberblick}
 
     Pollards Rho-Methode ist eine der schnellsten Algorithmen zur Faktorisierung kleiner Zahlen. Bei der Implementierung des Algorithmus kann ein Parameter $k$ gewählt werden, der unter Umständen großen Einfluss auf die Laufzeit des Algorithmus hat, sowohl im positiven als auch im negativen Sinn. In dieser Arbeit soll untersucht werden, wie $k$ bestmöglich gewählt wird. Insbesondere ist der Fall interessant, wenn der Algorithmus auf mehreren Maschinen parallel ausgeführt wird, weil dann für jede Maschine $k$ separat gewählt werden kann. Für den Fall einer und zweier Maschinen konnten theoretische Ergebnisse erzielt werden, im Fall zweier Maschinen bleiben aber noch Fragen offen. Diese Ergebnisse decken sich mit durchgeführten Experimenten. Offen bleibt die Frage der optimalen Parametrisierung für drei oder mehr Maschinen.
 
-    \vspace{1em}
+    \vspace{0.7em}
 
     \begin{spacing}{1.2}
         \tableofcontents
@@ -90,7 +90,7 @@ In dieser Arbeit wird die Frage behandelt, wie der Parameter $k$ in Pollards Rho
 
 \section{Motivation und Fragestellung}
 
-Während für Rekordfaktorisierungen mittlerweile andere Algorithmen verwendet wird, bleibt Pollards Rho-Algorithmus einer schnellsten Algorithmen zur Faktorisierung kleinerer Zahlen. Da Leistungssteigerungen bei modernen Computern häufig durch verbesserete Nebenläufigkeit (z. B. durch mehr Prozessorkerne) erzielt werden, ist es eine interessante Frage, wie Pollards Rho-Methode am besten parallel ausgeführt werden kann. Bevor die Fragestellung präzise formuliert werden kann, soll jedoch Pollards Rho-Methode vorgestellt werden.
+Pollards Rho-Algorithmus bleibt trotz der Existenz asymptotisch schnellerer Algorithmen einer der meistverwendeten Algorithmen zur Faktorisierung kleinerer Zahlen. Da Leistungssteigerungen bei modernen Computern häufig durch verbesserete Nebenläufigkeit (z. B. mehr Prozessorkerne) erzielt werden, ist es eine interessante Frage, wie Pollards Rho-Methode am besten parallel ausgeführt werden kann. Bevor die Fragestellung präzise formuliert werden kann, soll jedoch Pollards Rho-Methode vorgestellt werden.
 
 \subsection{Pollards Rho-Methode}
 
@@ -160,7 +160,7 @@ In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergleitet, d
     = \P(\nu(f, x_0) > s)
     = \prod_{j = 0}^s \bigg (1 - \frac {j} {h_i} \bigg )
 \end{align*}
-Da die $i$-te Maschine in $t$ Zeiteinheiten $\lfloor t / \lg 2k_i \rfloor$ Schritte ausführt, gilt $\P(t_i > t) \sim \P(s_i > t / \lg 2k_i)$ für große $t$. Das Weglassen der Gaußklammern lässt sich damit rechtfertigen, dass für ausreichend großes $p$ nur große $t$ relevant für den Erwartungswert von $t_{\min}$ sind, bei denen es kaum einen Unterschied macht. Zur Herleitung der Formel werden noch weitere solcher Vereinfachungen nötig sein, diese zu beweisen ist aber meist uninteressant und aufwändig. Im Abschnitt \emph{Weglassen von $O(j^2/h_i^2)$} wird für eine von ihnen genauer begründet, um zu zeigen, wie ein solches Argument aussehen kann. Nun wird die Restgliedabschätzung $\exp x = 1 + x + O(x^2)$ für $|x| < 1$ mit $x = -j/h_i$ angewandt.
+Da die $i$-te Maschine in $t$ Zeiteinheiten $\lfloor t / \lg 2k_i \rfloor$ Schritte ausführt, gilt $\P(t_i > t) \sim \P(s_i > t / \lg 2k_i)$ für große $t$. Das Weglassen der Gaußklammern lässt sich damit rechtfertigen, dass für ausreichend großes $p$ nur große $t$ relevant für den Erwartungswert von $t_{\min}$ sind, bei denen es kaum einen Unterschied macht. Zur Herleitung der Formel werden noch weitere solcher Vereinfachungen nötig sein, diese zu beweisen ist aber meist uninteressant und aufwändig. Im Abschnitt \emph{Weglassen von $O(j^2/h_i^2)$} wird für eine von ihnen genauer begründet, um zu zeigen, wie ein solches Argument aussehen kann. Durch Anwenden der Restgliedabschätzung $\exp x = 1 + x + O(x^2)$, wenn $|x| < 1$, auf $x = -j/h_i$ gilt
 \begin{align*}
     \P(s_i > s)
     = \prod_{j = 0}^{s} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg )
@@ -330,9 +330,8 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
     \begin{align*}
         \tau_n = \frac {n!}{n^{n + 2}} [x^n] \Bigg (\frac {\partial} {\partial w} \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
     \end{align*}
-    wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet.
-
-    Folgende Komponenten werden als Grundlage verwendet, um $\Psi(x, w)$ zu konstruieren.
+    wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet. Folgende Komponenten werden als Grundlage verwendet, um $\Psi(x, w)$ zu konstruieren.
+    // maybe remove these
     \begin{align*}
         S(x) & = \frac 1 {1 - x}    & \quad (\text{Folge / Pfad})       \\
         T(x) & = x \exp T(x)        & \quad (\text{Baum})               \\
@@ -343,7 +342,7 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
     \subsection{Der Fall zweier Anfangswerte}
 
     \begin{proof}[Beweis von Satz \ref{theorem:min-rho-len-m2}]
-        Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie in (\ref{psi-definition}) definiert. Der Plan ist, zunächst einen geschlossenen Ausdruck für $\Psi(x, w)$ zu bestimmen, um dann die Ableitung nach $w$ zu bilden. Dafür werden vier Fälle unterschieden, die in Abbildung \ref{fig:psi-construction} dargestellt sind. In jedem der Fälle wird zunächst eine EF für funktionale Graphen bestimmt, die nur die für $a$ und $b$ relevanten Teile enthalten. Der "`relevante Teil"' besteht aus all den Knoten, die beim Ablaufen des Graphen besucht werden, also dem Zyklus und dem Pfad zum Zyklus. Der Rest des funktionalen Graphen wird später ergänzt. Grundsätzlich werden die Graphen so konstruiert, dass $\nu(f, a) \le \nu(f, b)$. Wenn dann $\nu(f, a) < \nu(f, b)$ gilt, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert. Im Fall $\nu(f, a) = \nu(f, b)$ darf man das nicht tun, weil der Graph sonst doppelt gezählt wird.
+        Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie in (\ref{psi-definition}) definiert. Der Plan ist, zunächst einen geschlossenen Ausdruck für $\Psi(x, w)$ zu bestimmen, um dann die Ableitung nach $w$ zu bilden. Dafür werden drei Fälle unterschieden, die in Abbildung \ref{fig:psi-construction} dargestellt sind. In jedem der Fälle wird zunächst eine EF für funktionale Graphen bestimmt, die nur die für $a$ und $b$ relevanten Teile enthalten. Der "`relevante Teil"' besteht aus all den Knoten, die beim Ablaufen des Graphen besucht werden, also dem Zyklus und dem Pfad zum Zyklus. Der Rest des funktionalen Graphen wird später ergänzt. Grundsätzlich werden die Graphen so konstruiert, dass $\nu(f, a) \le \nu(f, b)$. Wenn dann $\nu(f, a) < \nu(f, b)$ gilt, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert. Im Fall $\nu(f, a) = \nu(f, b)$ darf man das nicht tun, weil der Graph sonst doppelt gezählt wird.
 
         \begin{figure}
             \begin{tabular}{ccc}
@@ -474,17 +473,12 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
         Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Mit $\varphi$ wird die eulersche Phifunktion bezeichnet. Dann gilt
         \begin{align*}
             \E(L_k(p))
-             & \sim \sqrt{\pi p / 2} \, \lg (2k) \,
+            \sim \sqrt{\pi p / 2} \, \lg (2k) \,
             \sum_{d | k} \frac {\P(\gcd((p - 1)/2, k) = d)}
-            { \sqrt {2d - 1}} \nonumber                                 \\
-             & \ge \sqrt{\pi p / 2} \, \lg (2k) \, \frac {\varphi(k)} k
+            { \sqrt {2d - 1}} \nonumber
+            \ge \sqrt{\pi p / 2} \, \lg (2k) \, \frac {\varphi(k)} k
         \end{align*}
-        Die Ungleichung lässt sich zeigen, indem statt der Summe über alle Teiler nur $d = 1$ betrachtet wird. Da es $\varphi(k)$ teilerfremde Zahlen $< k$ gibt, ist $\P(\gcd((p - 1)/2, k) = 1) = \varphi(k)/k$. Nach \cite{rs62}, Theorem 15 gilt
-        \begin{align*}
-            \frac {\varphi(k)} k
-             & > \frac 1 {e^\gamma \ln (\ln (k)) + 2.51 / \ln (\ln (k))}
-        \end{align*}
-        für $k \ge 3$, wobei $\gamma \approx 0.5772$ die Euler-Mascheroni-Konstante ist. Für $k \ge e^e$ folgt daraus $\varphi(k) / k > 1/(e^\gamma \ln(\ln(k)) + 2.51)$. Indem nun gezeigt wird, dass $\lg (2k) / (e^\gamma \ln (\ln (k)) + 2.51) > 1$ für $k \ge 16$ wird der Satz im Fall $k \ge 16$ bewiesen. Sei $f(x) = \lg (2x) / (e^\gamma \ln (\ln (x)) + 2.51)$. Es gilt $f(16) \approx 1.1557$ und
+        Die Ungleichung lässt sich zeigen, indem statt der Summe über alle Teiler nur $d = 1$ betrachtet wird. Da es $\varphi(k)$ teilerfremde Zahlen $< k$ gibt, ist $\P(\gcd((p - 1)/2, k) = 1) = \varphi(k)/k$. Nach \cite{rs62}, Theorem 15 gilt $ \varphi(k) / k > 1 / (e^\gamma \ln (\ln (k)) + 2.51 / \ln (\ln (k)))$ für $k \ge 3$, wobei $\gamma \approx 0.5772$ die Euler-Mascheroni-Konstante ist. Für $k \ge e^e$ folgt daraus $\varphi(k) / k > 1/(e^\gamma \ln(\ln(k)) + 2.51)$. Indem nun gezeigt wird, dass $\lg (2k) / (e^\gamma \ln (\ln (k)) + 2.51) > 1$ für $k \ge 16$ wird der Satz im Fall $k \ge 16$ bewiesen. Sei $f(x) = \lg (2x) / (e^\gamma \ln (\ln (x)) + 2.51)$. Es gilt $f(16) \approx 1.1557$ und
         \begin{align*}
             f'(x)
             = \frac {\ln (x)(\ln (\ln (x)) + 1.51) - \ln 2}
@@ -555,7 +549,7 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
                     xmax = 48,
                     xtick = {1, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48},
                     width = \textwidth,
-                    height = 280pt,
+                    height = 260pt,
                     legend pos = north west,
                     legend style = {draw = none},
                     legend cell align = left,
@@ -720,9 +714,9 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
 
     Um zu demonstrieren, dass Formel (\ref{expectation-tmin}), Satz \ref{theorem:optimal-k-m1} und Satz \ref{theorem:optimal-k-m2} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreiben, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Wie zu Beginn gesagt, wurde für die Berechnungen angenommen, dass $n$ genau einen kleinsten Primfaktor $p$ hat und die anderen Primfaktoren deutlich größer sind, sodass sie zur Analyse der Laufzeit ignoriert werden können. Daher ist es natürlich nur sinnvoll, die Berechnungen mit Messergebnissen für Zahlen dieser Art zu vergleichen. Als Testzahlen wurden 62-Bit Semiprimzahlen mit einem 21-Bit und einem 41-Bit Faktor verwendet. Eine Semiprimzahl ist das Produkt zweier Primzahlen. Für jede Parameterwahl wurden $2^{20}$ zufällige Semiprimzahlen gewählt und die durchschnittliche Laufzeit berechnet. Die Ergebnisse sind in Abbildung \ref{fig:measurements-m1} und \ref{fig:measurements-m2} dargestellt. Die berechneten und gemessenen Werte wurden jeweils normalisiert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 ist. Bei den Messungen wurden Ausreißer entfernt, die für alle Parameterwerte jeweils weniger als 0.01\% der Proben ausmachten.
 
-    \paragraph{$\bm{M = 1}$.} Die durchschnittliche Laufzeit für $1 \le k \le 48$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt. Die Laufzeit wird gut von (\ref{expectation-tmin}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert. Die dennoch vorhandenen Abweichungen sind möglicherweise durch die Näherung $\lg 2k$ für die Anzahl an Multiplikationen zur Berechnung von $x^{2k}$ zu erklären. Die Anzahl nötiger Multiplikationen von \emph{Square-And-Multiply} (der Standardalgorithmus zum Berechnen natürlicher Potenzen) hängt nämlich von der Zahl an Einsen in der Binärdarstellung von $2k$ ab. Das könnte die etwas geringere Laufzeit bei $k = 16$ und $k = 32$ erklären.
+    \paragraph{$\bm{M = 1}$.} Die durchschnittliche Laufzeit für $1 \le k \le 48$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt. Die Laufzeit wird gut von (\ref{expectation-tmin}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert.
 
-    \paragraph{$\bm{M = 2}$.} Die durchschnittliche Laufzeit und berechnete Werte für jedes Paar $1 \le k_1 \le k_2 \le 14$ sind in Abbildung \ref{fig:measurements-m2} dargestellt. Zur Berechnung der erwarteten Laufzeit wurde Formel (\ref{lkkp}) verwendet, wenn $k_1 = k_2$, und Formel (\ref{expectation-tmin}), wenn $k_1 \ne k_2$. Auch hier wird das grundsätzliche Verhalten der Laufzeit gut durch (\ref{expectation-tmin}) und (\ref{lkkp}) beschreiben. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist. Auffällig ist, dass die Laufzeitunterschiede zwischen weniger ausgeprägt sind als von den Formeln vorhergesagt. Das liegt wahrscheinlich daran, dass neben der Berechnung von $x^{2k}$ auch andere Berechnungen im Rho-Algorithmus durchgeführt werden, deren Dauer unabhängig von $k$ ist (z.B. das Bilden des $\gcd$). Diese wurden aber in den Formeln nicht berücksichtigt.
+    \paragraph{$\bm{M = 2}$.} Die durchschnittliche Laufzeit und berechnete Werte für jedes Paar $1 \le k_1 \le k_2 \le 14$ sind in Abbildung \ref{fig:measurements-m2} dargestellt. Zur Berechnung der erwarteten Laufzeit wurde Formel (\ref{lkkp}) verwendet, wenn $k_1 = k_2$, und Formel (\ref{expectation-tmin}), wenn $k_1 \ne k_2$. Auch hier wird das grundsätzliche Verhalten der Laufzeit gut durch (\ref{expectation-tmin}) und (\ref{lkkp}) beschreiben. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist. Auffällig ist, dass die Laufzeitunterschiede zwischen weniger ausgeprägt sind als von den Formeln vorhergesagt. Das liegt wahrscheinlich daran, dass neben der Berechnung von $x^{2k}$ auch andere Berechnungen im Rho-Algorithmus durchgeführt werden, deren Dauer unabhängig von $k$ ist (z.B. das Bilden des $\gcd$). Diese werden aber in den Formeln nicht berücksichtigt.
 
     \begin{figure}
 
@@ -730,7 +724,7 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
 
     \section{Fazit}
 
-    Zur Beantwortung der Frage nach der optimalen Wahl des Parameters $k$ konnten in dieser Arbeit einige Teilergebnisse erzielt werden. Es wurde der Fall betrachtet, dass die zu faktorisierende Zahl $n$ nur einen Primfaktor kleinster Größenordnung hat, sodass der Einfluss anderer Primfaktoren auf die Laufzeit vernachlässigt werden kann. In diesem Fall konnte unter üblichen Annahmen über Pollards Rho-Algorithmus gezeigt werden, dass $k = 1$ für $M = 1$ optimal ist. Im Fall $M = 2$ wurde gezeigt, dass $k_1 = k_2 = 1$ besser ist als jedes Paar an Primzahlen und jedes Paar mit $k_1 = k_2$. Laufzeitmessungen bestätigen diese Aussagen und zeigen darüber hinaus, dass die hergeleiteten Formeln die Laufzeit des Algorithmus gut beschreiben. Unter Anbetracht der Messergebnisse für $M = 2$ wird vermutet, dass $k_1 = k_2 = 1$ optimal ist. Für eine vollständige Beantwortung der Frage sind allerdings noch einige Schritte nötig. Beispielsweise ist es für $M \ge 3$ möglich, dass manche Maschinen abhängig sind und manche unabhängig (wenn z. B. $k_1 = k_2 \ne k_3$). Um hier die Laufzeit abzuschätzen, ist eine Verallgemeinerung von Satz \ref{theorem:min-rho-len-m2} nötig, um eine asymptotische Näherung für die minimale Rho-Länge zu erhalten, wenn es meherere Teilmengen abhängiger Maschinen gibt.
+    Zur Beantwortung der Frage nach der optimalen Wahl des Parameters $k$ konnten in dieser Arbeit einige Teilergebnisse erzielt werden. Es wurde der Fall betrachtet, dass die zu faktorisierende Zahl $n$ nur einen Primfaktor kleinster Größenordnung hat, sodass der Einfluss anderer Primfaktoren auf die Laufzeit vernachlässigt werden kann. In diesem Fall konnte unter üblichen Annahmen über Pollards Rho-Algorithmus gezeigt werden, dass $k = 1$ für $M = 1$ optimal ist. Im Fall $M = 2$ wurde gezeigt, dass $k_1 = k_2 = 1$ besser ist als jedes Paar an Primzahlen und jedes Paar mit $k_1 = k_2$. Laufzeitmessungen bestätigen diese Aussagen und zeigen darüber hinaus, dass die hergeleiteten Formeln die Laufzeit des Algorithmus gut beschreiben. Unter Anbetracht der Messergebnisse für $M = 2$ wird vermutet, dass $k_1 = k_2 = 1$ optimal ist. Für eine vollständige Beantwortung der Frage sind allerdings noch einige Schritte nötig. Beispielsweise ist es für $M \ge 3$ möglich, dass manche Maschinen abhängig sind und manche unabhängig (wenn z. B. $k_1 = k_2 \ne k_3$). Diese Situation kann mit den hier verwendeten Methoden noch nicht behandelt werden.
 
 \newpage
 \printbibliography
