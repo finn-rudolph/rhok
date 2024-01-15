@@ -7,9 +7,9 @@
 \usepackage[ngerman]{babel}
 \usepackage[backend=biber, style=apa]{biblatex}
 \usepackage{bm}
-\usepackage[font=small]{caption}
+\usepackage{caption}
 \usepackage{csquotes}
-\usepackage[left=3cm, right=3cm, top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage[left=2.89cm, right=2.89cm, top=2.5cm, bottom=2.5cm]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{mathtools}
 \usepackage{pgfplots}
@@ -70,7 +70,7 @@
 
     \section*{Projektüberblick}
 
-    Pollards Rho-Methode ist eine der schnellsten Algorithmen zur Faktorisierung kleiner Zahlen. Bei der Implementierung des Algorithmus kann ein Parameter $k$ gewählt werden, der unter Umständen großen Einfluss auf die Laufzeit des Algorithmus haben kann, sowohl im positiven als auch im negativen Sinn. In dieser Arbeit soll untersucht werden, wie $k$ bestmöglich gewählt werden kann. Insbesondere ist der Fall interessant, wenn der Algorithmus auf mehreren Maschinen parallel ausgeführt wird, weil dann für jede Maschine $k$ separat gewählt wird. Für den Fall einer und zweier Maschinen konnten theoretische Ergebnisse erzielt werden, im Fall zweier Maschinen bleiben aber noch theoretische Fragen offen. Diese Ergebnisse decken sich mit durchgeführten Experimenten. Offen bleibt die Frage der optimalen Parametrisierung für drei oder mehr Maschinen.
+    Pollards Rho-Methode ist eine der schnellsten Algorithmen zur Faktorisierung kleiner Zahlen. Bei der Implementierung des Algorithmus kann ein Parameter $k$ gewählt werden, der unter Umständen großen Einfluss auf die Laufzeit des Algorithmus hat, sowohl im positiven als auch im negativen Sinn. In dieser Arbeit soll untersucht werden, wie $k$ bestmöglich gewählt wird. Insbesondere ist der Fall interessant, wenn der Algorithmus auf mehreren Maschinen parallel ausgeführt wird, weil dann für jede Maschine $k$ separat gewählt werden kann. Für den Fall einer und zweier Maschinen konnten theoretische Ergebnisse erzielt werden, im Fall zweier Maschinen bleiben aber noch Fragen offen. Diese Ergebnisse decken sich mit durchgeführten Experimenten. Offen bleibt die Frage der optimalen Parametrisierung für drei oder mehr Maschinen.
 
     \vspace{1em}
 
@@ -86,9 +86,11 @@
 
 \section{Zusammenfassung}
 
+In dieser Arbeit wird die Frage behandelt, wie der Parameter $k$ in Pollards Rho-Methode optimal gewählt werden kann. Ein größerer Wert von $k$ erhöht grundsätzlich die Laufzeit, kann aber auch zu einer deutlichen Verringerung führen, wenn die Primfaktoren der zu faktorisierenden Zahl günstige Eigenschaften haben. Im Allgemeinen ist über die Primfaktoren allerdings nichts bekannt, sie sollen ja durch den Algorithmus bestimmt werden. Daher stellt sich die Frage, welcher Wert von $k$ im Mittel am besten ist. Es ergibt sich insbesondere dann ein interessantes Problem, wenn der Algorithmus auf mehreren Maschinen parallelisiert wird, weil $k$ dann für jede Maschine gewählt werden muss. Unter weithin anerkannten Annahmen über Pollards Rho-Algorithmus konnte gezeigt werden, dass $k = 1$ für eine Maschine optimal ist. Im Fall zweier Maschinen wird gezeigt, dass $k_1 = k_2 = 1$ besser ist als wenn $k_1$ und $k_2$ Primzahlen sind oder wenn $k_1 = k_2 > 1$ gilt. $k_i$ bezeichnet den Wert von $k$ für die $i$-te Maschine. Anschließend werden Laufzeitmessungen vorgestellt, die mit den theoretischen Ergebnissen übereinstimmen.
+
 \section{Motivation und Fragestellung}
 
-Während für Rekordfaktorisierungen mittlerweile ausschließlich das Zahlkörpersieb verwendet wird, bleibt Pollards Rho-Algorithmus einer schnellsten Algorithmen zur Faktorisierung von kleineren Zahlen. Da Leistungssteigerungen bei modernen Computern häufig durch verbesserete Nebenläufigkeit (z. B. durch mehr Prozessorkerne) erzielt werden, ist es eine interessante Frage, wie Pollards Rho-Methode am besten parallel ausgeführt werden kann. Bevor die Fragestellung präzise formuliert werden kann, soll jedoch Pollards Rho-Methode erklärt werden.
+Während für Rekordfaktorisierungen mittlerweile andere Algorithmen verwendet wird, bleibt Pollards Rho-Algorithmus einer schnellsten Algorithmen zur Faktorisierung kleinerer Zahlen. Da Leistungssteigerungen bei modernen Computern häufig durch verbesserete Nebenläufigkeit (z. B. durch mehr Prozessorkerne) erzielt werden, ist es eine interessante Frage, wie Pollards Rho-Methode am besten parallel ausgeführt werden kann. Bevor die Fragestellung präzise formuliert werden kann, soll jedoch Pollards Rho-Methode vorgestellt werden.
 
 \subsection{Pollards Rho-Methode}
 
@@ -348,7 +350,7 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
                 \includesvg[width=145pt]{pics/alpha} & \includesvg[width=145pt]{pics/beta} & \includesvg[width=145pt]{pics/gamma} \\
                 ($\alpha$)                           & ($\beta$)                           & ($\gamma$)
             \end{tabular}
-            \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Kanten stellen keine einzelne Kante dar, sondern einen beliebig langen (und möglicherweise leeren) Pfad. Beispielsweise steht die Kurve $r$ in ($\alpha$) für den Zyklus in dem Zusammenhangskomponenten von $a$.}
+            \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Linien stellen keine einzelnen Kanten dar, sondern eine Folge an Kanten. Beispielsweise steht $r$ in ($\alpha$) für den Zyklus in dem Zusammenhangskomponenten von $a$.}
             \label{fig:psi-construction}
         \end{figure}
 
@@ -545,7 +547,7 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
 
     Um zu demonstrieren, dass Formel (\ref{expectation-tmin}), Satz \ref{theorem:optimal-k-m1} und Satz \ref{theorem:optimal-k-m2} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreiben, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Wie zu Beginn gesagt, wurde für die Berechnungen angenommen, dass $n$ genau einen kleinsten Primfaktor $p$ hat und die anderen Primfaktoren deutlich größer sind, sodass sie zur Analyse der Laufzeit ignoriert werden können. Daher ist es natürlich nur sinnvoll, die Berechnungen mit Messergebnissen für Zahlen dieser Art zu vergleichen. Als Testzahlen wurden 62-Bit Semiprimzahlen mit einem 21-Bit und einem 41-Bit Faktor verwendet. Eine Semiprimzahl ist das Produkt zweier Primzahlen.
 
-    \paragraph{$\bm{M = 1}$.} Es wurden $2^{22}$ zufällige Semiprimzahlen gewählt und die durchschnittliche Laufzeit berechnet. Die Messergebnisse für $1 \le k \le 30$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt. Die Werte wurden jeweils normalisiert, sodass bei $k = 1$ Wert 1 ist. Die Laufzeit wird gut von (\ref{expectation-tmin}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert. Die dennoch vorhandenen Abweichungen sind möglicherweise durch die Näherung $\lg 2k$ für die Anzahl an Multiplikationen zur Berechnung von $x^{2k}$ zu erklären. Die Anzahl nötiger Multiplikationen von \emph{Square-And-Multiply} (der Standardalgorithmus zum Berechnen natürlicher Potenzen) hängt nämlich von der Zahl an Einsen in der Binärdarstellung von $2k$ ab. Das könnte die etwas geringere Laufzeit bei $k = 16$ erklären.
+    \paragraph{$\bm{M = 1}$.} Es wurden $2^{22}$ zufällige Semiprimzahlen gewählt und die durchschnittliche Laufzeit berechnet. Die durchschnittliche Laufzeit für $1 \le k \le 30$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt. Die Werte wurden jeweils normalisiert, sodass bei $k = 1$ Wert 1 ist. Die Laufzeit wird gut von (\ref{expectation-tmin}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert. Die dennoch vorhandenen Abweichungen sind möglicherweise durch die Näherung $\lg 2k$ für die Anzahl an Multiplikationen zur Berechnung von $x^{2k}$ zu erklären. Die Anzahl nötiger Multiplikationen von \emph{Square-And-Multiply} (der Standardalgorithmus zum Berechnen natürlicher Potenzen) hängt nämlich von der Zahl an Einsen in der Binärdarstellung von $2k$ ab. Das könnte die etwas geringere Laufzeit bei $k = 16$ erklären.
 
     \begin{figure}
         \centering
@@ -553,9 +555,9 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
             \begin{axis}[
                     xlabel = {$k$},
                     xmin = 1,
-                    xmax = 30,
-                    xtick = {1, 5, 10, 15, 20, 25, 30},
-                    width = 0.8 * \textwidth,
+                    xmax = 48,
+                    xtick = {1, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48},
+                    width = \textwidth,
                     legend pos = north west,
                     legend style = {draw = none},
                     legend cell align = left,
@@ -563,36 +565,54 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
 
                 \addplot[color=magenta,mark=square]
                 coordinates{
-                        (1, 1)
+                        (1, 1.0)
                         (2, 1.5773502691896257)
                         (3, 2.1086517918741277)
                         (4, 2.21648605664914)
-                        (5, 2.879004348902381)
+                        (5, 2.8790043489023804)
                         (6, 2.332272327437964)
-                        (7, 3.4142999705039783)
+                        (7, 3.414299970503978)
                         (8, 2.89543195056782)
                         (9, 3.3067332978837425)
-                        (10, 2.9700938779475328)
-                        (11, 4.142494904167607)
-                        (12, 2.794948220810239)
-                        (13, 4.41118188933241)
-                        (14, 3.411127980556713)
-                        (15, 3.481018974295859)
-                        (16, 3.5947294420471545)
+                        (10, 2.970093877947532)
+                        (11, 4.142494904167608)
+                        (12, 2.7949482208102387)
+                        (13, 4.411181889332409)
+                        (14, 3.4111279805567123)
+                        (15, 3.481018974295858)
+                        (16, 3.594729442047154)
                         (17, 4.840295239186588)
-                        (18, 3.2665648302249277)
+                        (18, 3.2665648302249286)
                         (19, 5.017128905823505)
-                        (20, 3.4266483423121223)
-                        (21, 3.952865384732848)
+                        (20, 3.426648342312123)
+                        (21, 3.952865384732847)
                         (22, 4.006284568144385)
                         (23, 5.319207262349245)
-                        (24, 3.3342189545431062)
+                        (24, 3.3342189545431045)
                         (25, 4.848341222073144)
-                        (26, 4.224515025049568)
+                        (26, 4.224515025049569)
                         (27, 4.541184581320172)
                         (28, 3.8606214340939586)
-                        (29, 5.682737117278755)
-                        (30, 3.3580839014528183)
+                        (29, 5.682737117278753)
+                        (30, 3.3580839014528188)
+                        (31, 5.786717613861166)
+                        (32, 4.303622115889641)
+                        (33, 4.585058767874234)
+                        (34, 4.57165798930078)
+                        (35, 4.768544753994481)
+                        (36, 3.65286546982577)
+                        (37, 6.061272505622063)
+                        (38, 4.714254318317245)
+                        (39, 4.815669489895146)
+                        (40, 3.9872807230736402)
+                        (41, 6.219718898826906)
+                        (42, 3.7480426730792065)
+                        (43, 6.293026650584624)
+                        (44, 4.440755450349039)
+                        (45, 4.475806923989725)
+                        (46, 4.957283888509379)
+                        (47, 6.429590774020685)
+                        (48, 3.903718627468377)
                     };
 
                 \addplot[color=blue,mark=square]
@@ -635,7 +655,7 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
         \label{fig:measurements-m1}
     \end{figure}
 
-    \paragraph{$\bm{M = 2}$.} Hier wurden $2^{22}$ zufällige Semiprimzahlen für jedes Paar $1 \le k_1 \le k_2 \le 8$ gewählt. Die Messergebnisse und berechnete Werte zum Vergleich sind in Abbildung \ref{fig:measurements-m2} dargestellt. Zur Berechnung der erwarteten Laufzeit wurde Formel (\ref{lkkp}) verwendet, wenn $k_1 = k_2$ und Formel (\ref{expectation-tmin}), wenn $k_1 \ne k_2$. Die Werte wurden jeweils normalisiert, sodass bei $k_1 = k_2 = 1$ Wert 1 ist. Auch hier wird das grundsätzliche Verhalten der Laufzeit gut durch die Formeln (\ref{expectation-tmin}) und (\ref{lkkp}) beschreiben. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 8$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist.
+    \paragraph{$\bm{M = 2}$.} Hier wurden $2^{22}$ zufällige Semiprimzahlen für jedes Paar $1 \le k_1 \le k_2 \le 14$ gewählt. Die durchschnittliche Laufzeit und berechnete Werte sind in Abbildung \ref{fig:measurements-m2} dargestellt. Zur Berechnung der erwarteten Laufzeit wurde Formel (\ref{lkkp}) verwendet, wenn $k_1 = k_2$, und Formel (\ref{expectation-tmin}), wenn $k_1 \ne k_2$. Die Werte wurden ebenfalls normalisiert, sodass bei $k_1 = k_2 = 1$ Wert 1 ist. Auch hier wird das grundsätzliche Verhalten der Laufzeit gut durch die Formeln (\ref{expectation-tmin}) und (\ref{lkkp}) beschreiben. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist.
 
     \begin{figure}
         \centering
