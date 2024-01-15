@@ -545,9 +545,6 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
 
     \section{Experimentelle Ergebnisse}
 
-    Um zu demonstrieren, dass Formel (\ref{expectation-tmin}), Satz \ref{theorem:optimal-k-m1} und Satz \ref{theorem:optimal-k-m2} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreiben, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Wie zu Beginn gesagt, wurde für die Berechnungen angenommen, dass $n$ genau einen kleinsten Primfaktor $p$ hat und die anderen Primfaktoren deutlich größer sind, sodass sie zur Analyse der Laufzeit ignoriert werden können. Daher ist es natürlich nur sinnvoll, die Berechnungen mit Messergebnissen für Zahlen dieser Art zu vergleichen. Als Testzahlen wurden 62-Bit Semiprimzahlen mit einem 21-Bit und einem 41-Bit Faktor verwendet. Eine Semiprimzahl ist das Produkt zweier Primzahlen.
-
-    \paragraph{$\bm{M = 1}$.} Es wurden $2^{22}$ zufällige Semiprimzahlen gewählt und die durchschnittliche Laufzeit berechnet. Die durchschnittliche Laufzeit für $1 \le k \le 30$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt. Die Werte wurden jeweils normalisiert, sodass bei $k = 1$ Wert 1 ist. Die Laufzeit wird gut von (\ref{expectation-tmin}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert. Die dennoch vorhandenen Abweichungen sind möglicherweise durch die Näherung $\lg 2k$ für die Anzahl an Multiplikationen zur Berechnung von $x^{2k}$ zu erklären. Die Anzahl nötiger Multiplikationen von \emph{Square-And-Multiply} (der Standardalgorithmus zum Berechnen natürlicher Potenzen) hängt nämlich von der Zahl an Einsen in der Binärdarstellung von $2k$ ab. Das könnte die etwas geringere Laufzeit bei $k = 16$ erklären.
 
     \begin{figure}
         \centering
@@ -558,6 +555,7 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
                     xmax = 48,
                     xtick = {1, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48},
                     width = \textwidth,
+                    height = 280pt,
                     legend pos = north west,
                     legend style = {draw = none},
                     legend cell align = left,
@@ -618,48 +616,85 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
                 \addplot[color=blue,mark=square]
                 coordinates {
                         (1, 1.0)
-                        (2, 1.5046258864091993)
-                        (3, 2.12905151707157)
-                        (4, 2.139826813902819)
-                        (5, 2.873651424988107)
-                        (6, 2.558268266297876)
-                        (7, 2.9882980084885546)
-                        (8, 2.759915433071412)
-                        (9, 3.321760760209751)
-                        (10, 3.2709267810271783)
-                        (11, 3.751052529670019)
-                        (12, 3.162610763691648)
-                        (13, 3.7621450711525584)
-                        (14, 3.394754748228861)
-                        (15, 3.343049095918093)
-                        (16, 3.378099908807832)
-                        (17, 4.407865726998115)
-                        (18, 3.746180275506031)
-                        (19, 4.479353439960736)
-                        (20, 3.8539483291462764)
-                        (21, 3.9289050587055057)
-                        (22, 4.030639790426299)
-                        (23, 4.561218740828038)
-                        (24, 3.722737475407143)
-                        (25, 4.252292705849707)
-                        (26, 4.041740902265932)
-                        (27, 4.055485054603467)
-                        (28, 3.951327425496669)
-                        (29, 4.526584144093431)
-                        (30, 3.7482087597287617)};
+                        (2, 1.509948118652118)
+                        (3, 2.0993697474766457)
+                        (4, 2.1116345085043)
+                        (5, 2.877418891483742)
+                        (6, 2.5685036940000137)
+                        (7, 2.996430188276255)
+                        (8, 2.7314845124186458)
+                        (9, 3.328296749381993)
+                        (10, 3.2577944117129998)
+                        (11, 3.7230055520415988)
+                        (12, 3.1561945991451923)
+                        (13, 3.736074156058803)
+                        (14, 3.3685945128552692)
+                        (15, 3.319276959371872)
+                        (16, 3.3613292919244078)
+                        (17, 4.394228617904989)
+                        (18, 3.722443809049611)
+                        (19, 4.451548228110135)
+                        (20, 3.84047914786071)
+                        (21, 3.920376539331896)
+                        (22, 4.032026952636839)
+                        (23, 4.529968590050905)
+                        (24, 3.707477302822801)
+                        (25, 4.242901333931946)
+                        (26, 4.037016391081217)
+                        (27, 4.058783598622834)
+                        (28, 3.9310913363101916)
+                        (29, 4.522555243332595)
+                        (30, 3.7415823259420846)
+                        (31, 4.59640961602802)
+                        (32, 3.982932254189798)
+                        (33, 4.510560919218005)
+                        (34, 4.624088329155094)
+                        (35, 4.744870700917283)
+                        (36, 4.277919837533675)
+                        (37, 5.181576815360558)
+                        (38, 4.687283294435714)
+                        (39, 4.642788634977157)
+                        (40, 4.449130421846238)
+                        (41, 5.186842863188695)
+                        (42, 4.302098653348379)
+                        (43, 5.24978349062113)
+                        (44, 4.594828700423131)
+                        (45, 4.4958880668775825)
+                        (46, 4.73608695893801)
+                        (47, 5.293961293662393)
+                        (48, 4.28487474982348)};
 
                 \legend{Formel (\ref{expectation-tmin}), Gemessene Laufzeit}
             \end{axis}
         \end{tikzpicture}
-        \caption{Die durchschnittliche gemessene Laufzeit des Rho-Algorithmus für $M = 1$ und Werte von Formel (\ref{expectation-tmin}) für $1 \le k \le 30$.}
+        \caption{Die durchschnittliche gemessene Laufzeit des Rho-Algorithmus für $M = 1$ und Werte von Formel (\ref{expectation-tmin}) für $1 \le k \le 48$.}
         \label{fig:measurements-m1}
-    \end{figure}
 
-    \paragraph{$\bm{M = 2}$.} Hier wurden $2^{22}$ zufällige Semiprimzahlen für jedes Paar $1 \le k_1 \le k_2 \le 14$ gewählt. Die durchschnittliche Laufzeit und berechnete Werte sind in Abbildung \ref{fig:measurements-m2} dargestellt. Zur Berechnung der erwarteten Laufzeit wurde Formel (\ref{lkkp}) verwendet, wenn $k_1 = k_2$, und Formel (\ref{expectation-tmin}), wenn $k_1 \ne k_2$. Die Werte wurden ebenfalls normalisiert, sodass bei $k_1 = k_2 = 1$ Wert 1 ist. Auch hier wird das grundsätzliche Verhalten der Laufzeit gut durch die Formeln (\ref{expectation-tmin}) und (\ref{lkkp}) beschreiben. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist.
+        \vspace{2em}
 
-    \begin{figure}
-        \centering
         \small
+
+        \begin{tabular}{c|cccccccccccccc}
+            $k_1 \backslash k_2$ & 1                                & 2                                & 3                                & 4                                & 5                                & 6                                & 7                                & 8                                & 9                                & 10                               & 11                               & 12                               & 13                               & 14                               \\
+            \hline
+            1                    & \textcolor[HTML]{ 0020ff }{1.00} & \textcolor[HTML]{ 0320fb }{1.03} & \textcolor[HTML]{ 0720f7 }{1.08} & \textcolor[HTML]{ 0720f7 }{1.08} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} \\
+            2                    &                                  & \textcolor[HTML]{ 3220cc }{1.55} & \textcolor[HTML]{ 3320cb }{1.55} & \textcolor[HTML]{ 3420ca }{1.57} & \textcolor[HTML]{ 3920c5 }{1.63} & \textcolor[HTML]{ 3920c5 }{1.62} & \textcolor[HTML]{ 3a20c4 }{1.63} & \textcolor[HTML]{ 3920c5 }{1.63} & \textcolor[HTML]{ 3b20c3 }{1.65} & \textcolor[HTML]{ 3c20c2 }{1.65} & \textcolor[HTML]{ 3c20c2 }{1.65} & \textcolor[HTML]{ 3b20c3 }{1.65} & \textcolor[HTML]{ 3c20c2 }{1.65} & \textcolor[HTML]{ 3d20c1 }{1.66} \\
+            3                    &                                  &                                  & \textcolor[HTML]{ 6c2092 }{2.18} & \textcolor[HTML]{ 60209e }{2.05} & \textcolor[HTML]{ 6b2093 }{2.16} & \textcolor[HTML]{ 6a2094 }{2.15} & \textcolor[HTML]{ 6c2092 }{2.18} & \textcolor[HTML]{ 692095 }{2.15} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 70208e }{2.21} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 70208e }{2.22} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 71208d }{2.22} \\
+            4                    &                                  &                                  &                                  & \textcolor[HTML]{ 6d2091 }{2.18} & \textcolor[HTML]{ 6c2092 }{2.17} & \textcolor[HTML]{ 692095 }{2.15} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 6d2091 }{2.19} & \textcolor[HTML]{ 71208d }{2.23} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 73208b }{2.25} & \textcolor[HTML]{ 71208d }{2.23} & \textcolor[HTML]{ 752089 }{2.27} & \textcolor[HTML]{ 73208b }{2.25} \\
+            5                    &                                  &                                  &                                  &                                  & \textcolor[HTML]{ b2204c }{2.94} & \textcolor[HTML]{ 972067 }{2.64} & \textcolor[HTML]{ a2205c }{2.76} & \textcolor[HTML]{ 9c2062 }{2.69} & \textcolor[HTML]{ a72057 }{2.81} & \textcolor[HTML]{ a92055 }{2.84} & \textcolor[HTML]{ af204f }{2.89} & \textcolor[HTML]{ a3205b }{2.77} & \textcolor[HTML]{ af204f }{2.90} & \textcolor[HTML]{ a92055 }{2.83} \\
+            6                    &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 9f205f }{2.72} & \textcolor[HTML]{ 992065 }{2.66} & \textcolor[HTML]{ 982066 }{2.65} & \textcolor[HTML]{ 9e2060 }{2.71} & \textcolor[HTML]{ 9c2062 }{2.69} & \textcolor[HTML]{ 9e2060 }{2.72} & \textcolor[HTML]{ 9e2060 }{2.71} & \textcolor[HTML]{ 9f205f }{2.72} & \textcolor[HTML]{ 9d2061 }{2.70} \\
+            7                    &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ bb2043 }{3.03} & \textcolor[HTML]{ a1205d }{2.75} & \textcolor[HTML]{ af204f }{2.89} & \textcolor[HTML]{ ac2052 }{2.87} & \textcolor[HTML]{ b62048 }{2.97} & \textcolor[HTML]{ a92055 }{2.83} & \textcolor[HTML]{ b52049 }{2.97} & \textcolor[HTML]{ b1204d }{2.92} \\
+            8                    &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ a92055 }{2.84} & \textcolor[HTML]{ a2205c }{2.76} & \textcolor[HTML]{ a4205a }{2.78} & \textcolor[HTML]{ a82056 }{2.82} & \textcolor[HTML]{ a2205c }{2.76} & \textcolor[HTML]{ a82056 }{2.82} & \textcolor[HTML]{ a62058 }{2.80} \\
+            9                    &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ e3201b }{3.46} & \textcolor[HTML]{ cf202f }{3.24} & \textcolor[HTML]{ d72027 }{3.33} & \textcolor[HTML]{ d0202e }{3.25} & \textcolor[HTML]{ d72027 }{3.33} & \textcolor[HTML]{ d1202d }{3.26} \\
+            10                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ df201f }{3.42} & \textcolor[HTML]{ d52029 }{3.31} & \textcolor[HTML]{ cd2031 }{3.22} & \textcolor[HTML]{ d52029 }{3.31} & \textcolor[HTML]{ d2202c }{3.28} \\
+            11                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ fe2000 }{3.75} & \textcolor[HTML]{ d0202e }{3.26} & \textcolor[HTML]{ e62018 }{3.50} & \textcolor[HTML]{ db2023 }{3.38} \\
+            12                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ d62028 }{3.32} & \textcolor[HTML]{ d0202e }{3.26} & \textcolor[HTML]{ cf202f }{3.24} \\
+            13                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ ff2000 }{3.76} & \textcolor[HTML]{ db2023 }{3.38} \\
+            14                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ e72017 }{3.51} \\
+        \end{tabular}
+
+        \vspace{0.2em}
+
         \begin{tabular}{c|cccccccccccccc}
             $k_1 \backslash k_2$ & 1                                & 2                                & 3                                & 4                                & 5                                & 6                                & 7                                & 8                                & 9                                & 10                               & 11                               & 12                               & 13                               & 14                               \\
             \hline
@@ -681,6 +716,16 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
 
         \caption{Die durchschnittliche Laufzeit von Pollards Rho-Algorithmus (oben) und berechnete Werte für die erwartete Laufzeit (unten), für $M = 2$ und $1 \le k_1 \le k_2 \le 14$. }
         \label{fig:measurements-m2}
+    \end{figure}
+
+    Um zu demonstrieren, dass Formel (\ref{expectation-tmin}), Satz \ref{theorem:optimal-k-m1} und Satz \ref{theorem:optimal-k-m2} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreiben, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Wie zu Beginn gesagt, wurde für die Berechnungen angenommen, dass $n$ genau einen kleinsten Primfaktor $p$ hat und die anderen Primfaktoren deutlich größer sind, sodass sie zur Analyse der Laufzeit ignoriert werden können. Daher ist es natürlich nur sinnvoll, die Berechnungen mit Messergebnissen für Zahlen dieser Art zu vergleichen. Als Testzahlen wurden 62-Bit Semiprimzahlen mit einem 21-Bit und einem 41-Bit Faktor verwendet. Eine Semiprimzahl ist das Produkt zweier Primzahlen.
+
+    \paragraph{$\bm{M = 1}$.} Es wurden $2^{22}$ zufällige Semiprimzahlen gewählt und die durchschnittliche Laufzeit berechnet. Die durchschnittliche Laufzeit für $1 \le k \le 30$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt. Die Werte wurden jeweils normalisiert, sodass bei $k = 1$ Wert 1 ist. Die Laufzeit wird gut von (\ref{expectation-tmin}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert. Die dennoch vorhandenen Abweichungen sind möglicherweise durch die Näherung $\lg 2k$ für die Anzahl an Multiplikationen zur Berechnung von $x^{2k}$ zu erklären. Die Anzahl nötiger Multiplikationen von \emph{Square-And-Multiply} (der Standardalgorithmus zum Berechnen natürlicher Potenzen) hängt nämlich von der Zahl an Einsen in der Binärdarstellung von $2k$ ab. Das könnte die etwas geringere Laufzeit bei $k = 16$ erklären.
+
+    \paragraph{$\bm{M = 2}$.} Hier wurden $2^{22}$ zufällige Semiprimzahlen für jedes Paar $1 \le k_1 \le k_2 \le 14$ gewählt. Die durchschnittliche Laufzeit und berechnete Werte sind in Abbildung \ref{fig:measurements-m2} dargestellt. Zur Berechnung der erwarteten Laufzeit wurde Formel (\ref{lkkp}) verwendet, wenn $k_1 = k_2$, und Formel (\ref{expectation-tmin}), wenn $k_1 \ne k_2$. Die Werte wurden ebenfalls normalisiert, sodass bei $k_1 = k_2 = 1$ Wert 1 ist. Auch hier wird das grundsätzliche Verhalten der Laufzeit gut durch die Formeln (\ref{expectation-tmin}) und (\ref{lkkp}) beschreiben. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist.
+
+    \begin{figure}
+
     \end{figure}
 
     \section{Fazit}
