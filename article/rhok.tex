@@ -6,7 +6,6 @@
 \usepackage{amsthm}
 \usepackage[ngerman]{babel}
 \usepackage[backend=biber, style=apa]{biblatex}
-\usepackage{bm}
 \usepackage{caption}
 \usepackage{csquotes}
 \usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2cm]{geometry}
@@ -154,7 +153,7 @@ wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ i
 
 In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Die Rho-Längen verschiedener Maschinen sind hier stochastisch unabhängig, was aus RMA folgt. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
 
-\paragraph{Eine Formel für $\bm{\P(s_i > s)}$.} Nach RMA gilt $\P(s_i = s) = \P(\nu(f, x_0) = s)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $i$-ten Schritt $i/h_i$, wenn in den ersten $i-1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $i$ von ihnen zu einer Kollision führen. Die Wahrscheinlichkeit, dass in den ersten $s$ Schritten keine Kollision auftritt ist also
+\emph{Eine Formel für $\P(s_i > s)$.} Nach RMA gilt $\P(s_i = s) = \P(\nu(f, x_0) = s)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $i$-ten Schritt $i/h_i$, wenn in den ersten $i-1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $i$ von ihnen zu einer Kollision führen. Die Wahrscheinlichkeit, dass in den ersten $s$ Schritten keine Kollision auftritt ist also
 \begin{align*}
     \P(s_i > s)
     = \P(\nu(f, x_0) > s)
@@ -178,9 +177,9 @@ $\E(t_{\min})$ lässt sich nun wie folgt ausdrücken, wobei $t_{\max} = p \, \ma
         - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )\Bigg ) \
     \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
 \end{align*}
-Der erste Faktor ist die Wahrscheinlichkeit, dass vor Zeitpunkt $t$ keine Kollision aufgetreten ist. Der zweite Faktor ist die Wahrscheinlichkeit, dass bei Zeitpunkt $t$ mindestens eine Kollision auftritt. $\P_{t_i > t - 1 \, \forall i} (\,\cdots)$ ist die Wahrscheinlichkeite dass $t_i > t$ für mindestens ein $i$, gegeben $t_i > t - 1$ für alle $i$. Bevor diese Wahrscheinlichkeit bestimmt wird, soll gezeigt werden, dass der erste Faktor durch Weglassen der $O(j^2/h_i^2)$-Terme vereinfacht werden kann.
+Der erste Faktor ist die Wahrscheinlichkeit, dass vor Zeitpunkt $t$ keine Kollision aufgetreten ist. Der zweite Faktor ist die Wahrscheinlichkeit, dass bei Zeitpunkt $t$ mindestens eine Kollision auftritt. $\P_{t_i > t - 1 \, \forall i} (\,\cdots)$ ist die Wahrscheinlichkeite dass $t_i > t$ für mindestens ein $i$, gegeben $t_i > t - 1$ für alle $i$. Bevor diese Wahrscheinlichkeit bestimmt wird, soll gezeigt werden, dass der erste Faktor stark vereinfacht werden kann.
 
-\paragraph{Weglassen von $\bm{O(j^2/h_i^2)}$.} Intuitiv lässt sich das Weglassen von $O(j^2/h_i^2)$ damit rechtfertigen, dass wenn $s$ deutlich kleiner als $h_i$ ist, auch $j$ deutlich kleiner als $h_i$ ist und damit $j^2/h_i^2$ nahe 0 ist. Wenn dagegen $s$ nahe $h_i$ ist, ist $\P(s_i > s)$ sehr klein, sodass der Beitrag zum Erwartungswert vernachlässigbar ist. Präzise lässt sich das wie folgt begründen. Zunächst wird $s \le h_{i}^{3/5}$ angenommen und gezeigt, dass dann $\prod_{j = 0}^{(t-1) / \lg 2k_i} (\exp (-j/h_i) - O (j^2/h_i^2)) \sim \prod_{j = 0}^{(t-1) / \lg 2k_i} \exp (-j/h_i)$. Durch Ausmultiplizieren des Produkts erhält man
+\emph{Weglassen von $O(j^2/h_i^2)$.} Intuitiv lässt sich das Weglassen von $O(j^2/h_i^2)$ damit rechtfertigen, dass wenn $s$ deutlich kleiner als $h_i$ ist, auch $j$ deutlich kleiner als $h_i$ ist und damit $j^2/h_i^2$ nahe 0 ist. Wenn dagegen $s$ nahe $h_i$ ist, ist $\P(s_i > s)$ sehr klein, sodass der Beitrag zum Erwartungswert vernachlässigbar ist. Präzise lässt sich das wie folgt begründen. Zunächst wird $s \le h_{i}^{3/5}$ angenommen und gezeigt, dass dann $\prod_{j = 0}^{(t-1) / \lg 2k_i} (\exp (-j/h_i) - O (j^2/h_i^2)) \sim \prod_{j = 0}^{(t-1) / \lg 2k_i} \exp (-j/h_i)$. Durch Ausmultiplizieren des Produkts erhält man
 \begin{align*}
         & \ \Bigg \vert
     \prod_{j = 0}^{s} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg )
@@ -250,481 +249,476 @@ Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch
     \label{expectation-tmin-intermed}
 \end{align}
 
-\paragraph{$\bm{\P_{t_i > t - 1 \, \forall i}(t_i = t}$  für mindestens ein $\bm{i}$).} Die Wahrscheinlichkeit, dass bei Maschine $i$ eine Kollision nach genau $t$ Zeiteinheiten auftritt ist
+\emph{$\P_{t_i > t - 1 \, \forall i}(t_i = t$  für mindestens ein $i)$.} Die Wahrscheinlichkeit, dass bei Maschine $i$ eine Kollision nach genau $t$ Zeiteinheiten auftritt ist
+\begin{align*}
+    \P_{t_i > t - 1}(t_i = t) \sim
+    \begin{cases}
+        t / h_i \lg 2k_i & \quad
+        t = \lceil m \lg 2k_i \rceil \text{ für ein } m \in \N \\
+        0                & \quad
+        t \ne \lceil m \lg 2k_i \rceil \text{ für jedes } m \in \N
+    \end{cases}
+\end{align*}
+Der erste Fall tritt ein, wenn Zeiteinheit $t$ das Ende einer Iteration von Maschine $i$ enthält. Da bei Zeitpunkt $t$ bereits $t/\lg 2k_i$ Schritte durchgeführt wurden, trifft Maschine $i$ im nächsten Schritt mit Wahrscheinlichkeit $t/h_i \lg 2k_i$ auf einen bereits besuchten Knoten. Im zweiten Fall befindet sich Maschine $i$ bei Zeiteinheit $t$ mitten in einer Iteration, es kann also keine Kollision auftreten. Zur Bestimmung von $\E_{t_{\min}}$ kann das durch
+\begin{align*}
+    \P_{t_i > t - 1}(t_i = t) \sim \frac {t} {h_i \lg^2 k_i}
+\end{align*}
+angenähert werden. Die Wahrscheinlichkeit einer Kollision an einem Zeitpunkt wird durch den zusätzlichen Faktor $1/\lg 2k_i$ auf die umliegenden Zeitpunkte "`verteilt"'. Pro Iteration von Maschine $i$ gibt es statt einem Zeitpunkt mit Kollisionswahrscheinlichkeit $t/h_i \lg 2k_i$ nun $\lg 2k_i$ Zeitpunkte mit Kollisionswahrscheinlichkeit $t/h_i \lg^2 2k_i$. Dass das eine asymptotische Näherung ist, lässt sich damit begründen, dass der übrige Teil von (\ref{expectation-tmin-intermed}) stetig in $t$ ist und nicht schnell oszilliert oder Ähnliches. Ob die erste Kollision bei Maschine $i$ also bei Zeitpunkt $t$ oder $t + x$ für $|x| < \lg 2k_i$ auftritt macht daher asymptotisch keinen Unterschied. Die Wahrscheinlichkeit, dass bei mindestens einer Maschine eine Kollision auftritt, kann asymptotisch durch die Summe der Wahrscheinlichkeiten $\P_{t_i > t - 1}(t_i = t)$ angenähert werden. Denn für alle relevanten $t$ (d.h. $t \le h_i^{3/5} \, \forall i$) ist die Wahrscheinlichkeit, dass zwei oder mehr Maschinen gleichzeitig bei Zeit $t$ kollidieren für $p \to \infty$ verschwindend gering.
+\begin{align}
+    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
+    \sim \sum_{i = 1}^M \frac t {h_i \lg^2 2k_i}
+    = t \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i}
+    \label{prob-at-least-one-coll}
+\end{align}
+
+Für $\E(t_{\min})$ gilt mit (\ref{expectation-tmin-intermed}) und (\ref{prob-at-least-one-coll})
+\begin{align*}
+    \E(t_{\min})
+     & \sim \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
+    \sum_{t = 0}^{t_{\max}} t^2 \, \exp \Bigg ( \frac {-t^2} 2
+    \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
+\end{align*}
+Als letzter Schritt wird die Summe über $t$ durch ein Integral angenähert. Die intuitive Erklärung dafür, dass das am asymptotischen Wert nichts ändert, ist ähnlich wie eben. (\ref{expectation-tmin-intermed}) und (\ref{prob-at-least-one-coll}) sind stetig in $t$ und schwanken nicht stark bei kleinen Veränderungen von $t$. Die Werte an einzelnen Punkten, wie sie in der Summe vorkommen, sind also nahezu gleich den Werten um diese Punkte herum, die zusätzlich im Integral vorkommen. Nach einem ähnlichen Argument wie dem dafür, dass Terme mit $t/\lg 2k_i > h_i^{3/5}$ für ein $i$ asymptotisch irrelevant sind, kann die obere Integralgrenze bis $\infty$ geöffnet werden. Man erhält also
+\begin{align}
+    L_{k_1, \dots k_M}(p) = \E(t_{\min})
+     & \sim \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
+    \int_{0}^{\infty} t^2 \, \exp \Bigg ( \frac {-t^2} 2
+    \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \; dt
+    \nonumber                                                       \\
+     & = \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \,
+    \sqrt {\pi / 2} \
+    \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2}
+    \nonumber                                                       \\
+     & = \sqrt{\pi p / 2} \; \Bigg (
+    \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
+    \label{expectation-tmin}
+\end{align}
+Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Man kann sich auf mehereren Wegen davon überzeugen, dass die Formel trotz der vielen Näherungen stimmt. Beispielsweise ist sie verträglich mit der bekannten Laufzeitabschätzung für Pollards Rho-Algorithmus im Fall $M = k_1 = 1$. Setzt man dies ein, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}. Lässt man in obigem Integral einen Faktor $t$ weg, erhält man statt des Erwartungswerts das Integral aller Wahrscheinlichkeiten. Dieses sollte natürlich 1 sein, und das ist es auch.
+
+\section{Die erwartete minimale Rho-Länge bei mehreren Anfangswerten}
+
+Um $L_{k_1, \dots, k_M}(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{expectation-tmin}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \sqrt{\pi p / 2}$ Schritte benötigt werden. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, \, k_1 = k_2$ gelöst werden. In diesem Fall lässt sich das Problem folgendermaßen angehen. Sei $k = k_1 = k_2, \; h = p/(\gcd(p - 1, 2k) - 1)$ und $f : x \mapsto x^{2k} + 1$. Da die zwei Maschinen beide $f$ verwenden, bewegen sie sich beide im funktionalen Graphen $\gamma(f)$. Nach der Random Mapping Assumption ist die Verteilung der Rho-Längen von $f$ für $p \to \infty$ asymptotisch zur Verteilung der Rho-Längen eines zufälligen Elements aus $A(h)$. Das Problem reduziert sich daher auf folgende Frage: \emph{Für $n \in \N$, gegeben ein zufälliges Element $g$ aus $A(n)$ und zwei zufällige Elemente $a, b \in Z/n\Z$, was ist der Erwartungswert von $\min\{\nu(g, a), \nu(g, b)\}$?} Die Frage wird von folgendem Satz beantwortet, dessen Beweis das Ziel der nächsten zwei Abschnitte ist.
+
+\begin{theorem}
+    \label{theorem:min-rho-len-m2}
+    Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$. Wir bezeichnen mit
     \begin{align*}
-        \P_{t_i > t - 1}(t_i = t) \sim
-        \begin{cases}
-            t / h_i \lg 2k_i & \quad
-            t = \lceil m \lg 2k_i \rceil \text{ für ein } m \in \N \\
-            0                & \quad
-            t \ne \lceil m \lg 2k_i \rceil \text{ für jedes } m \in \N
-        \end{cases}
+        \tau_n =  \frac 1 {n^{n + 2}}
+        \sum_{g \in A(n)} \; \sum_{a, b \in \Z/n\Z}
+        \min\{\nu(g, a), \nu(g, b)\}
     \end{align*}
-    Der erste Fall tritt ein, wenn Zeiteinheit $t$ das Ende einer Iteration von Maschine $i$ enthält. Da bei Zeitpunkt $t$ bereits $t/\lg 2k_i$ Schritte durchgeführt wurden, trifft Maschine $i$ im nächsten Schritt mit Wahrscheinlichkeit $t/h_i \lg 2k_i$ auf einen bereits besuchten Knoten. Im zweiten Fall befindet sich Maschine $i$ bei Zeiteinheit $t$ mitten in einer Iteration, es kann also keine Kollision auftreten. Zur Bestimmung von $\E_{t_{\min}}$ kann das durch
+    die erwartete minimale Rho-Länge zweier zufälliger Knoten in einem funktionalen Graphen von Größe $n$. Es gilt
     \begin{align*}
-        \P_{t_i > t - 1}(t_i = t) \sim \frac {t} {h_i \lg^2 k_i}
+        \tau_n \sim \frac {25} {32} \sqrt{\pi n / 2}
     \end{align*}
-    angenähert werden. Die Wahrscheinlichkeit einer Kollision an einem Zeitpunkt wird durch den zusätzlichen Faktor $1/\lg 2k_i$ auf die umliegenden Zeitpunkte "`verteilt"'. Pro Iteration von Maschine $i$ gibt es statt einem Zeitpunkt mit Kollisionswahrscheinlichkeit $t/h_i \lg 2k_i$ nun $\lg 2k_i$ Zeitpunkte mit Kollisionswahrscheinlichkeit $t/h_i \lg^2 2k_i$. Dass das eine asymptotische Näherung ist, lässt sich damit begründen, dass der übrige Teil von (\ref{expectation-tmin-intermed}) stetig in $t$ ist und nicht schnell oszilliert oder Ähnliches. Ob die erste Kollision bei Maschine $i$ also bei Zeitpunkt $t$ oder $t + x$ für $|x| < \lg 2k_i$ auftritt macht daher asymptotisch keinen Unterschied. Die Wahrscheinlichkeit, dass bei mindestens einer Maschine eine Kollision auftritt, kann asymptotisch durch die Summe der Wahrscheinlichkeiten $\P_{t_i > t - 1}(t_i = t)$ angenähert werden. Denn für alle relevanten $t$ (d.h. $t \le h_i^{3/5} \, \forall i$) ist die Wahrscheinlichkeit, dass zwei oder mehr Maschinen gleichzeitig bei Zeit $t$ kollidieren für $p \to \infty$ verschwindend gering.
-    \begin{align}
-        \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
-        \sim \sum_{i = 1}^M \frac t {h_i \lg^2 2k_i}
-        = t \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i}
-        \label{prob-at-least-one-coll}
-    \end{align}
+\end{theorem}
 
+\noindent Der Vorfaktor in der Definition von $\tau_n$ ist $1/n^{n + 2}$, da es $n^n$ Abbildungen $\Z/n\Z \to \Z/n\Z$ gibt und für jede von diesen $n^2$ Paare an Anfangswerten.
 
-    \paragraph*{Die finale Formel.} Für $\E(t_{\min})$ gilt mit (\ref{expectation-tmin-intermed}) und (\ref{prob-at-least-one-coll})
+\subsection{Theoretischer Hintergrund: Erzeugende Funktionen}
+
+Der Ansatz zum Beweis von Satz \ref{theorem:min-rho-len-m2} ist, die Summe in der Definition von $\tau_n$ mithilfe einer erzeugenden Funktion $\Psi(x, w)$ zu bestimmen. In $\Psi(x, w)$ markiert die Variable $x$ die Größe des Graphen und die Variable $w$ die minimale Rho-Länge der zwei Anfangsknoten. Da funktionale Graphen beschriftet sind, werden stets erzeugende Funktionen von exponentiellem Typ (EF) verwendet. Also gilt
+\begin{align}
+    \Psi(x, w)
+    = \sum_{n = 0}^\infty \frac {x^n}{n!} \sum_{g \in A(n)}
+    \sum_{a, b \in \Z/n\Z} w^{\min\{\nu(g, a), \nu(g, b)\}}
+    \label{psi-definition}
+\end{align}
+Aus den Koeffizienten der Reihe von $\Psi$ kann dann wie folgt $\tau_n$ bestimmt werden.
+\begin{align*}
+    \tau_n = \frac {n!}{n^{n + 2}} [x^n] \Bigg (\frac {\partial} {\partial w} \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
+\end{align*}
+wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet. Folgende Komponenten werden als Grundlage verwendet, um $\Psi(x, w)$ zu konstruieren.
+// maybe remove these
+\begin{align*}
+    S(x) & = \frac 1 {1 - x}    & \quad (\text{Folge / Pfad})       \\
+    T(x) & = x \exp T(x)        & \quad (\text{Baum})               \\
+    F(x) & = \frac 1 {1 - T(x)} & \quad (\text{Funktionaler Graph})
+\end{align*}
+Die letzten beiden Funktionen stammen von \cite{fo90}. Übersetzt bedeutet die EF für einen Baum: "`Ein Baum ist ein Knoten mit einer Menge an Bäumen"'. Die Erklärung für $F(x)$ ist etwas komplizierter, hier aber nicht wichtig. Ein Beweis findet sich in \cite{fs09}, S. 129.
+
+\subsection{Der Fall zweier Anfangswerte}
+
+\begin{proof}[Beweis von Satz \ref{theorem:min-rho-len-m2}]
+    Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie in (\ref{psi-definition}) definiert. Der Plan ist, zunächst einen geschlossenen Ausdruck für $\Psi(x, w)$ zu bestimmen, um dann die Ableitung nach $w$ zu bilden. Dafür werden drei Fälle unterschieden, die in Abbildung \ref{fig:psi-construction} dargestellt sind. In jedem der Fälle wird zunächst eine EF für funktionale Graphen bestimmt, die nur die für $a$ und $b$ relevanten Teile enthalten. Der "`relevante Teil"' besteht aus all den Knoten, die beim Ablaufen des Graphen besucht werden, also dem Zyklus und dem Pfad zum Zyklus. Der Rest des funktionalen Graphen wird später ergänzt. Grundsätzlich werden die Graphen so konstruiert, dass $\nu(f, a) \le \nu(f, b)$. Wenn dann $\nu(f, a) < \nu(f, b)$ gilt, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert. Im Fall $\nu(f, a) = \nu(f, b)$ darf man das nicht tun, weil der Graph sonst doppelt gezählt wird.
+
+    \begin{figure}
+        \begin{tabular}{ccc}
+            \includesvg[width=145pt]{pics/alpha} & \includesvg[width=145pt]{pics/beta} & \includesvg[width=145pt]{pics/gamma} \\
+            ($\alpha$)                           & ($\beta$)                           & ($\gamma$)
+        \end{tabular}
+        \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Linien stellen keine einzelnen Kanten dar, sondern eine Folge an Kanten. Beispielsweise steht $r$ in ($\alpha$) für den Zyklus in dem Zusammenhangskomponenten von $a$.}
+        \label{fig:psi-construction}
+    \end{figure}
+
+    \emph{Fall 1.} $a$ und $b$ liegen in unterschiedlichen Zusammenhangskomponenten. Dieser Fall wird erneut in die Fälle $\lambda(f, b) \le \nu(f, a)$ und $\lambda(f, b) > \nu(f, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall ist
     \begin{align*}
-        \E(t_{\min})
-         & \sim \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
-        \sum_{t = 0}^{t_{\max}} t^2 \, \exp \Bigg ( \frac {-t^2} 2
-        \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
+        \alpha_1(x, w) = \frac {x^2w(1 + x^2w)} {(1 - x^2w)^3} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg ) = \frac {x^2w(1 + x)(1 + x^2w)} {(1 - x^2w)^3(1 - x)}
     \end{align*}
-    Als letzter Schritt wird die Summe über $t$ durch ein Integral angenähert. Die intuitive Erklärung dafür, dass das am asymptotischen Wert nichts ändert, ist ähnlich wie eben. (\ref{expectation-tmin-intermed}) und (\ref{prob-at-least-one-coll}) sind stetig in $t$ und schwanken nicht stark bei kleinen Veränderungen von $t$. Die Werte an einzelnen Punkten, wie sie in der Summe vorkommen, sind also nahezu gleich den Werten um diese Punkte herum, die zusätzlich im Integral vorkommen. Nach einem ähnlichen Argument wie dem dafür, dass Terme mit $t/\lg 2k_i > h_i^{3/5}$ für ein $i$ asymptotisch irrelevant sind, kann die obere Integralgrenze bis $\infty$ geöffnet werden. Man erhält also
-    \begin{align}
-        L_{k_1, \dots k_M}(p) = \E(t_{\min})
-         & \sim \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
-        \int_{0}^{\infty} t^2 \, \exp \Bigg ( \frac {-t^2} 2
-        \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \; dt
-        \nonumber                                                       \\
-         & = \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \,
-        \sqrt {\pi / 2} \
-        \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2}
-        \nonumber                                                       \\
-         & = \sqrt{\pi p / 2} \; \Bigg (
-        \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
-        \label{expectation-tmin}
-    \end{align}
-    Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Man kann sich auf mehereren Wegen davon überzeugen, dass die Formel trotz der vielen Näherungen stimmt. Beispielsweise ist sie verträglich mit der bekannten Laufzeitabschätzung für Pollards Rho-Algorithmus im Fall $M = k_1 = 1$. Setzt man dies ein, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}. Lässt man in obigem Integral einen Faktor $t$ weg, erhält man statt des Erwartungswerts das Integral aller Wahrscheinlichkeiten. Dieses sollte natürlich 1 sein, und das ist es auch.
+    In diesem Fall ist es möglich, zuerst zwei $\rho$-Graphen mit gleicher Größe zu erzeugen und anschließend den Pfad von $b$ zu seinem Zyklus zu verlängern. Ein $\rho$-Graph ist ein Zusammenhangskomponent in Abbildung \ref{fig:psi-construction} ($\alpha$), d.h. ein Zyklus mit einem Pfad anhängend. Es gibt genau $n! \cdot n$ $\rho$-Graphen mit $n$ Knoten, da es für jede Permutation der Knoten $n$ Möglichkeiten für die Größe des Zyklus gibt. Folglich gibt es für gerade $n$ genau $n! \cdot n^2/2$ Paare an $\rho$-Graphen, die beide $n/2$ Knoten besitzen. Die erzeugende Funktion von Paaren an $\rho$-Graphen gleicher Größe ist also
+    \begin{align*}
+        \sum_{n = 0}^\infty x^n \; \frac {n^2} 4 \, \frac {1 + (-1)^n} 2
+        = \frac {x^2(1 + x^2)} {(1 - x^2)^3}
+    \end{align*}
+    Mit zwei $\rho$-Graphen gleicher Größe sind der Zusammenhangskomponenten von $a$, sowie $t$ (in Abbildung \ref{fig:psi-construction} ($\alpha$)) und der Anfang von $u$ konstruiert. Da $x$ die Zahl an Knoten markiert, wird von $w$ die halbe Zahl an Knoten markiert, wenn $x$ durch $x \sqrt w$ ersetzt wird. So markiert $w$ die Rho-Länge von $a$ und man erhält die EF $x^2w(1 + x^2w) / (1 - x^2w)^3$. Das erklärt den ersten Faktor in $\alpha_1(x, w)$. Nun gibt es zwei Möglichkeiten: Wird $u$ nicht verlängert, gilt $\nu(f, a) = \nu(f, b)$. Wird hingegen ein Pfad von Länge $\ge 1$ angehängt, dessen erzeugende Funktion $x/(1 - x)$ ist, ergeben sich zwei Möglichkeiten durch Vertauschen von $a$ und $b$. Im zweiten Fall ist die erzeugende Funktion
+    \begin{align*}
+        \alpha_2(x, w) =
+        2 \; \frac {x^2w} {(1 - x^2w)^2} \, \frac x {1 - x} \,
+        \frac {1}{1 - x}
+        = \frac {2x^3w} {(1 - x^2w)^2 (1 - x)^2}
+    \end{align*}
+    Der Faktor $x^2w$ repräsentiert die zwei Knoten, an denen $a$ und $b$ jeweils ihren Zyklus betreten, und der Knoten von $a$ ist mit $w$ markiert. Mit $1 / (1 - x^2w)^2$ erhält man vier Pfade $r, y, s, z$, sodass die Länge von $r$ gleich der Länge von $y$ und die Länge von $s$ gleich der Länge von $z$ ist. Die Summe der Längen von $r$ und $s$ wird von $w$ markiert. $r$ und $s$ werden wie in Abbildung \ref{fig:psi-construction} ($\alpha$) für den Zusammenhangskomponenten von $a$ verwendet. Damit ist der Exponent von $w$ genau die Rho-Länge von $a$. Der Zyklus $t$ besteht aus $y, z$ und einem Pfad von Länge $\ge 1$, sodass $\lambda(f, b) > \nu(f, a)$ gilt. $u$ wird von dem Term $1 / (1 - x)$ gebildet. Die erzeugende Funktion für Fall 1 ist also
+    \begin{align*}
+        \alpha(x, w)
+        = \alpha_1(x, w) + \alpha_2(x, w)
+        = \frac {x^2w(1 + 2x - x^2 + x^2w - 2x^3w - x^4w)}
+        {(1 - x^2w)^3(1 - x)^2}
+    \end{align*}
 
-    \section{Die erwartete minimale Rho-Länge bei mehreren Anfangswerten}
+    \emph{Fall 2.}  In diesem Fall liegen $a$ und $b$ im gleichen Baum und ihr kleinster gemeinsamer Vorfahre ist nicht die Wurzel. Anders formuliert: Betrachtet man die Pfade, die $a$ und $b$ durch wiederholtes Anwenden von $f$ in $\gamma(f)$ ablaufen, treffen diese sich nicht erstmals in einem Zyklusknoten. Die erzeugende Funktion lautet
+    \begin{align*}
+        \beta(x, w)
+        = xw \; \frac {xw} {1 - xw} \, \frac {1} {1 - xw} \,
+        \frac {1} {1 - x^2w} \, \Bigg (1 + \frac {2x} {1 - x} \Bigg )
+        = \frac {x^2w^2(1 + x)} {(1 - xw)^2(1 - x^2w)(1 - x)}
+    \end{align*}
+    Der Zyklusknoten, an dem der Baum von $a$ und $b$ anhängt, wird durch $xw$ repräsentiert. Der Pfad $s$ in Abbildung 1 ($\beta$) wird von  $xw/(1 - xw)$ erzeugt. Er muss mindestens Länge 1 haben, da der kleinste gemeinsame Vorfahre von $a$ und $b$ sonst die Wurzel wäre. Der Faktor $1/(1 - xw)$ steht für den Zyklus $r$. Mit $1/(1 - x^2w)$ werden zwei gleich lange Pfade erzeugt, deren einfache Länge durch $w$ markiert wird. Einer von ihnen wird für $t$ verwendet und der andere ist ein Teil von $u$. Nun gibt es wie in Fall 1 wieder die Option, $u$ echt zu verlängern und so einen Faktor 2 für die mögliche Vertauschung von $a$ und $b$ zu erhalten, oder ihn zu lassen, wobei es wegen Symmetrie nur eine Möglichkeit gibt.
 
-    Um $L_{k_1, \dots, k_M}(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{expectation-tmin}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \sqrt{\pi p / 2}$ Schritte benötigt werden. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt und es wurde keine allgemeine Formel gefunden. Jedoch konnte der Fall $M = 2, \, k_1 = k_2$ gelöst werden. In diesem Fall lässt sich das Problem folgendermaßen angehen. Sei $k = k_1 = k_2, \; h = p/(\gcd(p - 1, 2k) - 1)$ und $f : x \mapsto x^{2k} + 1$. Da die zwei Maschinen beide $f$ verwenden, bewegen sie sich beide im funktionalen Graphen $\gamma(f)$. Nach der Random Mapping Assumption ist die Verteilung der Rho-Längen von $f$ für $p \to \infty$ asymptotisch zur Verteilung der Rho-Längen eines zufälligen Elements aus $A(h)$. Das Problem reduziert sich daher auf folgende Frage: \emph{Für $n \in \N$, gegeben ein zufälliges Element $g$ aus $A(n)$ und zwei zufällige Elemente $a, b \in Z/n\Z$, was ist der Erwartungswert von $\min\{\nu(g, a), \nu(g, b)\}$?} Die Frage wird von folgendem Satz beantwortet, dessen Beweis das Ziel der nächsten zwei Abschnitte ist.
 
-    \begin{theorem}
-        \label{theorem:min-rho-len-m2}
-        Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$. Wir bezeichnen mit
-        \begin{align*}
-            \tau_n =  \frac 1 {n^{n + 2}}
-            \sum_{g \in A(n)} \; \sum_{a, b \in \Z/n\Z}
-            \min\{\nu(g, a), \nu(g, b)\}
-        \end{align*}
-        die erwartete minimale Rho-Länge zweier zufälliger Knoten in einem funktionalen Graphen von Größe $n$. Es gilt
-        \begin{align*}
-            \tau_n \sim \frac {25} {32} \sqrt{\pi n / 2}
-        \end{align*}
-    \end{theorem}
+    \emph{Fall 3.} Zuletzt bleibt der Fall, wenn $a$ und $b$ in verschiedenen Bäumen liegen oder die Wurzel ihr kleinster gemeinsamer Vorfahre ist. Eine andere Sichtweise ist, dass sich die Pfade von $a$ und $b$ bei wiederholtem Anwenden von $f$ erstmals bei einem Zyklusknoten treffen. Die erzeugende Funktion ist hier
+    \begin{align*}
+        \gamma(x, w)
+        = xw \, \frac {1} {(1 - xw)^2} \, \frac {1} {1 - x^2w} \,
+        \Bigg (1 + \frac {2x}{1 - x} \Bigg )
+        = \frac {xw(1 + x)} {(1 - xw)^2(1 - x^2w)(1 - x)}
+    \end{align*}
+    $xw$ stellt den Zyklusknoten da, an dem der Baum von $a$ anhängt. Der Term $1/(1 - xw)^2$ erzeugt zwei Pfade, deren Länge mit $w$ markiert ist. Die zwei Pfade sind die zwei Teile des Zyklus, $r$ und $s$ in Abbildung \ref{fig:psi-construction} ($\gamma$). Ähnlich wie in Fall 2 ist der Term $1/(1 - x^2w)$ ein Paar an gleich langen Pfaden, deren Länge von $w$ markiert wird. Einer der Pfade ist $t$ und der andere ein Teil von $u$. Auch hier kann man die Länge von $u$ unverändert lassen, in diesem Fall gibt es eine Möglichkeit, oder einen Pfad von Länge $\ge 1$ hinzufügen, sodass es zwei Möglichkeiten wegen Vertauschung von $a$ und $b$ gibt.
 
-    \noindent Der Vorfaktor in der Definition von $\tau_n$ ist $1/n^{n + 2}$, da es $n^n$ Abbildungen $\Z/n\Z \to \Z/n\Z$ gibt und für jede von diesen $n^2$ Paare an Anfangswerten.
-
-    \subsection{Theoretischer Hintergrund: Erzeugende Funktionen}
-
-    Der Ansatz zum Beweis von Satz \ref{theorem:min-rho-len-m2} ist, die Summe in der Definition von $\tau_n$ mithilfe einer erzeugenden Funktion $\Psi(x, w)$ zu bestimmen. In $\Psi(x, w)$ markiert die Variable $x$ die Größe des Graphen und die Variable $w$ die minimale Rho-Länge der zwei Anfangsknoten. Da funktionale Graphen beschriftet sind, werden stets erzeugende Funktionen von exponentiellem Typ (EF) verwendet. Also gilt
-    \begin{align}
+    Ein funktionaler Graph besteht natürlich nicht nur aus einem Zyklus und den Pfaden von $a$ und $b$ zum Zyklus. Von jedem Knoten kann ein Baum ausgehen und es kann noch weitere Zusammenhangskomponenten geben. Indem $x$ durch $T(x)$ ersetzt wird, kann von jedem Knoten ein Baum ausgehen. Weitere Zusammenhangskomponenten bilden einen funktionalen Graphen, um diese zuzulassen, wird die gesamte EF also mit $F(x)$ multipliziert. Da die drei Fälle disjunkt sind und zusammen alle Möglichkeiten abdecken, gilt
+    \begin{align*}
         \Psi(x, w)
-        = \sum_{n = 0}^\infty \frac {x^n}{n!} \sum_{g \in A(n)}
-        \sum_{a, b \in \Z/n\Z} w^{\min\{\nu(g, a), \nu(g, b)\}}
-        \label{psi-definition}
-    \end{align}
-    Aus den Koeffizienten der Reihe von $\Psi$ kann dann wie folgt $\tau_n$ bestimmt werden.
-    \begin{align*}
-        \tau_n = \frac {n!}{n^{n + 2}} [x^n] \Bigg (\frac {\partial} {\partial w} \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
+        = (\alpha(T(x), w) + \beta(T(x), w) + \gamma(T(x), w)) \,F(x)
     \end{align*}
-    wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet. Folgende Komponenten werden als Grundlage verwendet, um $\Psi(x, w)$ zu konstruieren.
-    // maybe remove these
+    Damit erhalten wir
     \begin{align*}
-        S(x) & = \frac 1 {1 - x}    & \quad (\text{Folge / Pfad})       \\
-        T(x) & = x \exp T(x)        & \quad (\text{Baum})               \\
-        F(x) & = \frac 1 {1 - T(x)} & \quad (\text{Funktionaler Graph})
+        \psi(x) = \Bigg (\frac {\partial} {\partial w}
+        \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
+        = \frac
+        {T(x)(1 + 2T(x) + 2(T(x))^2)(1 + 5T(x) + 3(T(x))^2 + (T(x))^3)}
+        {(1 - T(x))^6(1 + T(x))^3}
     \end{align*}
-    Die letzten beiden Funktionen stammen von \cite{fo90}. Übersetzt bedeutet die EF für einen Baum: "`Ein Baum ist ein Knoten mit einer Menge an Bäumen"'. Die Erklärung für $F(x)$ ist etwas komplizierter, hier aber nicht wichtig. Ein Beweis findet sich in \cite{fs09}, S. 129.
+    Nun soll die Methode von \cite{fo90} verwendet werden, um eine asymptotische Abschätzung für die Koeffizienten der Taylorreihe von $\psi(x)$ zu erhalten. Nach \cite{fo90}, S. 334, Proposition 1 ist die betragsmäßig (in $\C$) kleinste Singularität von $T(x)$ bei $x = e^{-1}$ und es gilt
+    \begin{align*}
+        T(x) = 1 - \sqrt{2} \; \sqrt {1 - ex} - O(1 - ez)
+    \end{align*}
+    für $x \to e^{-1}$. $\psi(x)$ hat keine betragsmäßig kleineren Singularitäten, denn wenn $1 - T(x) = 0$, rechnet man leicht nach, dass $x = e^{-1}$ gilt, und wenn $1 + T(x) = 0$, gilt $x = -e$. Es wird nun Theorem 1 aus \cite{fo90}, S. 333 mit $s = e^{-1}$ verwendet. Wenn $x \to e^{-1}$, gilt
+    \begin{align*}
+        \psi(x)
+         & \sim \frac {T(e^{-1})(1 + 2T(e^{-1})
+            + 2(T(e^{-1}))^2)(1 + 5T(e^{-1}) + 3(T(e^{-1}))^2 + (T(e^{-1}))^3)}
+        {(1 - (1 - \sqrt 2 \cdot \sqrt {1 - ez}))^6(1 + T(e^{-1}))^3} \\
+         & = \frac {(1 + 2 + 2)(1 + 5 + 3 + 1)} {2^3} \,
+        \frac 1 {(\sqrt 2 )^6 (\sqrt{1 - ez})^6}                      \\
+         & = \frac {50} {64} \, \frac 1 {(1 - ez)^3}
+    \end{align*}
+    Folglich gilt mit der Notation in \cite{fo90} $\sigma(x) = x^3$ und $\alpha = 3$. Aus Theorem 1 folgt
+    \begin{align*}
+        [x^n] \psi(x)
+        \sim \frac {50} {64} \; (e^{-1})^{-n} \;
+        \frac {n^3} {n \Gamma(3)}
+        = \frac {25} {32} \; \frac {e^n n^2} {2}
+    \end{align*}
+    und mit Stirlings Näherung $n! \sim \sqrt{2\pi n} (n/e)^n$
+    \begin{align*}
+        \tau_n
+        \sim \frac {n!}{n^{n + 2}} \, \frac {25} {32} \,\frac {e^n n^2} 2
+        = n! \bigg (\frac {e} {n} \bigg )^n \, \frac {25} {64}
+        \sim \sqrt {2 \pi n} \; \frac {25}{64}
+        = \frac {25} {32} \sqrt{\pi n/2}
+    \end{align*}
+\end{proof}
 
-    \subsection{Der Fall zweier Anfangswerte}
+\noindent Aus Satz \ref{theorem:min-rho-len-m2} folgt sofort, dass $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p / 2}$. Daraus lässt sich auch auf $L_{k, k}(p)$ schließen. Für $1 \le k \in \N$ wird nach RMA $p$ durch $p/(\gcd(p - 1, 2k) - 1)$ ersetzt. Die Laufzeit pro Iteration steigt bei jeder Maschine aber um einen Faktor $\lg 2k$, sodass sie auch insgesamt um einen Faktor $\lg 2k$ steigt. Es gilt also
+\begin{align}
+    L_{k, k}(p) \sim 25 / 32 \sqrt{\pi p /2} \
+    \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}}
+    \label{lkkp}
+\end{align}
+Man bemerke, dass Satz \ref{theorem:min-rho-len-m2} unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf der Random Mapping Assumption basiert.
 
-    \begin{proof}[Beweis von Satz \ref{theorem:min-rho-len-m2}]
-        Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie in (\ref{psi-definition}) definiert. Der Plan ist, zunächst einen geschlossenen Ausdruck für $\Psi(x, w)$ zu bestimmen, um dann die Ableitung nach $w$ zu bilden. Dafür werden drei Fälle unterschieden, die in Abbildung \ref{fig:psi-construction} dargestellt sind. In jedem der Fälle wird zunächst eine EF für funktionale Graphen bestimmt, die nur die für $a$ und $b$ relevanten Teile enthalten. Der "`relevante Teil"' besteht aus all den Knoten, die beim Ablaufen des Graphen besucht werden, also dem Zyklus und dem Pfad zum Zyklus. Der Rest des funktionalen Graphen wird später ergänzt. Grundsätzlich werden die Graphen so konstruiert, dass $\nu(f, a) \le \nu(f, b)$. Wenn dann $\nu(f, a) < \nu(f, b)$ gilt, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert. Im Fall $\nu(f, a) = \nu(f, b)$ darf man das nicht tun, weil der Graph sonst doppelt gezählt wird.
+\section{Bestimmung optimaler Exponenten für die Rho-Methode}
+\label{sec:optimal-k}
 
-        \begin{figure}
-            \begin{tabular}{ccc}
-                \includesvg[width=145pt]{pics/alpha} & \includesvg[width=145pt]{pics/beta} & \includesvg[width=145pt]{pics/gamma} \\
-                ($\alpha$)                           & ($\beta$)                           & ($\gamma$)
-            \end{tabular}
-            \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Linien stellen keine einzelnen Kanten dar, sondern eine Folge an Kanten. Beispielsweise steht $r$ in ($\alpha$) für den Zyklus in dem Zusammenhangskomponenten von $a$.}
-            \label{fig:psi-construction}
-        \end{figure}
+In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{expectation-tmin}) und Satz \ref{theorem:min-rho-len-m2} konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Da $p - 1$ gerade ist, gilt $\gcd(p-1, 2k_i) = 2\gcd((p - 1)/2, k_i)$. Weitere Kongruenzen von $p - 1$ sind im Allgemeinen nicht bekannt, weshalb angenommen wird, dass jeder Rest $(p- 1)/2$ modulo $k_i$ gleich wahrscheinlich ist.
 
-        \paragraph{Fall 1.} $a$ und $b$ liegen in unterschiedlichen Zusammenhangskomponenten. Dieser Fall wird erneut in die Fälle $\lambda(f, b) \le \nu(f, a)$ und $\lambda(f, b) > \nu(f, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall ist
-        \begin{align*}
-            \alpha_1(x, w) = \frac {x^2w(1 + x^2w)} {(1 - x^2w)^3} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg ) = \frac {x^2w(1 + x)(1 + x^2w)} {(1 - x^2w)^3(1 - x)}
-        \end{align*}
-        In diesem Fall ist es möglich, zuerst zwei $\rho$-Graphen mit gleicher Größe zu erzeugen und anschließend den Pfad von $b$ zu seinem Zyklus zu verlängern. Ein $\rho$-Graph ist ein Zusammenhangskomponent in Abbildung \ref{fig:psi-construction} ($\alpha$), d.h. ein Zyklus mit einem Pfad anhängend. Es gibt genau $n! \cdot n$ $\rho$-Graphen mit $n$ Knoten, da es für jede Permutation der Knoten $n$ Möglichkeiten für die Größe des Zyklus gibt. Folglich gibt es für gerade $n$ genau $n! \cdot n^2/2$ Paare an $\rho$-Graphen, die beide $n/2$ Knoten besitzen. Die erzeugende Funktion von Paaren an $\rho$-Graphen gleicher Größe ist also
-        \begin{align*}
-            \sum_{n = 0}^\infty x^n \; \frac {n^2} 4 \, \frac {1 + (-1)^n} 2
-            = \frac {x^2(1 + x^2)} {(1 - x^2)^3}
-        \end{align*}
-        Mit zwei $\rho$-Graphen gleicher Größe sind der Zusammenhangskomponenten von $a$, sowie $t$ (in Abbildung \ref{fig:psi-construction} ($\alpha$)) und der Anfang von $u$ konstruiert. Da $x$ die Zahl an Knoten markiert, wird von $w$ die halbe Zahl an Knoten markiert, wenn $x$ durch $x \sqrt w$ ersetzt wird. So markiert $w$ die Rho-Länge von $a$ und man erhält die EF $x^2w(1 + x^2w) / (1 - x^2w)^3$. Das erklärt den ersten Faktor in $\alpha_1(x, w)$. Nun gibt es zwei Möglichkeiten: Wird $u$ nicht verlängert, gilt $\nu(f, a) = \nu(f, b)$. Wird hingegen ein Pfad von Länge $\ge 1$ angehängt, dessen erzeugende Funktion $x/(1 - x)$ ist, ergeben sich zwei Möglichkeiten durch Vertauschen von $a$ und $b$.
+\subsection{Der Fall einer Maschine}
 
-        Im zweiten Fall ist die erzeugende Funktion
-        \begin{align*}
-            \alpha_2(x, w) =
-            2 \; \frac {x^2w} {(1 - x^2w)^2} \, \frac x {1 - x} \,
-            \frac {1}{1 - x}
-            = \frac {2x^3w} {(1 - x^2w)^2 (1 - x)^2}
-        \end{align*}
-        Der Faktor $x^2w$ repräsentiert die zwei Knoten, an denen $a$ und $b$ jeweils ihren Zyklus betreten, und der Knoten von $a$ ist mit $w$ markiert. Mit $1 / (1 - x^2w)^2$ erhält man vier Pfade $r, y, s, z$, sodass die Länge von $r$ gleich der Länge von $y$ und die Länge von $s$ gleich der Länge von $z$ ist. Die Summe der Längen von $r$ und $s$ wird von $w$ markiert. $r$ und $s$ werden wie in Abbildung \ref{fig:psi-construction} ($\alpha$) für den Zusammenhangskomponenten von $a$ verwendet. Damit ist der Exponent von $w$ genau die Rho-Länge von $a$. Der Zyklus $t$ besteht aus $y, z$ und einem Pfad von Länge $\ge 1$, sodass $\lambda(f, b) > \nu(f, a)$ gilt. $u$ wird von dem Term $1 / (1 - x)$ gebildet.
+\begin{theorem}
+    \label{theorem:optimal-k-m1}
+    Sei $L_k(p)$ wie in (\ref{lk-definition}) definiert. Es gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd((p - 1)/2, k)$ genommen wird.
+\end{theorem}
 
-        \noindent Die erzeugende Funktion für Fall 1 ist also
-        \begin{align*}
-            \alpha(x, w)
-            = \alpha_1(x, w) + \alpha_2(x, w)
-            = \frac {x^2w(1 + 2x - x^2 + x^2w - 2x^3w - x^4w)}
-            {(1 - x^2w)^3(1 - x)^2}
-        \end{align*}
-
-        \paragraph{Fall 2.}  In diesem Fall liegen $a$ und $b$ im gleichen Baum und ihr kleinster gemeinsamer Vorfahre ist nicht die Wurzel. Anders formuliert: Betrachtet man die Pfade, die $a$ und $b$ durch wiederholtes Anwenden von $f$ in $\gamma(f)$ ablaufen, treffen diese sich nicht erstmals in einem Zyklusknoten. Die erzeugende Funktion lautet
-        \begin{align*}
-            \beta(x, w)
-            = xw \; \frac {xw} {1 - xw} \, \frac {1} {1 - xw} \,
-            \frac {1} {1 - x^2w} \, \Bigg (1 + \frac {2x} {1 - x} \Bigg )
-            = \frac {x^2w^2(1 + x)} {(1 - xw)^2(1 - x^2w)(1 - x)}
-        \end{align*}
-        Der Zyklusknoten, an dem der Baum von $a$ und $b$ anhängt, wird durch $xw$ repräsentiert. Der Pfad $s$ in Abbildung 1 ($\beta$) wird von  $xw/(1 - xw)$ erzeugt. Er muss mindestens Länge 1 haben, da der kleinste gemeinsame Vorfahre von $a$ und $b$ sonst die Wurzel wäre. Der Faktor $1/(1 - xw)$ steht für den Zyklus $r$. Mit $1/(1 - x^2w)$ werden zwei gleich lange Pfade erzeugt, deren einfache Länge durch $w$ markiert wird. Einer von ihnen wird für $t$ verwendet und der andere ist ein Teil von $u$. Nun gibt es wie in Fall 1 wieder die Option, $u$ echt zu verlängern und so einen Faktor 2 für die mögliche Vertauschung von $a$ und $b$ zu erhalten, oder ihn zu lassen, wobei es wegen Symmetrie nur eine Möglichkeit gibt.
-
-
-        \paragraph{Fall 3.} Zuletzt bleibt der Fall, wenn $a$ und $b$ in verschiedenen Bäumen liegen oder die Wurzel ihr kleinster gemeinsamer Vorfahre ist. Eine andere Sichtweise ist, dass sich die Pfade von $a$ und $b$ bei wiederholtem Anwenden von $f$ erstmals bei einem Zyklusknoten treffen. Die erzeugende Funktion ist hier
-        \begin{align*}
-            \gamma(x, w)
-            = xw \, \frac {1} {(1 - xw)^2} \, \frac {1} {1 - x^2w} \,
-            \Bigg (1 + \frac {2x}{1 - x} \Bigg )
-            = \frac {xw(1 + x)} {(1 - xw)^2(1 - x^2w)(1 - x)}
-        \end{align*}
-        $xw$ stellt den Zyklusknoten da, an dem der Baum von $a$ anhängt. Der Term $1/(1 - xw)^2$ erzeugt zwei Pfade, deren Länge mit $w$ markiert ist. Die zwei Pfade sind die zwei Teile des Zyklus, $r$ und $s$ in Abbildung \ref{fig:psi-construction} ($\gamma$). Ähnlich wie in Fall 2 ist der Term $1/(1 - x^2w)$ ein Paar an gleich langen Pfaden, deren Länge von $w$ markiert wird. Einer der Pfade ist $t$ und der andere ein Teil von $u$. Auch hier kann man die Länge von $u$ unverändert lassen, in diesem Fall gibt es eine Möglichkeit, oder einen Pfad von Länge $\ge 1$ hinzufügen, sodass es zwei Möglichkeiten wegen Vertauschung von $a$ und $b$ gibt.
-
-        Ein funktionaler Graph besteht natürlich nicht nur aus einem Zyklus und den Pfaden von $a$ und $b$ zum Zyklus. Von jedem Knoten kann ein Baum ausgehen und es kann noch weitere Zusammenhangskomponenten geben. Indem $x$ durch $T(x)$ ersetzt wird, kann von jedem Knoten ein Baum ausgehen. Weitere Zusammenhangskomponenten bilden einen funktionalen Graphen, um diese zuzulassen, wird die gesamte EF also mit $F(x)$ multipliziert. Da die drei Fälle disjunkt sind und zusammen alle Möglichkeiten abdecken, gilt
-        \begin{align*}
-            \Psi(x, w)
-            = (\alpha(T(x), w) + \beta(T(x), w) + \gamma(T(x), w)) \,F(x)
-        \end{align*}
-        Damit erhalten wir
-        \begin{align*}
-            \psi(x) = \Bigg (\frac {\partial} {\partial w}
-            \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
-            = \frac
-            {T(x)(1 + 2T(x) + 2(T(x))^2)(1 + 5T(x) + 3(T(x))^2 + (T(x))^3)}
-            {(1 - T(x))^6(1 + T(x))^3}
-        \end{align*}
-        Nun soll die Methode von \cite{fo90} verwendet werden, um eine asymptotische Abschätzung für die Koeffizienten der Taylorreihe von $\psi(x)$ zu erhalten. Nach \cite{fo90}, S. 334, Proposition 1 ist die betragsmäßig (in $\C$) kleinste Singularität von $T(x)$ bei $x = e^{-1}$ und es gilt
-        \begin{align*}
-            T(x) = 1 - \sqrt{2} \; \sqrt {1 - ex} - O(1 - ez)
-        \end{align*}
-        für $x \to e^{-1}$. $\psi(x)$ hat keine betragsmäßig kleineren Singularitäten, denn wenn $1 - T(x) = 0$, rechnet man leicht nach, dass $x = e^{-1}$ gilt, und wenn $1 + T(x) = 0$, gilt $x = -e$. Es wird nun Theorem 1 aus \cite{fo90}, S. 333 mit $s = e^{-1}$ verwendet. Wenn $x \to e^{-1}$, gilt
-        \begin{align*}
-            \psi(x)
-             & \sim \frac {T(e^{-1})(1 + 2T(e^{-1})
-                + 2(T(e^{-1}))^2)(1 + 5T(e^{-1}) + 3(T(e^{-1}))^2 + (T(e^{-1}))^3)}
-            {(1 - (1 - \sqrt 2 \cdot \sqrt {1 - ez}))^6(1 + T(e^{-1}))^3} \\
-             & = \frac {(1 + 2 + 2)(1 + 5 + 3 + 1)} {2^3} \,
-            \frac 1 {(\sqrt 2 )^6 (\sqrt{1 - ez})^6}                      \\
-             & = \frac {50} {64} \, \frac 1 {(1 - ez)^3}
-        \end{align*}
-        Folglich gilt mit der Notation in \cite{fo90} $\sigma(x) = x^3$ und $\alpha = 3$. Aus Theorem 1 folgt
-        \begin{align*}
-            [x^n] \psi(x)
-            \sim \frac {50} {64} \; (e^{-1})^{-n} \;
-            \frac {n^3} {n \Gamma(3)}
-            = \frac {25} {32} \; \frac {e^n n^2} {2}
-        \end{align*}
-        und mit Stirlings Näherung $n! \sim \sqrt{2\pi n} (n/e)^n$
-        \begin{align*}
-            \tau_n
-            \sim \frac {n!}{n^{n + 2}} \, \frac {25} {32} \,\frac {e^n n^2} 2
-            = n! \bigg (\frac {e} {n} \bigg )^n \, \frac {25} {64}
-            \sim \sqrt {2 \pi n} \; \frac {25}{64}
-            = \frac {25} {32} \sqrt{\pi n/2}
-        \end{align*}
-    \end{proof}
-
-    \noindent Aus Satz \ref{theorem:min-rho-len-m2} folgt sofort, dass $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p / 2}$. Daraus lässt sich auch auf $L_{k, k}(p)$ schließen. Für $1 \le k \in \N$ wird nach RMA $p$ durch $p/(\gcd(p - 1, 2k) - 1)$ ersetzt. Die Laufzeit pro Iteration steigt bei jeder Maschine aber um einen Faktor $\lg 2k$, sodass sie auch insgesamt um einen Faktor $\lg 2k$ steigt. Es gilt also
-    \begin{align}
-        L_{k, k}(p) \sim 25 / 32 \sqrt{\pi p /2} \
+\begin{proof}
+    Durch Einsetzen von $M = 1$ in (\ref{expectation-tmin}) erhalten wir
+    \begin{align*}
+        L_k(p) \sim \sqrt {\pi p / 2} \;
         \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}}
-        \label{lkkp}
+    \end{align*}
+    Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Mit $\varphi$ wird die eulersche Phifunktion bezeichnet. Dann gilt
+    \begin{align*}
+        \E(L_k(p))
+        \sim \sqrt{\pi p / 2} \, \lg (2k) \,
+        \sum_{d | k} \frac {\P(\gcd((p - 1)/2, k) = d)}
+        { \sqrt {2d - 1}} \nonumber
+        \ge \sqrt{\pi p / 2} \, \lg (2k) \, \frac {\varphi(k)} k
+    \end{align*}
+    Die Ungleichung lässt sich zeigen, indem statt der Summe über alle Teiler nur $d = 1$ betrachtet wird. Da es $\varphi(k)$ teilerfremde Zahlen $< k$ gibt, ist $\P(\gcd((p - 1)/2, k) = 1) = \varphi(k)/k$. Nach \cite{rs62}, Theorem 15 gilt $ \varphi(k) / k > 1 / (e^\gamma \ln (\ln (k)) + 2.51 / \ln (\ln (k)))$ für $k \ge 3$, wobei $\gamma \approx 0.5772$ die Euler-Mascheroni-Konstante ist. Für $k \ge e^e$ folgt daraus $\varphi(k) / k > 1/(e^\gamma \ln(\ln(k)) + 2.51)$. Indem nun gezeigt wird, dass $\lg (2k) / (e^\gamma \ln (\ln (k)) + 2.51) > 1$ für $k \ge 16$ wird der Satz im Fall $k \ge 16$ bewiesen. Sei $f(x) = \lg (2x) / (e^\gamma \ln (\ln (x)) + 2.51)$. Es gilt $f(16) \approx 1.1557$ und
+    \begin{align*}
+        f'(x)
+        = \frac {\ln (x)(\ln (\ln (x)) + 1.51) - \ln 2}
+        {x \ln (2) \ln (x)(\ln(\ln(x)) + 2.51)^2}
+    \end{align*}
+    Für $x \ge 16$ ist der Nenner von $f'$ positiv, denn $x > 0$ und $\ln x > 0$, und weil $\ln \ln x > 1$ für $x \ge 16$ ist der Term unter dem Quadrat positiv. Der Zähler ist ebenfalls positiv, da $\ln x \ge 1$ und $\ln \ln x \ge 1$, woraus $\ln(x)(\ln(\ln(x)) + 1.51) \ge 1 \cdot (1 + 1.51) = 2.51 > \ln 2$ folgt. Also ist $f$ streng monoton steigend für $x \ge 16$, und da bereits $f(16) > 1$ gezeigt wurde, folgt $f(x) > 1$ für $x \ge 16$. Der Fall $k < 16$ wurde durch Ausrechnen von (\ref{expectation-tmin}) für $1 \le k \le 15$ überprüft.
+\end{proof}
+
+\subsection{Der Fall zweier Maschinen}
+
+\begin{theorem}
+    \label{theorem:optimal-k-m2}
+    Sei $L_{k_1, k_2}(p)$ wie in Abschnitt (\ref{lk-definition}) definiert. Im Folgenden wird der Erwartungswert von $L_{k_1, k_2}$ über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ genommen.
+    \begin{enumerate}
+        \item Wenn $k_1, k_2$ unterschiedliche Primzahlen sind, gilt $\E(L_{1, 1}(p)) < \E(L_{k_1, k_2}(p))$.
+        \item Wenn $1 < k \in \N$, gilt $\E(L_{1, 1}(p)) < \E(L_{k, k}(p))$.
+    \end{enumerate}
+\end{theorem}
+
+\begin{proof}
+    Nach Satz 1 gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also in beiden Teilen zu zeigen, dass der Erwartungswert größer ist. Zunächst wird Teil 1 bewiesen. Da $k_1 \ne k_2$, sind die zwei Maschinen unabhängig und (\ref{expectation-tmin}) kann verwendet werden.
+    \begin{align*}
+        L_{k_1, k_2}(p)
+         & \sim \sqrt{\pi p / 2} \
+        \Bigg ( \frac {\gcd(p - 1, 2k_1) - 1} {\lg^2 2k_1} +
+        \frac {\gcd(p -1, 2k_2) - 1} {\lg^2 2k_2} \Bigg )^{-1/2}
+    \end{align*}
+    Durch Bilden des Erwartungswerts über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ erhält man
+    \begin{align}
+        \E(L_{k_1, k_2})
+         & \sim \sqrt{\pi p / 2}
+        \sum_{d_1 | k_1} \P(\gcd((p - 1)/2, k_1) = d_1)
+        \nonumber                                                 \\
+         & \qquad \sum_{d_2 | k_2} \P(\gcd((p - 1)/2, k_2) = d_2)
+        \Bigg ( \frac {2d_1 - 1} {\lg^2 2k_1}
+        + \frac {2d_2 - 1} {\lg^2 2k_2} \Bigg )^{-1/2}
+        \nonumber                                                 \\
+         & \ge \sqrt{\pi p / 2} \
+        \frac {\varphi(k_1) \varphi(k_2)} {k_1k_2}
+        \Bigg (\frac 1 {\lg^2 2k_1} + \frac 1 {\lg^2 2k_2} \Bigg )^{-1/2}
+        \nonumber                                                 \\
+         & = \sqrt{\pi p / 2} \
+        \frac {(k_1 - 1) (k_2- 1)} {k_1k_2}
+        \sqrt{\frac{\lg^2(2k_1) \lg^2(2k_2)}{\lg^2(2k_1) + \lg^2(2k_2)}}
+        \label{m2-expectation-lb}
     \end{align}
-    Man bemerke, dass Satz \ref{theorem:min-rho-len-m2} unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf der Random Mapping Assumption basiert.
+    Wie bei $M = 1$ wurden die Summen über alle Teiler von $k_1, k_2$ durch den Wert für $d_1 = d_2 = 1$ nach unten begrenzt. Die Terme $(k_i - 1)/k_i$ sind streng monoton steigend mit $k_i$ für $i = 1, 2$. Ebenso ist das Argument der nachfolgenden Wurzel in (\ref{m2-expectation-lb}) streng monoton steigend mit jedem der $k_i$. Um das zu zeigen, sei $x = \lg^2 2k_1, y = \lg^2 2k_2$ und $x' > x$. Dann gilt
+    \begin{align*}
+        \frac {x'y} {x' + y}
+        = \frac {x'y} {x' + y} \, \frac {x + y} {xy} \, \frac {xy} {x + y}
+        = \frac {xx'y + x'y^2} {xx'y + xy^2} \, \frac {xy} {x + y}
+        > \frac {xy} {x + y}
+    \end{align*}
+    da $x, x', y > 0$ und $x < x'$. $x$ und $y$ sind symmetrisch in dem Term, daher ist er auch streng monoton steigend bzgl. $y$. Da die Wurzelfunktion streng monoton steigt und die Verkettung streng monoton steigender Funktionen streng monoton steigt, folgt, dass die gesamte Wurzel auf der rechten Seite von (\ref{m2-expectation-lb}) streng monoton steigt. Weil nun jeder einzelne Faktor in (\ref{m2-expectation-lb}) streng monoton steigt und positiv ist, ist ganz (\ref{m2-expectation-lb}) streng monoton steigend in den $k_i$. Indem man $k_1 = 3,\; k_2 = 5$ in (\ref{m2-expectation-lb}) einsetzt, sieht man, dass $E(L_{3, 5}(p)) \ge 1.0881 \sqrt{\pi p /2}  > 25 / 32 \sqrt{\pi p / 2}$. Weil (\ref{m2-expectation-lb}) symmetrisch in $k_1, k_2$ ist, kann $k_1 < k_2$ angenommen werden. Dann folgt aus der Monotonie von (\ref{m2-expectation-lb}), dass $E(L_{k_1, k_2}(p)) > \E(L_{1, 1}(p))$, wenn $k_1 \ge 3$. Es bleibt also lediglich der Fall $k_1 = 2$. Durch Einsetzen von $k_1 = 2, \; k_2 = 11$ in (\ref{m2-expectation-lb}) gilt $\E(L_{2, 11}(p)) \ge 0.8294 \sqrt{\pi p / 2} > 25 / 32 \sqrt{\pi p / 2}$. Aus der Monotonie von (\ref{m2-expectation-lb}) folgt $\E(L_{k_1, k_2}(p)) > \E(L_{1, 1}(p))$ für $k_1 = 2$ und $k_2 \ge 11$. Die übrigen Fälle $k_1 = 2$ und $k_2 = 3, 5, 7$ wurden nachgerechnet.
 
-    \section{Bestimmung optimaler Exponenten für die Rho-Methode}
-    \label{sec:optimal-k}
+    Nun zum Beweis von Teil 2. Aus (\ref{lkkp}) folgt $L_{k, k}(p) = 25 / 32 \cdot L_{k}(p)$ für $1 \le k \in \N$. Damit folgt Teil 2 des Satzes aus Satz 3.
+\end{proof}
 
-    In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{expectation-tmin}) und Satz \ref{theorem:min-rho-len-m2} konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Da $p - 1$ gerade ist, gilt $\gcd(p-1, 2k_i) = 2\gcd((p - 1)/2, k_i)$. Weitere Kongruenzen von $p - 1$ sind im Allgemeinen nicht bekannt, weshalb angenommen wird, dass jeder Rest $(p- 1)/2$ modulo $k_i$ gleich wahrscheinlich ist.
-
-    \subsection{Der Fall einer Maschine}
-
-    \begin{theorem}
-        \label{theorem:optimal-k-m1}
-        Sei $L_k(p)$ wie in (\ref{lk-definition}) definiert. Es gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd((p - 1)/2, k)$ genommen wird.
-    \end{theorem}
-
-    \begin{proof}
-        Durch Einsetzen von $M = 1$ in (\ref{expectation-tmin}) erhalten wir
-        \begin{align*}
-            L_k(p) \sim \sqrt {\pi p / 2} \;
-            \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}}
-        \end{align*}
-        Die erwartete Laufzeit im Fall $k = 1$ ist folglich $\sqrt{\pi p/2}$, es wird also gezeigt, dass $\E(L_k(p)) > \sqrt{\pi p / 2}$ für $k > 1$. Mit $\varphi$ wird die eulersche Phifunktion bezeichnet. Dann gilt
-        \begin{align*}
-            \E(L_k(p))
-            \sim \sqrt{\pi p / 2} \, \lg (2k) \,
-            \sum_{d | k} \frac {\P(\gcd((p - 1)/2, k) = d)}
-            { \sqrt {2d - 1}} \nonumber
-            \ge \sqrt{\pi p / 2} \, \lg (2k) \, \frac {\varphi(k)} k
-        \end{align*}
-        Die Ungleichung lässt sich zeigen, indem statt der Summe über alle Teiler nur $d = 1$ betrachtet wird. Da es $\varphi(k)$ teilerfremde Zahlen $< k$ gibt, ist $\P(\gcd((p - 1)/2, k) = 1) = \varphi(k)/k$. Nach \cite{rs62}, Theorem 15 gilt $ \varphi(k) / k > 1 / (e^\gamma \ln (\ln (k)) + 2.51 / \ln (\ln (k)))$ für $k \ge 3$, wobei $\gamma \approx 0.5772$ die Euler-Mascheroni-Konstante ist. Für $k \ge e^e$ folgt daraus $\varphi(k) / k > 1/(e^\gamma \ln(\ln(k)) + 2.51)$. Indem nun gezeigt wird, dass $\lg (2k) / (e^\gamma \ln (\ln (k)) + 2.51) > 1$ für $k \ge 16$ wird der Satz im Fall $k \ge 16$ bewiesen. Sei $f(x) = \lg (2x) / (e^\gamma \ln (\ln (x)) + 2.51)$. Es gilt $f(16) \approx 1.1557$ und
-        \begin{align*}
-            f'(x)
-            = \frac {\ln (x)(\ln (\ln (x)) + 1.51) - \ln 2}
-            {x \ln (2) \ln (x)(\ln(\ln(x)) + 2.51)^2}
-        \end{align*}
-        Für $x \ge 16$ ist der Nenner von $f'$ positiv, denn $x > 0$ und $\ln x > 0$, und weil $\ln \ln x > 1$ für $x \ge 16$ ist der Term unter dem Quadrat positiv. Der Zähler ist ebenfalls positiv, da $\ln x \ge 1$ und $\ln \ln x \ge 1$, woraus $\ln(x)(\ln(\ln(x)) + 1.51) \ge 1 \cdot (1 + 1.51) = 2.51 > \ln 2$ folgt. Also ist $f$ streng monoton steigend für $x \ge 16$, und da bereits $f(16) > 1$ gezeigt wurde, folgt $f(x) > 1$ für $x \ge 16$. Der Fall $k < 16$ wurde durch Ausrechnen von (\ref{expectation-tmin}) für $1 \le k \le 15$ überprüft.
-    \end{proof}
-
-    \subsection{Der Fall zweier Maschinen}
-
-    \begin{theorem}
-        \label{theorem:optimal-k-m2}
-        Sei $L_{k_1, k_2}(p)$ wie in Abschnitt (\ref{lk-definition}) definiert. Im Folgenden wird der Erwartungswert von $L_{k_1, k_2}$ über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ genommen.
-        \begin{enumerate}
-            \item Wenn $k_1, k_2$ unterschiedliche Primzahlen sind, gilt $\E(L_{1, 1}(p)) < \E(L_{k_1, k_2}(p))$.
-            \item Wenn $1 < k \in \N$, gilt $\E(L_{1, 1}(p)) < \E(L_{k, k}(p))$.
-        \end{enumerate}
-    \end{theorem}
-
-    \begin{proof}
-        Nach Satz 1 gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also in beiden Teilen zu zeigen, dass der Erwartungswert größer ist. Zunächst wird Teil 1 bewiesen. Da $k_1 \ne k_2$, sind die zwei Maschinen unabhängig und (\ref{expectation-tmin}) kann verwendet werden.
-        \begin{align*}
-            L_{k_1, k_2}(p)
-             & \sim \sqrt{\pi p / 2} \
-            \Bigg ( \frac {\gcd(p - 1, 2k_1) - 1} {\lg^2 2k_1} +
-            \frac {\gcd(p -1, 2k_2) - 1} {\lg^2 2k_2} \Bigg )^{-1/2}
-        \end{align*}
-        Durch Bilden des Erwartungswerts über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ erhält man
-        \begin{align}
-            \E(L_{k_1, k_2})
-             & \sim \sqrt{\pi p / 2}
-            \sum_{d_1 | k_1} \P(\gcd((p - 1)/2, k_1) = d_1)
-            \nonumber                                                 \\
-             & \qquad \sum_{d_2 | k_2} \P(\gcd((p - 1)/2, k_2) = d_2)
-            \Bigg ( \frac {2d_1 - 1} {\lg^2 2k_1}
-            + \frac {2d_2 - 1} {\lg^2 2k_2} \Bigg )^{-1/2}
-            \nonumber                                                 \\
-             & \ge \sqrt{\pi p / 2} \
-            \frac {\varphi(k_1) \varphi(k_2)} {k_1k_2}
-            \Bigg (\frac 1 {\lg^2 2k_1} + \frac 1 {\lg^2 2k_2} \Bigg )^{-1/2}
-            \nonumber                                                 \\
-             & = \sqrt{\pi p / 2} \
-            \frac {(k_1 - 1) (k_2- 1)} {k_1k_2}
-            \sqrt{\frac{\lg^2(2k_1) \lg^2(2k_2)}{\lg^2(2k_1) + \lg^2(2k_2)}}
-            \label{m2-expectation-lb}
-        \end{align}
-        Wie bei $M = 1$ wurden die Summen über alle Teiler von $k_1, k_2$ durch den Wert für $d_1 = d_2 = 1$ nach unten begrenzt. Die Terme $(k_i - 1)/k_i$ sind streng monoton steigend mit $k_i$ für $i = 1, 2$. Ebenso ist das Argument der nachfolgenden Wurzel in (\ref{m2-expectation-lb}) streng monoton steigend mit jedem der $k_i$. Um das zu zeigen, sei $x = \lg^2 2k_1, y = \lg^2 2k_2$ und $x' > x$. Dann gilt
-        \begin{align*}
-            \frac {x'y} {x' + y}
-            = \frac {x'y} {x' + y} \, \frac {x + y} {xy} \, \frac {xy} {x + y}
-            = \frac {xx'y + x'y^2} {xx'y + xy^2} \, \frac {xy} {x + y}
-            > \frac {xy} {x + y}
-        \end{align*}
-        da $x, x', y > 0$ und $x < x'$. $x$ und $y$ sind symmetrisch in dem Term, daher ist er auch streng monoton steigend bzgl. $y$. Da die Wurzelfunktion streng monoton steigt und die Verkettung streng monoton steigender Funktionen streng monoton steigt, folgt, dass die gesamte Wurzel auf der rechten Seite von (\ref{m2-expectation-lb}) streng monoton steigt. Weil nun jeder einzelne Faktor in (\ref{m2-expectation-lb}) streng monoton steigt und positiv ist, ist ganz (\ref{m2-expectation-lb}) streng monoton steigend in den $k_i$. Indem man $k_1 = 3,\; k_2 = 5$ in (\ref{m2-expectation-lb}) einsetzt, sieht man, dass $E(L_{3, 5}(p)) \ge 1.0881 \sqrt{\pi p /2}  > 25 / 32 \sqrt{\pi p / 2}$. Weil (\ref{m2-expectation-lb}) symmetrisch in $k_1, k_2$ ist, kann $k_1 < k_2$ angenommen werden. Dann folgt aus der Monotonie von (\ref{m2-expectation-lb}), dass $E(L_{k_1, k_2}(p)) > \E(L_{1, 1}(p))$, wenn $k_1 \ge 3$. Es bleibt also lediglich der Fall $k_1 = 2$. Durch Einsetzen von $k_1 = 2, \; k_2 = 11$ in (\ref{m2-expectation-lb}) gilt $\E(L_{2, 11}(p)) \ge 0.8294 \sqrt{\pi p / 2} > 25 / 32 \sqrt{\pi p / 2}$. Aus der Monotonie von (\ref{m2-expectation-lb}) folgt $\E(L_{k_1, k_2}(p)) > \E(L_{1, 1}(p))$ für $k_1 = 2$ und $k_2 \ge 11$. Die übrigen Fälle $k_1 = 2$ und $k_2 = 3, 5, 7$ wurden nachgerechnet.
-
-        Nun zum Beweis von Teil 2. Aus (\ref{lkkp}) folgt $L_{k, k}(p) = 25 / 32 \cdot L_{k}(p)$ für $1 \le k \in \N$. Damit folgt Teil 2 des Satzes aus Satz 3.
-    \end{proof}
-
-    \section{Experimentelle Ergebnisse}
+\section{Experimentelle Ergebnisse}
 
 
-    \begin{figure}
-        \centering
-        \begin{tikzpicture}
-            \begin{axis}[
-                    xlabel = {$k$},
-                    xmin = 1,
-                    xmax = 48,
-                    xtick = {1, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48},
-                    width = \textwidth,
-                    height = 260pt,
-                    legend pos = north west,
-                    legend style = {draw = none},
-                    legend cell align = left,
-                ]
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+                xlabel = {$k$},
+                xmin = 1,
+                xmax = 48,
+                xtick = {1, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48},
+                width = \textwidth,
+                height = 260pt,
+                legend pos = north west,
+                legend style = {draw = none},
+                legend cell align = left,
+            ]
 
-                \addplot[color=magenta,mark=square]
-                coordinates{
-                        (1, 1.0)
-                        (2, 1.5773502691896257)
-                        (3, 2.1086517918741277)
-                        (4, 2.21648605664914)
-                        (5, 2.8790043489023804)
-                        (6, 2.332272327437964)
-                        (7, 3.414299970503978)
-                        (8, 2.89543195056782)
-                        (9, 3.3067332978837425)
-                        (10, 2.970093877947532)
-                        (11, 4.142494904167608)
-                        (12, 2.7949482208102387)
-                        (13, 4.411181889332409)
-                        (14, 3.4111279805567123)
-                        (15, 3.481018974295858)
-                        (16, 3.594729442047154)
-                        (17, 4.840295239186588)
-                        (18, 3.2665648302249286)
-                        (19, 5.017128905823505)
-                        (20, 3.426648342312123)
-                        (21, 3.952865384732847)
-                        (22, 4.006284568144385)
-                        (23, 5.319207262349245)
-                        (24, 3.3342189545431045)
-                        (25, 4.848341222073144)
-                        (26, 4.224515025049569)
-                        (27, 4.541184581320172)
-                        (28, 3.8606214340939586)
-                        (29, 5.682737117278753)
-                        (30, 3.3580839014528188)
-                        (31, 5.786717613861166)
-                        (32, 4.303622115889641)
-                        (33, 4.585058767874234)
-                        (34, 4.57165798930078)
-                        (35, 4.768544753994481)
-                        (36, 3.65286546982577)
-                        (37, 6.061272505622063)
-                        (38, 4.714254318317245)
-                        (39, 4.815669489895146)
-                        (40, 3.9872807230736402)
-                        (41, 6.219718898826906)
-                        (42, 3.7480426730792065)
-                        (43, 6.293026650584624)
-                        (44, 4.440755450349039)
-                        (45, 4.475806923989725)
-                        (46, 4.957283888509379)
-                        (47, 6.429590774020685)
-                        (48, 3.903718627468377)
-                    };
+            \addplot[color=magenta,mark=square]
+            coordinates{
+                    (1, 1.0)
+                    (2, 1.5773502691896257)
+                    (3, 2.1086517918741277)
+                    (4, 2.21648605664914)
+                    (5, 2.8790043489023804)
+                    (6, 2.332272327437964)
+                    (7, 3.414299970503978)
+                    (8, 2.89543195056782)
+                    (9, 3.3067332978837425)
+                    (10, 2.970093877947532)
+                    (11, 4.142494904167608)
+                    (12, 2.7949482208102387)
+                    (13, 4.411181889332409)
+                    (14, 3.4111279805567123)
+                    (15, 3.481018974295858)
+                    (16, 3.594729442047154)
+                    (17, 4.840295239186588)
+                    (18, 3.2665648302249286)
+                    (19, 5.017128905823505)
+                    (20, 3.426648342312123)
+                    (21, 3.952865384732847)
+                    (22, 4.006284568144385)
+                    (23, 5.319207262349245)
+                    (24, 3.3342189545431045)
+                    (25, 4.848341222073144)
+                    (26, 4.224515025049569)
+                    (27, 4.541184581320172)
+                    (28, 3.8606214340939586)
+                    (29, 5.682737117278753)
+                    (30, 3.3580839014528188)
+                    (31, 5.786717613861166)
+                    (32, 4.303622115889641)
+                    (33, 4.585058767874234)
+                    (34, 4.57165798930078)
+                    (35, 4.768544753994481)
+                    (36, 3.65286546982577)
+                    (37, 6.061272505622063)
+                    (38, 4.714254318317245)
+                    (39, 4.815669489895146)
+                    (40, 3.9872807230736402)
+                    (41, 6.219718898826906)
+                    (42, 3.7480426730792065)
+                    (43, 6.293026650584624)
+                    (44, 4.440755450349039)
+                    (45, 4.475806923989725)
+                    (46, 4.957283888509379)
+                    (47, 6.429590774020685)
+                    (48, 3.903718627468377)
+                };
 
-                \addplot[color=blue,mark=square]
-                coordinates {
-                        (1, 1.0)
-                        (2, 1.509948118652118)
-                        (3, 2.0993697474766457)
-                        (4, 2.1116345085043)
-                        (5, 2.877418891483742)
-                        (6, 2.5685036940000137)
-                        (7, 2.996430188276255)
-                        (8, 2.7314845124186458)
-                        (9, 3.328296749381993)
-                        (10, 3.2577944117129998)
-                        (11, 3.7230055520415988)
-                        (12, 3.1561945991451923)
-                        (13, 3.736074156058803)
-                        (14, 3.3685945128552692)
-                        (15, 3.319276959371872)
-                        (16, 3.3613292919244078)
-                        (17, 4.394228617904989)
-                        (18, 3.722443809049611)
-                        (19, 4.451548228110135)
-                        (20, 3.84047914786071)
-                        (21, 3.920376539331896)
-                        (22, 4.032026952636839)
-                        (23, 4.529968590050905)
-                        (24, 3.707477302822801)
-                        (25, 4.242901333931946)
-                        (26, 4.037016391081217)
-                        (27, 4.058783598622834)
-                        (28, 3.9310913363101916)
-                        (29, 4.522555243332595)
-                        (30, 3.7415823259420846)
-                        (31, 4.59640961602802)
-                        (32, 3.982932254189798)
-                        (33, 4.510560919218005)
-                        (34, 4.624088329155094)
-                        (35, 4.744870700917283)
-                        (36, 4.277919837533675)
-                        (37, 5.181576815360558)
-                        (38, 4.687283294435714)
-                        (39, 4.642788634977157)
-                        (40, 4.449130421846238)
-                        (41, 5.186842863188695)
-                        (42, 4.302098653348379)
-                        (43, 5.24978349062113)
-                        (44, 4.594828700423131)
-                        (45, 4.4958880668775825)
-                        (46, 4.73608695893801)
-                        (47, 5.293961293662393)
-                        (48, 4.28487474982348)};
+            \addplot[color=blue,mark=square]
+            coordinates {
+                    (1, 1.0)
+                    (2, 1.509948118652118)
+                    (3, 2.0993697474766457)
+                    (4, 2.1116345085043)
+                    (5, 2.877418891483742)
+                    (6, 2.5685036940000137)
+                    (7, 2.996430188276255)
+                    (8, 2.7314845124186458)
+                    (9, 3.328296749381993)
+                    (10, 3.2577944117129998)
+                    (11, 3.7230055520415988)
+                    (12, 3.1561945991451923)
+                    (13, 3.736074156058803)
+                    (14, 3.3685945128552692)
+                    (15, 3.319276959371872)
+                    (16, 3.3613292919244078)
+                    (17, 4.394228617904989)
+                    (18, 3.722443809049611)
+                    (19, 4.451548228110135)
+                    (20, 3.84047914786071)
+                    (21, 3.920376539331896)
+                    (22, 4.032026952636839)
+                    (23, 4.529968590050905)
+                    (24, 3.707477302822801)
+                    (25, 4.242901333931946)
+                    (26, 4.037016391081217)
+                    (27, 4.058783598622834)
+                    (28, 3.9310913363101916)
+                    (29, 4.522555243332595)
+                    (30, 3.7415823259420846)
+                    (31, 4.59640961602802)
+                    (32, 3.982932254189798)
+                    (33, 4.510560919218005)
+                    (34, 4.624088329155094)
+                    (35, 4.744870700917283)
+                    (36, 4.277919837533675)
+                    (37, 5.181576815360558)
+                    (38, 4.687283294435714)
+                    (39, 4.642788634977157)
+                    (40, 4.449130421846238)
+                    (41, 5.186842863188695)
+                    (42, 4.302098653348379)
+                    (43, 5.24978349062113)
+                    (44, 4.594828700423131)
+                    (45, 4.4958880668775825)
+                    (46, 4.73608695893801)
+                    (47, 5.293961293662393)
+                    (48, 4.28487474982348)};
 
-                \legend{Formel (\ref{expectation-tmin}), Gemessene Laufzeit}
-            \end{axis}
-        \end{tikzpicture}
-        \caption{Die durchschnittliche gemessene Laufzeit des Rho-Algorithmus für $M = 1$ und Werte von Formel (\ref{expectation-tmin}) für $1 \le k \le 48$.}
-        \label{fig:measurements-m1}
+            \legend{Formel (\ref{expectation-tmin}), Gemessene Laufzeit}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Die durchschnittliche gemessene Laufzeit des Rho-Algorithmus für $M = 1$ und Werte von Formel (\ref{expectation-tmin}) für $1 \le k \le 48$.}
+    \label{fig:measurements-m1}
 
-        \vspace{2em}
+    \vspace{2em}
 
-        \small
+    \small
 
-        \begin{tabular}{c|cccccccccccccc}
-            $k_1 \backslash k_2$ & 1                                & 2                                & 3                                & 4                                & 5                                & 6                                & 7                                & 8                                & 9                                & 10                               & 11                               & 12                               & 13                               & 14                               \\
-            \hline
-            1                    & \textcolor[HTML]{ 0020ff }{1.00} & \textcolor[HTML]{ 0320fb }{1.03} & \textcolor[HTML]{ 0720f7 }{1.08} & \textcolor[HTML]{ 0720f7 }{1.08} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} \\
-            2                    &                                  & \textcolor[HTML]{ 3220cc }{1.55} & \textcolor[HTML]{ 3320cb }{1.55} & \textcolor[HTML]{ 3420ca }{1.57} & \textcolor[HTML]{ 3920c5 }{1.63} & \textcolor[HTML]{ 3920c5 }{1.62} & \textcolor[HTML]{ 3a20c4 }{1.63} & \textcolor[HTML]{ 3920c5 }{1.63} & \textcolor[HTML]{ 3b20c3 }{1.65} & \textcolor[HTML]{ 3c20c2 }{1.65} & \textcolor[HTML]{ 3c20c2 }{1.65} & \textcolor[HTML]{ 3b20c3 }{1.65} & \textcolor[HTML]{ 3c20c2 }{1.65} & \textcolor[HTML]{ 3d20c1 }{1.66} \\
-            3                    &                                  &                                  & \textcolor[HTML]{ 6c2092 }{2.18} & \textcolor[HTML]{ 60209e }{2.05} & \textcolor[HTML]{ 6b2093 }{2.16} & \textcolor[HTML]{ 6a2094 }{2.15} & \textcolor[HTML]{ 6c2092 }{2.18} & \textcolor[HTML]{ 692095 }{2.15} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 70208e }{2.21} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 70208e }{2.22} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 71208d }{2.22} \\
-            4                    &                                  &                                  &                                  & \textcolor[HTML]{ 6d2091 }{2.18} & \textcolor[HTML]{ 6c2092 }{2.17} & \textcolor[HTML]{ 692095 }{2.15} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 6d2091 }{2.19} & \textcolor[HTML]{ 71208d }{2.23} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 73208b }{2.25} & \textcolor[HTML]{ 71208d }{2.23} & \textcolor[HTML]{ 752089 }{2.27} & \textcolor[HTML]{ 73208b }{2.25} \\
-            5                    &                                  &                                  &                                  &                                  & \textcolor[HTML]{ b2204c }{2.94} & \textcolor[HTML]{ 972067 }{2.64} & \textcolor[HTML]{ a2205c }{2.76} & \textcolor[HTML]{ 9c2062 }{2.69} & \textcolor[HTML]{ a72057 }{2.81} & \textcolor[HTML]{ a92055 }{2.84} & \textcolor[HTML]{ af204f }{2.89} & \textcolor[HTML]{ a3205b }{2.77} & \textcolor[HTML]{ af204f }{2.90} & \textcolor[HTML]{ a92055 }{2.83} \\
-            6                    &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 9f205f }{2.72} & \textcolor[HTML]{ 992065 }{2.66} & \textcolor[HTML]{ 982066 }{2.65} & \textcolor[HTML]{ 9e2060 }{2.71} & \textcolor[HTML]{ 9c2062 }{2.69} & \textcolor[HTML]{ 9e2060 }{2.72} & \textcolor[HTML]{ 9e2060 }{2.71} & \textcolor[HTML]{ 9f205f }{2.72} & \textcolor[HTML]{ 9d2061 }{2.70} \\
-            7                    &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ bb2043 }{3.03} & \textcolor[HTML]{ a1205d }{2.75} & \textcolor[HTML]{ af204f }{2.89} & \textcolor[HTML]{ ac2052 }{2.87} & \textcolor[HTML]{ b62048 }{2.97} & \textcolor[HTML]{ a92055 }{2.83} & \textcolor[HTML]{ b52049 }{2.97} & \textcolor[HTML]{ b1204d }{2.92} \\
-            8                    &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ a92055 }{2.84} & \textcolor[HTML]{ a2205c }{2.76} & \textcolor[HTML]{ a4205a }{2.78} & \textcolor[HTML]{ a82056 }{2.82} & \textcolor[HTML]{ a2205c }{2.76} & \textcolor[HTML]{ a82056 }{2.82} & \textcolor[HTML]{ a62058 }{2.80} \\
-            9                    &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ e3201b }{3.46} & \textcolor[HTML]{ cf202f }{3.24} & \textcolor[HTML]{ d72027 }{3.33} & \textcolor[HTML]{ d0202e }{3.25} & \textcolor[HTML]{ d72027 }{3.33} & \textcolor[HTML]{ d1202d }{3.26} \\
-            10                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ df201f }{3.42} & \textcolor[HTML]{ d52029 }{3.31} & \textcolor[HTML]{ cd2031 }{3.22} & \textcolor[HTML]{ d52029 }{3.31} & \textcolor[HTML]{ d2202c }{3.28} \\
-            11                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ fe2000 }{3.75} & \textcolor[HTML]{ d0202e }{3.26} & \textcolor[HTML]{ e62018 }{3.50} & \textcolor[HTML]{ db2023 }{3.38} \\
-            12                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ d62028 }{3.32} & \textcolor[HTML]{ d0202e }{3.26} & \textcolor[HTML]{ cf202f }{3.24} \\
-            13                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ ff2000 }{3.76} & \textcolor[HTML]{ db2023 }{3.38} \\
-            14                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ e72017 }{3.51} \\
-        \end{tabular}
+    \begin{tabular}{c|cccccccccccccc}
+        $k_1 \backslash k_2$ & 1                                & 2                                & 3                                & 4                                & 5                                & 6                                & 7                                & 8                                & 9                                & 10                               & 11                               & 12                               & 13                               & 14                               \\
+        \hline
+        1                    & \textcolor[HTML]{ 0020ff }{1.00} & \textcolor[HTML]{ 0320fb }{1.03} & \textcolor[HTML]{ 0720f7 }{1.08} & \textcolor[HTML]{ 0720f7 }{1.08} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} & \textcolor[HTML]{ 0820f6 }{1.09} \\
+        2                    &                                  & \textcolor[HTML]{ 3220cc }{1.55} & \textcolor[HTML]{ 3320cb }{1.55} & \textcolor[HTML]{ 3420ca }{1.57} & \textcolor[HTML]{ 3920c5 }{1.63} & \textcolor[HTML]{ 3920c5 }{1.62} & \textcolor[HTML]{ 3a20c4 }{1.63} & \textcolor[HTML]{ 3920c5 }{1.63} & \textcolor[HTML]{ 3b20c3 }{1.65} & \textcolor[HTML]{ 3c20c2 }{1.65} & \textcolor[HTML]{ 3c20c2 }{1.65} & \textcolor[HTML]{ 3b20c3 }{1.65} & \textcolor[HTML]{ 3c20c2 }{1.65} & \textcolor[HTML]{ 3d20c1 }{1.66} \\
+        3                    &                                  &                                  & \textcolor[HTML]{ 6c2092 }{2.18} & \textcolor[HTML]{ 60209e }{2.05} & \textcolor[HTML]{ 6b2093 }{2.16} & \textcolor[HTML]{ 6a2094 }{2.15} & \textcolor[HTML]{ 6c2092 }{2.18} & \textcolor[HTML]{ 692095 }{2.15} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 70208e }{2.21} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 70208e }{2.22} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 71208d }{2.22} \\
+        4                    &                                  &                                  &                                  & \textcolor[HTML]{ 6d2091 }{2.18} & \textcolor[HTML]{ 6c2092 }{2.17} & \textcolor[HTML]{ 692095 }{2.15} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 6d2091 }{2.19} & \textcolor[HTML]{ 71208d }{2.23} & \textcolor[HTML]{ 72208c }{2.24} & \textcolor[HTML]{ 73208b }{2.25} & \textcolor[HTML]{ 71208d }{2.23} & \textcolor[HTML]{ 752089 }{2.27} & \textcolor[HTML]{ 73208b }{2.25} \\
+        5                    &                                  &                                  &                                  &                                  & \textcolor[HTML]{ b2204c }{2.94} & \textcolor[HTML]{ 972067 }{2.64} & \textcolor[HTML]{ a2205c }{2.76} & \textcolor[HTML]{ 9c2062 }{2.69} & \textcolor[HTML]{ a72057 }{2.81} & \textcolor[HTML]{ a92055 }{2.84} & \textcolor[HTML]{ af204f }{2.89} & \textcolor[HTML]{ a3205b }{2.77} & \textcolor[HTML]{ af204f }{2.90} & \textcolor[HTML]{ a92055 }{2.83} \\
+        6                    &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 9f205f }{2.72} & \textcolor[HTML]{ 992065 }{2.66} & \textcolor[HTML]{ 982066 }{2.65} & \textcolor[HTML]{ 9e2060 }{2.71} & \textcolor[HTML]{ 9c2062 }{2.69} & \textcolor[HTML]{ 9e2060 }{2.72} & \textcolor[HTML]{ 9e2060 }{2.71} & \textcolor[HTML]{ 9f205f }{2.72} & \textcolor[HTML]{ 9d2061 }{2.70} \\
+        7                    &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ bb2043 }{3.03} & \textcolor[HTML]{ a1205d }{2.75} & \textcolor[HTML]{ af204f }{2.89} & \textcolor[HTML]{ ac2052 }{2.87} & \textcolor[HTML]{ b62048 }{2.97} & \textcolor[HTML]{ a92055 }{2.83} & \textcolor[HTML]{ b52049 }{2.97} & \textcolor[HTML]{ b1204d }{2.92} \\
+        8                    &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ a92055 }{2.84} & \textcolor[HTML]{ a2205c }{2.76} & \textcolor[HTML]{ a4205a }{2.78} & \textcolor[HTML]{ a82056 }{2.82} & \textcolor[HTML]{ a2205c }{2.76} & \textcolor[HTML]{ a82056 }{2.82} & \textcolor[HTML]{ a62058 }{2.80} \\
+        9                    &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ e3201b }{3.46} & \textcolor[HTML]{ cf202f }{3.24} & \textcolor[HTML]{ d72027 }{3.33} & \textcolor[HTML]{ d0202e }{3.25} & \textcolor[HTML]{ d72027 }{3.33} & \textcolor[HTML]{ d1202d }{3.26} \\
+        10                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ df201f }{3.42} & \textcolor[HTML]{ d52029 }{3.31} & \textcolor[HTML]{ cd2031 }{3.22} & \textcolor[HTML]{ d52029 }{3.31} & \textcolor[HTML]{ d2202c }{3.28} \\
+        11                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ fe2000 }{3.75} & \textcolor[HTML]{ d0202e }{3.26} & \textcolor[HTML]{ e62018 }{3.50} & \textcolor[HTML]{ db2023 }{3.38} \\
+        12                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ d62028 }{3.32} & \textcolor[HTML]{ d0202e }{3.26} & \textcolor[HTML]{ cf202f }{3.24} \\
+        13                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ ff2000 }{3.76} & \textcolor[HTML]{ db2023 }{3.38} \\
+        14                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ e72017 }{3.51} \\
+    \end{tabular}
 
-        \vspace{0.2em}
+    \vspace{0.2em}
 
-        \begin{tabular}{c|cccccccccccccc}
-            $k_1 \backslash k_2$ & 1                                & 2                                & 3                                & 4                                & 5                                & 6                                & 7                                & 8                                & 9                                & 10                               & 11                               & 12                               & 13                               & 14                               \\
-            \hline
-            1                    & \textcolor[HTML]{ 0020ff }{1.00} & \textcolor[HTML]{ 0420fa }{1.06} & \textcolor[HTML]{ 0820f6 }{1.12} & \textcolor[HTML]{ 0920f5 }{1.12} & \textcolor[HTML]{ 0c20f2 }{1.17} & \textcolor[HTML]{ 0920f5 }{1.13} & \textcolor[HTML]{ 0e20f0 }{1.19} & \textcolor[HTML]{ 0c20f2 }{1.16} & \textcolor[HTML]{ 0d20f1 }{1.18} & \textcolor[HTML]{ 0c20f2 }{1.17} & \textcolor[HTML]{ 1020ee }{1.22} & \textcolor[HTML]{ 0b20f3 }{1.15} & \textcolor[HTML]{ 1020ee }{1.22} & \textcolor[HTML]{ 0e20f0 }{1.19} \\
-            2                    &                                  & \textcolor[HTML]{ 2b20d3 }{1.58} & \textcolor[HTML]{ 2620d8 }{1.51} & \textcolor[HTML]{ 2720d7 }{1.53} & \textcolor[HTML]{ 3120cd }{1.66} & \textcolor[HTML]{ 2820d6 }{1.55} & \textcolor[HTML]{ 3620c8 }{1.73} & \textcolor[HTML]{ 2f20cf }{1.64} & \textcolor[HTML]{ 3420ca }{1.70} & \textcolor[HTML]{ 3120cd }{1.66} & \textcolor[HTML]{ 3c20c2 }{1.81} & \textcolor[HTML]{ 2d20d1 }{1.61} & \textcolor[HTML]{ 3d20c1 }{1.83} & \textcolor[HTML]{ 3520c9 }{1.71} \\
-            3                    &                                  &                                  & \textcolor[HTML]{ 5220ac }{2.11} & \textcolor[HTML]{ 3a20c4 }{1.78} & \textcolor[HTML]{ 4b20b3 }{2.01} & \textcolor[HTML]{ 3c20c2 }{1.81} & \textcolor[HTML]{ 5420aa }{2.14} & \textcolor[HTML]{ 4820b6 }{1.97} & \textcolor[HTML]{ 5020ae }{2.07} & \textcolor[HTML]{ 4a20b4 }{2.00} & \textcolor[HTML]{ 5e20a0 }{2.27} & \textcolor[HTML]{ 4420ba }{1.92} & \textcolor[HTML]{ 61209d }{2.31} & \textcolor[HTML]{ 5220ac }{2.10} \\
-            4                    &                                  &                                  &                                  & \textcolor[HTML]{ 5a20a4 }{2.22} & \textcolor[HTML]{ 4e20b0 }{2.05} & \textcolor[HTML]{ 3f20bf }{1.85} & \textcolor[HTML]{ 5920a5 }{2.19} & \textcolor[HTML]{ 4b20b3 }{2.02} & \textcolor[HTML]{ 5420aa }{2.12} & \textcolor[HTML]{ 4d20b1 }{2.04} & \textcolor[HTML]{ 63209b }{2.34} & \textcolor[HTML]{ 4720b7 }{1.96} & \textcolor[HTML]{ 672097 }{2.38} & \textcolor[HTML]{ 5620a8 }{2.15} \\
-            5                    &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 8c2072 }{2.88} & \textcolor[HTML]{ 5220ac }{2.10} & \textcolor[HTML]{ 782086 }{2.61} & \textcolor[HTML]{ 64209a }{2.35} & \textcolor[HTML]{ 71208d }{2.51} & \textcolor[HTML]{ 672097 }{2.38} & \textcolor[HTML]{ 892075 }{2.83} & \textcolor[HTML]{ 5e20a0 }{2.27} & \textcolor[HTML]{ 8e2070 }{2.90} & \textcolor[HTML]{ 73208b }{2.55} \\
-            6                    &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 63209b }{2.33} & \textcolor[HTML]{ 5d20a1 }{2.25} & \textcolor[HTML]{ 4f20af }{2.06} & \textcolor[HTML]{ 5820a6 }{2.18} & \textcolor[HTML]{ 5120ad }{2.09} & \textcolor[HTML]{ 692095 }{2.41} & \textcolor[HTML]{ 4b20b3 }{2.00} & \textcolor[HTML]{ 6c2092 }{2.46} & \textcolor[HTML]{ 5a20a4 }{2.21} \\
-            7                    &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ b4204a }{3.41} & \textcolor[HTML]{ 74208a }{2.56} & \textcolor[HTML]{ 83207b }{2.76} & \textcolor[HTML]{ 772087 }{2.60} & \textcolor[HTML]{ a1205d }{3.16} & \textcolor[HTML]{ 6d2091 }{2.46} & \textcolor[HTML]{ a82056 }{3.26} & \textcolor[HTML]{ 862078 }{2.81} \\
-            8                    &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 8d2071 }{2.90} & \textcolor[HTML]{ 6d2091 }{2.47} & \textcolor[HTML]{ 64209a }{2.34} & \textcolor[HTML]{ 852079 }{2.79} & \textcolor[HTML]{ 5c20a2 }{2.23} & \textcolor[HTML]{ 8a2074 }{2.86} & \textcolor[HTML]{ 70208e }{2.51} \\
-            9                    &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ ac2052 }{3.31} & \textcolor[HTML]{ 70208e }{2.51} & \textcolor[HTML]{ 982066 }{3.04} & \textcolor[HTML]{ 672097 }{2.38} & \textcolor[HTML]{ 9f205f }{3.13} & \textcolor[HTML]{ 7f207f }{2.70} \\
-            10                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 93206b }{2.97} & \textcolor[HTML]{ 892075 }{2.83} & \textcolor[HTML]{ 5e20a0 }{2.26} & \textcolor[HTML]{ 8e2070 }{2.91} & \textcolor[HTML]{ 73208b }{2.55} \\
-            11                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ ea2014 }{4.14} & \textcolor[HTML]{ 7d2081 }{2.68} & \textcolor[HTML]{ c72037 }{3.67} & \textcolor[HTML]{ 9c2062 }{3.09} \\
-            12                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 862078 }{2.79} & \textcolor[HTML]{ 82207c }{2.74} & \textcolor[HTML]{ 692095 }{2.42} \\
-            13                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ ff2000 }{4.41} & \textcolor[HTML]{ a3205b }{3.18} \\
-            14                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ b4204a }{3.41} \\
-        \end{tabular}
+    \begin{tabular}{c|cccccccccccccc}
+        $k_1 \backslash k_2$ & 1                                & 2                                & 3                                & 4                                & 5                                & 6                                & 7                                & 8                                & 9                                & 10                               & 11                               & 12                               & 13                               & 14                               \\
+        \hline
+        1                    & \textcolor[HTML]{ 0020ff }{1.00} & \textcolor[HTML]{ 0420fa }{1.06} & \textcolor[HTML]{ 0820f6 }{1.12} & \textcolor[HTML]{ 0920f5 }{1.12} & \textcolor[HTML]{ 0c20f2 }{1.17} & \textcolor[HTML]{ 0920f5 }{1.13} & \textcolor[HTML]{ 0e20f0 }{1.19} & \textcolor[HTML]{ 0c20f2 }{1.16} & \textcolor[HTML]{ 0d20f1 }{1.18} & \textcolor[HTML]{ 0c20f2 }{1.17} & \textcolor[HTML]{ 1020ee }{1.22} & \textcolor[HTML]{ 0b20f3 }{1.15} & \textcolor[HTML]{ 1020ee }{1.22} & \textcolor[HTML]{ 0e20f0 }{1.19} \\
+        2                    &                                  & \textcolor[HTML]{ 2b20d3 }{1.58} & \textcolor[HTML]{ 2620d8 }{1.51} & \textcolor[HTML]{ 2720d7 }{1.53} & \textcolor[HTML]{ 3120cd }{1.66} & \textcolor[HTML]{ 2820d6 }{1.55} & \textcolor[HTML]{ 3620c8 }{1.73} & \textcolor[HTML]{ 2f20cf }{1.64} & \textcolor[HTML]{ 3420ca }{1.70} & \textcolor[HTML]{ 3120cd }{1.66} & \textcolor[HTML]{ 3c20c2 }{1.81} & \textcolor[HTML]{ 2d20d1 }{1.61} & \textcolor[HTML]{ 3d20c1 }{1.83} & \textcolor[HTML]{ 3520c9 }{1.71} \\
+        3                    &                                  &                                  & \textcolor[HTML]{ 5220ac }{2.11} & \textcolor[HTML]{ 3a20c4 }{1.78} & \textcolor[HTML]{ 4b20b3 }{2.01} & \textcolor[HTML]{ 3c20c2 }{1.81} & \textcolor[HTML]{ 5420aa }{2.14} & \textcolor[HTML]{ 4820b6 }{1.97} & \textcolor[HTML]{ 5020ae }{2.07} & \textcolor[HTML]{ 4a20b4 }{2.00} & \textcolor[HTML]{ 5e20a0 }{2.27} & \textcolor[HTML]{ 4420ba }{1.92} & \textcolor[HTML]{ 61209d }{2.31} & \textcolor[HTML]{ 5220ac }{2.10} \\
+        4                    &                                  &                                  &                                  & \textcolor[HTML]{ 5a20a4 }{2.22} & \textcolor[HTML]{ 4e20b0 }{2.05} & \textcolor[HTML]{ 3f20bf }{1.85} & \textcolor[HTML]{ 5920a5 }{2.19} & \textcolor[HTML]{ 4b20b3 }{2.02} & \textcolor[HTML]{ 5420aa }{2.12} & \textcolor[HTML]{ 4d20b1 }{2.04} & \textcolor[HTML]{ 63209b }{2.34} & \textcolor[HTML]{ 4720b7 }{1.96} & \textcolor[HTML]{ 672097 }{2.38} & \textcolor[HTML]{ 5620a8 }{2.15} \\
+        5                    &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 8c2072 }{2.88} & \textcolor[HTML]{ 5220ac }{2.10} & \textcolor[HTML]{ 782086 }{2.61} & \textcolor[HTML]{ 64209a }{2.35} & \textcolor[HTML]{ 71208d }{2.51} & \textcolor[HTML]{ 672097 }{2.38} & \textcolor[HTML]{ 892075 }{2.83} & \textcolor[HTML]{ 5e20a0 }{2.27} & \textcolor[HTML]{ 8e2070 }{2.90} & \textcolor[HTML]{ 73208b }{2.55} \\
+        6                    &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 63209b }{2.33} & \textcolor[HTML]{ 5d20a1 }{2.25} & \textcolor[HTML]{ 4f20af }{2.06} & \textcolor[HTML]{ 5820a6 }{2.18} & \textcolor[HTML]{ 5120ad }{2.09} & \textcolor[HTML]{ 692095 }{2.41} & \textcolor[HTML]{ 4b20b3 }{2.00} & \textcolor[HTML]{ 6c2092 }{2.46} & \textcolor[HTML]{ 5a20a4 }{2.21} \\
+        7                    &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ b4204a }{3.41} & \textcolor[HTML]{ 74208a }{2.56} & \textcolor[HTML]{ 83207b }{2.76} & \textcolor[HTML]{ 772087 }{2.60} & \textcolor[HTML]{ a1205d }{3.16} & \textcolor[HTML]{ 6d2091 }{2.46} & \textcolor[HTML]{ a82056 }{3.26} & \textcolor[HTML]{ 862078 }{2.81} \\
+        8                    &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 8d2071 }{2.90} & \textcolor[HTML]{ 6d2091 }{2.47} & \textcolor[HTML]{ 64209a }{2.34} & \textcolor[HTML]{ 852079 }{2.79} & \textcolor[HTML]{ 5c20a2 }{2.23} & \textcolor[HTML]{ 8a2074 }{2.86} & \textcolor[HTML]{ 70208e }{2.51} \\
+        9                    &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ ac2052 }{3.31} & \textcolor[HTML]{ 70208e }{2.51} & \textcolor[HTML]{ 982066 }{3.04} & \textcolor[HTML]{ 672097 }{2.38} & \textcolor[HTML]{ 9f205f }{3.13} & \textcolor[HTML]{ 7f207f }{2.70} \\
+        10                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 93206b }{2.97} & \textcolor[HTML]{ 892075 }{2.83} & \textcolor[HTML]{ 5e20a0 }{2.26} & \textcolor[HTML]{ 8e2070 }{2.91} & \textcolor[HTML]{ 73208b }{2.55} \\
+        11                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ ea2014 }{4.14} & \textcolor[HTML]{ 7d2081 }{2.68} & \textcolor[HTML]{ c72037 }{3.67} & \textcolor[HTML]{ 9c2062 }{3.09} \\
+        12                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ 862078 }{2.79} & \textcolor[HTML]{ 82207c }{2.74} & \textcolor[HTML]{ 692095 }{2.42} \\
+        13                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ ff2000 }{4.41} & \textcolor[HTML]{ a3205b }{3.18} \\
+        14                   &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  &                                  & \textcolor[HTML]{ b4204a }{3.41} \\
+    \end{tabular}
 
-        \caption{Die durchschnittliche Laufzeit von Pollards Rho-Algorithmus (oben) und berechnete Werte für die erwartete Laufzeit (unten), für $M = 2$ und $1 \le k_1 \le k_2 \le 14$. }
-        \label{fig:measurements-m2}
-    \end{figure}
+    \caption{Die durchschnittliche Laufzeit von Pollards Rho-Algorithmus (oben) und berechnete Werte für die erwartete Laufzeit (unten), für $M = 2$ und $1 \le k_1 \le k_2 \le 14$. }
+    \label{fig:measurements-m2}
+\end{figure}
 
-    Um zu demonstrieren, dass Formel (\ref{expectation-tmin}), Satz \ref{theorem:optimal-k-m1} und Satz \ref{theorem:optimal-k-m2} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreiben, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Wie zu Beginn gesagt, wurde für die Berechnungen angenommen, dass $n$ genau einen kleinsten Primfaktor $p$ hat und die anderen Primfaktoren deutlich größer sind, sodass sie zur Analyse der Laufzeit ignoriert werden können. Daher ist es natürlich nur sinnvoll, die Berechnungen mit Messergebnissen für Zahlen dieser Art zu vergleichen. Als Testzahlen wurden 62-Bit Semiprimzahlen mit einem 21-Bit und einem 41-Bit Faktor verwendet. Eine Semiprimzahl ist das Produkt zweier Primzahlen. Für jede Parameterwahl wurden $2^{20}$ zufällige Semiprimzahlen gewählt und die durchschnittliche Laufzeit berechnet. Die Ergebnisse sind in Abbildung \ref{fig:measurements-m1} und \ref{fig:measurements-m2} dargestellt. Die berechneten und gemessenen Werte wurden jeweils normalisiert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 ist. Bei den Messungen wurden Ausreißer entfernt, die für alle Parameterwerte jeweils weniger als 0.01\% der Proben ausmachten.
+Um zu demonstrieren, dass Formel (\ref{expectation-tmin}), Satz \ref{theorem:optimal-k-m1} und Satz \ref{theorem:optimal-k-m2} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreiben, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Wie zu Beginn gesagt, wurde für die Berechnungen angenommen, dass $n$ genau einen kleinsten Primfaktor $p$ hat und die anderen Primfaktoren deutlich größer sind, sodass sie zur Analyse der Laufzeit ignoriert werden können. Daher ist es natürlich nur sinnvoll, die Berechnungen mit Messergebnissen für Zahlen dieser Art zu vergleichen. Als Testzahlen wurden 62-Bit Semiprimzahlen mit einem 21-Bit und einem 41-Bit Faktor verwendet. Eine Semiprimzahl ist das Produkt zweier Primzahlen. Für jede Parameterwahl wurden $2^{20}$ zufällige Semiprimzahlen gewählt und die durchschnittliche Laufzeit berechnet. Die Ergebnisse sind in Abbildung \ref{fig:measurements-m1} und \ref{fig:measurements-m2} dargestellt. Die berechneten und gemessenen Werte wurden jeweils normalisiert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 ist. Bei den Messungen wurden Ausreißer entfernt, die für alle Parameterwerte jeweils weniger als 0.01\% der Proben ausmachten.
 
-    \paragraph{$\bm{M = 1}$.} Die durchschnittliche Laufzeit für $1 \le k \le 48$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt. Die Laufzeit wird gut von (\ref{expectation-tmin}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert.
+\emph{Eine Maschine.} Die durchschnittliche Laufzeit für $1 \le k \le 48$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt. Die Laufzeit wird gut von (\ref{expectation-tmin}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert.
 
-    \paragraph{$\bm{M = 2}$.} Die durchschnittliche Laufzeit und berechnete Werte für jedes Paar $1 \le k_1 \le k_2 \le 14$ sind in Abbildung \ref{fig:measurements-m2} dargestellt. Zur Berechnung der erwarteten Laufzeit wurde Formel (\ref{lkkp}) verwendet, wenn $k_1 = k_2$, und Formel (\ref{expectation-tmin}), wenn $k_1 \ne k_2$. Auch hier wird das grundsätzliche Verhalten der Laufzeit gut durch (\ref{expectation-tmin}) und (\ref{lkkp}) beschreiben. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist. Auffällig ist, dass die Laufzeitunterschiede zwischen weniger ausgeprägt sind als von den Formeln vorhergesagt. Das liegt wahrscheinlich daran, dass neben der Berechnung von $x^{2k}$ auch andere Berechnungen im Rho-Algorithmus durchgeführt werden, deren Dauer unabhängig von $k$ ist (z.B. das Bilden des $\gcd$). Diese werden aber in den Formeln nicht berücksichtigt.
+\emph{Zwei Maschinen.} Die durchschnittliche Laufzeit und berechnete Werte für jedes Paar $1 \le k_1 \le k_2 \le 14$ sind in Abbildung \ref{fig:measurements-m2} dargestellt. Zur Berechnung der erwarteten Laufzeit wurde Formel (\ref{lkkp}) verwendet, wenn $k_1 = k_2$, und Formel (\ref{expectation-tmin}), wenn $k_1 \ne k_2$. Auch hier wird das grundsätzliche Verhalten der Laufzeit gut durch (\ref{expectation-tmin}) und (\ref{lkkp}) beschreiben. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist. Auffällig ist, dass die Laufzeitunterschiede zwischen weniger ausgeprägt sind als von den Formeln vorhergesagt. Das liegt wahrscheinlich daran, dass neben der Berechnung von $x^{2k}$ auch andere Berechnungen im Rho-Algorithmus durchgeführt werden, deren Dauer unabhängig von $k$ ist (z.B. das Bilden des $\gcd$). Diese werden aber in den Formeln nicht berücksichtigt.
 
-    \begin{figure}
+\begin{figure}
 
-    \end{figure}
+\end{figure}
 
-    \section{Fazit}
+\section{Fazit}
 
-    Zur Beantwortung der Frage nach der optimalen Wahl des Parameters $k$ konnten in dieser Arbeit einige Teilergebnisse erzielt werden. Es wurde der Fall betrachtet, dass die zu faktorisierende Zahl $n$ nur einen Primfaktor kleinster Größenordnung hat, sodass der Einfluss anderer Primfaktoren auf die Laufzeit vernachlässigt werden kann. In diesem Fall konnte unter üblichen Annahmen über Pollards Rho-Algorithmus gezeigt werden, dass $k = 1$ für $M = 1$ optimal ist. Im Fall $M = 2$ wurde gezeigt, dass $k_1 = k_2 = 1$ besser ist als jedes Paar an Primzahlen und jedes Paar mit $k_1 = k_2$. Laufzeitmessungen bestätigen diese Aussagen und zeigen darüber hinaus, dass die hergeleiteten Formeln die Laufzeit des Algorithmus gut beschreiben. Unter Anbetracht der Messergebnisse für $M = 2$ wird vermutet, dass $k_1 = k_2 = 1$ optimal ist. Für eine vollständige Beantwortung der Frage sind allerdings noch einige Schritte nötig. Beispielsweise ist es für $M \ge 3$ möglich, dass manche Maschinen abhängig sind und manche unabhängig (wenn z. B. $k_1 = k_2 \ne k_3$). Diese Situation kann mit den hier verwendeten Methoden noch nicht behandelt werden.
+Zur Beantwortung der Frage nach der optimalen Wahl des Parameters $k$ konnten in dieser Arbeit einige Teilergebnisse erzielt werden. Es wurde der Fall betrachtet, dass die zu faktorisierende Zahl $n$ nur einen Primfaktor kleinster Größenordnung hat, sodass der Einfluss anderer Primfaktoren auf die Laufzeit vernachlässigt werden kann. In diesem Fall konnte unter üblichen Annahmen über Pollards Rho-Algorithmus gezeigt werden, dass $k = 1$ für $M = 1$ optimal ist. Im Fall $M = 2$ wurde gezeigt, dass $k_1 = k_2 = 1$ besser ist als jedes Paar an Primzahlen und jedes Paar mit $k_1 = k_2$. Laufzeitmessungen bestätigen diese Aussagen und zeigen darüber hinaus, dass die hergeleiteten Formeln die Laufzeit des Algorithmus gut beschreiben. Unter Anbetracht der Messergebnisse für $M = 2$ wird vermutet, dass $k_1 = k_2 = 1$ optimal ist. Für eine vollständige Beantwortung der Frage sind allerdings noch einige Schritte nötig. Beispielsweise ist es für $M \ge 3$ möglich, dass manche Maschinen abhängig sind und manche unabhängig (wenn z. B. $k_1 = k_2 \ne k_3$). Diese Situation kann mit den hier verwendeten Methoden noch nicht behandelt werden.
 
 \newpage
 \printbibliography
