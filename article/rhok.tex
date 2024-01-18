@@ -15,6 +15,7 @@
 \usepackage{sectsty}
 \usepackage[onehalfspacing]{setspace}
 \usepackage[inkscapeformat=pdf]{svg}
+\usepackage{pspicture}
 
 \title{Parametrisierung von Pollards Rho-Methode}
 \author{Finn Rudolph}
@@ -338,8 +339,10 @@ wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehend
 
     \begin{figure}
         \begin{tabular}{ccc}
-            \includesvg[width=145pt]{pics/alpha} & \includesvg[width=145pt]{pics/beta} & \includesvg[width=145pt]{pics/gamma} \\
-            ($\alpha$)                           & ($\beta$)                           & ($\gamma$)
+            \def\svgwidth{145pt} \input{alpha.pdf_tex} &
+            \def\svgwidth{145pt} \input{beta.pdf_tex}  &
+            \def\svgwidth{145pt} \input{gamma.pdf_tex}                          \\
+            ($\alpha$)                                 & ($\beta$) & ($\gamma$)
         \end{tabular}
         \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Linien stellen keine einzelnen Kanten dar, sondern eine Folge an Kanten. Beispielsweise steht $r$ in ($\alpha$) für den Zyklus in der Zusammenhangskomponente von $a$.}
         \label{fig:psi-construction}

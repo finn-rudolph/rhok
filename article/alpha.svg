@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="400"
+   height="400"
+   viewBox="0 0 400 400"
+   fill="none"
+   version="1.1"
+   id="svg16"
+   sodipodi:docname="alpha.svg"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview16"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.2478622"
+     inkscape:cx="153.46246"
+     inkscape:cy="215.56867"
+     inkscape:window-width="1440"
+     inkscape:window-height="900"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg16" />
+  <defs
+     id="defs16">
+    <rect
+       x="327.63534"
+       y="76.364977"
+       width="29.732099"
+       height="27.653544"
+       id="rect5" />
+    <rect
+       x="45.612383"
+       y="309.01286"
+       width="29.775924"
+       height="32.39916"
+       id="rect2" />
+    <rect
+       x="144.17782"
+       y="254.71061"
+       width="33.172357"
+       height="32.13621"
+       id="rect20" />
+    <rect
+       x="309.21632"
+       y="188.4692"
+       width="28.652126"
+       height="31.028064"
+       id="rect19" />
+    <rect
+       x="58.027364"
+       y="221.13444"
+       width="31.845087"
+       height="30.051394"
+       id="rect18" />
+    <rect
+       x="135.79787"
+       y="73.654089"
+       width="46.39184"
+       height="73.516353"
+       id="rect17" />
+    <rect
+       x="120.65009"
+       y="49.694363"
+       width="35.451254"
+       height="25.925588"
+       id="rect16" />
+  </defs>
+  <rect
+     width="400"
+     height="400"
+     fill="white"
+     id="rect1" />
+  <path
+     d="M312.024 309.5C211.024 409.5 131.524 351.5 187.524 280C242.741 209.5 297.524 273.5 312.024 309.5Z"
+     stroke="black"
+     id="path1" />
+  <path
+     d="M358.024 112.5C357.19 159.5 346.824 264.8 312.024 310"
+     stroke="black"
+     id="path2" />
+  <path
+     d="M27.5 310.597C30.1667 250.43 51 135 73.5 92"
+     stroke="black"
+     id="path3" />
+  <path
+     d="M73.5 92.0966C121 -8.40324 252 7.59683 243.5 105.597C232.282 234.939 100 174.597 73.5 92.0966Z"
+     stroke="black"
+     id="path4" />
+  <circle
+     cx="27.6765"
+     cy="312.273"
+     r="3.67647"
+     fill="black"
+     id="circle4" />
+  <circle
+     cx="358.2"
+     cy="113.676"
+     r="3.67647"
+     fill="black"
+     id="circle5" />
+  <circle
+     cx="73.6765"
+     cy="92.6765"
+     r="3.67647"
+     fill="black"
+     id="circle6" />
+  <circle
+     cx="312.676"
+     cy="308.676"
+     r="3.67647"
+     fill="black"
+     id="circle7" />
+  <path
+     d="M356.381 197.518L348.033 210.629L343.708 195.962"
+     stroke="black"
+     id="path13" />
+  <path
+     d="M170.226 295.772L182.718 286.524L181.5 301.767"
+     stroke="black"
+     id="path14" />
+  <path
+     d="M33.3249 209.86L42.5674 197.363L45.8588 212.296"
+     stroke="black"
+     id="path15" />
+  <path
+     d="M248.904 114.046L240.328 127.009L236.26 112.269"
+     stroke="black"
+     id="path16" />
+  <text
+     xml:space="preserve"
+     id="text16"
+     style="white-space:pre;shape-inside:url(#rect16);display:inline;fill:#000000"
+     transform="translate(31.52537,-0.0964491)"><tspan
+       x="120.65039"
+       y="60.372643"
+       id="tspan1">$t$</tspan></text>
+  <text
+     xml:space="preserve"
+     id="text17"
+     style="white-space:pre;shape-inside:url(#rect17);display:inline;fill:#000000" />
+  <text
+     xml:space="preserve"
+     id="text18"
+     style="white-space:pre;shape-inside:url(#rect18);display:inline;fill:#000000"
+     transform="translate(5.8975861,-6.3389659)"><tspan
+       x="58.027344"
+       y="231.8121"
+       id="tspan2">$u$</tspan></text>
+  <text
+     xml:space="preserve"
+     id="text19"
+     style="white-space:pre;shape-inside:url(#rect19);display:inline;fill:#000000"><tspan
+       x="309.2168"
+       y="199.14608"
+       id="tspan3">$s$</tspan></text>
+  <text
+     xml:space="preserve"
+     id="text20"
+     style="white-space:pre;shape-inside:url(#rect20);display:inline;fill:#000000"><tspan
+       x="144.17773"
+       y="265.38827"
+       id="tspan4">$r$</tspan></text>
+  <text
+     xml:space="preserve"
+     id="text1"
+     style="white-space:pre;shape-inside:url(#rect2);display:inline;fill:#000000"
+     transform="translate(1.3178789,15.66742)"><tspan
+       x="45.613281"
+       y="319.691"
+       id="tspan5">$b$</tspan></text>
+  <text
+     xml:space="preserve"
+     id="text5"
+     style="white-space:pre;shape-inside:url(#rect5);display:inline;fill:#000000"><tspan
+       x="327.63477"
+       y="87.042565"
+       id="tspan6">$a$</tspan></text>
+</svg>
