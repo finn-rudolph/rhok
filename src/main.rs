@@ -39,39 +39,52 @@ fn iterate_k_cartesian_product(
     j: usize,
 ) {
     if j == machines {
-        for k_j in k.iter() {
-            print!("{:<5}", k_j);
-        }
+        // for k_j in k.iter() {
+        //     print!("{:<5}", k_j);
+        // }
 
-        println!(
-            " | {}",
-            match source {
-                Source::Real => {
-                    let total_time: Duration = (0..SAMPLES)
-                        .into_par_iter()
-                        .map(|_| {
-                            let mut rng = thread_rng();
-                            let n = random_prime(27, &mut rng)
-                                * random_prime(31, &mut rng);
+        let val = match source {
+            Source::Real => {
+                let mut samples: Vec<Duration> = (0..SAMPLES)
+                    .into_par_iter()
+                    .map(|_| {
+                        let mut rng = thread_rng();
+                        let n = random_prime(21, &mut rng)
+                            * random_prime(41, &mut rng);
 
-                            let mut min_time = Duration::from_secs(42);
-                            for k_j in k.iter() {
-                                let start_time = Instant::now();
-                                pollard_rho::pollard_rho(n, *k_j, &mut rng);
-                                min_time = min_time.min(start_time.elapsed());
+                        let mut min_time = Duration::from_secs(42);
+                        for k_j in k.iter() {
+                            let start_time = Instant::now();
+                            if pollard_rho::pollard_rho(n, *k_j, &mut rng)
+                                == u64::MAX
+                            {
+                                return Duration::ZERO;
                             }
+                            min_time = min_time.min(start_time.elapsed());
+                        }
 
-                            min_time
-                        })
-                        .filter(|x| *x != Duration::ZERO)
-                        .sum();
-
-                    total_time.as_nanos() as f64 / SAMPLES as f64
+                        min_time
+                    })
+                    .collect();
+                samples.sort();
+                let mut start = 0;
+                while samples[start] == Duration::ZERO {
+                    start += 1;
                 }
-                Source::Formula =>
-                    formula::expected_time(machines, k_min, k_max, k, 0, 0.0),
+
+                print!(
+                    "{}% outliers ",
+                    (start as f64 / SAMPLES as f64) * 100.0
+                );
+
+                samples[start..].iter().sum::<Duration>().as_nanos() as f64
+                    / (SAMPLES - start) as f64
             }
-        );
+            Source::Formula => {
+                formula::expected_time(machines, k_min, k_max, k, 0, 0.0)
+            }
+        };
+        println!("{},", val);
 
         return;
     }
