@@ -56,21 +56,22 @@
         \textbf{\LARGE{\@title}} \\
         \vspace{1.5em}
         Finn Rudolph \\
+        21.01.2024 \\
         \vspace{1em}
         Erarbeitungsort: Hauptstraße 28, 96178 Pommersfelden \\
-        Fachgebiet: Mathmatik / Informatik \\
+        Fachgebiet: Mathematik / Informatik \\
         Wettbewerbssparte: Jugend forscht \\
         Bundesland: Bayern \\
         Wettbewerbsjahr: 2024
     \end{flushleft}
 
-    \vspace{0.3em}
+    \vspace{0.2em}
 
     \section*{Projektüberblick}
 
-    Pollards Rho-Methode ist eine der schnellsten Algorithmen zur Faktorisierung kleiner Zahlen. Bei der Implementierung des Algorithmus kann ein Parameter $k$ gewählt werden, der unter Umständen großen Einfluss auf die Laufzeit des Algorithmus hat, sowohl im positiven als auch im negativen Sinn. In dieser Arbeit soll untersucht werden, wie $k$ bestmöglich gewählt wird. Insbesondere ist der Fall interessant, wenn der Algorithmus auf mehreren Maschinen parallel ausgeführt wird, weil dann für jede Maschine $k$ separat gewählt werden kann. Für den Fall einer und zweier Maschinen konnten theoretische Ergebnisse erzielt werden, im Fall zweier Maschinen bleiben aber noch Fragen offen. Diese Ergebnisse decken sich mit durchgeführten Experimenten. Offen bleibt die Frage der optimalen Parametrisierung für drei oder mehr Maschinen.
+    Pollards Rho-Methode ist einer der schnellsten Algorithmen zur Faktorisierung kleiner Zahlen. Bei der Implementierung des Algorithmus kann ein Parameter $k$ gewählt werden, der unter Umständen großen Einfluss auf die Laufzeit des Algorithmus hat, sowohl im positiven als auch im negativen Sinn. In dieser Arbeit soll untersucht werden, wie $k$ bestmöglich gewählt wird. Insbesondere ist der Fall interessant, wenn der Algorithmus auf mehreren Maschinen parallel ausgeführt wird, weil dann für jede Maschine $k$ separat gewählt werden kann. Für den Fall einer und zweier Maschinen konnten theoretische Ergebnisse erzielt werden, im Fall zweier Maschinen bleiben aber noch Fragen offen. Diese Ergebnisse decken sich mit durchgeführten Experimenten. Offen bleibt auch die Frage der optimalen Parametrisierung für drei oder mehr Maschinen.
 
-    \vspace{0.7em}
+    \vspace{0.5em}
 
     \begin{spacing}{1.2}
         \tableofcontents
@@ -84,22 +85,24 @@
 
 \section{Zusammenfassung}
 
-In dieser Arbeit wird die Frage behandelt, wie der Parameter $k$ in Pollards Rho-Methode optimal gewählt werden kann. Ein größerer Wert von $k$ erhöht grundsätzlich die Laufzeit, kann aber auch zu einer deutlichen Verringerung führen, wenn die Primfaktoren der zu faktorisierenden Zahl günstige Eigenschaften haben. Im Allgemeinen ist über die Primfaktoren allerdings nichts bekannt, sie sollen ja durch den Algorithmus bestimmt werden. Daher stellt sich die Frage, welcher Wert von $k$ im Mittel am besten ist. Es ergibt sich insbesondere dann ein interessantes Problem, wenn der Algorithmus auf mehreren Maschinen parallelisiert wird, weil $k$ dann für jede Maschine gewählt werden muss. Unter weithin anerkannten Annahmen über Pollards Rho-Algorithmus konnten grundlegende Methoden zur Beantwortung dieser Frage entwickelt werden. Mit diesen war es möglich zu zeigen, dass $k = 1$ für eine Maschine optimal ist. Im Fall zweier Maschinen wird gezeigt, dass $k_1 = k_2 = 1$ besser ist als wenn $k_1$ und $k_2$ Primzahlen sind oder wenn $k_1 = k_2 > 1$ gilt. $k_i$ bezeichnet den Wert von $k$ für die $i$-te Maschine. Anschließend werden Laufzeitmessungen vorgestellt, die die theoretischen Ergebnissen bestätigen.
+In dieser Arbeit wird die Frage behandelt, wie der Parameter $k$ in Pollards Rho-Methode optimal gewählt werden kann. Ein größerer Wert von $k$ erhöht grundsätzlich die Laufzeit, kann aber auch zu einer deutlichen Verringerung führen, wenn die Primfaktoren der zu faktorisierenden Zahl günstige Eigenschaften haben. Im Allgemeinen ist über die Primfaktoren allerdings nichts bekannt, sie sollen ja durch den Algorithmus bestimmt werden. Daher stellt sich die Frage, welcher Wert von $k$ im Mittel am besten ist. Es ergibt sich insbesondere dann ein interessantes Problem, wenn der Algorithmus auf mehreren Maschinen parallelisiert wird, weil $k$ dann für jede Maschine gewählt werden muss. Unter weithin anerkannten Annahmen über Pollards Rho-Algorithmus konnten grundlegende Methoden zur Beantwortung dieser Frage entwickelt werden. Mit diesen war es möglich zu zeigen, dass $k = 1$ für eine Maschine optimal ist. Im Fall zweier Maschinen wird gezeigt, dass $k_1 = k_2 = 1$ besser ist als wenn $k_1$ und $k_2$ Primzahlen sind oder wenn $k_1 = k_2 > 1$ gilt. $k_i$ bezeichnet den Wert von $k$ für die $i$-te Maschine. Anschließend werden Laufzeitmessungen vorgestellt, die die theoretischen Ergebnisse bestätigen.
 
 \section{Motivation und Fragestellung}
 
-Pollards Rho-Methode bleibt trotz der Existenz asymptotisch schnellerer Algorithmen einer der meistverwendeten Algorithmen zur Faktorisierung kleinerer Zahlen. Gleichzeitig werden Leistungssteigerungen bei modernen Computern häufig durch größere Nebenläufigkeit (z. B. mehr Prozessorkerne) erzielt. Um die Rho-Methode schnellstmöglich zu implementieren, ist es also nötig zu untersuchen, wie sie am besten parallel ausgeführt werden kann. Bevor die Fragestellung präzise formuliert werden kann, soll jedoch Pollards Rho-Methode vorgestellt werden.
+Pollards Rho-Methode bleibt trotz der Existenz asymptotisch schnellerer Algorithmen einer der meist verwendeten Algorithmen zur Faktorisierung kleiner Zahlen. Gleichzeitig werden Leistungssteigerungen bei modernen Computern häufig durch größere Nebenläufigkeit (z. B. mehr Prozessorkerne) erzielt. Um die Rho-Methode schnellstmöglich zu implementieren, ist es also nötig zu untersuchen, wie sie am besten parallel ausgeführt werden kann. Bevor die Fragestellung präzise formuliert werden kann, soll jedoch Pollards Rho-Methode vorgestellt werden.
 
 \subsection{Pollards Rho-Methode}
 \label{sec:pollards-rho-method}
 
-Sei $n$ die zu faktorisierende Zahl. Es wird angenommen, dass $n$ ungerade und keine Potenz einer natürlichen Zahl ist, da sonst einfach ein Faktor gefunden werden kann. Sei $h : \Z/n\Z \to \Z/n\Z$ mit $h : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen zufälligen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_i)_{i \in \N}$ definiert durch $x_n = h(x_{n - 1})$ für einen Parameter $1 \le k \in \N$. Da $(x_i)_{i \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee der Rho-Methode ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Das Ereignis, dass eine Folge einen Wert zweimal annimmt, wird eine \emph{Kollision} in dieser Folge genannt. Nimmt man an, dass die Periodenlänge von $(x_i)_{i \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Die Annahme ist plausibel, weil für den kleinsten Primfaktor $p \le \sqrt n$ gilt, es also deutlich weniger mögliche Werte für $\pi(x_i)$ als $x_i$ gibt. Im Folgenden ist $p$ immer der kleinste Primfaktor von $n$. Außerdem wird angenommen, dass die anderen Primfaktoren von $n$ so viel größer als $p$ sind, dass die Wahrscheinlichkeit einer Kollision modulo eines anderen Primfaktors vernachlässigbar gering ist. Zum Finden solcher $x_i, x_j$ ist es hilfreich, den funktionalen Graphen von $h$ zu betrachten.
+Sei $n$ die zu faktorisierende Zahl. Es wird angenommen, dass $n$ ungerade und keine Potenz einer natürlichen Zahl ist, da sonst einfach ein Faktor gefunden werden kann. Sei $h : \Z/n\Z \to \Z/n\Z$ mit $h : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen zufälligen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_i)_{i \in \N}$, definiert durch $x_i = h(x_{i - 1})$. Da $(x_i)_{i \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee der Rho-Methode ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Das Ereignis, dass eine Folge einen Wert zweimal annimmt, wird eine \emph{Kollision} in dieser Folge genannt. Nimmt man an, dass die Periodenlänge von $(x_i)_{i \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Die Annahme ist plausibel, weil für den kleinsten Primfaktor $p \le \sqrt n$ gilt, es also deutlich weniger mögliche Werte für $\pi(x_i)$ als $x_i$ gibt. Im Folgenden ist $p$ immer der kleinste Primfaktor von $n$. Außerdem wird angenommen, dass die anderen Primfaktoren von $n$ so viel größer als $p$ sind, dass die Wahrscheinlichkeit einer Kollision modulo eines anderen Primfaktors vernachlässigbar gering ist. Zum Finden solcher $x_i, x_j$ ist es hilfreich, den funktionalen Graphen von $h$ zu betrachten.
 
 \begin{definition}[Funktionaler Graph]
     Sei $X$ eine endliche Menge und $f: X \to X$ eine Abbildung. Der funktionale Graph von $f$, geschrieben $\gamma(f)$, ist der gerichtete Graph mit Knotenmenge $X$ und Kantenmenge $E$, wobei die Kante $(x, y) \in X \times X$ genau dann in $E$ liegt, wenn $f(x) = y$.
 \end{definition}
 
-\noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(h)$ ist $x_0$ also ein Knoten in einem der Bäume, der durch seinen Pfad zur Wurzel mit dem Zyklus seiner Zusammenhangskomponente verbunden ist. Die Folge $(x_i)_{i \in \N}$ startet bei $x_0$ und "`läuft"' durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An der Wurzel des Baums von $x_0$ wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_i)_{i \in \N}$ periodisch. Bei Auftritt der ersten Kollision bildet der von $(x_i)_{i \in \N}$ abgelaufene Pfad die Form eines "`$\rho$"' in $\gamma(h)$. Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \in \N}$ "`läuft"' also durch $\gamma(f)$, beginnend von $\pi(x_0)$. Unser Ziel, das Finden einer Kollision von $(\pi(x_i))_{i \in \N}$, ist also äquivalent dazu, einen Knoten in $\gamma(f)$ zu finden, der zweimal in dem von $(\pi(x_i))_{i \in \N}$ abgelaufenen Pfad erscheint. Dafür kann Floyds Algorithmus zur Zykluserkennung in $\gamma(f)$ verwendet werden. Floyds Algorithmus macht sich zunutze, dass es ein $1 \le r \in \N$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss (\cite{knu98}, S. 7). Sei $\mu(f, \pi(x_0))$ die Höhe von $\pi(x_0)$ in seinem Baum und $\lambda(f, \pi(x_0))$ die Länge des Zyklus von $\pi(x_0)$. Für das minimale solcher $r$ gilt dann $r \le \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ (\cite{knu98}, S. 7). Wir nennen $\nu(f, \pi(x_0)) = \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ die Rho-Länge von $\pi(x_0)$ in $f$. Es würde also genügen, die Folgen $(\pi(x_i))_{i \in \N}$ und $(\pi(x_{2i}))_{n \in \N}$ gleichzeitig Glied für Glied zu berechnen und in jedem Schritt zu überprüfen, ob $\pi(x_i) = \pi(x_{2i})$. Das kann aber nicht explizit geschehen, da $p$ unbekannt ist. Stattdessen werden $(x_i)_{i \in \N}$ und $(x_{2i})_{i \in \N}$ Glied für Glied berechnet. Das Überprüfen, ob $\pi(x_i) = \pi(x_{2i})$ geschieht durch Berechnung von $\gcd(n, x_i - x_{2i})$. So erhält man nach maximal $\nu(f, \pi(x_0))$ Schritten die gewünschte Kollision. Im Gegensatz zu der eher komplizierten Theorie hinter dem Algorithmus kann er sehr einfach implementiert werden.
+\noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(h)$ ist $x_0$ also ein Knoten in einem der Bäume, der durch seinen Pfad zur Wurzel mit dem Zyklus seiner Zusammenhangskomponente verbunden ist. Die Folge $(x_i)_{i \in \N}$ startet bei $x_0$ und "`läuft"' durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An der Wurzel des Baums von $x_0$ wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_i)_{i \in \N}$ periodisch. Bei Auftritt der ersten Kollision bildet der von $(x_i)_{i \in \N}$ abgelaufene Pfad die Form eines "`$\rho$"' in $\gamma(h)$.
+
+Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \in \N}$ "`läuft"' also durch $\gamma(f)$, beginnend von $\pi(x_0)$. Unser Ziel, das Finden einer Kollision von $(\pi(x_i))_{i \in \N}$, ist also äquivalent dazu, einen Knoten in $\gamma(f)$ zu finden, der zweimal in dem von $(\pi(x_i))_{i \in \N}$ abgelaufenen Pfad erscheint. Dafür kann Floyds Algorithmus zur Zykluserkennung in $\gamma(f)$ verwendet werden. Floyds Algorithmus macht sich zunutze, dass es ein $1 \le r \in \N$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss (\cite{knu98}, S. 7). Sei $\mu(f, \pi(x_0))$ die Höhe von $\pi(x_0)$ in seinem Baum und $\lambda(f, \pi(x_0))$ die Länge des Zyklus von $\pi(x_0)$. Für das minimale solcher $r$ gilt dann $r \le \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ (\cite{knu98}, S. 7). Wir nennen $\nu(f, \pi(x_0)) = \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ die Rho-Länge von $\pi(x_0)$ in $f$. Es würde also genügen, die Folgen $(\pi(x_i))_{i \in \N}$ und $(\pi(x_{2i}))_{n \in \N}$ gleichzeitig Glied für Glied zu berechnen und in jedem Schritt zu überprüfen, ob $\pi(x_i) = \pi(x_{2i})$. Das kann aber nicht explizit geschehen, da $p$ unbekannt ist. Stattdessen werden $(x_i)_{i \in \N}$ und $(x_{2i})_{i \in \N}$ Glied für Glied berechnet. Das Überprüfen, ob $\pi(x_i) = \pi(x_{2i})$ geschieht durch Berechnung von $\gcd(n, x_i - x_{2i})$. So erhält man nach maximal $\nu(f, \pi(x_0))$ Schritten die gewünschte Kollision. Die Methode kann wie folgt zusammengefasst werden.
 
 \begin{algorithm*}
     $x \gets $ zufällige natürliche Zahl zwischen $0$ und $n - 1$ \;
@@ -115,10 +118,10 @@ Sei $n$ die zu faktorisierende Zahl. Es wird angenommen, dass $n$ ungerade und k
         }
     }
 
-    \caption{Pollards Rho-Algorithmus}
+    \caption{Pollards Rho-Methode}
 \end{algorithm*}
 
-\noindent Die Analyse von Pollards Rho-Algorithmus erweist sich als schwierig, es ist bis dato keine rigorose Laufzeitanalyse bekannt. Unter heuristischen Annahmen lässt sich die Laufzeit allerdings sehr gut abschätzen. Anstatt der mittleren Anzahl an Iterationen von Floyds Algorithmus wird die mittlere Rho-Länge analysiert, mit der Annahme, dass sich diese zwei Werte für große $p$ nur um eine feste Konstante unterscheiden. Eine zentrale Annahme dreht sich um die Verteilung der Rho-Längen in $\gamma(f)$, für deren Formulierung der Begriff einer asymptotischen Näherung benötigt wird.
+\noindent Die Analyse von Pollards Rho-Algorithmus erweist sich als schwierig, es ist bis dato keine rigorose Laufzeitanalyse bekannt. Unter heuristischen Annahmen lässt sich die Laufzeit allerdings gut abschätzen. Als erste Vereinfachung wird statt der mittleren Anzahl an Iterationen von Floyds Algorithmus die mittlere Rho-Länge analysiert. Eine zentrale Annahme dreht sich um die Verteilung der Rho-Längen in $\gamma(f)$, für deren Formulierung der Begriff einer asymptotischen Näherung benötigt wird.
 
 \begin{definition}[Asymptotische Näherung]
     Eine Funktion $f : \R \to \R$ heißt genau dann asymptotische Näherung von einer Funktion $g : \R \to \R$, oder asymptotisch zu $g$, wenn
@@ -131,28 +134,28 @@ Sei $n$ die zu faktorisierende Zahl. Es wird angenommen, dass $n$ ungerade und k
 \noindent Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$ für $n \in \N$. Über die Verteilung der Rho-Längen wird folgende Annahme getroffen, die auch \emph{Random Mapping Assumption} (RMA) genannt wird.
 
 \begin{assumption*}[Random Mapping Assumption]
-    Sei $f : x \mapsto x^{2k} + 1$ und $d = \gcd(p - 1, 2k)$. Seien $x_0 \in \Z/p\Z$ und $y_0 \in \Z/((p - 1)/d)\Z$ zufällig und $g \in A((p - 1)/d)$ zufällig. Dann gilt $\P(\nu(f, x_0) = m) \sim \P(\nu(g, y_0) = m)$ für $p \to \infty$.
+    Sei $f: \Z/p\Z \to \Z/p\Z$ mit $f : x \mapsto x^{2k} + 1$ und $d = \gcd(p - 1, 2k)$. Seien $x_0 \in \Z/p\Z$ und $y_0 \in \Z/((p - 1)/d)\Z$ zufällig und $g \in A((p - 1)/d)$ zufällig. Dann gilt $\P(\nu(f, x_0) = m) \sim \P(\nu(g, y_0) = m)$ für $p \to \infty$.
 \end{assumption*}
 
 \noindent In anderen Worten sagt die Random Mapping Assumption, dass sich die Verteilung der Rho-Längen von $f : x \mapsto x^{2k} + 1$ wie bei einer zufälligen Funktion aus $A((p - 1)/d)$ verhält. Insbesondere verhält sich $x \mapsto x^2 + 1$ bezüglich der Rho-Längen wie ein zufällige Funktion $\Z/(p - 1)\Z \to \Z/(p - 1)\Z$. \cite{bp81} geben eine Begründung für RMA. Im Folgenden wird statt $(p - 1)/d$ einfach $p/d$ verwendet, da $p \sim p - 1$ für $p \to \infty$.
 
-Für $k = 1$ ist damit die erwartete Anzahl an Iterationen der while-Schleife asymptotisch zu $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation kann die Dauer des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $c \lg 2k$ Schritten möglich ist, wobei $c$ eine hier unwichtige Konstante ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet.
+Für $k = 1$ ist unter RMA die erwartete Anzahl an Iterationen der while-Schleife asymptotisch zu $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation kann die Dauer des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $c \lg 2k$ Schritten möglich ist, wobei $c$ eine hier unwichtige Konstante ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet.
 
 \subsection{Parallelisierung der Rho-Methode}
 
-Sei $M$ die Anzahl verfügbarer Maschinen. Eine "`Maschine"'  meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte unabhängig voneinander zufällig gewählt werden und der Algorithmus auf jeder der $M$ Maschinen ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Das ist nicht sofort klar, da durch ein größeres $k$ möglicherweise $\gcd(p - 1, 2k)$ groß ist, sodass die Zahl an Iterationen um einen Faktor $\sqrt{\gcd(p - 1, 2k) -1}$ sinkt. Allerdings steigt die Dauer einer Iteration um einen Faktor $\lg 2k$. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich der Laufzeit nicht die $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt, wenn $p \to \infty$. Wir definieren eine \emph{Zeiteinheit} als die Dauer einer Iteration für $k = 1$, bei einer Maschine mit Parameter $k$ dauert eine Iteration also $\lg 2k$ Zeiteinheiten. Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
+Sei $M$ die Anzahl verfügbarer Maschinen. Eine \emph{Maschine} meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte zufällig und unabhängig voneinander gewählt werden und der Algorithmus auf jeder der $M$ Maschinen ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Das ist nicht sofort klar, da durch ein größeres $k$ möglicherweise $\gcd(p - 1, 2k)$ groß ist, sodass die Zahl an Iterationen um einen Faktor $\sqrt{\gcd(p - 1, 2k) -1}$ sinkt. Allerdings steigt die Dauer einer Iteration um einen Faktor $\lg 2k$. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich der Laufzeit nicht die $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt, wenn $p \to \infty$. Wir definieren eine \emph{Zeiteinheit} als die Dauer einer Iteration für $k = 1$, bei einer Maschine mit Parameter $k$ dauert eine Iteration also $\lg 2k$ Zeiteinheiten. Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
 
-Sei $k_1, k_2, \dots, k_M, 1 \le k_i \in \N$ eine Zuordnung von $k$-Werten für $M$ Maschinen. Mit $L_{k_1, \dots, k_M}(p)$ wird die erwartete Laufzeit des parallelen Pollard-Rho-Algorithmus mit entsprechenden $k$-Werten bezeichnet. Dabei ist $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ noch fixiert, der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optimal-k} behandelt. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Mit RMA gilt
+Sei $k_1, \dots, k_M, 1 \le k_i \in \N$ eine Zuordnung von $k$-Werten für $M$ Maschinen. Mit $L_{k_1, \dots, k_M}(p)$ wird die erwartete Laufzeit des parallelen Rho-Algorithmus mit entsprechenden $k$-Werten bezeichnet. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Unter RMA gilt
 \begin{align}
     L_{k_1, \dots, k_M}(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
     \label{lk-definition}
 \end{align}
-wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ ist, mit $X_i(f, x_0) = \nu(f, x_0)$ für $f \in A(h_i), x_0 \in \Z/h_i\Z$. Eine Schwierigkeit in der Herleitung einer Formel für $L_{k_1, \dots, k_M}(p)$ ist, dass $X_i$ und $X_j$ nicht unabhängig sind, wenn $k_i = k_j$. Grund dafür ist, dass $f$ in diesem Fall gleich ist, sodass sich die $i$-te und $j$-te Maschine im gleichen funktionalen Graphen bewegen. In Abschnitt \ref{sec:indep-machines} wird der Fall unabhängiger Maschinen behandelt, und in Abschnitt \ref{sec:dep-machines} der Fall abhängiger Maschinen für $M = 2$.
+wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ ist, mit $X_i(f, x_0) = \nu(f, x_0)$ für $f \in A(h_i), x_0 \in \Z/h_i\Z$. In $L_{k_1, \dots, k_M}(p)$ ist $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ noch fixiert, der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optimal-k} behandelt. Eine Schwierigkeit in der Herleitung einer Formel für $L_{k_1, \dots, k_M}(p)$ ist, dass $X_i$ und $X_j$ nicht unabhängig sind, wenn $k_i = k_j$. Grund dafür ist, dass $f$ in diesem Fall gleich ist, sodass sich die $i$-te und $j$-te Maschine im gleichen funktionalen Graphen bewegen. Daher wird in Abschnitt \ref{sec:indep-machines} der Fall unabhängiger Maschinen behandelt, und in Abschnitt \ref{sec:dep-machines} der Fall abhängiger Maschinen für $M = 2$.
 
 \section{Eine Formel im Fall unabhängiger Maschinen}
 \label{sec:indep-machines}
 
-In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergeleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Die Rho-Längen verschiedener Maschinen sind hier stochastisch unabhängig, was aus RMA folgt. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
+In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergeleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Die Rho-Längen verschiedener Maschinen sind hier stochastisch unabhängig. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
 
 \emph{Eine Formel für $\P(s_i > s)$.} Nach RMA gilt $\P(s_i = s) = \P(\nu(f, x_0) = s)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $j$-ten Schritt $j/h_i$, wenn in den ersten $j - 1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $j$ von ihnen zu einer Kollision führen. Es gilt also
 \begin{align*}
@@ -169,18 +172,18 @@ Da die $i$-te Maschine in $t$ Zeiteinheiten $\lfloor t / \lg 2k_i \rfloor$ Schri
 $\E(t_{\min})$ lässt sich nun wie folgt ausdrücken, wobei $t_{\max} = p \, \max_{i = 0}^M \lg 2k_i$ die maximal mögliche Anzahl an Zeiteinheiten ist.
 \begin{align*}
     \E(t_{\min})
-     & \sim \sum_{t = 0}^{t_{\max}} t
+     & = \sum_{t = 0}^{t_{\max}} t
     \Bigg ( \prod_{i = 1}^M \P(t_i > t - 1) \Bigg )
     \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i) \\
-     & = \sum_{t = 0}^{t_{\max}} t
+     & \sim \sum_{t = 0}^{t_{\max}} t
     \Bigg ( \prod_{i = 1}^M \prod_{j = 0}^{(t-1) / \lg 2k_i}
     \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg )
         - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )\Bigg )
     \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
 \end{align*}
-Der erste Faktor ist die Wahrscheinlichkeit, dass vor Zeitpunkt $t$ keine Kollision aufgetreten ist. Der zweite Faktor ist die Wahrscheinlichkeit, dass bei Zeitpunkt $t$ mindestens eine Kollision auftritt. $\P_{t_i > t - 1 \, \forall i} (\,\cdots)$ ist die Wahrscheinlichkeit dass $t_i > t$ für mindestens ein $i$, gegeben $t_i > t - 1$ für alle $i$. Bevor diese Wahrscheinlichkeit bestimmt wird, soll gezeigt werden, dass der erste Faktor stark vereinfacht werden kann.
+Der erste Faktor ist die Wahrscheinlichkeit, dass vor Zeitpunkt $t$ keine Kollision aufgetreten ist. Der zweite Faktor ist die Wahrscheinlichkeit, dass bei Zeitpunkt $t$ mindestens eine Kollision auftritt. $\P_{t_i > t - 1 \, \forall i} (\,\cdots)$ ist die Wahrscheinlichkeit dass $t_i = t$ für mindestens ein $i$, gegeben $t_i > t - 1$ für alle $i$. Bevor diese Wahrscheinlichkeit bestimmt wird, soll gezeigt werden, dass der erste Faktor stark vereinfacht werden kann.
 
-\emph{Weglassen von $O(j^2/h_i^2)$.} Intuitiv ist es aus folgendem Grund gerechtfertigt, $O(j^2/h_i^2)$ in obiger Formel wegzulassen. Wenn $s$ deutlich kleiner als $h_i$ ist, ist auch $j$ deutlich kleiner als $h_i$ und damit $j^2/h_i^2$ nahe 0. Wenn dagegen $s$ nahe $h_i$ ist, ist $\P(s_i > s)$ sehr klein, sodass der Beitrag zum Erwartungswert vernachlässigbar ist. Präzise lässt sich das wie folgt begründen. Zunächst wird $s \le h_{i}^{3/5}$ angenommen und gezeigt, dass dann $\prod_{j = 0}^{(t-1) / \lg 2k_i} (\exp (-j/h_i) - O (j^2/h_i^2)) \sim \prod_{j = 0}^{(t-1) / \lg 2k_i} \exp (-j/h_i)$. Durch Ausmultiplizieren des Produkts erhält man
+\emph{Weglassen von $O(j^2/h_i^2)$.} Intuitiv ist es aus folgendem Grund gerechtfertigt, $O(j^2/h_i^2)$ in obiger Formel wegzulassen. Wenn $s = (t - 1)/\lg 2k_i$ deutlich kleiner als $h_i$ ist, ist auch $j$ deutlich kleiner als $h_i$ und damit $j^2/h_i^2$ nahe 0. Wenn dagegen $s$ nahe $h_i$ ist, ist $\P(s_i > s)$ sehr klein, sodass der Beitrag zum Erwartungswert vernachlässigbar ist. Präzise lässt sich das wie folgt begründen. Zunächst wird $s \le h_{i}^{3/5}$ angenommen und gezeigt, dass dann $\prod_{j = 0}^{(t-1) / \lg 2k_i} (\exp (-j/h_i) - O (j^2/h_i^2)) \sim \prod_{j = 0}^{(t-1) / \lg 2k_i} \exp (-j/h_i)$. Durch Ausmultiplizieren des Produkts erhält man
 \begin{align*}
         & \ \Bigg \vert
     \prod_{j = 0}^{s} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg )
@@ -264,7 +267,7 @@ Der erste Fall tritt ein, wenn die Zeiteinheit $t$ das Ende einer Iteration von 
 \begin{align*}
     \P_{t_i > t - 1}(t_i = t) \sim \frac {t} {h_i \lg^2 k_i}
 \end{align*}
-angenähert werden. Die Wahrscheinlichkeit einer Kollision an einem Zeitpunkt wird durch den zusätzlichen Faktor $1/\lg 2k_i$ auf die umliegenden Zeitpunkte "`verteilt"'. Pro Iteration von Maschine $i$ gibt es statt einem Zeitpunkt mit Kollisionswahrscheinlichkeit $t/h_i \lg 2k_i$ nun $\lg 2k_i$ Zeitpunkte mit Kollisionswahrscheinlichkeit $t/h_i \lg^2 2k_i$. Dass das eine asymptotische Näherung ist, lässt sich damit begründen, dass der übrige Teil von (\ref{expectation-tmin-intermed}) stetig in $t$ ist und nicht schnell oszilliert oder Ähnliches. Ob die erste Kollision bei Maschine $i$ also bei Zeitpunkt $t$ oder $t + x$ für $|x| < \lg 2k_i$ auftritt macht daher asymptotisch keinen Unterschied. Die Wahrscheinlichkeit, dass bei mindestens einer Maschine eine Kollision auftritt, kann asymptotisch durch die Summe der Wahrscheinlichkeiten $\P_{t_i > t - 1}(t_i = t)$ angenähert werden. Denn für alle relevanten $t$ (d.h. $t \le h_i^{3/5} \, \forall i$) ist die Wahrscheinlichkeit, dass zwei oder mehr Maschinen gleichzeitig bei Zeit $t$ kollidieren für $p \to \infty$ verschwindend gering.
+angenähert werden. Die Wahrscheinlichkeit einer Kollision an einem Zeitpunkt wird durch den zusätzlichen Faktor $1/\lg 2k_i$ auf die umliegenden Zeitpunkte "`verteilt"'. Pro Iteration von Maschine $i$ gibt es statt einem Zeitpunkt mit Kollisionswahrscheinlichkeit $t/h_i \lg 2k_i$ nun $\lg 2k_i$ Zeitpunkte mit Kollisionswahrscheinlichkeit $t/h_i \lg^2 2k_i$. Dass das eine asymptotische Näherung ist, lässt sich damit begründen, dass der übrige Teil von (\ref{expectation-tmin-intermed}) stetig in $t$ ist und nicht schnell oszilliert oder Ähnliches. Ob die erste Kollision bei Maschine $i$ also bei Zeitpunkt $t$ oder $t + x$ für $|x| < \lg 2k_i$ auftritt macht daher asymptotisch keinen Unterschied. Die Wahrscheinlichkeit einer Kollision bei mindestens einer Maschine wird durch die Summe der Wahrscheinlichkeiten $\P_{t_i > t - 1}(t_i = t)$ angenähert. Denn für alle relevanten $t$ (d.h. $t \le h_i^{3/5} \, \forall i$) ist die Wahrscheinlichkeit, dass zwei oder mehr Maschinen gleichzeitig bei Zeit $t$ kollidieren für $p \to \infty$ verschwindend gering. Insgesamt gilt also
 \begin{align}
     \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
     \sim \sum_{i = 1}^M \frac t {h_i \lg^2 2k_i}
@@ -279,7 +282,7 @@ Für $\E(t_{\min})$ gilt mit (\ref{expectation-tmin-intermed}) und (\ref{prob-at
     \sum_{t = 0}^{t_{\max}} t^2 \, \exp \Bigg ( \frac {-t^2} 2
     \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
 \end{align*}
-Als letzter Schritt wird die Summe über $t$ durch ein Integral angenähert. Die intuitive Erklärung dafür, dass das am asymptotischen Wert nichts ändert, ist ähnlich wie eben. (\ref{expectation-tmin-intermed}) und (\ref{prob-at-least-one-coll}) sind stetig in $t$ und schwanken nicht stark bei kleinen Veränderungen von $t$. Die Werte an einzelnen Punkten, wie sie in der Summe vorkommen, sind also nahezu gleich den Werten um diese Punkte herum, die zusätzlich im Integral vorkommen. Nach einem ähnlichen Argument wie dem dafür, dass Terme mit $t/\lg 2k_i > h_i^{3/5}$ für ein $i$ asymptotisch irrelevant sind, kann die obere Integralgrenze bis $\infty$ geöffnet werden. Man erhält
+Als letzter Schritt wird die Summe über $t$ durch ein Integral angenähert. Die intuitive Erklärung dafür, dass das am asymptotischen Wert nichts ändert, ist ähnlich wie eben. (\ref{expectation-tmin-intermed}) und (\ref{prob-at-least-one-coll}) sind stetig in $t$ und schwanken nicht stark bei kleinen Veränderungen von $t$. Die Werte an einzelnen Punkten, wie sie in der Summe vorkommen, sind also nahezu gleich den Werten um diese Punkte herum, die zusätzlich im Integral vorkommen. Außerdem kann nach einem ähnlichen Argument wie dafür, dass Terme mit $t/\lg 2k_i > h_i^{3/5}$ asymptotisch irrelevant sind, die obere Integralgrenze bis $\infty$ geöffnet werden. Man erhält
 \begin{align}
     L_{k_1, \dots k_M}(p) = \E(t_{\min})
      & \sim \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
@@ -294,7 +297,7 @@ Als letzter Schritt wird die Summe über $t$ durch ein Integral angenähert. Die
     \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
     \label{expectation-tmin}
 \end{align}
-Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Man kann sich auf mehereren Wegen davon überzeugen, dass die Formel trotz der vielen Näherungen stimmt. Beispielsweise ist sie verträglich mit der bekannten Laufzeitabschätzung für Pollards Rho-Algorithmus im Fall $M = k_1 = 1$. Setzt man dies ein, erhält man $\sqrt{\pi p / 2}$, wie in \cite{pol75}, S. 332. Lässt man in obigem Integral einen Faktor $t$ weg, erhält man statt des Erwartungswerts das Integral aller Wahrscheinlichkeiten. Dieses sollte natürlich 1 sein, und das ist es auch.
+Zur Auswertung des Integrals wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Man kann sich auf mehreren Wegen davon überzeugen, dass die Formel trotz der vielen Näherungen stimmt. Beispielsweise ist sie verträglich mit der bekannten Laufzeitabschätzung für Pollards Rho-Algorithmus im Fall $M = k_1 = 1$. Setzt man in (\ref{expectation-tmin}) ein, erhält man $\sqrt{\pi p / 2}$, wie \cite{pol75}, S. 332. Lässt man in obigem Integral einen Faktor $t$ weg, erhält man statt des Erwartungswerts das Integral aller Wahrscheinlichkeiten. Dieses sollte natürlich 1 sein, und das ist es auch.
 
 \section{Der Fall zweier abhängiger Maschinen}
 \label{sec:dep-machines}
@@ -306,7 +309,7 @@ Um $L_{k_1, \dots, k_M}(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, 
     Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$. Wir bezeichnen mit
     \begin{align*}
         \tau_n =  \frac 1 {n^{n + 2}}
-        \sum_{g \in A(n)} \; \sum_{a, b \in \Z/n\Z}
+        \sum_{g \in A(n)} \, \sum_{a \in \Z/n\Z} \, \sum_{b \in \Z/n\Z}
         \min\{\nu(g, a), \nu(g, b)\}
     \end{align*}
     die erwartete minimale Rho-Länge zweier zufälliger Knoten in einem funktionalen Graphen von Größe $n$. Es gilt
@@ -319,24 +322,23 @@ Um $L_{k_1, \dots, k_M}(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, 
 
 \subsection{Theoretischer Hintergrund: Erzeugende Funktionen}
 
-Der Ansatz zum Beweis von Satz \ref{theorem:min-rho-len-m2} ist, die Summe in der Definition von $\tau_n$ mithilfe einer erzeugenden Funktion $\Psi(x, w)$ zu bestimmen. In $\Psi(x, w)$ markiert die Variable $x$ die Größe des Graphen und die Variable $w$ die minimale Rho-Länge der zwei Anfangsknoten. Da funktionale Graphen beschriftet sind, werden stets erzeugende Funktionen von exponentiellem Typ (EF) verwendet. Also gilt
+Der Ansatz zum Beweis von Satz \ref{theorem:min-rho-len-m2} ist, die Summe in der Definition von $\tau_n$ mithilfe einer erzeugenden Funktion $\Psi(x, w)$ zu bestimmen. $\Psi(x, w)$ zählt funktionale Graphen mit einem Paar an Knoten. Die Variable $x$ markiert die Größe des Graphen und die Variable $w$ die minimale Rho-Länge der zwei Anfangsknoten. Da funktionale Graphen beschriftet sind, werden stets erzeugende Funktionen von exponentiellem Typ (EF) verwendet. Also gilt
 \begin{align}
     \Psi(x, w)
-    = \sum_{n = 0}^\infty \frac {x^n}{n!} \sum_{g \in A(n)}
-    \sum_{a, b \in \Z/n\Z} w^{\min\{\nu(g, a), \nu(g, b)\}}
+    = \sum_{n = 0}^\infty \frac {x^n}{n!} \sum_{g \in A(n)} \,
+    \sum_{a \in \Z/n\Z} \, \sum_{b \in \Z/n\Z} w^{\min\{\nu(g, a), \nu(g, b)\}}
     \label{psi-definition}
 \end{align}
 Aus den Koeffizienten der Reihe von $\Psi$ kann dann wie folgt $\tau_n$ bestimmt werden.
 \begin{align*}
     \tau_n = \frac {n!}{n^{n + 2}} [x^n] \Bigg (\frac {\partial} {\partial w} \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
 \end{align*}
-wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet. Um im Folgenden erzeugende Funktionen funktionaler Graphen zu konstruieren, werden einige Komponenten benötigt. Sie werden auch von \cite{fo90} verwendet, ein Beweis der Korrektheit steht in \cite{fs09}, S. 129, 148. Von $x$ wird ein einzelner Knoten repräsentiert. Die erzeugende Funktion eines Pfads ist $1/(1 - x)$. Ein Baum kann rekursiv als ein Wurzelknoten zusammen mit einer Menge an Bäumen definiert werden. Die erzeugende Funktion eines Baumes $T(x)$ ist also implizit durch $T(x) = x \exp T(x)$ gegeben. Ein funktionaler Graph wird durch $F(x) = 1/(1 - T(x))$ beschrieben.
+wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet. Um im Folgenden erzeugende Funktionen funktionaler Graphen zu konstruieren, werden einige Komponenten benötigt. Eine intuitive Erklärung ihrer Struktur sowie ein Beweis der Korrektheit findet man in \cite{fs09}, S. 129, 148. Von $x$ wird ein einzelner Knoten repräsentiert. Die erzeugende Funktion eines Pfads ist $1/(1 - x)$. Ein Baum kann rekursiv als ein Wurzelknoten zusammen mit einer Menge an Bäumen definiert werden. Die erzeugende Funktion eines Baumes $T(x)$ ist also implizit durch $T(x) = x \exp T(x)$ gegeben. Ein funktionaler Graph wird durch $F(x) = 1/(1 - T(x))$ beschrieben.
 
 \subsection{Bestimmung der mittleren minimalen Rho-Länge}
 
 \begin{proof}[Beweis von Satz \ref{theorem:min-rho-len-m2}]
-    Seien $a$ und $b$ die zwei Startknoten und $\Psi(x, w)$ wie in (\ref{psi-definition}) definiert. Der Plan ist, zunächst einen geschlossenen Ausdruck für $\Psi(x, w)$ zu bestimmen und dann die Ableitung nach $w$ zu bilden. Dafür werden drei Fälle unterschieden, die in Abbildung \ref{fig:psi-construction} dargestellt sind. In jedem der Fälle wird zunächst eine EF für funktionale Graphen bestimmt, die nur die für $a$ und $b$ relevanten Teile enthalten. Der "`relevante Teil"' besteht aus all den Knoten, die beim Ablaufen des Graphen besucht werden, also dem Zyklus und dem Pfad zum Zyklus. Der Rest des funktionalen Graphen wird später ergänzt. Grundsätzlich werden die Graphen so konstruiert, dass $\nu(f, a) \le \nu(f, b)$. Wenn $\nu(f, a) < \nu(f, b)$ gilt, wird mit einem Faktor 2 für das mögliche Vertauschen von $a$ und $b$ multipliziert. Im Fall $\nu(f, a) = \nu(f, b)$ darf man das nicht tun, weil der Graph sonst doppelt gezählt wird.
-
+    Im Folgenden ist $g$ immer die betrachtete Funktion und $a$ und $b$ die zwei ausgezeichneten Knoten. Der Plan ist, zunächst einen geschlossenen Ausdruck für $\Psi(x, w)$ zu bestimmen und dann die Ableitung nach $w$ zu bilden. Dafür werden drei Fälle unterschieden, die in Abbildung \ref{fig:psi-construction} dargestellt sind. In jedem der Fälle wird zunächst eine EF für funktionale Graphen bestimmt, die nur die für $a$ und $b$ relevanten Teile enthalten. Der "`relevante Teil"' besteht aus all den Knoten, die beim Ablaufen des Graphen besucht werden, also dem Zyklus und dem Pfad zum Zyklus. Der Rest des funktionalen Graphen wird später ergänzt. Grundsätzlich werden die Graphen so konstruiert, dass $\nu(g, a) \le \nu(g, b)$ gilt. Erhält durch Vertauschen von $a$ und $b$ einen Fall, der noch nicht an anderer Stelle gezählt wurde, wird mit einem Faktor 2 multipliziert.
     \begin{figure}
         \begin{tabular}{ccc}
             \def\svgwidth{145pt} \input{alpha.pdf_tex} &
@@ -348,7 +350,7 @@ wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehend
         \label{fig:psi-construction}
     \end{figure}
 
-    \emph{Fall 1.} $a$ und $b$ liegen in unterschiedlichen Zusammenhangskomponenten. Dieser Fall wird erneut in die Fälle $\lambda(f, b) \le \nu(f, a)$ und $\lambda(f, b) > \nu(f, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall ist
+    \emph{Fall 1.} $a$ und $b$ liegen in unterschiedlichen Zusammenhangskomponenten. Dieser Fall wird erneut in die Fälle $\lambda(g, b) \le \nu(g, a)$ und $\lambda(g, b) > \nu(g, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall ist
     \begin{align*}
         \alpha_1(x, w) = \frac {x^2w(1 + x^2w)} {(1 - x^2w)^3} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg ) = \frac {x^2w(1 + x)(1 + x^2w)} {(1 - x^2w)^3(1 - x)}
     \end{align*}
@@ -357,16 +359,16 @@ wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehend
         \sum_{n = 0}^\infty x^n \; \frac {n^2} 4 \, \frac {1 + (-1)^n} 2
         = \frac {x^2(1 + x^2)} {(1 - x^2)^3}
     \end{align*}
-    Durch einen der beiden $\rho$-Graphen wird die Zusammenhangskomponente von $a$ erzeugt, durch den anderen $t$ und der Anfang von $u$ in Abbildung \ref{fig:psi-construction} ($\alpha$). Da $x$ die Zahl an Knoten markiert, wird von $w$ die halbe Zahl an Knoten markiert, wenn $x$ durch $x \sqrt w$ ersetzt wird. So markiert $w$ die Rho-Länge von $a$, man erhält folglich die EF $x^2w(1 + x^2w) / (1 - x^2w)^3$. Das erklärt den ersten Faktor in $\alpha_1(x, w)$. Nun gibt es zwei Möglichkeiten: Wird $u$ nicht verlängert, gilt $\nu(f, a) = \nu(f, b)$. Wird hingegen ein nichtleerer Pfad angehängt, dessen erzeugende Funktion $x/(1 - x)$ ist, ergeben sich zwei Möglichkeiten durch Vertauschen von $a$ und $b$.
+    Durch einen der beiden $\rho$-Graphen wird die Zusammenhangskomponente von $a$ erzeugt, durch den anderen $t$ und der Anfang von $u$ in Abbildung \ref{fig:psi-construction} ($\alpha$). Da $x$ die Zahl an Knoten markiert, wird von $w$ die halbe Zahl an Knoten markiert, wenn $x$ durch $x \sqrt w$ ersetzt wird. Dadurch erhält man die EF $x^2w(1 + x^2w) / (1 - x^2w)^3$, in der $w$ die Rho-Länge von $a$ markiert. Das erklärt den ersten Faktor in $\alpha_1(x, w)$. Nun gibt es zwei Möglichkeiten: Wird $u$ nicht verlängert, gilt $\nu(g, a) = \nu(g, b)$. Wird hingegen ein nichtleerer Pfad angehängt, dessen erzeugende Funktion $x/(1 - x)$ ist, ergeben sich zwei Möglichkeiten durch Vertauschen von $a$ und $b$.
 
-    Im zweiten Fall ist die erzeugende Funktion
+    Im Fall $\lambda(g, b) > \nu(g, a)$ ist die erzeugende Funktion
     \begin{align*}
         \alpha_2(x, w) =
         2 \; \frac {x^2w} {(1 - x^2w)^2} \, \frac x {1 - x} \,
         \frac {1}{1 - x}
         = \frac {2x^3w} {(1 - x^2w)^2 (1 - x)^2}
     \end{align*}
-    Der Faktor $x^2w$ repräsentiert die zwei Knoten, an denen $a$ und $b$ jeweils ihren Zyklus betreten, und der Knoten von $a$ ist mit $w$ markiert. Mit $1 / (1 - x^2w)^2$ erhält man vier Pfade $r, y, s, z$, sodass die Länge von $r$ gleich der Länge von $y$ und die Länge von $s$ gleich der Länge von $z$ ist. Die Summe der Längen von $r$ und $s$ wird von $w$ markiert. $r$ und $s$ werden wie in Abbildung \ref{fig:psi-construction} ($\alpha$) für die Zusammenhangskomponente von $a$ verwendet. Der Zyklus $t$ besteht aus $y, z$ und einem Pfad von Länge $\ge 1$, sodass $\lambda(f, b) > \nu(f, a)$ gilt. $u$ wird von dem Term $1 / (1 - x)$ gebildet.
+    Der Faktor $x^2w$ repräsentiert die zwei Knoten, an denen $a$ und $b$ jeweils ihren Zyklus betreten, und der Knoten von $a$ ist mit $w$ markiert. Mit $1 / (1 - x^2w)^2$ erhält man vier Pfade $r, y, s, z$, sodass die Länge von $r$ gleich der Länge von $y$ und die Länge von $s$ gleich der Länge von $z$ ist. Die Summe der Längen von $r$ und $s$ wird von $w$ markiert. $r$ und $s$ werden wie in Abbildung \ref{fig:psi-construction} ($\alpha$) für die Zusammenhangskomponente von $a$ verwendet. Der Zyklus $t$ besteht aus $y, z$ und einem Pfad von Länge $\ge 1$, sodass $\lambda(g, b) > \nu(g, a)$ gilt. $u$ wird von dem Term $1 / (1 - x)$ gebildet.
 
     \emph{Fall 2.}  In diesem Fall liegen $a$ und $b$ im gleichen Baum und ihr kleinster gemeinsamer Vorfahre ist nicht die Wurzel. Die erzeugende Funktion lautet
     \begin{align*}
@@ -378,14 +380,14 @@ wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehend
     Der Zyklusknoten, an dem der Baum von $a$ und $b$ anhängt, wird durch $xw$ repräsentiert. Der Pfad $s$ in Abbildung 1 ($\beta$) wird von  $xw/(1 - xw)$ erzeugt. Er muss mindestens Länge 1 haben, da der kleinste gemeinsame Vorfahre von $a$ und $b$ sonst die Wurzel wäre. Der Faktor $1/(1 - xw)$ steht für den Zyklus $r$. Mit $1/(1 - x^2w)$ werden zwei gleich lange Pfade erzeugt, deren einfache Länge durch $w$ markiert wird. Einer von ihnen wird für $t$ verwendet und der andere ist ein Teil von $u$. Nun gibt es wie in Fall 1 wieder die Option, $u$ echt zu verlängern und so einen Faktor 2 für die mögliche Vertauschung von $a$ und $b$ zu erhalten, oder ihn zu lassen, wobei es dann wegen der Symmetrie um $a$ und $b$ nur eine Möglichkeit gibt.
 
 
-    \emph{Fall 3.} Zuletzt bleibt der Fall, wenn $a$ und $b$ in verschiedenen Bäumen liegen oder die Wurzel ihr kleinster gemeinsamer Vorfahre ist. Eine andere Sichtweise ist, dass sich die Pfade von $a$ und $b$ bei wiederholtem Anwenden von $f$ erstmals bei einem Zyklusknoten treffen. Die erzeugende Funktion ist hier
+    \emph{Fall 3.} Zuletzt bleibt der Fall, wenn $a$ und $b$ in verschiedenen Bäumen liegen oder die Wurzel ihr kleinster gemeinsamer Vorfahre ist. Eine andere Sichtweise ist, dass sich die Pfade von $a$ und $b$ bei wiederholtem Anwenden von $g$ erstmals bei einem Zyklusknoten treffen. Die erzeugende Funktion ist hier
     \begin{align*}
         \gamma(x, w)
         = xw \, \frac {1} {(1 - xw)^2} \, \frac {1} {1 - x^2w} \,
         \Bigg (1 + \frac {2x}{1 - x} \Bigg )
         = \frac {xw(1 + x)} {(1 - xw)^2(1 - x^2w)(1 - x)}
     \end{align*}
-    $xw$ stellt den Zyklusknoten da, an dem der Baum von $a$ anhängt. Der Term $1/(1 - xw)^2$ erzeugt zwei Pfade, deren Länge mit $w$ markiert ist. Die zwei Pfade sind die zwei Teile des Zyklus, $r$ und $s$ in Abbildung \ref{fig:psi-construction} ($\gamma$). Ähnlich wie in Fall 2 ist der Term $1/(1 - x^2w)$ ein Paar an gleich langen Pfaden, deren Länge von $w$ markiert wird. Einer der Pfade ist $t$ und der andere ein Teil von $u$. Auch hier kann man die Länge von $u$ unverändert lassen, in diesem Fall gibt es eine Möglichkeit, oder einen Pfad von Länge $\ge 1$ hinzufügen, sodass es zwei Möglichkeiten durch Vertauschung von $a$ und $b$ gibt.
+    Der Knoten, an dem $a$ den Zyklus betritt, ist $xw$. Der Term $1/(1 - xw)^2$ erzeugt zwei Pfade, deren Länge mit $w$ markiert wird. Die zwei Pfade sind die zwei Teile $r$ und $s$ des Zyklus in Abbildung \ref{fig:psi-construction} ($\gamma$). Ähnlich wie in Fall 2 ist der Term $1/(1 - x^2w)$ ein Paar an gleich langen Pfaden, deren Länge von $w$ markiert wird. Einer der Pfade ist $t$ und der andere ein Teil von $u$. Auch hier kann man die Länge von $u$ unverändert lassen, in diesem Fall gibt es eine Möglichkeit, oder einen Pfad von Länge $\ge 1$ hinzufügen, sodass es zwei Möglichkeiten durch Vertauschung von $a$ und $b$ gibt.
 
     Ein funktionaler Graph besteht natürlich nicht nur aus einem Zyklus und den Pfaden von $a$ und $b$ zum Zyklus. Von jedem Knoten kann ein Baum ausgehen und es kann noch weitere Zusammenhangskomponenten geben. Indem $x$ durch $T(x)$ ersetzt wird, kann von jedem Knoten ein Baum ausgehen. Weitere Zusammenhangskomponenten bilden einen funktionalen Graphen, sie können also durch Multiplikation der EF mit $F(x)$ hinzugefügt werden. Weil die drei Fälle disjunkt sind und zusammen alle Möglichkeiten abdecken, gilt
     \begin{align*}
@@ -400,7 +402,7 @@ wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehend
         {T(x)(1 + 2T(x) + 2(T(x))^2)(1 + 5T(x) + 3(T(x))^2 + (T(x))^3)}
         {(1 - T(x))^6(1 + T(x))^3}
     \end{align*}
-    Nun soll die analytische Methode von \cite{fo90} verwendet werden, um eine asymptotische Abschätzung für die Koeffizienten der Taylorreihe von $\psi(x)$ zu erhalten. Nach \cite{fo90}, S. 334, Proposition 1 ist die betragsmäßig (in $\C$) kleinste Singularität von $T(x)$ bei $x = e^{-1}$ und es gilt
+    Nun soll die analytische Methode von \cite{fo90} verwendet werden, um eine asymptotische Abschätzung für die Koeffizienten der Taylorreihe von $\psi(x)$ zu erhalten. Nach \cite{fo90}, S. 334, Proposition 1 ist die betragsmäßig kleinste Singularität von $T(x)$ in $\C$ bei $x = e^{-1}$ und es gilt
     \begin{align*}
         T(x) \sim 1 - \sqrt{2} \; \sqrt {1 - ex}
     \end{align*}
@@ -409,10 +411,10 @@ wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehend
         \psi(x)
          & \sim \frac {T(e^{-1})(1 + 2T(e^{-1})
             + 2(T(e^{-1}))^2)(1 + 5T(e^{-1}) + 3(T(e^{-1}))^2 + (T(e^{-1}))^3)}
-        {(1 - (1 - \sqrt 2 \cdot \sqrt {1 - ez}))^6(1 + T(e^{-1}))^3} \\
+        {(1 - (1 - \sqrt 2 \cdot \sqrt {1 - ex}))^6(1 + T(e^{-1}))^3} \\
          & =\frac {(1 + 2 + 2)(1 + 5 + 3 + 1)}
-        {(\sqrt 2 )^6 (\sqrt{1 - ez})^6 \cdot 2^3}                    \\
-         & =\frac {50} {64(1 - ez)^3}
+        {(\sqrt 2 )^6 (\sqrt{1 - ex})^6 \cdot 2^3}                    \\
+         & =\frac {50} {64(1 - ex)^3}
     \end{align*}
     Folglich gilt mit der Notation in \cite{fo90} $\sigma(x) = x^3$ und $\alpha = 3$. Aus Theorem 1 folgt
     \begin{align*}
@@ -448,7 +450,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 
 \begin{theorem}
     \label{theorem:optimal-k-m1}
-    Sei $L_k(p)$ wie in (\ref{lk-definition}) definiert. Es gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd((p - 1)/2, k)$ genommen wird.
+    Sei $L_k(p)$ wie in (\ref{lk-definition}) definiert. Unter RMA gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd((p - 1)/2, k)$ genommen wird.
 \end{theorem}
 
 \begin{proof}
@@ -465,7 +467,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
         { \sqrt {2d - 1}} \nonumber
         \ge \sqrt{\pi p / 2} \, \lg (2k) \, \frac {\varphi(k)} k
     \end{align*}
-    Die Ungleichung lässt sich zeigen, indem statt der Summe über alle Teiler nur $d = 1$ betrachtet wird. Da es $\varphi(k)$ teilerfremde Zahlen kleiner $k$ gibt, ist $\P(\gcd((p - 1)/2, k) = 1) = \varphi(k)/k$. Nach \cite{rs62}, Theorem 15 gilt $ \varphi(k) / k > 1 / (e^\gamma \ln (\ln (k)) + 2.51 / \ln (\ln (k)))$ für $k \ge 3$, wobei $\gamma \approx 0.5772$ die Euler-Mascheroni-Konstante ist. Für $k \ge e^e$ folgt daraus $\varphi(k) / k > 1/(e^\gamma \ln(\ln(k)) + 2.51)$. Indem nun gezeigt wird, dass $\lg (2k) / (e^\gamma \ln (\ln (k)) + 2.51) > 1$ für $k \ge 16$ wird der Satz im Fall $k \ge 16$ bewiesen. Sei $f(x) = \lg (2x) / (e^\gamma \ln (\ln (x)) + 2.51)$. Es gilt $f(16) \approx 1.1557$ und
+    Für die Ungleichung wurde statt der Summe über alle Teiler nur $d = 1$ betrachtet. Da es $\varphi(k)$ teilerfremde Zahlen kleiner $k$ gibt, ist $\P(\gcd((p - 1)/2, k) = 1) = \varphi(k)/k$. Nach \cite{rs62}, Theorem 15 gilt $ \varphi(k) / k > 1 / (e^\gamma \ln (\ln (k)) + 2.51 / \ln (\ln (k)))$ für $k \ge 3$, wobei $\gamma \approx 0.5772$ die Euler-Mascheroni-Konstante ist. Für $k \ge e^e$ folgt daraus $\varphi(k) / k > 1/(e^\gamma \ln(\ln(k)) + 2.51)$. Indem nun gezeigt wird, dass $\lg (2k) / (e^\gamma \ln (\ln (k)) + 2.51) > 1$ für $k \ge 16$ wird der Satz im Fall $k \ge 16$ bewiesen. Sei $f(x) = \lg (2x) / (e^\gamma \ln (\ln (x)) + 2.51)$. Es gilt $f(16) \approx 1.1557$ und
     \begin{align*}
         f'(x)
         = \frac {\ln (x)(\ln (\ln (x)) + 1.51) - \ln 2}
@@ -478,7 +480,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Masch
 
 \begin{theorem}
     \label{theorem:optimal-k-m2}
-    Sei $L_{k_1, k_2}(p)$ wie in Abschnitt (\ref{lk-definition}) definiert. Im Folgenden wird der Erwartungswert von $L_{k_1, k_2}$ über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ genommen.
+    Sei $L_{k_1, k_2}(p)$ wie in Abschnitt (\ref{lk-definition}) definiert. Man nehme RMA an und bilde den Erwartungswert $\E(L_{k_1, k_2})$ über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$.
     \begin{enumerate}
         \item Wenn $k_1, k_2$ unterschiedliche Primzahlen sind, gilt $\E(L_{1, 1}(p)) < \E(L_{k_1, k_2}(p))$.
         \item Wenn $1 < k \in \N$, gilt $\E(L_{1, 1}(p)) < \E(L_{k, k}(p))$.
@@ -703,7 +705,7 @@ Um zu demonstrieren, dass Formel (\ref{expectation-tmin}), Satz \ref{theorem:opt
 
 \emph{Eine Maschine.} Die durchschnittliche Laufzeit für $1 \le k \le 48$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt. Die Laufzeit wird gut von (\ref{expectation-tmin}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert.
 
-\emph{Zwei Maschinen.} Die durchschnittliche Laufzeit und berechnete Werte für jedes Paar $1 \le k_1 \le k_2 \le 14$ sind in Abbildung \ref{fig:measurements-m2} dargestellt. Zur Berechnung der erwarteten Laufzeit wurde Formel (\ref{lkkp}) verwendet, wenn $k_1 = k_2$, und Formel (\ref{expectation-tmin}), wenn $k_1 \ne k_2$. Auch hier wird das grundsätzliche Verhalten der Laufzeit gut durch (\ref{expectation-tmin}) und (\ref{lkkp}) beschreiben. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist. Auffällig ist, dass die Laufzeitunterschiede zwischen weniger ausgeprägt sind als von den Formeln vorhergesagt. Das liegt wahrscheinlich daran, dass neben der Berechnung von $x^{2k}$ auch andere Berechnungen im Rho-Algorithmus durchgeführt werden, deren Dauer unabhängig von $k$ ist (z.B. das Bilden des $\gcd$). Diese werden aber in den Formeln nicht berücksichtigt.
+\emph{Zwei Maschinen.} Die durchschnittliche Laufzeit und berechnete Werte für jedes Paar $1 \le k_1 \le k_2 \le 14$ sind in Abbildung \ref{fig:measurements-m2} dargestellt. Zur Berechnung der erwarteten Laufzeit wurde Formel (\ref{lkkp}) verwendet, wenn $k_1 = k_2$, und Formel (\ref{expectation-tmin}), wenn $k_1 \ne k_2$. Auch hier wird das grundsätzliche Verhalten der Laufzeit gut durch (\ref{expectation-tmin}) und (\ref{lkkp}) beschreiben. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist. Auffällig ist, dass die Laufzeitunterschiede weniger ausgeprägt sind als von den Formeln vorhergesagt. Das liegt wahrscheinlich daran, dass neben der Berechnung von $x^{2k}$ auch andere Berechnungen im Rho-Algorithmus durchgeführt werden, deren Dauer unabhängig von $k$ ist (z.B. das Bilden des $\gcd$). Diese werden aber in den Formeln nicht berücksichtigt.
 
 \begin{figure}
 
