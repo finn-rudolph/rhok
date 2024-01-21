@@ -215,7 +215,7 @@ Der erste Faktor ist die Wahrscheinlichkeit, dass vor Zeitpunkt $t$ keine Kollis
     + O \bigg ( \frac 1 {h_i^{3/5}} \bigg )
     + \cdots
 \end{align*}
-Die Terme des ausmultiplizierten Produkts werden in der zweiten Zeile nach der Anzahl an $-O(j^2/h_i^2)$-Faktoren gruppiert. Von der zweiten zur dritten Zeile wird die Dreiecksungleichung verwendet und dass die Produke von $\exp(-j/h_i)$ kleiner gleich 1 sind. Anschließend ist alles positiv und die Beträge können weggelassen werden. Die letzte Zeile ist Teil einer geometrischen Reihe und geht daher für $h_i \to \infty$ gegen 0. (Eigentlich lassen wir $p \to \infty$ gehen, aber da $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ gilt $h_i = \Theta(p)$ und damit $h_i \to \infty \Longleftrightarrow p \to \infty$.) Im Fall $s < h_i^{3/5}$ können wir also
+Die Terme des ausmultiplizierten Produkts werden in der zweiten Zeile nach der Anzahl an $-O(j^2/h_i^2)$-Faktoren gruppiert. Von der zweiten zur dritten Zeile wird die Dreiecksungleichung verwendet und dass die Produkte von $\exp(-j/h_i)$ kleiner gleich 1 sind. Anschließend ist alles positiv und die Beträge können weggelassen werden. Die letzte Zeile ist Teil einer geometrischen Reihe und geht daher für $h_i \to \infty$ gegen 0. (Eigentlich lassen wir $p \to \infty$ gehen, aber da $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ gilt $h_i = \Theta(p)$ und damit $h_i \to \infty \Longleftrightarrow p \to \infty$.) Im Fall $s < h_i^{3/5}$ können wir also
 \begin{align*}
     \P(s_i > s)
     \sim \prod_{j = 0}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg )
@@ -444,7 +444,7 @@ Man bemerke, dass Satz \ref{theorem:min-rho-len-m2} unabhängig von der Anwendun
 \section{Bestimmung optimaler Exponenten für die Rho-Methode}
 \label{sec:optimal-k}
 
-In diesem Abschnitt wird die Frage behandelt, wie der Paramter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{expectation-tmin}) und Satz \ref{theorem:min-rho-len-m2} konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Da $p - 1$ gerade ist, gilt $\gcd(p-1, 2k_i) = 2\gcd((p - 1)/2, k_i)$. Weitere Kongruenzen von $p - 1$ sind im Allgemeinen nicht bekannt, weshalb angenommen wird, dass jeder Rest $(p- 1)/2$ modulo $k_i$ gleich wahrscheinlich ist.
+In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{expectation-tmin}) und Satz \ref{theorem:min-rho-len-m2} konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Da $p - 1$ gerade ist, gilt $\gcd(p-1, 2k_i) = 2\gcd((p - 1)/2, k_i)$. Weitere Kongruenzen von $p - 1$ sind im Allgemeinen nicht bekannt, weshalb angenommen wird, dass jeder Rest $(p- 1)/2$ modulo $k_i$ gleich wahrscheinlich ist.
 
 \subsection{Der Fall einer Maschine}
 
