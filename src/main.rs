@@ -13,9 +13,9 @@ use rayon::prelude::*;
 
 use crate::miller_rabin::miller_rabin;
 
-const SAMPLES: usize = 1 << 20;
+const SAMPLES: usize = 1 << 16;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 enum Source {
     Formula,
     Real,
@@ -34,13 +34,16 @@ fn iterate_k_cartesian_product(
     k_min: u64,
     k_max: u64,
     source: Source,
+    raw: bool,
     k: &mut Vec<u64>,
     j: usize,
 ) {
     if j == k.len() {
-        // for k_j in k.iter() {
-        //     print!("{:<5}", k_j);
-        // }
+        if !raw {
+            for k_j in k.iter() {
+                print!("{:<5}", k_j);
+            }
+        }
 
         let val = match source {
             Source::Real => {
@@ -56,7 +59,7 @@ fn iterate_k_cartesian_product(
                             let start = Instant::now();
                             pollard_rho::pollard_rho(n, *k_j, &mut rng);
                             let time_needed = start.elapsed();
-                            if time_needed >= Duration::from_secs(1) {
+                            if time_needed >= Duration::from_millis(200) {
                                 return Duration::ZERO;
                             }
                             min_time = min_time.min(time_needed);
@@ -65,6 +68,7 @@ fn iterate_k_cartesian_product(
                         min_time
                     })
                     .collect();
+
                 samples.sort();
                 let mut start = 0;
                 while samples[start] == Duration::ZERO {
@@ -72,8 +76,9 @@ fn iterate_k_cartesian_product(
                 }
 
                 print!(
-                    "{}% outliers ",
-                    (start as f64 / SAMPLES as f64) * 100.0
+                    "{:<20}{:<20}",
+                    (start as f64 / SAMPLES as f64) * 100.0,
+                    start
                 );
 
                 samples[start..].iter().sum::<Duration>().as_nanos() as f64
@@ -82,19 +87,21 @@ fn iterate_k_cartesian_product(
 
             Source::Formula => formula::expected_time(k_min, k_max, k, 0, 0.0),
         };
-        println!("{},", val);
+        println!("{}", val);
 
         return;
     }
 
     k[j] = if j > 0 { k[j - 1] } else { k_min };
     while k[j] <= k_max {
-        iterate_k_cartesian_product(k_min, k_max, source, k, j + 1);
+        iterate_k_cartesian_product(k_min, k_max, source, raw, k, j + 1);
         k[j] += 1;
     }
 }
 
 // CLI usage: [--formula | --real] [#machines] [minimal k] [maximal k]
+// If `--raw` is written after this, only the values without additional
+// information are printed.
 
 fn main() {
     // Only use half of the available threads for better measurement accuracy.
@@ -104,7 +111,7 @@ fn main() {
         .unwrap();
 
     let args: Vec<String> = env::args().collect();
-    assert_eq!(args.len(), 5);
+    assert!(5 <= args.len() && args.len() <= 6);
 
     let source = match args[1].as_str() {
         "--formula" => Source::Formula,
@@ -116,11 +123,28 @@ fn main() {
     let k_min: u64 = args[3].parse().unwrap();
     let k_max: u64 = args[4].parse().unwrap();
 
+    let raw = if args.len() == 6 {
+        assert!(args[5].as_str() == "--raw");
+        true
+    } else {
+        for i in 1..=machines {
+            print!("{:<5}", format!("k{}", i));
+        }
+
+        if source == Source::Real {
+            print!("{:<20}{:<20}", "% outliers", "# outliers");
+        }
+
+        println!("value");
+
+        false
+    };
+
     assert!(machines > 0);
     assert!(k_min > 0);
     assert!(k_min <= k_max);
 
     let mut k = vec![0u64; machines];
 
-    iterate_k_cartesian_product(k_min, k_max, source, &mut k, 0);
+    iterate_k_cartesian_product(k_min, k_max, source, raw, &mut k, 0);
 }
