@@ -1,8 +1,7 @@
 pub struct Montgomery {
-    pub n: u64, // the modulus
-    two_n: u64, // 2 * n
-    n_inv: u64, // n^-1 mod 2^64
-    one: u64,
+    pub n: u64,            // the modulus
+    two_n: u64,            // 2 * n
+    n_inv: u64,            // n^-1 mod 2^64
     two_to_128_mod_n: u64, // 2^128 mod n
 }
 
@@ -15,18 +14,15 @@ impl Montgomery {
                 n_inv.wrapping_mul(2u64.wrapping_sub(n.wrapping_mul(n_inv)));
             i += 1;
         }
-        let mut mtg = Montgomery {
+        Montgomery {
             n,
             two_n: n << 1,
             n_inv,
-            one: 0,
             two_to_128_mod_n: {
                 let two_to_64_mod_n = (1u128 << 64) % n as u128;
                 ((two_to_64_mod_n * two_to_64_mod_n) % n as u128) as u64
             },
-        };
-        mtg.one = mtg.strict(mtg.to_montgomery_space(1));
-        mtg
+        }
     }
 
     #[inline(always)]
@@ -44,6 +40,8 @@ impl Montgomery {
         self.n - mn_high
     }
 
+    // Adds x and y, which must lie in 0..2n - 1. The result also lies in
+    // 0..2n - 1.
     #[inline(always)]
     pub const fn add(&self, x: u64, y: u64) -> u64 {
         let z = x.wrapping_add(y);
