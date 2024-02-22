@@ -54,13 +54,13 @@ fn iterate_k_cartesian_product(
 
                         let mut min_time = Duration::from_secs(42);
                         for k_j in k.iter() {
-                            let start_time = Instant::now();
-                            if pollard_rho::pollard_rho(n, *k_j, &mut rng)
-                                == u64::MAX
-                            {
+                            let start = Instant::now();
+                            pollard_rho::pollard_rho(n, *k_j, &mut rng);
+                            let time_needed = start.elapsed();
+                            if time_needed >= Duration::from_secs(1) {
                                 return Duration::ZERO;
                             }
-                            min_time = min_time.min(start_time.elapsed());
+                            min_time = min_time.min(time_needed);
                         }
 
                         min_time
@@ -80,6 +80,7 @@ fn iterate_k_cartesian_product(
                 samples[start..].iter().sum::<Duration>().as_nanos() as f64
                     / (SAMPLES - start) as f64
             }
+
             Source::Formula => {
                 formula::expected_time(machines, k_min, k_max, k, 0, 0.0)
             }
@@ -95,6 +96,8 @@ fn iterate_k_cartesian_product(
         k[j] += 1;
     }
 }
+
+// CLI usage: [--formula | --real] [#machines] [minimal k] [maximal k]
 
 fn main() {
     // Only use half of the available threads for better measurement accuracy.
