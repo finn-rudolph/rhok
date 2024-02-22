@@ -64,25 +64,22 @@ impl Phi {
 
 static PHI: Lazy<Phi> = Lazy::new(|| Phi::new(K_MAX));
 
-pub fn expected_time(
-    machines: usize,
+fn two_dependent_machines(k: u64) -> f64 {
+    let mut expected = 0.0;
+    for d in PHI.divisors(k) {
+        expected += PHI.gcd_probability(k, *d) / ((2 * d - 1) as f64).sqrt();
+    }
+    (25.0 / 32.0) * (2.0 * k as f64).log2() * expected
+}
+
+fn independent_machines(
     k_min: u64,
     k_max: u64,
     k: &Vec<u64>,
     i: usize,
     s: f64,
 ) -> f64 {
-    // Formel für abhängige Maschinen
-    if k.iter().all(|k_j| *k_j == k[0]) {
-        let mut expected = 0.0;
-        for d in PHI.divisors(k[0]) {
-            expected +=
-                PHI.gcd_probability(k[0], *d) / ((2 * d - 1) as f64).sqrt();
-        }
-        return (25.0 / 32.0) * (2.0 * k[0] as f64).log2() * expected;
-    }
-
-    if i == machines {
+    if i == k.len() {
         return 1.0 / s.sqrt();
     }
 
@@ -91,7 +88,6 @@ pub fn expected_time(
     let mut expected: f64 = 0.0;
     for d in PHI.divisors(k[i]) {
         expected += expected_time(
-            machines,
             k_min,
             k_max,
             k,
@@ -101,4 +97,28 @@ pub fn expected_time(
     }
 
     expected
+}
+
+// k is the array of k-values assigned to the machines. Currently one of the
+// following must hold for k:
+//  - k.len() <= 2
+//  - k[i] != k[j] for all i != j
+pub fn expected_time(
+    k_min: u64,
+    k_max: u64,
+    k: &Vec<u64>,
+    i: usize,
+    s: f64,
+) -> f64 {
+    if k.iter().all(|k_j| *k_j == k[0]) {
+        assert!(k.len() <= 2);
+        return two_dependent_machines(k[0]);
+    }
+
+    assert!(k
+        .iter()
+        .enumerate()
+        .all(|(i, k_i)| k.iter().skip(i + 1).all(|k_j| k_i != k_j)));
+
+    independent_machines(k_min, k_max, k, i, s)
 }
