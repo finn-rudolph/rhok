@@ -31,14 +31,13 @@ fn random_prime(bits: u32, rng: &mut dyn RngCore) -> u64 {
 }
 
 fn iterate_k_cartesian_product(
-    machines: usize,
     k_min: u64,
     k_max: u64,
     source: Source,
     k: &mut Vec<u64>,
     j: usize,
 ) {
-    if j == machines {
+    if j == k.len() {
         // for k_j in k.iter() {
         //     print!("{:<5}", k_j);
         // }
@@ -81,9 +80,7 @@ fn iterate_k_cartesian_product(
                     / (SAMPLES - start) as f64
             }
 
-            Source::Formula => {
-                formula::expected_time(machines, k_min, k_max, k, 0, 0.0)
-            }
+            Source::Formula => formula::expected_time(k_min, k_max, k, 0, 0.0),
         };
         println!("{},", val);
 
@@ -92,7 +89,7 @@ fn iterate_k_cartesian_product(
 
     k[j] = if j > 0 { k[j - 1] } else { k_min };
     while k[j] <= k_max {
-        iterate_k_cartesian_product(machines, k_min, k_max, source, k, j + 1);
+        iterate_k_cartesian_product(k_min, k_max, source, k, j + 1);
         k[j] += 1;
     }
 }
@@ -125,5 +122,5 @@ fn main() {
 
     let mut k = vec![0u64; machines];
 
-    iterate_k_cartesian_product(machines, k_min, k_max, source, &mut k, 0);
+    iterate_k_cartesian_product(k_min, k_max, source, &mut k, 0);
 }
