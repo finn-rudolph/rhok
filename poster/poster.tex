@@ -2,6 +2,8 @@
 \usepackage[left=1cm, right=1cm, top=1cm, bottom=1cm]{geometry}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{svg}
+\usepackage{float}
 
 \renewcommand{\familydefault}{\sfdefault}
 \newcommand{\Z}{\mathbb{Z}}
@@ -22,10 +24,25 @@ Die Idee der Rho-Methode ist es, dass die Folge modulo $p$ wesentlich früher ei
 
 Zum Finden solcher $x_i, x_j$ ist es hilfreich, den funktionalen Graphen von $f$ zu betrachten. Der funktionale Graph von $f$ enthält alle möglichen Reste modulo $p$, also $0, 1, \dots p - 1$, als Knoten und eine Kante von $a$ nach $b$, wenn $f(a) = b$ modulo $p$. Die Folgenglieder von $x_0, f(x_0), f(f(x_0)), \dots$ sind also genau die Knoten, die man besucht, wenn man in dem funktionalen Graphen bei $x_0$ startet und immer die ausgehende Kante von jedem Knoten nimmt. Dann reduziert sich das Finden von $x_i, x_j$ darauf, einen Zyklus in dem Graphen zu finden. Denn ein Knoten im Zyklus wird bei der Berechnung der Folge wieder besucht, wird er also beispielsweise im $i$-ten und $j$-ten Schritt besucht, haben $x_i$ und $x_j$ den gleichen Rest modulo $p$.
 
+\newpage
+
 \subsection{Vorgehen}
 
-Ziel: mathematische Beschreibung der Laufzeit in Abh. von k, Ableiten optimaler Werte daraus + Experimente zur Bestätigung
-Beschreibung der betrachteten Fälle, Probleme, etc.
+\paragraph*{Ziel} Das Ziel war es, durch eine geeignete mathematische Beschreibung des Rho-Algorithmus eine Formel für die Laufzeit in Abhängigkeit der Werte von $k$ für jede Maschine herzuleiten. Es wurde wie üblich für den Rho-Algorithmus angenommen, dass sich $f(x) = x^{2k} + 1$ wie eine zufällige Funktion modulo $p$ verhält, sodass der Algorithmus wahrscheinlichkeitsbasiert analysiert werden konnte. Damit sollten die optimalen Werte für $k$ bestimmt werden.
+
+\paragraph*{Abhängige und unabhängige Maschinen} Eine Schwierigkeit bei der Analyse war, dass zwei Maschinen stochastisch abhängig sind, wenn ihre Werte von $k$ gleich sind. Im Fall unabhängiger Maschinen wurde folgende Formel für die Laufzeit gefunden:
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=350pt]{formula-indep}
+\end{figure}
+
+\noindent Der Fall abhängiger Maschinen konnte für zwei Maschinen gelöst werden. Hier wurde folgende Formel bestimmt.
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=300pt]{formula-dep2}
+\end{figure}
 
 \newpage
 
