@@ -30,6 +30,9 @@ fn random_prime(bits: u32, rng: &mut dyn RngCore) -> u64 {
     }
 }
 
+// Prints the running times / formula values for all possible assignments of
+// k-values to a given number of machines. The k-values are maintained in `k`,
+// `source` decides whether the formula or real measurements are used.
 fn iterate_k_cartesian_product(
     k_min: u64,
     k_max: u64,
