@@ -28,24 +28,29 @@ Zum Finden solcher $x_i, x_j$ ist es hilfreich, den funktionalen Graphen von $f$
 
 \subsection{Vorgehen}
 
-\paragraph*{Ziel} Das Ziel war es, durch eine geeignete mathematische Beschreibung des Rho-Algorithmus eine Formel für die Laufzeit in Abhängigkeit der Werte von $k$ für jede Maschine herzuleiten. Es wurde wie üblich für den Rho-Algorithmus angenommen, dass sich $f(x) = x^{2k} + 1$ wie eine zufällige Funktion modulo $p$ verhält, sodass der Algorithmus wahrscheinlichkeitsbasiert analysiert werden konnte. Damit sollten die optimalen Werte für $k$ bestimmt werden.
+Das Ziel war es, durch eine geeignete mathematische Beschreibung des Rho-Algorithmus eine Formel für die Laufzeit in Abhängigkeit der Werte von $k$ für jede Maschine herzuleiten. Es wurde wie üblich für den Rho-Algorithmus angenommen, dass sich $f(x) = x^{2k} + 1$ wie eine zufällige Funktion modulo $p$ verhält, sodass der Algorithmus wahrscheinlichkeitsbasiert analysiert werden konnte. Damit sollten die optimalen Werte für $k$ bestimmt werden.
 
-\paragraph*{Abhängige und unabhängige Maschinen} Eine Schwierigkeit bei der Analyse war, dass zwei Maschinen stochastisch abhängig sind, wenn ihre Werte von $k$ gleich sind. Im Fall unabhängiger Maschinen wurde folgende Formel für die Laufzeit gefunden:
+\vspace{0.5cm}
+\noindent \textbf{Abhängige und unabhängige Maschinen.} Eine Schwierigkeit bei der Analyse war, dass zwei Maschinen mit gleichem $k$ stochastisch abhängig sind. Der Fall stochastisch unabhängiger Maschinen, in dem nur paarweise verschiedene Werte von $k$ möglich sind, wurde daher vom Fall abhängiger Maschinen unterschieden. Im Fall unabhängiger Maschinen wurde folgende Formel als asymptotische Näherung für die Laufzeit gefunden:
 
 \begin{figure}[H]
     \centering
     \includesvg[width=350pt]{formula-indep}
 \end{figure}
 
-\noindent Der Fall abhängiger Maschinen konnte für zwei Maschinen gelöst werden. Hier wurde folgende Formel bestimmt.
+\noindent $M$ bezeichnet hier die Anzahl an Maschinen und $k_i$ den Wert von $k$ für die $i$-te Maschine.
+
+Der Fall abhängiger Maschinen konnte für $M = 2$ gelöst werden. Mithilfe erzeugender Funktionen und einiger Fallunterscheidungen wurde folgende Formel bestimmt.
 
 \begin{figure}[H]
     \centering
     \includesvg[width=300pt]{formula-dep2}
 \end{figure}
 
-\newpage
+\noindent \textbf{Laufzeitmessungen.} Es wurden Laufzeitmessungen für eine und zwei Maschinen durchgeführt, um zu zeigen, dass die hergeleiteten Formeln das Laufzeitverhalten des Algorithmus gut beschreiben. Dafür wurden für verschiedene Werte von $k$ jeweils $2^{20}$ zufällige 62-Bit Zahlen mit einem 21-Bit und einem 41-Bit Faktor gewählt und die Zeit gemessen, bis ein Faktor gefunden wurde. Die Ergebnisse sind in Abbildung 1 und 2 dargestellt.
 
 \subsection{Ergebnisse}
+
+Für den Fall einer Maschine konnte unter vereinfachenden Annahmen mithilfe obiger Formeln gezeigt werden, dass $k = 1$ optimal ist. Im Fall zweier Maschinen wurde gezeigt, dass für beide Maschinen $k = 1$ zu wählen besser ist, als wenn $k$ bei beiden Maschinen gleich ist oder jeweils eine Primzahl ist. Es wird vermutet und von Experimenten bestätigt, dass $k = 1$ für beide Maschinen optimal ist.
 
 \end{document}
