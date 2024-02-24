@@ -3,12 +3,9 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 
-
 \renewcommand{\familydefault}{\sfdefault}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\N}{\mathbb{N}}
-
-
 
 \begin{document}
 \subsection{Einführung}
@@ -19,10 +16,11 @@ Pollards Rho-Methode ist einer der schnellsten Algorithmen zur Primfaktorzerlegu
 
 \subsection{Pollard's Rho-Methode}
 
-Die zu faktorisierende Zahl wird $n$ genannt. In der Rho-Methode wird zunächst ein Anfangswert $0 \le x_0 < n$ zufällig gewählt. Der Paramter $k$ kommt ins Spiel, da nun die Funktion $f(x) = x^{2k} + 1$ wiederholt auf $x_0$ angewandt wird. Das erzeugt eine Folge an Zahlen $x_0, f(x_0), f(f(x_0)), \dots$. Es wird jeweils nur der Rest bei Division durch $n$ betrachtet (die Zahlen werden \emph{modulo} $n$ betrachtet). Wenn nun $p$ ein Primfaktor von $n$ ist und die Folge $x_0, f(x_0),$ $f(f(x_0)), \dots$ modulo $n$ berechnet wird, wird sie auch implizit modulo $p$ berechnet. Die Folge ist natürlich nicht wirklich modulo $p$ bekannt, da $p$ als Primfaktor von $n$ unbekannt ist. Aber nimmt man den Rest der Folgenglieder modulo $n$ und betrachtet diesen modulo $p$, erhält man das gleiche Ergebnis, wie wenn man Folge von Beginn an modulo $p$ berechnet hätte.
+Die zu faktorisierende Zahl wird $n$ genannt. In der Rho-Methode wird zunächst ein Anfangswert $0 \le x_0 < n$ zufällig gewählt. Anschließend wird die Funktion $f(x) = x^{2k} + 1$ wiederholt auf $x_0$ angewandt (hier wird der genannte Parameter $k$ verwendet). In der daraus entstehende Folge an Zahlen $x_0, f(x_0), f(f(x_0)), \dots$ wird jeweils nur der Rest bei Division durch $n$ gespeichert (die Zahlen werden \emph{modulo} $n$ betrachtet). Der Rest modulo $n$ nach $i$-maliger Anwendung von $f$ wird mit $x_i$ bezeichnet. Wenn nun $p$ ein Primfaktor von $n$ ist und die Folge $x_0, f(x_0),$ $f(f(x_0)), \dots$ modulo $n$ berechnet wird, wird sie auch implizit modulo $p$ berechnet. Die Folge ist natürlich nicht wirklich modulo $p$ bekannt, da $p$ als Primfaktor von $n$ unbekannt ist. Aber nimmt man den Rest von $x_i$ modulo $p$, erhält man das gleiche Ergebnis, wie nach $i$-maliger Anwendung von $f$ und Reduktion modulo $p$.
 
-Die Idee der Rho-Methode ist es, dass die Folge modulo $p$ wesentlich früher einen Wert zweimal annehmen wird, da $p$ deutlich kleiner als $n$ ist. dass  zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Das Ereignis, dass eine Folge einen Wert zweimal annimmt, wird eine \emph{Kollision} in dieser Folge genannt. Nimmt man an, dass die Periodenlänge von $(x_i)_{i \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Die Annahme ist plausibel, weil für den kleinsten Primfaktor $p \le \sqrt n$ gilt, es also deutlich weniger mögliche Werte für $\pi(x_i)$ als $x_i$ gibt. Im Folgenden ist $p$ immer der kleinste Primfaktor von $n$. Außerdem wird angenommen, dass die anderen Primfaktoren von $n$ so viel größer als $p$ sind, dass die Wahrscheinlichkeit einer Kollision modulo eines anderen Primfaktors vernachlässigbar gering ist. Zum Finden solcher $x_i, x_j$ ist es hilfreich, den funktionalen Graphen von $h$ zu betrachten.
+Die Idee der Rho-Methode ist es, dass die Folge modulo $p$ wesentlich früher einen Wert zum zweiten Mal annehmen wird, da $p$ deutlich kleiner als $n$ ist. Haben beispielsweise $x_i$ und $x_j$ ($i \ne j$) den gleichen Rest modulo $p$ aber nicht modulo $n$, ist $\gcd(x_i - x_j, n)$ ein Faktor von $n$, wobei $\gcd$ der größte gemeinsame Teiler ist. Das Problem reduziert sich also darauf, $x_i$ und $x_j$ mit gleichem Rest modulo $p$ zu finden.
 
+Zum Finden solcher $x_i, x_j$ ist es hilfreich, den funktionalen Graphen von $f$ zu betrachten. Der funktionale Graph von $f$ enthält alle möglichen Reste modulo $p$, also $0, 1, \dots p - 1$, als Knoten und eine Kante von $a$ nach $b$, wenn $f(a) = b$ modulo $p$. Die Folgenglieder von $x_0, f(x_0), f(f(x_0)), \dots$ sind also genau die Knoten, die man besucht, wenn man in dem funktionalen Graphen bei $x_0$ startet und immer die ausgehende Kante von jedem Knoten nimmt. Dann reduziert sich das Finden von $x_i, x_j$ darauf, einen Zyklus in dem Graphen zu finden. Denn ein Knoten im Zyklus wird bei der Berechnung der Folge wieder besucht, wird er also beispielsweise im $i$-ten und $j$-ten Schritt besucht, haben $x_i$ und $x_j$ den gleichen Rest modulo $p$.
 
 \subsection{Vorgehen}
 
