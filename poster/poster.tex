@@ -12,9 +12,7 @@
 \begin{document}
 \subsection{Einführung}
 
-Pollards Rho-Methode ist einer der schnellsten Algorithmen zur Primfaktorzerlegung kleiner Zahlen. Bei der Implementierung des Algorithmus kann ein Parameter $k$ gewählt werden, der unter Umständen großen Einfluss auf die Laufzeit hat, sowohl im positiven als auch im negativen Sinn. In dieser Arbeit wurde untersucht, wie $k$ bestmöglich gewählt wird. Es wurde insbesondere der Fall betrachtet, wenn der Rho-Algorithmus auf mehreren Maschinen gleichzeitig ausgeführt wird. Hier kann $k$ für jede Maschine separat gewählt werden.
-
-\newpage
+Pollards Rho-Methode ist einer der schnellsten Algorithmen zur Primfaktorzerlegung kleiner Zahlen. Bei der Implementierung des Algorithmus kann ein Parameter $k$ gewählt werden, der unter Umständen großen Einfluss auf die Laufzeit hat, sowohl im positiven als auch im negativen Sinn. In dieser Arbeit wurde untersucht, wie $k$ bestmöglich gewählt wird, wenn der Algorithmus auf mehreren Maschinen gleichzeitig ausgeführt wird.
 
 \subsection{Pollard's Rho-Methode}
 
@@ -34,8 +32,7 @@ Das Ziel war es, durch eine geeignete mathematische Beschreibung des Rho-Algorit
 \noindent \textbf{Abhängige und unabhängige Maschinen.} Eine Schwierigkeit bei der Analyse war, dass zwei Maschinen mit gleichem $k$ stochastisch abhängig sind. Der Fall stochastisch unabhängiger Maschinen, in dem nur paarweise verschiedene Werte von $k$ möglich sind, wurde daher vom Fall abhängiger Maschinen unterschieden. Im Fall unabhängiger Maschinen wurde folgende Formel als asymptotische Näherung für die Laufzeit gefunden:
 
 \begin{figure}[H]
-    \centering
-    \includesvg[width=350pt]{formula-indep}
+    \hspace{3.5cm} \includesvg[height=70pt]{formula-indep}
 \end{figure}
 
 \noindent $M$ bezeichnet hier die Anzahl an Maschinen und $k_i$ den Wert von $k$ für die $i$-te Maschine.
@@ -44,7 +41,7 @@ Der Fall abhängiger Maschinen konnte für $M = 2$ gelöst werden. Mithilfe erze
 
 \begin{figure}[H]
     \centering
-    \includesvg[width=300pt]{formula-dep2}
+    \includesvg[height=60pt]{formula-dep2}
 \end{figure}
 
 \noindent \textbf{Laufzeitmessungen.} Es wurden Laufzeitmessungen für eine und zwei Maschinen durchgeführt, um zu zeigen, dass die hergeleiteten Formeln das Laufzeitverhalten des Algorithmus gut beschreiben. Dafür wurden für verschiedene Werte von $k$ jeweils $2^{20}$ zufällige 62-Bit Zahlen mit einem 21-Bit und einem 41-Bit Faktor gewählt und die Zeit gemessen, bis ein Faktor gefunden wurde. Die Ergebnisse sind in Abbildung 1 und 2 dargestellt.
