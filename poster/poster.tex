@@ -12,34 +12,41 @@
 \begin{document}
 \subsection{Einführung}
 
-Pollards Rho-Methode ist einer der schnellsten Algorithmen zur Primfaktorzerlegung kleiner Zahlen. Bei der Implementierung des Algorithmus kann ein Parameter $k$ gewählt werden, der unter Umständen großen Einfluss auf die Laufzeit hat, sowohl im positiven als auch im negativen Sinn. In dieser Arbeit wurde untersucht, wie $k$ bestmöglich gewählt wird, wenn der Algorithmus auf mehreren Maschinen gleichzeitig ausgeführt wird.
+Pollards Rho-Methode ist einer der schnellsten Algorithmen zur Primfaktorzerlegung kleiner Zahlen. Bei der Implementierung des Algorithmus kann ein Parameter $k$ gewählt werden, der unter Umständen gro-ßen Einfluss auf die Laufzeit hat, sowohl im positiven als auch im negativen Sinn. In dieser Arbeit wurde untersucht, wie $k$ bestmöglich gewählt wird. Es wurde insbesondere der Fall betrachtet, wenn der Algorithmus auf mehreren Maschinen (Computern) gleichzeitig ausgeführt wird. Hier kann $k$ für jede Maschine separat gewählt werden.
 
 \newpage
 
 \subsection{Vorgehen}
 
-Das Ziel war es, durch eine geeignete mathematische Beschreibung des Rho-Algorithmus eine Formel für die Laufzeit in Abhängigkeit der Werte von $k$ für jede Maschine herzuleiten. Es wurde wie üblich für den Rho-Algorithmus angenommen, dass sich $f(x) = x^{2k} + 1$ wie eine zufällige Funktion modulo $p$ verhält, sodass der Algorithmus wahrscheinlichkeitsbasiert analysiert werden konnte. Damit sollten die optimalen Werte für $k$ bestimmt werden.
+Das Ziel war es, durch eine geeignete mathematische Beschreibung des Rho-Algorithmus eine Formel für die mittlere Laufzeit in Abhängigkeit der Werte von $k$ für jede Maschine herzuleiten. Es wurde wie üblich für den Rho-Algorithmus angenommen, dass sich $f(x) = x^{2k} + 1$ wie eine zufällige Funktion modulo $p$ verhält, sodass der Algorithmus wahrscheinlichkeitsbasiert analysiert werden konnte. Die Laufzeit des Rho-Algorithmus wird vor allem von der Anzahl an Iterationen bestimmt, bis ein Faktor gefunden wird. Diese ist von der Struktur des funktionalen Graphen von $f$ und damit von $k$ abhängig, im Allgemeinen hat der Graph bei größerem $k$ eine bessere Struktur. Die Dauer einer Iteration steigt aber um $\log_2 2k$ im Verhältnis zu $k = 1$ wegen der Berechnung von $x^{2k}$.
 
 \vspace{0.5cm}
 \noindent \textbf{Abhängige und unabhängige Maschinen.} Eine Schwierigkeit bei der Analyse war, dass zwei Maschinen mit gleichem $k$ stochastisch abhängig sind. Der Fall stochastisch unabhängiger Maschinen, in dem nur paarweise verschiedene Werte von $k$ möglich sind, wurde daher vom Fall abhängiger Maschinen unterschieden. Im Fall unabhängiger Maschinen wurde folgende Formel als asymptotische Näherung für die Laufzeit gefunden:
 
 \begin{figure}[H]
-    \hspace{3.3cm} \includesvg[height=70pt]{formula-indep}
+    \hspace{2.4cm} \includesvg[height=70pt]{formula-indep}
 \end{figure}
+
 
 \noindent $M$ bezeichnet hier die Anzahl an Maschinen und $k_i$ den Wert von $k$ für die $i$-te Maschine.
 
-Der Fall abhängiger Maschinen konnte für $M = 2$ gelöst werden. Mithilfe erzeugender Funktionen und einiger Fallunterscheidungen wurde folgende Formel bestimmt.
+Der Fall abhängiger Maschinen konnte für $M = 2$ gelöst werden. Hier wurde folgende Formel bestimmt:
 
 \begin{figure}[H]
-    \hspace{3.7cm}
+    \hspace{2.8cm}
     \includesvg[height=60pt]{formula-dep2}
 \end{figure}
 
-\noindent \textbf{Laufzeitmessungen.} Es wurden Laufzeitmessungen für eine und zwei Maschinen durchgeführt, um zu zeigen, dass die hergeleiteten Formeln das Laufzeitverhalten des Algorithmus gut beschreiben. Dafür wurden für verschiedene Werte von $k$ jeweils $2^{20}$ zufällige 62-Bit Zahlen mit einem 21-Bit und einem 41-Bit Faktor gewählt und die Zeit gemessen, bis ein Faktor gefunden wurde. Die Ergebnisse sind in Abbildung 1 und 2 dargestellt.
+\noindent Wenn bei $M = 2$ die Maschinen abhängig voneinander sind, sind ihre $k$-Werte gleich. Da der funktionale Graph von $f$ durch $k$ bestimmt wird, heißt das, dass sich die beiden Maschinen im gleichen funktionalen Graphen bewegen. Man kann sich den Algorithmus in diesem Fall so vorstellen, dass man zwei zufällige Startknoten in einem zufälligen funktionalen Graphen wählt und den Zykelfindungsalgorithmus von beiden Knoten gleichzeitig ausführt. Für die Bestimmung von (2) muss also der Durchschnitt des Minimums der Anzahl nötiger Iterationen für alle möglichen Paare an Startknoten betrachtet werden. Das wurde durch Konstruktion aller möglichen funktionalen Graphen und Paare an Anfangswerten durch erzeugende Funktionen realisiert.
+
+\newpage
+
+\subsection{Laufzeitmessungen} Es wurden Laufzeitmessungen für eine und zwei Maschinen durchgeführt, um zu zeigen, dass die hergeleiteten Formeln das Laufzeitverhalten des Algorithmus gut beschreiben. Dafür wurden für verschiedene Werte von $k$ jeweils $2^{20}$ zufällige 62-Bit Zahlen mit einem 21-Bit und einem 41-Bit Faktor gewählt und die Zeit gemessen, bis von mindestens einer Maschine ein Faktor gefunden wurde. Die Ergebnisse sind in den Abbildungen 1 und 2 dargestellt.
 
 \subsection{Ergebnisse}
 
-Für den Fall einer Maschine konnte unter vereinfachenden Annahmen mithilfe obiger Formeln gezeigt werden, dass $k = 1$ optimal ist. Im Fall zweier Maschinen wurde gezeigt, dass für beide Maschinen $k = 1$ zu wählen besser ist, als wenn $k$ bei beiden Maschinen gleich ist oder jeweils eine Primzahl ist. Es wird vermutet und von Experimenten bestätigt, dass $k = 1$ für beide Maschinen optimal ist.
+Für den Fall einer Maschine konnte mithilfe obiger Formeln unter vereinfachenden Annahmen gezeigt werden, dass $k = 1$ optimal ist. Im Fall zweier Maschinen wurde gezeigt, dass für beide Maschinen $k = 1$ zu wählen besser ist, als wenn $k$ bei beiden Maschinen gleich ist oder jeweils eine Primzahl ist. Es wird vermutet und von Experimenten bestätigt, dass $k = 1$ für beide Maschinen optimal ist.
+
+Offen bleibt eine vollständige Klärung von $M = 2$ und $M \ge 3$. Bei $M \ge 3$ kann es jedoch sein, dass manche Maschinen abhängig und manche unabhängig sind, was mit den hier entwickelten Methoden noch nicht behandelt werden kann.
 
 \end{document}
