@@ -1,5 +1,5 @@
 \documentclass[a4paper, extrafontsizes, ngerman, 25pt]{memoir}
-\usepackage[left=1cm, right=1cm, top=1cm, bottom=1cm]{geometry}
+\usepackage[left=1cm, right=2cm, top=1cm, bottom=1cm]{geometry}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{svg}
@@ -14,14 +14,6 @@
 
 Pollards Rho-Methode ist einer der schnellsten Algorithmen zur Primfaktorzerlegung kleiner Zahlen. Bei der Implementierung des Algorithmus kann ein Parameter $k$ gewählt werden, der unter Umständen großen Einfluss auf die Laufzeit hat, sowohl im positiven als auch im negativen Sinn. In dieser Arbeit wurde untersucht, wie $k$ bestmöglich gewählt wird, wenn der Algorithmus auf mehreren Maschinen gleichzeitig ausgeführt wird.
 
-\subsection{Pollard's Rho-Methode}
-
-Die zu faktorisierende Zahl wird $n$ genannt. In der Rho-Methode wird zunächst ein Anfangswert $0 \le x_0 < n$ zufällig gewählt. Anschließend wird die Funktion $f(x) = x^{2k} + 1$ wiederholt auf $x_0$ angewandt (hier wird der genannte Parameter $k$ verwendet). In der daraus entstehende Folge an Zahlen $x_0, f(x_0), f(f(x_0)), \dots$ wird jeweils nur der Rest bei Division durch $n$ gespeichert (die Zahlen werden \emph{modulo} $n$ betrachtet). Der Rest modulo $n$ nach $i$-maliger Anwendung von $f$ wird mit $x_i$ bezeichnet. Wenn nun $p$ ein Primfaktor von $n$ ist und die Folge $x_0, f(x_0),$ $f(f(x_0)), \dots$ modulo $n$ berechnet wird, wird sie auch implizit modulo $p$ berechnet. Die Folge ist natürlich nicht wirklich modulo $p$ bekannt, da $p$ als Primfaktor von $n$ unbekannt ist. Aber nimmt man den Rest von $x_i$ modulo $p$, erhält man das gleiche Ergebnis, wie nach $i$-maliger Anwendung von $f$ und Reduktion modulo $p$.
-
-Die Idee der Rho-Methode ist es, dass die Folge modulo $p$ wesentlich früher einen Wert zum zweiten Mal annehmen wird, da $p$ deutlich kleiner als $n$ ist. Haben beispielsweise $x_i$ und $x_j$ ($i \ne j$) den gleichen Rest modulo $p$ aber nicht modulo $n$, ist $\gcd(x_i - x_j, n)$ ein Faktor von $n$, wobei $\gcd$ der größte gemeinsame Teiler ist. Das Problem reduziert sich also darauf, $x_i$ und $x_j$ mit gleichem Rest modulo $p$ zu finden.
-
-Zum Finden solcher $x_i, x_j$ ist es hilfreich, den funktionalen Graphen von $f$ zu betrachten. Der funktionale Graph von $f$ enthält alle möglichen Reste modulo $p$, also $0, 1, \dots p - 1$, als Knoten und eine Kante von $a$ nach $b$, wenn $f(a) = b$ modulo $p$. Die Folgenglieder von $x_0, f(x_0), f(f(x_0)), \dots$ sind also genau die Knoten, die man besucht, wenn man in dem funktionalen Graphen bei $x_0$ startet und immer die ausgehende Kante von jedem Knoten nimmt. Dann reduziert sich das Finden von $x_i, x_j$ darauf, einen Zyklus in dem Graphen zu finden. Denn ein Knoten im Zyklus wird bei der Berechnung der Folge wieder besucht, wird er also beispielsweise im $i$-ten und $j$-ten Schritt besucht, haben $x_i$ und $x_j$ den gleichen Rest modulo $p$.
-
 \newpage
 
 \subsection{Vorgehen}
@@ -32,7 +24,7 @@ Das Ziel war es, durch eine geeignete mathematische Beschreibung des Rho-Algorit
 \noindent \textbf{Abhängige und unabhängige Maschinen.} Eine Schwierigkeit bei der Analyse war, dass zwei Maschinen mit gleichem $k$ stochastisch abhängig sind. Der Fall stochastisch unabhängiger Maschinen, in dem nur paarweise verschiedene Werte von $k$ möglich sind, wurde daher vom Fall abhängiger Maschinen unterschieden. Im Fall unabhängiger Maschinen wurde folgende Formel als asymptotische Näherung für die Laufzeit gefunden:
 
 \begin{figure}[H]
-    \hspace{3.5cm} \includesvg[height=70pt]{formula-indep}
+    \hspace{3.3cm} \includesvg[height=70pt]{formula-indep}
 \end{figure}
 
 \noindent $M$ bezeichnet hier die Anzahl an Maschinen und $k_i$ den Wert von $k$ für die $i$-te Maschine.
@@ -40,7 +32,7 @@ Das Ziel war es, durch eine geeignete mathematische Beschreibung des Rho-Algorit
 Der Fall abhängiger Maschinen konnte für $M = 2$ gelöst werden. Mithilfe erzeugender Funktionen und einiger Fallunterscheidungen wurde folgende Formel bestimmt.
 
 \begin{figure}[H]
-    \centering
+    \hspace{3.7cm}
     \includesvg[height=60pt]{formula-dep2}
 \end{figure}
 
