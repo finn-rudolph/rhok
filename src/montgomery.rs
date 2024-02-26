@@ -25,6 +25,8 @@ impl Montgomery {
         }
     }
 
+    // We want x * 2^64 mod n, which can be achieved by multiplying by 2^128
+    // using `mul`, since `mul` divides by 2^64.
     #[inline(always)]
     pub const fn to_montgomery_space(&self, x: u64) -> u64 {
         self.mul(x, self.two_to_128_mod_n)
