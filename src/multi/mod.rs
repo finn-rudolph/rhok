@@ -2,13 +2,18 @@ mod pollard_rho;
 
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
+use once_cell::sync::Lazy;
 use rug::{integer::IsPrime, rand::RandState, Integer};
 
 use self::pollard_rho::pollard_rho;
 
+const SAMPLES: usize = 1 << 11;
 const MIN_BITS: u32 = 22;
 const MAX_BITS: u32 = 128;
 const TOTAL_BITS: u32 = 192;
+
+static TEST_NUMBERS: Lazy<Vec<Integer>> =
+    Lazy::new(|| gen_test_numbers(SAMPLES));
 
 fn prime_with_bits(
     min_bits: u32,
@@ -24,7 +29,7 @@ fn prime_with_bits(
     p
 }
 
-pub fn gen_test_numbers(samples: usize) -> Vec<Integer> {
+fn gen_test_numbers(samples: usize) -> Vec<Integer> {
     let mut rng = RandState::new();
     rng.seed(&Integer::from(
         SystemTime::now()
@@ -33,6 +38,7 @@ pub fn gen_test_numbers(samples: usize) -> Vec<Integer> {
             .as_nanos(),
     ));
     let mut test_numbers: Vec<Integer> = Vec::new();
+
     while test_numbers.len() < samples {
         let mut n = prime_with_bits(MIN_BITS, MIN_BITS, &mut rng);
         while n.significant_bits() < TOTAL_BITS {
@@ -47,15 +53,16 @@ pub fn gen_test_numbers(samples: usize) -> Vec<Integer> {
         }
         test_numbers.push(n);
     }
+
     test_numbers
 }
 
-pub fn measure(k: &Vec<u64>, test_numbers: &Vec<Integer>) -> (f64, usize) {
+pub fn measure(k: &Vec<u64>) -> (f64, usize) {
     let mut sum = Duration::ZERO;
     let mut outliers: usize = 0;
     let mut rng = RandState::new();
 
-    for n in test_numbers {
+    for n in TEST_NUMBERS.iter() {
         let mut min_time = Duration::from_secs(42);
 
         for k_i in k {
@@ -74,7 +81,7 @@ pub fn measure(k: &Vec<u64>, test_numbers: &Vec<Integer>) -> (f64, usize) {
     }
 
     (
-        sum.as_nanos() as f64 / (test_numbers.len() - outliers) as f64,
+        sum.as_nanos() as f64 / (TEST_NUMBERS.len() - outliers) as f64,
         outliers,
     )
 }
