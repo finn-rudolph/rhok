@@ -37,6 +37,7 @@ pub fn pollard_rho(
     const LENGTH_LIMIT: u64 = 1 << 18;
 
     let _k = k << 1;
+    let c: Integer = n.random_below_ref(rng).into();
 
     let mut x: Integer = n.random_below_ref(rng).into();
 
@@ -48,7 +49,7 @@ pub fn pollard_rho(
             let mut i = 0;
             while i < l {
                 for _ in 0..BATCH_SIZE {
-                    x = pow_mod(x, _k, n) + 1;
+                    x = pow_mod(x, _k, n) + &c;
                     q *= (&x - &y).complete();
                     q %= n;
                 }
