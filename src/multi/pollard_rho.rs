@@ -26,13 +26,7 @@ fn pow_mod(mut x: Integer, mut y: u64, modulus: &Integer) -> Integer {
     result
 }
 
-// TODO: set iter limit and use option
-
-pub fn pollard_rho(
-    n: &Integer,
-    k: u64,
-    rng: &mut RandState,
-) -> Option<Integer> {
+pub fn pollard_rho(n: &Integer, k: u64, rng: &mut RandState) -> Integer {
     const BATCH_SIZE: u64 = 1 << 10;
     const LENGTH_LIMIT: u64 = 1 << 18;
 
@@ -56,7 +50,7 @@ pub fn pollard_rho(
 
                 let g = n.gcd_ref(&q).complete();
                 if g != 1 && g != *n {
-                    return Some(g);
+                    return g;
                 }
 
                 i += BATCH_SIZE;

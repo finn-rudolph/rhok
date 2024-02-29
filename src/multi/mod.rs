@@ -7,7 +7,7 @@ use rug::{integer::IsPrime, rand::RandState, Integer};
 
 use self::pollard_rho::pollard_rho;
 
-const SAMPLES: usize = 1 << 11;
+const SAMPLES: usize = 1 << 10;
 const MIN_BITS: u32 = 22;
 const MAX_BITS: u32 = 128;
 const TOTAL_BITS: u32 = 192;
@@ -67,21 +67,11 @@ pub fn measure(k: &Vec<u64>) -> f64 {
 
         for k_i in k {
             let start = Instant::now();
-            match pollard_rho(n, *k_i, &mut rng) {
-                Some(_) => min_time = min_time.min(start.elapsed()),
-                None => {
-                    outliers += 1;
-                    min_time = Duration::ZERO;
-                    break;
-                }
-            }
+            pollard_rho(n, *k_i, &mut rng);
+            min_time = min_time.min(start.elapsed());
         }
 
         sum += min_time;
-    }
-
-    if outliers != 0 {
-        println!("{} outlier(s) at k = {:?}", outliers, k);
     }
 
     sum.as_nanos() as f64 / (TEST_NUMBERS.len() - outliers) as f64
