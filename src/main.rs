@@ -1,24 +1,18 @@
 mod formula;
-mod miller_rabin;
-mod montgomery;
-mod pollard_rho;
+mod multi;
+mod single;
 
-use std::{
-    env,
-    time::{Duration, Instant},
-};
+use std::env;
 
-use rand::{thread_rng, RngCore};
-use rayon::prelude::*;
+use rand::RngCore;
 
-use crate::miller_rabin::miller_rabin;
-
-const SAMPLES: usize = 1 << 16;
+use crate::single::miller_rabin;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Source {
     Formula,
-    Real,
+    Single,
+    Multi,
 }
 
 fn random_prime(bits: u32, rng: &mut dyn RngCore) -> u64 {
@@ -49,45 +43,8 @@ fn iterate_k_cartesian_product(
         }
 
         let val = match source {
-            Source::Real => {
-                let mut samples: Vec<Duration> = (0..SAMPLES)
-                    .into_par_iter()
-                    .map(|_| {
-                        let mut rng = thread_rng();
-                        let n = random_prime(21, &mut rng)
-                            * random_prime(41, &mut rng);
-
-                        let mut min_time = Duration::from_secs(42);
-                        for k_j in k.iter() {
-                            let start = Instant::now();
-                            pollard_rho::pollard_rho(n, *k_j, &mut rng);
-                            let time_needed = start.elapsed();
-                            if time_needed >= Duration::from_millis(200) {
-                                return Duration::ZERO;
-                            }
-                            min_time = min_time.min(time_needed);
-                        }
-
-                        min_time
-                    })
-                    .collect();
-
-                samples.sort();
-                let mut start = 0;
-                while samples[start] == Duration::ZERO {
-                    start += 1;
-                }
-
-                print!(
-                    "{:<20}{:<20}",
-                    (start as f64 / SAMPLES as f64) * 100.0,
-                    start
-                );
-
-                samples[start..].iter().sum::<Duration>().as_nanos() as f64
-                    / (SAMPLES - start) as f64
-            }
-
+            Source::Single => single::measure(k),
+            Source::Multi => multi::measure(k),
             Source::Formula => formula::expected_time(k_min, k_max, k, 0, 0.0),
         };
         println!("{}", val);
@@ -102,7 +59,8 @@ fn iterate_k_cartesian_product(
     }
 }
 
-// CLI usage: [--formula | --real] [#machines] [minimal k] [maximal k]
+// CLI usage: [--formula | --single | --multi] [#machines] [minimal k]
+// [maximal k]
 // If `--raw` is written after this, only the values without additional
 // information are printed.
 
@@ -118,7 +76,8 @@ fn main() {
 
     let source = match args[1].as_str() {
         "--formula" => Source::Formula,
-        "--real" => Source::Real,
+        "--single" => Source::Single,
+        "--multi" => Source::Multi,
         _ => unreachable!(),
     };
 
@@ -134,7 +93,7 @@ fn main() {
             print!("{:<5}", format!("k{}", i));
         }
 
-        if source == Source::Real {
+        if source == Source::Single {
             print!("{:<20}{:<20}", "% outliers", "# outliers");
         }
 

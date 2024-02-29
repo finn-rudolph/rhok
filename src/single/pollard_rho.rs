@@ -2,7 +2,7 @@ use core::cmp;
 
 use rand::RngCore;
 
-use crate::montgomery::Montgomery;
+use crate::single::montgomery::Montgomery;
 
 pub fn gcd(mut a: u64, mut b: u64) -> u64 {
     if a == 0 {
