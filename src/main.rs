@@ -4,24 +4,11 @@ mod single;
 
 use std::env;
 
-use rand::RngCore;
-
-use crate::single::miller_rabin;
-
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Source {
     Formula,
     Single,
     Multi,
-}
-
-fn random_prime(bits: u32, rng: &mut dyn RngCore) -> u64 {
-    loop {
-        let p = rng.next_u64() >> (64 - bits);
-        if p != 2 && miller_rabin(p) {
-            return p;
-        }
-    }
 }
 
 // Prints the running times / formula values for all possible assignments of
@@ -108,6 +95,15 @@ fn main() {
     let k_min: u64 = args[3].parse().unwrap();
     let k_max: u64 = args[4].parse().unwrap();
 
+    assert!(machines > 0);
+    assert!(k_min > 0);
+    assert!(k_min <= k_max);
+
+    let mut k = vec![0u64; machines];
+    let mut values = Vec::new();
+
+    iterate_k_values(k_min, k_max, source, &mut k, 0, &mut values);
+
     let raw = if args.len() == 6 {
         assert!(args[5].as_str() == "--raw");
         true
@@ -120,15 +116,6 @@ fn main() {
 
         false
     };
-
-    assert!(machines > 0);
-    assert!(k_min > 0);
-    assert!(k_min <= k_max);
-
-    let mut k = vec![0u64; machines];
-    let mut values = Vec::new();
-
-    iterate_k_values(k_min, k_max, source, &mut k, 0, &mut values);
 
     // Normalize values
     {

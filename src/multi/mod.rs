@@ -3,6 +3,7 @@ mod pollard_rho;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use once_cell::sync::Lazy;
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use rug::{integer::IsPrime, rand::RandState, Integer};
 
 use self::pollard_rho::pollard_rho;
@@ -58,21 +59,24 @@ fn gen_test_numbers(samples: usize) -> Vec<Integer> {
 }
 
 pub fn measure(k: &Vec<u64>) -> f64 {
-    let mut sum = Duration::ZERO;
-    let mut outliers: usize = 0;
-    let mut rng = RandState::new();
+    let sum: Duration = TEST_NUMBERS
+        .par_iter()
+        .fold(
+            || Duration::ZERO,
+            |sum, n| {
+                let mut min_time = Duration::from_secs(42);
+                let mut rng = RandState::new();
 
-    for n in TEST_NUMBERS.iter() {
-        let mut min_time = Duration::from_secs(42);
+                for k_i in k {
+                    let start = Instant::now();
+                    pollard_rho(n, *k_i, &mut rng);
+                    min_time = min_time.min(start.elapsed());
+                }
 
-        for k_i in k {
-            let start = Instant::now();
-            pollard_rho(n, *k_i, &mut rng);
-            min_time = min_time.min(start.elapsed());
-        }
+                sum + min_time
+            },
+        )
+        .sum();
 
-        sum += min_time;
-    }
-
-    sum.as_nanos() as f64 / (TEST_NUMBERS.len() - outliers) as f64
+    sum.as_nanos() as f64 / TEST_NUMBERS.len() as f64
 }
