@@ -36,7 +36,14 @@ pub fn gen_test_numbers(samples: usize) -> Vec<Integer> {
     while test_numbers.len() < samples {
         let mut n = prime_with_bits(MIN_BITS, MIN_BITS, &mut rng);
         while n.significant_bits() < TOTAL_BITS {
-            n *= prime_with_bits(MIN_BITS, MIN_BITS, &mut rng);
+            n *= prime_with_bits(
+                MIN_BITS,
+                (Integer::from(MAX_BITS - MIN_BITS).random_below(&mut rng)
+                    + MIN_BITS)
+                    .to_u32()
+                    .unwrap(),
+                &mut rng,
+            );
         }
         test_numbers.push(n);
     }
