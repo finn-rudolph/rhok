@@ -1,7 +1,7 @@
 use once_cell::sync::Lazy;
 
 const K_MAX: u64 = 1 << 14;
-const F: usize = 7;
+const F: usize = 1;
 
 struct Phi {
     phi: Vec<u64>,

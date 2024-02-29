@@ -27,13 +27,41 @@ fn random_prime(bits: u32, rng: &mut dyn RngCore) -> u64 {
 // Prints the running times / formula values for all possible assignments of
 // k-values to a given number of machines. The k-values are maintained in `k`,
 // `source` decides whether the formula or real measurements are used.
-fn iterate_k_cartesian_product(
+fn iterate_k_values(
     k_min: u64,
     k_max: u64,
     source: Source,
-    raw: bool,
     k: &mut Vec<u64>,
     j: usize,
+    val: &mut Vec<f64>,
+) {
+    if j == k.len() {
+        val.push(match source {
+            Source::Single => single::measure(k),
+            Source::Multi => multi::measure(k),
+            Source::Formula => formula::expected_time(k_min, k_max, k),
+        });
+        println!("{:?}", k);
+        return;
+    }
+
+    k[j] = if j > 0 { k[j - 1] } else { k_min };
+    while k[j] <= k_max {
+        iterate_k_values(k_min, k_max, source, k, j + 1, val);
+        k[j] += 1;
+    }
+}
+
+// TODO: maybe use higher order fn to not repeat the logic for iteration over k
+
+fn print_values(
+    k_min: u64,
+    k_max: u64,
+    k: &mut Vec<u64>,
+    j: usize,
+    val: &Vec<f64>,
+    i: &mut usize,
+    raw: bool,
 ) {
     if j == k.len() {
         if !raw {
@@ -42,23 +70,14 @@ fn iterate_k_cartesian_product(
             }
         }
 
-        match source {
-            Source::Single => println!("{}", single::measure(k)),
-            Source::Multi => {
-                let (val, outliers) = multi::measure(k);
-                println!("{:<20}{}", outliers, val)
-            }
-            Source::Formula => {
-                println!("{}", formula::expected_time(k_min, k_max, k));
-            }
-        };
-
+        println!("{}", val[*i]);
+        *i += 1;
         return;
     }
 
     k[j] = if j > 0 { k[j - 1] } else { k_min };
     while k[j] <= k_max {
-        iterate_k_cartesian_product(k_min, k_max, source, raw, k, j + 1);
+        print_values(k_min, k_max, k, j + 1, val, i, raw);
         k[j] += 1;
     }
 }
@@ -97,10 +116,6 @@ fn main() {
             print!("{:<5}", format!("k{}", i));
         }
 
-        if source != Source::Formula {
-            print!("{:<20}{:<20}", "% outliers", "# outliers");
-        }
-
         println!("value");
 
         false
@@ -111,6 +126,19 @@ fn main() {
     assert!(k_min <= k_max);
 
     let mut k = vec![0u64; machines];
+    let mut values = Vec::new();
 
-    iterate_k_cartesian_product(k_min, k_max, source, raw, &mut k, 0);
+    iterate_k_values(k_min, k_max, source, &mut k, 0, &mut values);
+
+    // Normalize values
+    {
+        let all_k_one = values[0];
+        for v in values.iter_mut() {
+            *v /= all_k_one;
+        }
+    }
+
+    let mut i: usize = 0;
+    k = vec![0u64; machines];
+    print_values(k_min, k_max, &mut k, 0, &values, &mut i, raw);
 }
