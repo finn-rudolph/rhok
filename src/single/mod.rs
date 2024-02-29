@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 mod miller_rabin;
 mod montgomery;
 mod pollard_rho;

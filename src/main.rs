@@ -9,7 +9,7 @@ use rug::Integer;
 
 use crate::{multi::gen_test_numbers, single::miller_rabin};
 
-const SAMPLES: usize = 1 << 12;
+const SAMPLES: usize = 1 << 10;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Source {
@@ -50,9 +50,15 @@ fn iterate_k_cartesian_product(
             Source::Single => println!("{}", single::measure(k)),
             Source::Multi => {
                 let (val, outliers) = multi::measure(k, test_numbers);
+                println!(
+                    "{:<20}{:<20}{}",
+                    (outliers as f64 / (SAMPLES + outliers) as f64) * 100.0,
+                    outliers,
+                    val
+                )
             }
             Source::Formula => {
-                println!("{}", formula::expected_time(k_min, k_max, k, 0, 0.0));
+                println!("{}", formula::expected_time(k_min, k_max, k));
             }
         };
 
@@ -100,6 +106,10 @@ fn main() {
     let k_min: u64 = args[3].parse().unwrap();
     let k_max: u64 = args[4].parse().unwrap();
 
+    if source != Source::Formula {
+        println!("Number of (valid) samples per k-config: {}", SAMPLES);
+    }
+
     let raw = if args.len() == 6 {
         assert!(args[5].as_str() == "--raw");
         true
@@ -108,7 +118,7 @@ fn main() {
             print!("{:<5}", format!("k{}", i));
         }
 
-        if source == Source::Single {
+        if source != Source::Formula {
             print!("{:<20}{:<20}", "% outliers", "# outliers");
         }
 
