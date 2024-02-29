@@ -57,7 +57,7 @@ fn gen_test_numbers(samples: usize) -> Vec<Integer> {
     test_numbers
 }
 
-pub fn measure(k: &Vec<u64>) -> (f64, usize) {
+pub fn measure(k: &Vec<u64>) -> f64 {
     let mut sum = Duration::ZERO;
     let mut outliers: usize = 0;
     let mut rng = RandState::new();
@@ -80,8 +80,9 @@ pub fn measure(k: &Vec<u64>) -> (f64, usize) {
         sum += min_time;
     }
 
-    (
-        sum.as_nanos() as f64 / (TEST_NUMBERS.len() - outliers) as f64,
-        outliers,
-    )
+    if outliers != 0 {
+        println!("{} outlier(s) at k = {:?}", outliers, k);
+    }
+
+    sum.as_nanos() as f64 / (TEST_NUMBERS.len() - outliers) as f64
 }

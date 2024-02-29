@@ -33,7 +33,7 @@ pub fn pollard_rho(
     k: u64,
     rng: &mut RandState,
 ) -> Option<Integer> {
-    const BATCH_SIZE: u64 = 1 << 9;
+    const BATCH_SIZE: u64 = 1 << 10;
     const LENGTH_LIMIT: u64 = 1 << 18;
 
     let _k = k << 1;
@@ -64,6 +64,7 @@ pub fn pollard_rho(
 
             l <<= 1;
         }
-        println!("{} didn't finish within {} steps", n, LENGTH_LIMIT);
+
+        println!("retrying to factor {}", n);
     }
 }
