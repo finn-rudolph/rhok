@@ -5,8 +5,11 @@ mod single;
 use std::env;
 
 use rand::RngCore;
+use rug::Integer;
 
-use crate::single::miller_rabin;
+use crate::{multi::gen_test_numbers, single::miller_rabin};
+
+const SAMPLES: usize = 1 << 12;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Source {
@@ -34,6 +37,7 @@ fn iterate_k_cartesian_product(
     raw: bool,
     k: &mut Vec<u64>,
     j: usize,
+    test_numbers: &Vec<Integer>,
 ) {
     if j == k.len() {
         if !raw {
@@ -42,19 +46,30 @@ fn iterate_k_cartesian_product(
             }
         }
 
-        let val = match source {
-            Source::Single => single::measure(k),
-            Source::Multi => multi::measure(k),
-            Source::Formula => formula::expected_time(k_min, k_max, k, 0, 0.0),
+        match source {
+            Source::Single => println!("{}", single::measure(k)),
+            Source::Multi => {
+                let (val, outliers) = multi::measure(k, test_numbers);
+            }
+            Source::Formula => {
+                println!("{}", formula::expected_time(k_min, k_max, k, 0, 0.0));
+            }
         };
-        println!("{}", val);
 
         return;
     }
 
     k[j] = if j > 0 { k[j - 1] } else { k_min };
     while k[j] <= k_max {
-        iterate_k_cartesian_product(k_min, k_max, source, raw, k, j + 1);
+        iterate_k_cartesian_product(
+            k_min,
+            k_max,
+            source,
+            raw,
+            k,
+            j + 1,
+            test_numbers,
+        );
         k[j] += 1;
     }
 }
@@ -108,5 +123,13 @@ fn main() {
 
     let mut k = vec![0u64; machines];
 
-    iterate_k_cartesian_product(k_min, k_max, source, raw, &mut k, 0);
+    iterate_k_cartesian_product(
+        k_min,
+        k_max,
+        source,
+        raw,
+        &mut k,
+        0,
+        &gen_test_numbers(SAMPLES),
+    );
 }
