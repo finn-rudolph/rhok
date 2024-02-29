@@ -1,12 +1,12 @@
 mod pollard_rho;
 
-use std::time::{Duration, Instant};
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use rug::{integer::IsPrime, rand::RandState, Integer};
 
 use self::pollard_rho::pollard_rho;
 
-const MIN_BITS: u32 = 24;
+const MIN_BITS: u32 = 22;
 const MAX_BITS: u32 = 128;
 const TOTAL_BITS: u32 = 192;
 
@@ -26,11 +26,17 @@ fn prime_with_bits(
 
 pub fn gen_test_numbers(samples: usize) -> Vec<Integer> {
     let mut rng = RandState::new();
+    rng.seed(&Integer::from(
+        SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos(),
+    ));
     let mut test_numbers: Vec<Integer> = Vec::new();
     while test_numbers.len() < samples {
         let mut n = prime_with_bits(MIN_BITS, MIN_BITS, &mut rng);
         while n.significant_bits() < TOTAL_BITS {
-            n *= prime_with_bits(MIN_BITS, MAX_BITS, &mut rng);
+            n *= prime_with_bits(MIN_BITS, MIN_BITS, &mut rng);
         }
         test_numbers.push(n);
     }
@@ -57,9 +63,7 @@ pub fn measure(k: &Vec<u64>, test_numbers: &Vec<Integer>) -> (f64, usize) {
             }
         }
 
-        if min_time != Duration::ZERO {
-            sum += min_time;
-        }
+        sum += min_time;
     }
 
     (
