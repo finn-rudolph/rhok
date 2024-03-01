@@ -157,18 +157,39 @@ wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ i
 
 In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergeleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Die Rho-Längen verschiedener Maschinen sind hier stochastisch unabhängig. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
 
-\emph{Eine Formel für $\P(s_i > s)$.} Nach RMA gilt $\P(s_i = s) = \P(\nu(f, x_0) = s)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $j$-ten Schritt $j/h_i$, wenn in den ersten $j - 1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $j$ von ihnen zu einer Kollision führen. Es gilt also
+Grundsätzlich gilt
 \begin{align*}
-    \P(s_i > s)
-    = \P(\nu(f, x_0) > s)
-    = \prod_{j = 0}^s \bigg (1 - \frac {j} {h_i} \bigg )
+    \E(t_{\min}) =
+    \sum_{z_1 = 1}^{h_1} \P(s_1 = z_1)
+    \sum_{z_2 = 1}^{h_2} \P(s_2 = z_2) \, \cdots
+    \sum_{z_M = 1}^{h_M} \P(s_M = z_M)
+    \, \min_{i = 1}^M(z_i \lg 2k_i)
 \end{align*}
-Da die $i$-te Maschine in $t$ Zeiteinheiten $\lfloor t / \lg 2k_i \rfloor$ Schritte ausführt, gilt $\P(t_i > t) \sim \P(s_i > t / \lg 2k_i)$ für große $t$. Das Weglassen der Gaußklammern lässt sich damit rechtfertigen, dass für ausreichend großes $p$ nur große $t$ relevant für den Erwartungswert von $t_{\min}$ sind, bei denen es kaum einen Unterschied macht. Zur Herleitung der Formel werden noch weitere solcher Vereinfachungen nötig sein, diese zu beweisen ist aber meist uninteressant und aufwändig. Im Abschnitt \emph{Weglassen von $O(j^2/h_i^2)$} wird für eine von ihnen genauer begründet, um zu zeigen, wie ein solches Argument aussehen kann. Durch Anwenden der Restgliedabschätzung $\exp x = 1 + x + O(x^2)$, wenn $|x| < 1$, auf $x = -j/h_i$ gilt
-\begin{align*}
-    \P(s_i > s)
-    = \prod_{j = 0}^{s} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg )
-    - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )
-\end{align*}
+wobei durch "`$\cdots$"' $M$ ineinander verschachtelte Summen über alle möglichen $s_i$ für jedes $1 \le i \le M$ angedeutet werden. Zunächst soll $\P(s_i = z_i)$ bestimmt werden.
+
+\label{lemma-prob-si}
+\begin{lemma}
+    Sei $\P(s_i = z)$ die Wahrscheinlichkeit, dass bei der $i$-ten Maschine nach $z$ Iterationen erstmals eine Kollision auftritt. Für $p \to \infty$ gilt
+    \begin{align*}
+        \P(s_i = z) \sim \frac z {h_i} \exp \bigg ( \frac {-z^2}{2h_i} \bigg )
+    \end{align*}
+\end{lemma}
+
+\begin{proof}
+    Nach RMA genügt es $\P(\nu(f, x_0) = z)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$ zu bestimmen. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $j$-ten Schritt $j/h_i$, wenn in den ersten $j - 1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $j$ von ihnen zu einer Kollision führen. Es gilt also
+    \begin{align*}
+        \P(s_i = z) = \P(\nu(f, x_0) = z)
+        = \frac{z}{h_i} \, \prod_{j = 0}^{z - 1} \bigg (1 - \frac {j} {h_i} \bigg )
+    \end{align*}
+    da in den ersten $z - 1$ Schritten keine Kollision auftreten darf und im $z$-ten Schritt eine Kollision auftreten muss. Durch Anwenden der Restgliedabschätzung $\exp (x) = 1 + x + O(x^2)$ (gegeben $|x| < 1$) auf $x = -j/h_i$ gilt
+    \begin{align*}
+        \P(s_i = z)
+        = \frac {z} {h_i} \, \prod_{j = 0}^{z - 1} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg )
+        - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )
+    \end{align*}
+    Um die gewünschte Formel zu erhalten, wird gezeigt, dass der $O(j^2/h_i^2)$-Term für eine asymptotische Näherung weggelassen werden kann.
+\end{proof}
+
 $\E(t_{\min})$ lässt sich nun wie folgt ausdrücken, wobei $t_{\max} = p \, \max_{i = 0}^M \lg 2k_i$ die maximal mögliche Anzahl an Zeiteinheiten ist.
 \begin{align*}
     \E(t_{\min})
@@ -223,7 +244,7 @@ Die Terme des ausmultiplizierten Produkts werden in der zweiten Zeile nach der A
     = \exp \frac {-s (s + 1)} {2h_i}
     \sim \exp \frac {-s^2} {2h_i}
 \end{align*}
-schreiben. Letzte Annäherung gilt für große $s$, für ausreichend große $p$ sind aber fast alle $s$ im Erwartungswert von $t_{\min}$ groß.
+schreiben. FALSCH! Letzte Annäherung gilt für große $s$, für ausreichend große $p$ sind aber fast alle $s$ im Erwartungswert von $t_{\min}$ groß.
 
 Nun wird $s > h_i^{3/5}$ angenommen und gezeigt, dass dann der Summand in $\E(t_{\min})$ für $p \to \infty$ gegen 0 geht. Hier gilt
 \begin{align*}
