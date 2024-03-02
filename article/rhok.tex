@@ -206,6 +206,8 @@ Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu
     \begin{align*}
         F \sim \sqrt{\pi p / 2} \Bigg ( \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
     \end{align*}
+
+    \label{lemma:f-asmyp}
 \end{lemma}
 
 \begin{proof}
@@ -395,13 +397,45 @@ Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu
     Von der ersten zur zweiten Zeile wurden alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $\exp$ weggelassen, da sie $\le 1$ sind. In der vorletzten Zeile wird die geometrische Summenformel verwendet.
 \end{proof}
 
-Um $\E(t_{\min}) \sim F$ zu zeigen, wird Induktion über $M$ verwendet. Die Induktionsvoraussetzung ist, dass eine (von $M$ abhängige) Konstante $c$ existiert, sodass $|\E(t_{\min}) - F| \le c$ für jedes $p$. Im Fall $M = 1$ gilt
+Um $\E(t_{\min}) \sim F$ zu zeigen, wird Induktion über $M$ verwendet. Die Induktionsvoraussetzung ist, dass $|\E(t_{\min}) - F| = O(p^{\epsilon})$ für jedes $\epsilon > 0$. Daraus folgt $\E(t_{\min}) \sim F$, denn nach Lemma \ref{lemma:f-asmyp} gilt $F = \Theta(\sqrt p)$.
+
+Für den Induktionsanfang, sei $M = 1$ und $\epsilon > 0$. Man wähle $\delta = \min(\epsilon/2, 1/6)$. Es gilt
 \begin{align*}
-    \lim_{p \to \infty} \frac {\E(t_{\min})} F
-     & = \lim_{p \to \infty} 1 + \frac {\E(t_{\min}) - F} {F} \\
-     & = 1 + \lim_{p \to \infty} \frac 1 {F}
+    |\E(t_{\min}) - F|
+     & = \Bigg \vert
     \sum_{z_1 = 1}^{h_1} \big (\P(s_1 = z_1) - Q(z_1, h_1) \big ) z_1
+    \Bigg \vert                                \\
+     & \le \sum_{z_1 = 1}^{h_1^{1/2 + \delta}}
+    \big | \P(s_1 = z_1) - Q(z_1, h_1) \big | z_1 +
+    \sum_{z_1 = h^{1/2 + \delta}}^{h_1}
+    \big ( \big | \P(s_1 = z_1) \big | + \big | Q(z_1, h_1) \big | \big ) z_1
 \end{align*}
+Indem man Lemma \ref{lemma:prob-s-z-asmyp} auf die erste Summe anwendet, erhält man folgende Abschätzung.
+\begin{align*}
+    \sum_{z_1 = 1}^{h_1^{1/2 + \delta}}
+    \big | \P(s_1 = z_1) - Q(z_1, h_1) \big | z_1
+     & =
+    O \Bigg (
+    \sum_{z_1 = 1}^{h_1^{1/2 + \delta}} \frac {z_1} {h^{1-4\delta}} \Bigg ) \\
+     & = O \Bigg ( h_1^{1/2 + \delta} \,
+    \frac {h_1^{1/2 + \delta}} {h_1^{1 - 4\delta}} \Bigg )                  \\
+     & = O \Big ( p^{2\delta}\Big )                                         \\
+\end{align*}
+Da $\P(s_1 = z_1) = O(Q(z_1, h_1))$, kann die zweite Summe wie folgt abgeschätzt werden.
+\begin{align*}
+    \sum_{z_1 = h^{1/2 + \delta}}^{h_1}
+    \big ( \big | \P(s_1 = z_1) \big | +
+    \big | Q(z_1, h_1) \big | \big ) z_1
+     & =
+    O \Bigg ( \sum_{z_1 = h_1^{1/2 + \delta}}^{h_1}
+    \frac {z_1^2}{h_1} e^{-z_1^2 / (2h_1)} \Bigg )       \\
+     & = O \Bigg ( \sum_{z_1 = h_1^{1/2 + \delta}}^{h_1}
+    h_1 e^{-h_1^{2\delta}/2} \Bigg )                     \\
+     & = O \Big ( h_1^2 e^{-h_1^{2 \delta}/2} \Big )
+    \to 0 \quad (p \to \infty)
+\end{align*}
+Das schließt den Beweis des Induktionsanfangs ab. Sei nun $M \in \N, M \ge 2$.
+
 \begin{align*}
     \lim_{p \to \infty} \frac {F} {\E(t_{\min})}
      & = \lim_{p \to \infty}
