@@ -187,7 +187,7 @@ wobei durch "`$\cdots$"' $M$ ineinander verschachtelte Summen über alle möglic
     Nach RMA genügt es $\P(\nu(f, x_0) = z)$ für eine zufällig gewählte Funktion $f \in A(h)$ und ein zufälliges $x_0 \in \Z/h\Z$ zu bestimmen. Für eine zufällige Funktion $f \in A(h)$ ist die Wahrscheinlichkeit einer Kollision im $j$-ten Schritt $j/h$, wenn in den ersten $j - 1$ Schritten keine Kollision aufgetreten ist, da jeder der $h$ möglichen Werte gleich wahrscheinlich ist und $j$ von ihnen zu einer Kollision führen. Es gilt also
     \begin{align*}
         \P(s = z) = \P(\nu(f, x_0) = z)
-        = \frac z h \, \prod_{j = 0}^{z - 1} \bigg (1 - \frac j h \bigg )
+        = \frac z h \prod_{j = 0}^{z - 1} \bigg (1 - \frac j h \bigg )
     \end{align*}
     da in den ersten $z - 1$ Schritten keine Kollision auftreten darf und im $z$-ten Schritt eine Kollision auftreten muss.
 \end{proof}
@@ -200,16 +200,20 @@ Sei im Folgenden $Q(z, h) = \exp(-z^2/2h)z/h$ und
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \, \min_{i = 1}^M(z_i \lg 2k_i)
 \end{align*}
-Das Ziel ist nun zu zeigen, dass $\E(t_{\min}) \sim F$.
+Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt wegen $1 + x \le \exp(x)$
+\begin{align*}
+    \P(s = z)
+    = \frac z h  \prod_{j = 0}^{z - 1} \bigg (1 - \frac j h \bigg )
+    \le \frac z h \prod_{j = 0}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+    = \frac z h \exp \Bigg ( \sum_{j = 0}^{z - 1} \frac {-j} h \Bigg )
+    = \frac z h \exp \bigg (\frac {-z(z - 1)} {2h} \bigg )
+\end{align*}
+Daraus folgt $\P(s = z) = O(Q(z, h))$. Das Ziel ist nun zu zeigen, dass $\E(t_{\min}) \sim F$.
 
 \begin{lemma}
-    Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt für $p \to \infty$
+    Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt für $p \to \infty$ und $z \le \sqrt h$
     \begin{align*}
         Q(z, h) - \P(s = z) = O \bigg ( \frac 1 h \bigg )
-    \end{align*}
-    wenn $z \le \sqrt h$ und für beliebiges $z$
-    \begin{align*}
-        \P(s = z) = O(Q(z, h))
     \end{align*}
 
     \label{lemma:prob-s-z-asmyp}
@@ -223,7 +227,8 @@ Das Ziel ist nun zu zeigen, dass $\E(t_{\min}) \sim F$.
     Für den ersten Teil wird die Restgliedabschätzung $\exp(x) = 1 + x + O(x^2)$ für $|x| \le 1$ auf $\P(s = z)$ angewandt. Damit gilt
     \begin{align*}
         \P(s = z) = \frac z h \prod_{j = 0}^{z - 1}
-        \Bigg ( \exp \bigg ( \frac {-j} h \bigg ) - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
+        \Bigg ( \exp \bigg ( \frac {-j} h \bigg )
+        - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
     \end{align*}
     Daraus folgt
     \begin{align*}
@@ -270,7 +275,8 @@ Das Ziel ist nun zu zeigen, dass $\E(t_{\min}) \sim F$.
                & \frac z h \Bigg \vert
         \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
         \prod_{j = 0, j \ne k}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
-        - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1} O \bigg ( \frac {k^2l^2} {h^4} \bigg )
+        - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
+        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
         \prod_{j = 0, j \ne k,l}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
         + \cdots
         \Bigg \vert                                                       \\
