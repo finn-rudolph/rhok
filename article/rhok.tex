@@ -200,20 +200,105 @@ Sei im Folgenden $Q(z, h) = \exp(-z^2/2h)z/h$ und
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \, \min_{i = 1}^M(z_i \lg 2k_i)
 \end{align*}
-Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt wegen $1 + x \le \exp(x)$
-\begin{align*}
-    \P(s = z)
-    = \frac z h  \prod_{j = 0}^{z - 1} \bigg (1 - \frac j h \bigg )
-    \le \frac z h \prod_{j = 0}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
-    = \frac z h \exp \Bigg ( \sum_{j = 0}^{z - 1} \frac {-j} h \Bigg )
-    = \frac z h \exp \bigg (\frac {-z(z - 1)} {2h} \bigg )
-\end{align*}
-Daraus folgt $\P(s = z) = O(Q(z, h))$. Das Ziel ist nun zu zeigen, dass $\E(t_{\min}) \sim F$. Eine Tatsache, die dafür ohne Beweis verwendet wird, ist, dass ein $\delta > 0$ existiert, sodass $\E(t_{\min}) > p^{2\delta}$. Das sollte aber intuitiv sein, da die erwartete Laufzeit sonst subexponentiell wäre.
+Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu zeigen, dass $\E(t_{\min}) \sim F$.
+\begin{lemma}
+    Sei $F$ wie oben definiert. Es gilt
+    \begin{align*}
+        F \sim \sqrt{\pi p / 2} \Bigg ( \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
+    \end{align*}
+\end{lemma}
+
+\begin{proof}
+    Die Summen werden durch Integrale angenähert.
+    \begin{align*}
+        F \sim
+        \int_0^{h_1} Q(z_1, h_1)
+        \int_0^{h_2} Q(z_2, h_2) \cdots
+        \int_0^{h_M} Q(z_M, h_M)
+        \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_2 dz_1
+    \end{align*}
+    Da
+    \begin{align*}
+        \int_0^{h_2} Q(z_2, h_2) \cdots \int_0^{h_M} Q(z_M, h_M)
+        \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_2 \le p^M
+    \end{align*}
+    gilt
+    \begin{align*}
+            & \int_{h_1}^{\infty} Q(z_1, h_1)
+        \int_0^{h_2} Q(z_2, h_2) \cdots
+        \int_0^{h_M} Q(z_M, h_M)
+        \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_2 dz_1                     \\
+        \le & \ p^M \int_{h_1}^{\infty}
+        \frac {z_1} {h_1} \exp \bigg ( \frac {-z_1^2}{2h_1} \bigg ) dz_1          \\
+            & = p^M \exp \bigg (\frac {-h_1} 2 \bigg ) \to 0 \quad (p \to \infty)
+    \end{align*}
+    Daraus folgt
+    \begin{align*}
+        F \sim
+        \int_0^{\infty}
+        \frac {z_1} {h_1} \exp \bigg ( \frac {-z_1^2} {2h_1} \bigg ) \cdots
+        \int_0^{\infty}
+        \frac {z_M} {h_M} \exp \bigg ( \frac {-z_M^2} {2h_M} \bigg )
+        \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_1
+    \end{align*}
+    Nun wird ein Variablenwechsel $y_i = z_i \lg 2k_i$ durchgeführt. Damit gilt
+    \begin{align*}
+        F \sim
+        \prod_{i = 1}^M \frac 1 {\lg 2k_i}
+        \int_0^{\infty}
+        \frac {y_1 e^{-y_1^2 / (2h_1 \lg^2 2k_1)}} {h_1\lg 2k_1}  \cdots
+        \int_0^{\infty}
+        \frac {y_M e^{-y_M^2 / (2h_M \lg^2 2k_M)}} {h_M \lg 2k_M}
+        \min_{i = 1}^M(y_i) \, dy_M \cdots dy_1
+    \end{align*}
+    Anstatt über alle $y_i$ von $0$ bis $\infty$ zu integrieren, wird nun unterschieden, welches der $y_i$ das Minimum ist. Wenn $y_j$ das Minimum ist, wird über $y_j$ von $0$ bis $\infty$ integriert und über $y_i \ (i \ne j)$ von $y_i$ bis $\infty$. So kann $\min_{i = 1}^M (y_i)$ nach vorne gezogen werden, sodass die Integrale für $i \ne j$ unabhängig voneinander ausgewertet werden. Schließlich wird über alle möglichen $j$ aufsummiert.
+    \begin{align*}
+        F & \sim
+        \prod_{i = 1}^M \frac 1 {\lg 2k_i}
+        \sum_{j = 1}^M \int_0^\infty
+        \frac {y_j^2 e^{-y_j^2 / (2h_j \lg^2 2k_j)}} {h_j \lg 2k_j}
+        \prod_{i = 1, i \ne j}^M \int_{y_j}^{\infty}
+        \frac {y_i e^{-y_i^2 / (2h_i \lg^2 2k_i)}} {h_i \lg 2k_i} dy_i \; dy_j
+    \end{align*}
+    Für eine einfachere Notation werden die Integrationsvariablen von $y_j$ zu $y$ und von $y_i$ zu $x$ umbenannt. Zunächst werden die Integrale im Produkt rechts ausgewertet. Es gilt
+    \begin{align*}
+        \int_{y}^{\infty}
+        \frac {x e^{-x^2 / (2h_i \lg^2 2k_i)}} {h_i \lg 2k_i} dx
+         & = e^{-x^2/(2h_i \lg^2 2k_i)} (- \lg 2k_i) \Big \vert_{y}^{\infty} \\
+         & = e^{-y^2/(2h_i \lg^2 2k_i)} \lg 2k_i
+    \end{align*}
+    Also gilt
+    \begin{align*}
+        F & \sim
+        \prod_{i = 1}^M \frac 1 {\lg 2k_i}
+        \sum_{j = 1}^M \int_0^\infty
+        \frac {y^2 e^{-y^2 / (2h_j \lg^2 2k_j)}} {h_j \lg 2k_j}
+        \prod_{i = 1, i \ne j}^M e^{-y^2/(2h_i \lg^2 2k_i)} \lg 2k_i \; dy \\
+          & = \prod_{i = 1}^M \frac 1 {\lg 2k_i}
+        \sum_{j = 1}^M \int_0^\infty
+        \frac {y^2} {h_j \lg^2 2k_j} \,
+        \prod_{i = 1}^M e^{-y^2/(2h_i \lg^2 2k_i)} \lg 2k_i \; dy          \\
+          & = \sum_{j = 1}^M \int_0^\infty
+        \frac {y^2} {h_j \lg^2 2k_j} \,
+        \prod_{i = 1}^M e^{-y^2/(2h_i \lg^2 2k_i)} \; dy                   \\
+          & = \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )
+        \int_0^\infty
+        y^2 \,e^{- \sum_{i = 1}^M y^2/(2h_i \lg^2 2k_i)} \; dy
+    \end{align*}
+    Um das Integral auszuwerten, wurde die Tabelle in Wikipedia: \cite{gint} verwendet. Damit erhält man schließlich
+    \begin{align*}
+        F & \sim \Bigg (\sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg ) \,
+        \sqrt {\pi / 2} \
+        \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2}     \\
+          & = \sqrt{\pi p / 2} \; \Bigg (
+        \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
+    \end{align*}
+\end{proof}
 
 \begin{lemma}
-    Sei $0 < \delta < 1/2$. Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt für $p \to \infty$ und $z \le h^{1/2 + \delta}$
+    Sei $0 \le \delta < 1/6$. Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt für $p \to \infty$ und $z \le h^{1/2 + \delta}$
     \begin{align*}
-        |Q(z, h) - \P(s = z)| = O \bigg ( \frac 1 h \bigg )
+        |Q(z, h) - \P(s = z)| = O \bigg ( \frac 1 {h^{1 - 4\delta}} \bigg )
     \end{align*}
 
     \label{lemma:prob-s-z-asmyp}
@@ -279,43 +364,51 @@ Daraus folgt $\P(s = z) = O(Q(z, h))$. Das Ziel ist nun zu zeigen, dass $\E(t_{\
         O \bigg ( \frac {k^2l^2} {h^4} \bigg )
         \prod_{j = 0, j \ne k,l}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
         + \cdots
-        \Bigg \vert                                                       \\
+        \Bigg \vert                                           \\
         \le \, & \frac z h \Bigg (
         \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
         \prod_{j = 0, j \ne k}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
         + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
         O \bigg ( \frac {k^2l^2} {h^4} \bigg )
         \prod_{j = 0, j \ne k,l}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
-        + \cdots \Bigg )                                                  \\
+        + \cdots \Bigg )                                      \\
         \le \, & \frac z h \Bigg (
         \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
         + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
         O \bigg ( \frac {k^2l^2} {h^4} \bigg )
         + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}\sum_{m = l + 1}^{z - 1}
         O \bigg ( \frac {k^2l^2m^2} {h^6} \bigg )
-        + \cdots \Bigg )                                                  \\
+        + \cdots \Bigg )                                      \\
         \le \, & \frac z h \Bigg (
         z \, O \bigg ( \frac {z^2} {h^2} \bigg )
         + z^2 \, O \bigg ( \frac {z^4} {h^4} \bigg )
         + z^3 \, O \bigg ( \frac {z^6} {h^6} \bigg )
-        + \cdots \Bigg )                                                  \\
+        + \cdots \Bigg )                                      \\
         = \,   & O \Bigg ( \frac 1 {h^{1/2 - \delta}} \bigg (
         \frac 1 {h^{1/2 - 3 \delta}} + \frac 1 {h^{1 - 6\delta}}
         + \frac 1 {h^{3/2 - 9\delta}} + \cdots
-        \bigg ) \Bigg )                                                   \\
-        = \,   & O \Bigg ( \frac 1 {h} \, \frac 1 {1 - 1/\sqrt h} \Bigg ) \\
-        = \,   & O \bigg ( \frac 1 {h} \bigg )
+        \bigg ) \Bigg )                                       \\
+        = \,   & O \Bigg ( \frac 1 {h^{1 - 4\delta}} \,
+        \frac 1 {1 - h^{-1/2+3\delta}} \Bigg )                \\
+        = \,   & O \bigg ( \frac 1 {h^{1 - 4\delta}} \bigg )
     \end{align*}
     Von der ersten zur zweiten Zeile wurden alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $\exp$ weggelassen, da sie $\le 1$ sind. In der vorletzten Zeile wird die geometrische Summenformel verwendet.
 \end{proof}
 
-Nun gilt
+Für $\E(t_{\min}) \sim F$ wird Induktion über $M$ verwendet. Die Induktionsvoraussetzung ist jedoch stärker: Sie besagt, dass eine (von $M$ abhängige) Konstante $c$ existiert, sodass $|\E(t_{\min}) - F| \le c$ für jedes $p$. Sei
+Im Fall $M = 1$ gilt
+\begin{align*}
+    \lim_{p \to \infty} \frac F {\E(t_{\min})}
+     & = \lim_{p \to \infty} 1 + \frac {F - \E(t_{\min})} {\E(t_{\min})} \\
+     & = 1 + \lim_{p \to \infty} \frac 1 {\E(t_{\min})}
+    \sum_{z_1 = 1}^{h_1}
+\end{align*}
 \begin{align*}
     \lim_{p \to \infty} \frac {F} {\E(t_{\min})}
      & = \lim_{p \to \infty}
     1 + \frac{F - \E(t_{\min})} {\E(t_{\min})}                               \\
      & = 1 + \lim_{p \to \infty} \frac 1 {\E(t_{\min})}
-    \sum_{z_1 = 1}^{h_1} \big ( Q(z_1, h_1) - \P(s_1 = z_1) \big ) \cdots    \\
+    \sum_{z_1 = 1}^{h_1} \bigg ( Q(z_1, h_1) - \P(s_1 = z_1) \big ) \cdots   \\
      & \qquad \sum_{z_M = 1}^{h_M} \big ( Q(z_M, h_M) - \P(s_M - z_M) \big )
     \min_{i = 1}^M(z_i \lg 2k_i)
 \end{align*}
@@ -668,7 +761,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
     \label{fig:measurements-m2}
 \end{figure}
 
-Um zu demonstrieren, dass Formel (\ref{expectation-tmin}), Satz \ref{theorem:optimal-k-m1} und Satz \ref{theorem:optimal-k-m2} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreiben, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Wie in Abschnitt \ref{sec:pollards-rho-method} gesagt, wurde für die Berechnungen angenommen, dass $n$ genau einen kleinsten Primfaktor $p$ hat und die anderen Primfaktoren deutlich größer sind, sodass sie zur Analyse der Laufzeit ignoriert werden können. Es ist daher nur sinnvoll, die Berechnungen mit Messergebnissen für Zahlen dieser Art zu vergleichen. Als Testzahlen wurden 62-Bit Semiprimzahlen mit einem 21-Bit und einem 41-Bit Faktor verwendet. Eine Semiprimzahl ist das Produkt zweier Primzahlen. Für jede Parameterwahl wurden $2^{20}$ zufällige Semiprimzahlen gewählt und die durchschnittliche Laufzeit berechnet. Die berechneten und gemessenen Werte wurden jeweils normalisiert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 ist. Bei den Messungen wurden Ausreißer entfernt, die für alle Parameterwerte jeweils weniger als 0.01\% der Proben ausmachten.
+Um zu demonstrieren, dass Formel (\ref{expectation-tmin}), Satz \ref{theorem:optimal-k-m1} und Satz \ref{theorem:optimal-k-m2} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreiben, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Wie in Abschnitt \ref{sec:pollards-rho-method} gesagt, wurde f������r die Berechnungen angenommen, dass $n$ genau einen kleinsten Primfaktor $p$ hat und die anderen Primfaktoren deutlich größer sind, sodass sie zur Analyse der Laufzeit ignoriert werden können. Es ist daher nur sinnvoll, die Berechnungen mit Messergebnissen für Zahlen dieser Art zu vergleichen. Als Testzahlen wurden 62-Bit Semiprimzahlen mit einem 21-Bit und einem 41-Bit Faktor verwendet. Eine Semiprimzahl ist das Produkt zweier Primzahlen. Für jede Parameterwahl wurden $2^{20}$ zufällige Semiprimzahlen gewählt und die durchschnittliche Laufzeit berechnet. Die berechneten und gemessenen Werte wurden jeweils normalisiert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 ist. Bei den Messungen wurden Ausreißer entfernt, die für alle Parameterwerte jeweils weniger als 0.01\% der Proben ausmachten.
 
 \emph{Eine Maschine.} Die durchschnittliche Laufzeit für $1 \le k \le 48$ und Werte von (\ref{expectation-tmin}) zum Vergleich sind in Abbildung \ref{fig:measurements-m1} dargestellt. Die Laufzeit wird gut von (\ref{expectation-tmin}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert.
 
