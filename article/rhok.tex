@@ -213,7 +213,7 @@ Daraus folgt $\P(s = z) = O(Q(z, h))$. Das Ziel ist nun zu zeigen, dass $\E(t_{\
 \begin{lemma}
     Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt für $p \to \infty$ und $z \le \sqrt h$
     \begin{align*}
-        Q(z, h) - \P(s = z) = O \bigg ( \frac 1 h \bigg )
+        |Q(z, h) - \P(s = z)| = O \bigg ( \frac 1 h \bigg )
     \end{align*}
 
     \label{lemma:prob-s-z-asmyp}
@@ -312,96 +312,12 @@ Nun gilt
 \begin{align*}
     \lim_{p \to \infty} \frac {F} {\E(t_{\min})}
      & = \lim_{p \to \infty}
-    1 + \frac{\E'(t_{\min}) - \E(t_{\min})} {\E(t_{\min})}                      \\
+    1 + \frac{F - \E(t_{\min})} {\E(t_{\min})}                               \\
      & = 1 + \lim_{p \to \infty} \frac 1 {\E(t_{\min})}
-    \sum_{z_1 = 1}^{h_1} \big ( \P'(s_1 = z_1) - \P(s_1 = z_1) \big ) \, \cdots \\
-     & \quad \sum_{z_M = 1}^{h_M} \big ( \P'(s_M = z_M) - \P(s_M - z_M) \big )
+    \sum_{z_1 = 1}^{h_1} \big ( Q(z_1, h_1) - \P(s_1 = z_1) \big ) \, \cdots \\
+     & \qquad \sum_{z_M = 1}^{h_M} \big ( Q(z_M, h_M) - \P(s_M - z_M) \big )
     \, \min_{i = 1}^M(z_i \lg 2k_i)
 \end{align*}
-
-$\E(t_{\min})$ lässt sich nun wie folgt ausdrücken, wobei $t_{\max} = p \, \max_{i = 0}^M \lg 2k_i$ die maximal mögliche Anzahl an Zeiteinheiten ist.
-\begin{align*}
-    \E(t_{\min})
-     & = \sum_{t = 0}^{t_{\max}} t
-    \Bigg ( \prod_{i = 1}^M \P(t_i > t - 1) \Bigg )
-    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i) \\
-     & \sim \sum_{t = 0}^{t_{\max}} t
-    \Bigg ( \prod_{i = 1}^M \prod_{j = 0}^{(t-1) / \lg 2k_i}
-    \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg )
-        - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )\Bigg )
-    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
-\end{align*}
-Der erste Faktor ist die Wahrscheinlichkeit, dass vor Zeitpunkt $t$ keine Kollision aufgetreten ist. Der zweite Faktor ist die Wahrscheinlichkeit, dass bei Zeitpunkt $t$ mindestens eine Kollision auftritt. $\P_{t_i > t - 1 \, \forall i} (\,\cdots)$ ist die Wahrscheinlichkeit dass $t_i = t$ für mindestens ein $i$, gegeben $t_i > t - 1$ für alle $i$. Bevor diese Wahrscheinlichkeit bestimmt wird, soll gezeigt werden, dass der erste Faktor stark vereinfacht werden kann.
-
-\emph{Weglassen von $O(j^2/h_i^2)$.} Intuitiv ist es aus folgendem Grund gerechtfertigt, $O(j^2/h_i^2)$ in obiger Formel wegzulassen. Wenn $s = (t - 1)/\lg 2k_i$ deutlich kleiner als $h_i$ ist, ist auch $j$ deutlich kleiner als $h_i$ und damit $j^2/h_i^2$ nahe 0. Wenn dagegen $s$ nahe $h_i$ ist, ist $\P(s_i > s)$ sehr klein, sodass der Beitrag zum Erwartungswert vernachlässigbar ist. Präzise lässt sich das wie folgt begründen. Zunächst wird $s \le h_{i}^{3/5}$ angenommen und gezeigt, dass dann $\prod_{j = 0}^{(t-1) / \lg 2k_i} (\exp (-j/h_i) - O (j^2/h_i^2)) \sim \prod_{j = 0}^{(t-1) / \lg 2k_i} \exp (-j/h_i)$. Durch Ausmultiplizieren des Produkts erhält man
-\begin{align*}
-        & \ \Bigg \vert
-    \prod_{j = 0}^{s} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg )
-    - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )
-    - \prod_{j = 0}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg )
-    \Bigg \vert          \\
-    =   & \ \Bigg \vert
-    - \sum_{0 \le a \le s} O \bigg ( \frac {a^2} {h_i^2} \bigg )
-    \prod_{j = 0, j \notin \{a\}}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg )
-    + \sum_{0 \le a < b \le s} O \bigg ( \frac {a^2b^2} {h_i^4} \bigg )
-    \prod_{j = 0, j \notin \{a, b\}}^{s}
-    \exp \bigg ( \frac {-j}{h_i} \bigg ) - \cdots
-    \Bigg \vert          \\
-    \le & \ \Bigg \vert
-    \sum_{0 \le a \le s} O \bigg ( \frac {a^2} {h_i^2} \bigg )
-    \Bigg \vert + \Bigg \vert
-    \sum_{0 \le a < b \le s} O \bigg ( \frac {a^2b^2} {h_i^4} \bigg )
-    \Bigg \vert + \Bigg \vert
-    \sum_{0 \le a < b < c \le s} O \bigg ( \frac {a^2b^2c^2} {h_i^6} \bigg )
-    \Bigg \vert + \cdots \\
-    \le & \
-    s \, O \bigg ( \frac {s^2} {h_i^2} \bigg )
-    +s^2 \, O \bigg ( \frac {s^4} {h_i^4} \bigg )
-    +     s^3 \,  O \bigg ( \frac {s^6} {h_i^6} \bigg )
-    + \cdots             \\
-    \le & \
-    O \bigg ( \frac 1 {h_i^{1/5}} \bigg )
-    + O \bigg ( \frac 1 {h_i^{2/5}} \bigg )
-    + O \bigg ( \frac 1 {h_i^{3/5}} \bigg )
-    + \cdots
-\end{align*}
-Die Terme des ausmultiplizierten Produkts werden in der zweiten Zeile nach der Anzahl an $-O(j^2/h_i^2)$-Faktoren gruppiert. Von der zweiten zur dritten Zeile wird die Dreiecksungleichung verwendet und dass die Produkte von $\exp(-j/h_i)$ kleiner gleich 1 sind. Anschließend ist alles positiv und die Beträge können weggelassen werden. Die letzte Zeile ist Teil einer geometrischen Reihe und geht daher für $h_i \to \infty$ gegen 0. (Eigentlich lassen wir $p \to \infty$ gehen, aber da $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ gilt $h_i = \Theta(p)$ und damit $h_i \to \infty \Longleftrightarrow p \to \infty$.) Im Fall $s < h_i^{3/5}$ können wir also
-\begin{align*}
-    \P(s_i > s)
-    \sim \prod_{j = 0}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg )
-    =\exp \sum_{j = 0}^{s} \frac {-j} {h_i}
-    = \exp \frac {-s (s + 1)} {2h_i}
-    \sim \exp \frac {-s^2} {2h_i}
-\end{align*}
-schreiben. FALSCH! Letzte Annäherung gilt für große $s$, für ausreichend große $p$ sind aber fast alle $s$ im Erwartungswert von $t_{\min}$ groß.
-
-Nun wird $s > h_i^{3/5}$ angenommen und gezeigt, dass dann der Summand in $\E(t_{\min})$ für $p \to \infty$ gegen 0 geht. Hier gilt
-\begin{align*}
-    \P(s_i > s)
-    = \prod_{j = 0}^{s} \exp \bigg ( \frac {-j}{h_i} \bigg )
-    \le \prod_{j = 0}^{\big \lfloor h_i^{3/5} \big \rfloor}
-    \exp \bigg ( \frac {-j}{h_i} \bigg )
-    \sim \exp \frac {- \big \lfloor h_i^{3/5} \big \rfloor^2 } {2h_i}
-    \le \exp \frac {- h_i^{1/5}} {2}
-\end{align*}
-Die anderen Wahrscheinlichkeiten in dem entsprechenden Summanden sind alle durch 1 begrenzt und $t$ ist $O(p)$. Da aber $h_i = \Theta(p)$ und $\lim_{p \to \infty} O(p) e^{-\Theta(p)^{1/5}} = 0$, geht der Summand gegen 0. Insgesamt bedeutet das, dass man durch Weglassen der $O(j^2/h_i^2)$-Terme entweder eine asymptotisch genaue Annäherung erhält, oder der Term, in dem man die Annäherung verwendet, sowieso gegen 0 geht. Als Zwischenergebnis erhalten wir
-\begin{align}
-    \E_{t_{\min}}
-     & \sim \sum_{t = 0}^{t_{\max}} t \,
-    \Bigg ( \prod_{i = 1}^M \prod_{j = 0}^{(t-1) / \lg 2k_i}
-    \exp \bigg ( \frac {-j}{h_i} \bigg ) \Bigg ) \
-    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
-    \nonumber                            \\
-     & = \sum_{t = 0}^{t_{\max}} t \,
-    \exp \Bigg ( \sum_{i = 1}^M \sum_{j = 0}^{(t-1) / \lg 2k_i}
-    \frac {-j}{h_i} \Bigg ) \
-    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
-    \nonumber                            \\
-     & \sim \sum_{t = 0}^{t_{\max}} t \,
-    \exp \Bigg ( \sum_{i = 1}^M \frac {-t^2} {2 h_i \lg^2 2k_i} \Bigg ) \
-    \P_{t_i > t - 1 \, \forall i}(t_i = t \text{ für mindestens ein } i)
-    \label{expectation-tmin-intermed}
-\end{align}
 
 \emph{$\P_{t_i > t - 1 \, \forall i}(t_i = t$  für mindestens ein $i)$.} Die Wahrscheinlichkeit, dass bei Maschine $i$ eine Kollision nach genau $t$ Zeiteinheiten auftritt ist
 \begin{align*}
