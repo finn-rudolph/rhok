@@ -192,43 +192,119 @@ wobei durch "`$\cdots$"' $M$ ineinander verschachtelte Summen über alle möglic
     da in den ersten $z - 1$ Schritten keine Kollision auftreten darf und im $z$-ten Schritt eine Kollision auftreten muss.
 \end{proof}
 
-
+Sei im Folgenden $Q(z, h) = \exp(-z^2/2h)z/h$ und
+\begin{align*}
+    F =
+    \sum_{z_1 = 1}^{h_1} Q(z_1, h_1)
+    \sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \, \cdots
+    \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
+    \, \min_{i = 1}^M(z_i \lg 2k_i)
+\end{align*}
+Das Ziel ist nun zu zeigen, dass $\E(t_{\min}) \sim F$.
 
 \begin{lemma}
     Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt für $p \to \infty$
     \begin{align*}
-        \lim_{p \to \infty} \P(s = z)
-        - \frac z h \exp \bigg ( \frac {-z^2}{2h} \bigg ) = 0
+        Q(z, h) - \P(s = z) = O \bigg ( \frac 1 h \bigg )
     \end{align*}
-    wenn $z = O(\sqrt h)$ und
+    wenn $z \le \sqrt h$ und für beliebiges $z$
     \begin{align*}
-        \P(s = z)
-        = O \Bigg ( \frac z h \exp \bigg ( \frac {-z^2}{2h} \bigg ) \Bigg )
+        \P(s = z) = O(Q(z, h))
     \end{align*}
-    wenn $z = \omega(\sqrt h)$.
 
     \label{lemma:prob-s-z-asmyp}
 \end{lemma}
 
 \begin{remark*}
-    $z$ wird hier als Funktion von $h$ betrachtet. Denn um (\ref{formula:etmin-initial}) später für $p \to \infty$ auszuwerten, reicht eine Abschätzung von $\P(s_i = z_i)$ für konstante $z_i$ nicht aus, da über alle $1 \le z_i \le h_i$ summiert wird und $h_i = p/(\gcd(p - 1, 2k_i) - 1)$.
+    $z$ wird hier als Funktion von $h$ verstanden. Denn um (\ref{formula:etmin-initial}) später für $p \to \infty$ auszuwerten, reicht eine Abschätzung von $\P(s_i = z_i)$ für konstante $z_i$ nicht aus, da über alle $1 \le z_i \le h_i$ summiert wird und $h_i = p/(\gcd(p - 1, 2k_i) - 1)$.
 \end{remark*}
 
 \begin{proof}[Beweis von Lemma \ref{lemma:prob-s-z-asmyp}]
-
+    Für den ersten Teil wird die Restgliedabschätzung $\exp(x) = 1 + x + O(x^2)$ für $|x| \le 1$ auf $\P(s = z)$ angewandt. Damit gilt
+    \begin{align*}
+        \P(s = z) = \frac z h \prod_{j = 0}^{z - 1}
+        \Bigg ( \exp \bigg ( \frac {-j} h \bigg ) - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
+    \end{align*}
+    Daraus folgt
+    \begin{align*}
+         & \vert Q(z, h) - \P(s = z) \vert =
+        \frac z h \Bigg \vert
+        \exp \bigg (\frac {-z^2} {2h} \bigg ) -
+        \prod_{j = 0}^{z - 1} \Bigg ( \exp \bigg ( \frac {-j} h \bigg )
+        - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
+        \Bigg \vert                          \\
+         & \le \frac z h \Bigg \vert
+        \exp \bigg ( \frac {-z^2} {2h} \bigg ) -
+        \prod_{j = 0}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        \Bigg \vert                          \\
+         & \qquad + \frac z h \Bigg \vert
+        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
+        \prod_{j = 0, j \ne k}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1} O \bigg ( \frac {k^2l^2} {h^4} \bigg )
+        \prod_{j = 0, j \ne k,l}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        + \cdots
+        \Bigg \vert
+    \end{align*}
+    Die Terme des ausmultiplizierten Produkts wurden nach der Zahl an $O(j^2/h^2)$-Faktoren gruppiert. Außerdem wurde die Dreiecksungleichung angewandt. Für den ersten Summanden gilt
+    \begin{align*}
+        \frac z h \Bigg \vert
+        \exp \bigg ( \frac {-z^2} {2h} \bigg ) -
+        \prod_{j = 0}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        \Bigg \vert
+         & = \frac z h \Bigg \vert
+        \exp \bigg ( \frac {-z^2} {2h} \bigg ) -
+        \exp \Bigg ( \sum_{j = 0}^{z - 1} \frac {-j} h \Bigg )
+        \Bigg \vert                                                       \\
+         & = \frac z h \Bigg \vert
+        \exp \bigg ( \frac {-z^2} {2h} \bigg ) -
+        \exp \bigg ( \frac {-z(z - 1)} {2h} \bigg )
+        \Bigg \vert                                                       \\
+         & = \frac z h \exp \bigg ( \frac {-z^2} {2h} \bigg ) \Bigg \vert
+        1 - \exp \bigg ( \frac z {2h} \bigg )
+        \Bigg \vert                                                       \\
+         & \le \frac {z^2} {h^2}                                          \\
+         & = O \bigg ( \frac 1 h \bigg )
+    \end{align*}
+    Von der dritten zur vierten Zeile wurde erneut die Restgliedabschätzung verwendet. Für den zweiten Summanden gilt
+    \begin{align*}
+               & \frac z h \Bigg \vert
+        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
+        \prod_{j = 0, j \ne k}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1} O \bigg ( \frac {k^2l^2} {h^4} \bigg )
+        \prod_{j = 0, j \ne k,l}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        + \cdots
+        \Bigg \vert                                                       \\
+        \le \, & \frac z h \Bigg (
+        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
+        \prod_{j = 0, j \ne k}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
+        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
+        \prod_{j = 0, j \ne k,l}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        + \cdots \Bigg )                                                  \\
+        \le \, & \frac z h \Bigg (
+        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
+        + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
+        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
+        + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}\sum_{m = l + 1}^{z - 1}
+        O \bigg ( \frac {k^2l^2m^2} {h^6} \bigg )
+        + \cdots \Bigg )                                                  \\
+        \le \, & \frac z h \Bigg (
+        z \, O \bigg ( \frac {z^2} {h^2} \bigg )
+        + z^2 \, O \bigg ( \frac {z^4} {h^4} \bigg )
+        + z^3 \, O \bigg ( \frac {z^6} {h^6} \bigg )
+        + \cdots \Bigg )                                                  \\
+        = \,   & O \Bigg ( \frac 1 {\sqrt h} \bigg (
+        \frac 1 {\sqrt h} + \frac 1 {\sqrt h^2} + \frac 1 {\sqrt h^3} + \cdots
+        \bigg ) \Bigg )                                                   \\
+        = \,   & O \Bigg ( \frac 1 {h} \, \frac 1 {1 - 1/\sqrt h} \Bigg ) \\
+        = \,   & O \bigg ( \frac 1 {h} \bigg )
+    \end{align*}
+    Von der ersten zur zweiten Zeile wurden alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $\exp$ weggelassen, da sie $\le 1$ sind. In der vorletzten Zeile wird die geometrische Summenformel verwendet.
 \end{proof}
 
-Sei im Folgenden $\P'(s_i = z_i) = \exp(-z_i^2/h_i)z_i/h_i$ und
+Nun gilt
 \begin{align*}
-    \E'(t_{\min}) =
-    \sum_{z_1 = 1}^{h_1} \P'(s_1 = z_1)
-    \sum_{z_2 = 1}^{h_2} \P'(s_2 = z_2) \, \cdots
-    \sum_{z_M = 1}^{h_M} \P'(s_M = z_M)
-    \, \min_{i = 1}^M(z_i \lg 2k_i)
-\end{align*}
-Mit Lemma \ref{lemma:prob-s-z-asmyp} soll nun $\E(t_{\min}) \sim \E'(t_{\min})$ gezeigt werden. Es gilt
-\begin{align*}
-    \lim_{p \to \infty} \frac {\E'(t_{\min})} {\E(t_{\min})}
+    \lim_{p \to \infty} \frac {F} {\E(t_{\min})}
      & = \lim_{p \to \infty}
     1 + \frac{\E'(t_{\min}) - \E(t_{\min})} {\E(t_{\min})}                      \\
      & = 1 + \lim_{p \to \infty} \frac 1 {\E(t_{\min})}
