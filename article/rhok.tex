@@ -158,8 +158,8 @@ Sei $k_1, \dots, k_M, 1 \le k_i \in \N$ eine Zuordnung von $k$-Werten für $M$ M
 \end{align}
 wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ ist, mit $X_i(f, x_0) = \nu(f, x_0)$ für $f \in A(h_i), x_0 \in \Z/h_i\Z$. In $L_{k_1, \dots, k_M}(p)$ ist $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ noch fixiert, der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optimal-k} behandelt. Eine Schwierigkeit in der Herleitung einer Formel für $L_{k_1, \dots, k_M}(p)$ ist, dass $X_i$ und $X_j$ nicht unabhängig sind, wenn $k_i = k_j$. Grund dafür ist, dass $f$ in diesem Fall gleich ist, sodass sich die $i$-te und $j$-te Maschine im gleichen funktionalen Graphen bewegen. Daher wird in Abschnitt \ref{sec:indep-machines} der Fall unabhängiger Maschinen behandelt, und in Abschnitt \ref{sec:dep-machines} der Fall abhängiger Maschinen für $M = 2$.
 
-\section{Eine Formel im Fall unabhängiger Maschinen}
-\label{sec:indep-machines}
+\section{Herleitung einer Formel für die Laufzeit}
+\label{sec:formula-running-time}
 
 In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergeleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Die Rho-Längen verschiedener Maschinen sind hier stochastisch unabhängig. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
 
@@ -208,10 +208,10 @@ Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt wegen $1 + x \le \exp(x)$
     = \frac z h \exp \Bigg ( \sum_{j = 0}^{z - 1} \frac {-j} h \Bigg )
     = \frac z h \exp \bigg (\frac {-z(z - 1)} {2h} \bigg )
 \end{align*}
-Daraus folgt $\P(s = z) = O(Q(z, h))$. Das Ziel ist nun zu zeigen, dass $\E(t_{\min}) \sim F$.
+Daraus folgt $\P(s = z) = O(Q(z, h))$. Das Ziel ist nun zu zeigen, dass $\E(t_{\min}) \sim F$. Eine Tatsache, die dafür ohne Beweis verwendet wird, ist, dass ein $\delta > 0$ existiert, sodass $\E(t_{\min}) > p^{2\delta}$. Das sollte aber intuitiv sein, da die erwartete Laufzeit sonst subexponentiell wäre.
 
 \begin{lemma}
-    Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt für $p \to \infty$ und $z \le \sqrt h$
+    Sei $0 < \delta < 1/2$. Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt für $p \to \infty$ und $z \le h^{1/2 + \delta}$
     \begin{align*}
         |Q(z, h) - \P(s = z)| = O \bigg ( \frac 1 h \bigg )
     \end{align*}
@@ -268,7 +268,7 @@ Daraus folgt $\P(s = z) = O(Q(z, h))$. Das Ziel ist nun zu zeigen, dass $\E(t_{\
         1 - \exp \bigg ( \frac z {2h} \bigg )
         \Bigg \vert                                                       \\
          & \le \frac {z^2} {h^2}                                          \\
-         & = O \bigg ( \frac 1 h \bigg )
+         & = O \bigg ( \frac 1 {h^{1 - 2\delta}} \bigg )
     \end{align*}
     Von der dritten zur vierten Zeile wurde erneut die Restgliedabschätzung verwendet. Für den zweiten Summanden gilt
     \begin{align*}
@@ -299,8 +299,9 @@ Daraus folgt $\P(s = z) = O(Q(z, h))$. Das Ziel ist nun zu zeigen, dass $\E(t_{\
         + z^2 \, O \bigg ( \frac {z^4} {h^4} \bigg )
         + z^3 \, O \bigg ( \frac {z^6} {h^6} \bigg )
         + \cdots \Bigg )                                                  \\
-        = \,   & O \Bigg ( \frac 1 {\sqrt h} \bigg (
-        \frac 1 {\sqrt h} + \frac 1 {\sqrt h^2} + \frac 1 {\sqrt h^3} + \cdots
+        = \,   & O \Bigg ( \frac 1 {h^{1/2 - \delta}} \bigg (
+        \frac 1 {h^{1/2 - 3 \delta}} + \frac 1 {h^{1 - 6\delta}}
+        + \frac 1 {h^{3/2 - 9\delta}} + \cdots
         \bigg ) \Bigg )                                                   \\
         = \,   & O \Bigg ( \frac 1 {h} \, \frac 1 {1 - 1/\sqrt h} \Bigg ) \\
         = \,   & O \bigg ( \frac 1 {h} \bigg )
@@ -314,9 +315,22 @@ Nun gilt
      & = \lim_{p \to \infty}
     1 + \frac{F - \E(t_{\min})} {\E(t_{\min})}                               \\
      & = 1 + \lim_{p \to \infty} \frac 1 {\E(t_{\min})}
-    \sum_{z_1 = 1}^{h_1} \big ( Q(z_1, h_1) - \P(s_1 = z_1) \big ) \, \cdots \\
+    \sum_{z_1 = 1}^{h_1} \big ( Q(z_1, h_1) - \P(s_1 = z_1) \big ) \cdots    \\
      & \qquad \sum_{z_M = 1}^{h_M} \big ( Q(z_M, h_M) - \P(s_M - z_M) \big )
-    \, \min_{i = 1}^M(z_i \lg 2k_i)
+    \min_{i = 1}^M(z_i \lg 2k_i)
+\end{align*}
+Es wird gezeigt, dass der Limes in obiger Formel 0 ist. Dafür reicht es zu zeigen, dass die verschachtelte Summe im Limes (alles unter dem Limes außer $1/\E(t_{\min}))$ durch eine Konstante beschränkt ist, da $\lim_{p \to \infty} \E(t_{\min}) = \infty$. Dafür wird der Betrag betrachtet und $\min_{i = 1}^M (z_i \lg 2k_i)$ durch $z_1 \lg 2k_1$ abgeschätzt.
+\begin{align*}
+        & \Bigg \vert
+    \sum_{z_1 = 1}^{h_1} \big ( Q(z_1, h_1) - \P(s_1 = z_1) \big ) \cdots
+    \sum_{z_M = 1}^{h_M} \big ( Q(z_M, h_M) - \P(s_M - z_M) \big )
+    \min_{i = 1}^M(z_i \lg 2k_i)
+    \Bigg \vert                                                 \\
+    \le & \sum_{z_1 = 1}^{h_1} | Q(z_1, h_1) - \P(s_1 = z_1) |
+    z_1 \lg 2k_1
+    \sum_{z_2 = 1}^{h_2} | Q(z_2, h_2) - \P(s_2 = z_2) | \cdots \\
+        & \qquad
+    \sum_{z_M = 1}^{h_M} | Q(z_M, h_M) - \P(s_M - z_M) |
 \end{align*}
 
 \emph{$\P_{t_i > t - 1 \, \forall i}(t_i = t$  für mindestens ein $i)$.} Die Wahrscheinlichkeit, dass bei Maschine $i$ eine Kollision nach genau $t$ Zeiteinheiten auftritt ist
@@ -385,119 +399,6 @@ Um $L_{k_1, \dots, k_M}(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, 
 \end{theorem}
 
 \noindent Der Vorfaktor in der Definition von $\tau_n$ ist $1/n^{n + 2}$, da es $n^n$ Abbildungen $\Z/n\Z \to \Z/n\Z$ gibt und für jede von diesen $n^2$ Paare an Anfangswerten.
-
-\subsection{Theoretischer Hintergrund: Erzeugende Funktionen}
-
-Der Ansatz zum Beweis von Satz \ref{theorem:min-rho-len-m2} ist, die Summe in der Definition von $\tau_n$ mithilfe einer erzeugenden Funktion $\Psi(x, w)$ zu bestimmen. $\Psi(x, w)$ zählt funktionale Graphen mit einem Paar an Knoten. Die Variable $x$ markiert die Größe des Graphen und die Variable $w$ die minimale Rho-Länge der zwei Anfangsknoten. Da funktionale Graphen beschriftet sind, werden stets erzeugende Funktionen von exponentiellem Typ (EF) verwendet. Also gilt
-\begin{align}
-    \Psi(x, w)
-    = \sum_{n = 0}^\infty \frac {x^n}{n!} \sum_{g \in A(n)} \,
-    \sum_{a \in \Z/n\Z} \, \sum_{b \in \Z/n\Z} w^{\min\{\nu(g, a), \nu(g, b)\}}
-    \label{psi-definition}
-\end{align}
-Aus den Koeffizienten der Reihe von $\Psi$ kann dann wie folgt $\tau_n$ bestimmt werden.
-\begin{align*}
-    \tau_n = \frac {n!}{n^{n + 2}} [x^n] \Bigg (\frac {\partial} {\partial w} \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
-\end{align*}
-wobei $[x^n]$ den $n$-ten Koeffizienten in der Reihenentwicklung des nachstehenden Terms bezeichnet. Um im Folgenden erzeugende Funktionen funktionaler Graphen zu konstruieren, werden einige Komponenten benötigt. Eine intuitive Erklärung ihrer Struktur sowie ein Beweis der Korrektheit findet man in \cite{fs09}, S. 129, 148. Von $x$ wird ein einzelner Knoten repräsentiert. Die erzeugende Funktion eines Pfads ist $1/(1 - x)$. Ein Baum kann rekursiv als ein Wurzelknoten zusammen mit einer Menge an Bäumen definiert werden. Die erzeugende Funktion eines Baumes $T(x)$ ist also implizit durch $T(x) = x \exp T(x)$ gegeben. Ein funktionaler Graph wird durch $F(x) = 1/(1 - T(x))$ beschrieben.
-
-\subsection{Bestimmung der mittleren minimalen Rho-Länge}
-
-\begin{proof}[Beweis von Satz \ref{theorem:min-rho-len-m2}]
-    Im Folgenden ist $g$ immer die betrachtete Funktion und $a$ und $b$ die zwei ausgezeichneten Knoten. Der Plan ist, zunächst einen geschlossenen Ausdruck für $\Psi(x, w)$ zu bestimmen und dann die Ableitung nach $w$ zu bilden. Dafür werden drei Fälle unterschieden, die in Abbildung \ref{fig:psi-construction} dargestellt sind. In jedem der Fälle wird zunächst eine EF für funktionale Graphen bestimmt, die nur die für $a$ und $b$ relevanten Teile enthalten. Der "`relevante Teil"' besteht aus all den Knoten, die beim Ablaufen des Graphen besucht werden, also dem Zyklus und dem Pfad zum Zyklus. Der Rest des funktionalen Graphen wird später ergänzt. Grundsätzlich werden die Graphen so konstruiert, dass $\nu(g, a) \le \nu(g, b)$ gilt. Erhält durch Vertauschen von $a$ und $b$ einen Fall, der noch nicht an anderer Stelle gezählt wurde, wird mit einem Faktor 2 multipliziert.
-    \begin{figure}
-        \begin{tabular}{ccc}
-            \def\svgwidth{145pt} \input{alpha.pdf_tex} &
-            \def\svgwidth{145pt} \input{beta.pdf_tex}  &
-            \def\svgwidth{145pt} \input{gamma.pdf_tex}                          \\
-            ($\alpha$)                                 & ($\beta$) & ($\gamma$)
-        \end{tabular}
-        \caption{Die drei Fälle für die Bestimmung von $\Psi(x, w)$. Die Linien stellen keine einzelnen Kanten dar, sondern eine Folge an Kanten. Beispielsweise steht $r$ in ($\alpha$) für den Zyklus in der Zusammenhangskomponente von $a$.}
-        \label{fig:psi-construction}
-    \end{figure}
-
-    \emph{Fall 1.} $a$ und $b$ liegen in unterschiedlichen Zusammenhangskomponenten. Dieser Fall wird erneut in die Fälle $\lambda(g, b) \le \nu(g, a)$ und $\lambda(g, b) > \nu(g, a)$ unterteilt. Die erzeugende Funktion für den ersten Fall ist
-    \begin{align*}
-        \alpha_1(x, w) = \frac {x^2w(1 + x^2w)} {(1 - x^2w)^3} \cdot \Bigg (1 + \frac {2x} {1 - x} \Bigg ) = \frac {x^2w(1 + x)(1 + x^2w)} {(1 - x^2w)^3(1 - x)}
-    \end{align*}
-    In diesem Fall ist es möglich, zuerst zwei $\rho$-Graphen mit gleicher Größe zu erzeugen und anschließend den Pfad von $b$ zu seinem Zyklus zu verlängern. Ein $\rho$-Graph ist eine Zusammenhangskomponente in Abbildung \ref{fig:psi-construction} ($\alpha$), d.h. ein Zyklus mit einem Pfad anhängend. Es gibt genau $n! \cdot n$ $\rho$-Graphen mit $n$ Knoten, da es für jede Permutation der Knoten $n$ Möglichkeiten für die Größe des Zyklus gibt. Folglich gibt es für gerade $n$ genau $n! \cdot n^2/2$ Paare an $\rho$-Graphen, die beide $n/2$ Knoten besitzen. Die erzeugende Funktion von Paaren an $\rho$-Graphen gleicher Größe ist also
-    \begin{align*}
-        \sum_{n = 0}^\infty x^n \; \frac {n^2} 4 \, \frac {1 + (-1)^n} 2
-        = \frac {x^2(1 + x^2)} {(1 - x^2)^3}
-    \end{align*}
-    Durch einen der beiden $\rho$-Graphen wird die Zusammenhangskomponente von $a$ erzeugt, durch den anderen $t$ und der Anfang von $u$ in Abbildung \ref{fig:psi-construction} ($\alpha$). Da $x$ die Zahl an Knoten markiert, wird von $w$ die halbe Zahl an Knoten markiert, wenn $x$ durch $x \sqrt w$ ersetzt wird. Dadurch erhält man die EF $x^2w(1 + x^2w) / (1 - x^2w)^3$, in der $w$ die Rho-Länge von $a$ markiert. Das erklärt den ersten Faktor in $\alpha_1(x, w)$. Nun gibt es zwei Möglichkeiten: Wird $u$ nicht verlängert, gilt $\nu(g, a) = \nu(g, b)$. Wird hingegen ein nichtleerer Pfad angehängt, dessen erzeugende Funktion $x/(1 - x)$ ist, ergeben sich zwei Möglichkeiten durch Vertauschen von $a$ und $b$.
-
-    Im Fall $\lambda(g, b) > \nu(g, a)$ ist die erzeugende Funktion
-    \begin{align*}
-        \alpha_2(x, w) =
-        2 \; \frac {x^2w} {(1 - x^2w)^2} \, \frac x {1 - x} \,
-        \frac {1}{1 - x}
-        = \frac {2x^3w} {(1 - x^2w)^2 (1 - x)^2}
-    \end{align*}
-    Der Faktor $x^2w$ repräsentiert die zwei Knoten, an denen $a$ und $b$ jeweils ihren Zyklus betreten, und der Knoten von $a$ ist mit $w$ markiert. Mit $1 / (1 - x^2w)^2$ erhält man vier Pfade $r, y, s, z$, sodass die Länge von $r$ gleich der Länge von $y$ und die Länge von $s$ gleich der Länge von $z$ ist. Die Summe der Längen von $r$ und $s$ wird von $w$ markiert. $r$ und $s$ werden wie in Abbildung \ref{fig:psi-construction} ($\alpha$) für die Zusammenhangskomponente von $a$ verwendet. Der Zyklus $t$ besteht aus $y, z$ und einem Pfad von Länge $\ge 1$, sodass $\lambda(g, b) > \nu(g, a)$ gilt. $u$ wird von dem Term $1 / (1 - x)$ gebildet.
-
-    \emph{Fall 2.}  In diesem Fall liegen $a$ und $b$ im gleichen Baum und ihr kleinster gemeinsamer Vorfahre ist nicht die Wurzel. Die erzeugende Funktion lautet
-    \begin{align*}
-        \beta(x, w)
-        = xw \; \frac {xw} {1 - xw} \, \frac {1} {1 - xw} \,
-        \frac {1} {1 - x^2w} \, \Bigg (1 + \frac {2x} {1 - x} \Bigg )
-        = \frac {x^2w^2(1 + x)} {(1 - xw)^2(1 - x^2w)(1 - x)}
-    \end{align*}
-    Der Zyklusknoten, an dem der Baum von $a$ und $b$ anhängt, wird durch $xw$ repräsentiert. Der Pfad $s$ in Abbildung 1 ($\beta$) wird von  $xw/(1 - xw)$ erzeugt. Er muss mindestens Länge 1 haben, da der kleinste gemeinsame Vorfahre von $a$ und $b$ sonst die Wurzel wäre. Der Faktor $1/(1 - xw)$ steht für den Zyklus $r$. Mit $1/(1 - x^2w)$ werden zwei gleich lange Pfade erzeugt, deren einfache Länge durch $w$ markiert wird. Einer von ihnen wird für $t$ verwendet und der andere ist ein Teil von $u$. Nun gibt es wie in Fall 1 wieder die Option, $u$ echt zu verlängern und so einen Faktor 2 für die mögliche Vertauschung von $a$ und $b$ zu erhalten, oder ihn zu lassen, wobei es dann wegen der Symmetrie um $a$ und $b$ nur eine Möglichkeit gibt.
-
-
-    \emph{Fall 3.} Zuletzt bleibt der Fall, wenn $a$ und $b$ in verschiedenen Bäumen liegen oder die Wurzel ihr kleinster gemeinsamer Vorfahre ist. Eine andere Sichtweise ist, dass sich die Pfade von $a$ und $b$ bei wiederholtem Anwenden von $g$ erstmals bei einem Zyklusknoten treffen. Die erzeugende Funktion ist hier
-    \begin{align*}
-        \gamma(x, w)
-        = xw \, \frac {1} {(1 - xw)^2} \, \frac {1} {1 - x^2w} \,
-        \Bigg (1 + \frac {2x}{1 - x} \Bigg )
-        = \frac {xw(1 + x)} {(1 - xw)^2(1 - x^2w)(1 - x)}
-    \end{align*}
-    Der Knoten, an dem $a$ den Zyklus betritt, ist $xw$. Der Term $1/(1 - xw)^2$ erzeugt zwei Pfade, deren Länge mit $w$ markiert wird. Die zwei Pfade sind die zwei Teile $r$ und $s$ des Zyklus in Abbildung \ref{fig:psi-construction} ($\gamma$). Ähnlich wie in Fall 2 ist der Term $1/(1 - x^2w)$ ein Paar an gleich langen Pfaden, deren Länge von $w$ markiert wird. Einer der Pfade ist $t$ und der andere ein Teil von $u$. Auch hier kann man die Länge von $u$ unverändert lassen, in diesem Fall gibt es eine Möglichkeit, oder einen Pfad von Länge $\ge 1$ hinzufügen, sodass es zwei Möglichkeiten durch Vertauschung von $a$ und $b$ gibt.
-
-    Ein funktionaler Graph besteht natürlich nicht nur aus einem Zyklus und den Pfaden von $a$ und $b$ zum Zyklus. Von jedem Knoten kann ein Baum ausgehen und es kann noch weitere Zusammenhangskomponenten geben. Indem $x$ durch $T(x)$ ersetzt wird, kann von jedem Knoten ein Baum ausgehen. Weitere Zusammenhangskomponenten bilden einen funktionalen Graphen, sie können also durch Multiplikation der EF mit $F(x)$ hinzugefügt werden. Weil die drei Fälle disjunkt sind und zusammen alle Möglichkeiten abdecken, gilt
-    \begin{align*}
-        \Psi(x, w)
-        = (\alpha_1(T(x), w) + \alpha_2(T(x), w) + \beta(T(x), w) + \gamma(T(x), w)) \,F(x)
-    \end{align*}
-    Damit erhalten wir
-    \begin{align*}
-        \psi(x) = \Bigg (\frac {\partial} {\partial w}
-        \Psi(x, w) \Bigg ) \Bigg \vert_{w = 1}
-        = \frac
-        {T(x)(1 + 2T(x) + 2(T(x))^2)(1 + 5T(x) + 3(T(x))^2 + (T(x))^3)}
-        {(1 - T(x))^6(1 + T(x))^3}
-    \end{align*}
-    Nun soll die analytische Methode von \cite{fo90} verwendet werden, um eine asymptotische Abschätzung für die Koeffizienten der Taylorreihe von $\psi(x)$ zu erhalten. Nach \cite{fo90}, S. 334, Proposition 1 ist die betragsmäßig kleinste Singularität von $T(x)$ in $\C$ bei $x = e^{-1}$ und es gilt
-    \begin{align*}
-        T(x) \sim 1 - \sqrt{2} \; \sqrt {1 - ex}
-    \end{align*}
-    für $x \to e^{-1}$. $\psi(x)$ hat keine betragsmäßig kleineren Singularitäten, denn wenn $1 - T(x) = 0$, rechnet man leicht nach, dass $x = e^{-1}$ gilt, und wenn $1 + T(x) = 0$, gilt $x = -e$. Es wird nun Theorem 1 aus \cite{fo90}, S. 333 mit $s = e^{-1}$ verwendet. Wenn $x \to e^{-1}$, gilt
-    \begin{align*}
-        \psi(x)
-         & \sim \frac {T(e^{-1})(1 + 2T(e^{-1})
-            + 2(T(e^{-1}))^2)(1 + 5T(e^{-1}) + 3(T(e^{-1}))^2 + (T(e^{-1}))^3)}
-        {(1 - (1 - \sqrt 2 \cdot \sqrt {1 - ex}))^6(1 + T(e^{-1}))^3} \\
-         & =\frac {(1 + 2 + 2)(1 + 5 + 3 + 1)}
-        {(\sqrt 2 )^6 (\sqrt{1 - ex})^6 \cdot 2^3}                    \\
-         & =\frac {50} {64(1 - ex)^3}
-    \end{align*}
-    Folglich gilt mit der Notation in \cite{fo90} $\sigma(x) = x^3$ und $\alpha = 3$. Aus Theorem 1 folgt
-    \begin{align*}
-        [x^n] \psi(x)
-        \sim \frac {50} {64} \; (e^{-1})^{-n} \;
-        \frac {n^3} {n \Gamma(3)}
-        = \frac {25} {32} \; \frac {e^n n^2} {2}
-    \end{align*}
-    und mit Stirlings Näherung $n! \sim \sqrt{2\pi n} (n/e)^n$
-    \begin{align*}
-        \tau_n
-        \sim \frac {n!}{n^{n + 2}} \, \frac {25} {32} \,\frac {e^n n^2} 2
-        = n! \bigg (\frac {e} {n} \bigg )^n \, \frac {25} {64}
-        \sim \sqrt {2 \pi n} \; \frac {25}{64}
-        = \frac {25} {32} \sqrt{\pi n/2}
-    \end{align*}
-\end{proof}
 
 \noindent Aus Satz \ref{theorem:min-rho-len-m2} folgt sofort, dass $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p / 2}$. Daraus lässt sich auch auf $L_{k, k}(p)$ schließen. Für $1 \le k \in \N$ wird nach RMA $p$ durch $p/(\gcd(p - 1, 2k) - 1)$ ersetzt. Die Laufzeit pro Iteration steigt bei jeder Maschine aber um einen Faktor $\lg 2k$, sodass sie auch insgesamt um einen Faktor $\lg 2k$ steigt. Es gilt also
 \begin{align}
