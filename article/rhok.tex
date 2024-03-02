@@ -33,6 +33,7 @@
 \newtheorem{definition}{Definition}
 \newtheorem{theorem}{Satz}
 \newtheorem{lemma}{Lemma}
+\newtheorem*{remark*}{Anmerkung}
 \newtheorem*{assumption*}{Annahme}
 
 \newcommand*\uparagraph{
@@ -157,37 +158,44 @@ wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ i
 
 In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergeleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Die Rho-Längen verschiedener Maschinen sind hier stochastisch unabhängig. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
 
-Grundsätzlich gilt
-\begin{align*}
+Grundsätzlich gilt nach der Definition des Erwartungswerts
+\begin{align}
     \E(t_{\min}) =
     \sum_{z_1 = 1}^{h_1} \P(s_1 = z_1)
     \sum_{z_2 = 1}^{h_2} \P(s_2 = z_2) \, \cdots
     \sum_{z_M = 1}^{h_M} \P(s_M = z_M)
     \, \min_{i = 1}^M(z_i \lg 2k_i)
-\end{align*}
+    \label{formula:etmin-initial}
+\end{align}
 wobei durch "`$\cdots$"' $M$ ineinander verschachtelte Summen über alle möglichen $s_i$ für jedes $1 \le i \le M$ angedeutet werden. Zunächst soll $\P(s_i = z_i)$ bestimmt werden.
 
-\label{lemma-prob-si}
 \begin{lemma}
-    Sei $\P(s_i = z)$ die Wahrscheinlichkeit, dass bei der $i$-ten Maschine nach $z$ Iterationen erstmals eine Kollision auftritt. Für $p \to \infty$ gilt
+    Man betrachte eine Maschine mit Parameter $k$ und $h = p/(\gcd(p - 1, 2k) - 1)$. Sei $\P(s = z)$ die Wahrscheinlichkeit, dass bei dieser Maschine nach $z$ Iterationen erstmals eine Kollision auftritt. Für $p \to \infty$ gilt
     \begin{align*}
-        \P(s_i = z) \sim \frac z {h_i} \exp \bigg ( \frac {-z^2}{2h_i} \bigg )
+        \P(s = z)
+        \sim \frac z h \exp \Bigg ( \frac {-z^2}{2h} \Bigg )
     \end{align*}
+    wenn $z = O(\sqrt h)$ und
+    \begin{align*}
+        \P(s = z)
+        = O \Bigg ( \frac z h \exp \Bigg ( \frac {-z^2}{2h} \Bigg ) \Bigg )
+    \end{align*}
+    wenn $z = \omega(\sqrt h)$.
+
+    \label{lemma:prob-s-z}
 \end{lemma}
 
-\begin{proof}
+\begin{remark*}
+    $z$ wird hier als Funktion von $h$ betrachtet. Denn um (\ref{formula:etmin-initial}) später für $p \to \infty$ auszuwerten, reicht eine Abschätzung von $\P(s_i = z_i)$ für konstante $z_i$ nicht aus, da über alle $1 \le z_i \le h_i$ summiert wird und $h_i = p/(\gcd(p - 1, 2k_i) - 1)$.
+\end{remark*}
+
+\begin{proof}[Beweis von Lemma \ref{lemma:prob-s-z}]
     Nach RMA genügt es $\P(\nu(f, x_0) = z)$ für eine zufällig gewählte Funktion $f \in A(h_i)$ und ein zufälliges $x_0 \in \Z/h_i\Z$ zu bestimmen. Für eine zufällige Funktion $f \in A(h_i)$ ist die Wahrscheinlichkeit einer Kollision im $j$-ten Schritt $j/h_i$, wenn in den ersten $j - 1$ Schritten keine Kollision aufgetreten ist, da jeder der $h_i$ möglichen Werte gleich wahrscheinlich ist und $j$ von ihnen zu einer Kollision führen. Es gilt also
     \begin{align*}
         \P(s_i = z) = \P(\nu(f, x_0) = z)
         = \frac{z}{h_i} \, \prod_{j = 0}^{z - 1} \bigg (1 - \frac {j} {h_i} \bigg )
     \end{align*}
-    da in den ersten $z - 1$ Schritten keine Kollision auftreten darf und im $z$-ten Schritt eine Kollision auftreten muss. Durch Anwenden der Restgliedabschätzung $\exp (x) = 1 + x + O(x^2)$ (gegeben $|x| < 1$) auf $x = -j/h_i$ gilt
-    \begin{align*}
-        \P(s_i = z)
-        = \frac {z} {h_i} \, \prod_{j = 0}^{z - 1} \Bigg ( \exp \bigg ( \frac {-j}{h_i} \bigg )
-        - O \bigg ( \frac {j^2} {h_i^2} \bigg ) \Bigg )
-    \end{align*}
-    Um die gewünschte Formel zu erhalten, wird gezeigt, dass der $O(j^2/h_i^2)$-Term für eine asymptotische Näherung weggelassen werden kann.
+    da in den ersten $z - 1$ Schritten keine Kollision auftreten darf und im $z$-ten Schritt eine Kollision auftreten muss. MAKE IT SIMPLE
 \end{proof}
 
 $\E(t_{\min})$ lässt sich nun wie folgt ausdrücken, wobei $t_{\max} = p \, \max_{i = 0}^M \lg 2k_i$ die maximal mögliche Anzahl an Zeiteinheiten ist.
