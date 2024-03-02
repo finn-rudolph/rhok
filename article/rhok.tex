@@ -30,9 +30,14 @@
 \newcommand{\Z}{\mathbb{Z}}
 \renewcommand{\P}{\mathbb{P}}
 
+\theoremstyle{definition}
 \newtheorem{definition}{Definition}
+
+\theoremstyle{plain}
 \newtheorem{theorem}{Satz}
 \newtheorem{lemma}{Lemma}
+
+\theoremstyle{remark}
 \newtheorem*{remark*}{Anmerkung}
 \newtheorem*{assumption*}{Annahme}
 
@@ -187,16 +192,18 @@ wobei durch "`$\cdots$"' $M$ ineinander verschachtelte Summen über alle möglic
     da in den ersten $z - 1$ Schritten keine Kollision auftreten darf und im $z$-ten Schritt eine Kollision auftreten muss.
 \end{proof}
 
+
+
 \begin{lemma}
     Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt für $p \to \infty$
     \begin{align*}
-        \P(s = z)
-        \sim \frac z h \exp \Bigg ( \frac {-z^2}{2h} \Bigg )
+        \lim_{p \to \infty} \P(s = z)
+        - \frac z h \exp \bigg ( \frac {-z^2}{2h} \bigg ) = 0
     \end{align*}
     wenn $z = O(\sqrt h)$ und
     \begin{align*}
         \P(s = z)
-        = O \Bigg ( \frac z h \exp \Bigg ( \frac {-z^2}{2h} \Bigg ) \Bigg )
+        = O \Bigg ( \frac z h \exp \bigg ( \frac {-z^2}{2h} \bigg ) \Bigg )
     \end{align*}
     wenn $z = \omega(\sqrt h)$.
 
@@ -207,20 +214,27 @@ wobei durch "`$\cdots$"' $M$ ineinander verschachtelte Summen über alle möglic
     $z$ wird hier als Funktion von $h$ betrachtet. Denn um (\ref{formula:etmin-initial}) später für $p \to \infty$ auszuwerten, reicht eine Abschätzung von $\P(s_i = z_i)$ für konstante $z_i$ nicht aus, da über alle $1 \le z_i \le h_i$ summiert wird und $h_i = p/(\gcd(p - 1, 2k_i) - 1)$.
 \end{remark*}
 
-\begin{proof}[Beweis von Lemma \ref{lemma:prob-s-z}]
+\begin{proof}[Beweis von Lemma \ref{lemma:prob-s-z-asmyp}]
 
 \end{proof}
 
-Mit Lemma \ref{lemma:prob-s-z} gilt
+Sei im Folgenden $\P'(s_i = z_i) = \exp(-z_i^2/h_i)z_i/h_i$ und
 \begin{align*}
-    \lim_{p \to \infty} \frac {
-        \sum_{z_1 = 1}^{h_1} \P(s_1 = z_1) \, \cdots
-        \sum_{z_M = 1}^{h_M} \P(s_M = z_M)
-        \, \min_{i = 1}^M(z_i \lg 2k_i)}
-    {
-        \sum_{z_1 = 1}^{h_1} \P(s_1 = z_1) \, \cdots
-        \sum_{z_M = 1}^{h_M} \P(s_M = z_M)
-        \, \min_{i = 1}^M(z_i \lg 2k_i)}
+    \E'(t_{\min}) =
+    \sum_{z_1 = 1}^{h_1} \P'(s_1 = z_1)
+    \sum_{z_2 = 1}^{h_2} \P'(s_2 = z_2) \, \cdots
+    \sum_{z_M = 1}^{h_M} \P'(s_M = z_M)
+    \, \min_{i = 1}^M(z_i \lg 2k_i)
+\end{align*}
+Mit Lemma \ref{lemma:prob-s-z-asmyp} soll nun $\E(t_{\min}) \sim \E'(t_{\min})$ gezeigt werden. Es gilt
+\begin{align*}
+    \lim_{p \to \infty} \frac {\E'(t_{\min})} {\E(t_{\min})}
+     & = \lim_{p \to \infty}
+    1 + \frac{\E'(t_{\min}) - \E(t_{\min})} {\E(t_{\min})}                      \\
+     & = 1 + \lim_{p \to \infty} \frac 1 {\E(t_{\min})}
+    \sum_{z_1 = 1}^{h_1} \big ( \P'(s_1 = z_1) - \P(s_1 = z_1) \big ) \, \cdots \\
+     & \quad \sum_{z_M = 1}^{h_M} \big ( \P'(s_M = z_M) - \P(s_M - z_M) \big )
+    \, \min_{i = 1}^M(z_i \lg 2k_i)
 \end{align*}
 
 $\E(t_{\min})$ lässt sich nun wie folgt ausdrücken, wobei $t_{\max} = p \, \max_{i = 0}^M \lg 2k_i$ die maximal mögliche Anzahl an Zeiteinheiten ist.
