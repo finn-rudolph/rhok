@@ -160,6 +160,10 @@ wobei $Z_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ i
 
 Wenn $k_i = k_j$, sind $Z_i$ und $Z_j$ nicht stochastisch unabhängig, weil sich die $i$-te und $j$-te Maschine dann im gleichen funktionalen Graphen bewegen. Es kann beispielsweise sein, dass die $i$-te Maschine der $j$-ten "hinterherläuft", wenn der Anfangswert der $i$-ten in einem Teilbaum des Anfangswerts der $j$-ten liegt. Diese Abhängigkeit sorgt für eine schlechtere Laufzeit und erschwert die Analyse des Algorithmus. Das Problem kann umgangen werden, indem die Funktion $f(x) = x^{2k_i} + c_i$ statt $f(x) = x^{2k_i} + 1$ für Maschine $i$ verwendet wird (\cite{cr99}, S. 6). Dabei wird $c_i \ne 0, -2$ für jede Maschine unabhängig gewählt, sodass $Z_i$ und $Z_j \ (i \ne j)$ immer stochastisch unabhängig sind, auch wenn $k_i = k_j$. Für folgende Berechnungen wird daher immer angenommen, dass $Z_i$ und $Z_j$ für $i \ne j$ unabhängig sind.
 
+\begin{remark*}
+
+\end{remark*}
+
 \section{Herleitung einer Formel für die erwartete Laufzeit}
 \label{sec:formula-running-time}
 
@@ -170,7 +174,7 @@ In diesem Abschnitt wird eine Formel für $L_{(k_i)}(p)$ hergeleitet. Sei $h_i =
     \sum_{z_2 = 1}^{h_2} \P(Z_2 = z_2) \, \cdots
     \sum_{z_M = 1}^{h_M} \P(Z_M = z_M)
     \, \min_{i = 1}^M(z_i \lg 2k_i)
-    \label{formula:etmin-initial}
+    \label{eq:lki-written-out}
 \end{align}
 wobei durch "`$\cdots$"' $M$ ineinander verschachtelte Summen über alle möglichen $z_i$ für jedes $1 \le i \le M$ angedeutet werden. Zunächst soll $\P(Z_i = z_i)$ bestimmt werden.
 
@@ -308,7 +312,9 @@ Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu
 \end{lemma}
 
 \begin{remark*}
-    $z$ wird hier als Funktion von $h$ verstanden. Denn um (\ref{formula:etmin-initial}) später für $p \to \infty$ auszuwerten, reicht eine Abschätzung von $\P(Z_i = z_i)$ für konstante $z_i$ nicht aus, da über alle $1 \le z_i \le h_i$ summiert wird und $h_i = p/(\gcd(p - 1, 2k_i) - 1)$.
+    $z$ wird hier als Funktion von $h$ verstanden. Denn um (\ref{eq:lki-written-out}) später für $p \to \infty$ auszuwerten, reicht eine Abschätzung von $\P(Z_i = z_i)$ für konstante $z_i$ nicht aus, da über alle $1 \le z_i \le h_i$ summiert wird und $h_i = p/(\gcd(p - 1, 2k_i) - 1)$.
+
+    Aus Lemma 3 folgt $\lim_{p \to \infty} \P(Z = z) = Q(z, h)$ für $z \le h^{1/2 + \delta}$. Mit einer einfachen Rechnung lässt sich das auch für $z > h^{1/2 +\delta}$ zeigen. Daraus folgt aber noch nicht $L_{(k_i)}(p) \sim F$, da die Anzahl an Summanden in (\ref{eq:lki-written-out}) von $p$ abhängt. Das $\delta$ in Lemma \ref{lemma:prob-s-z-asmyp} wird später hilfreich sein, um zu zeigen, dass wirklich die gesamte Summe in (\ref{eq:lki-written-out}) asymptotisch zu $F$ ist.
 \end{remark*}
 
 \begin{proof}[Beweis von Lemma \ref{lemma:prob-s-z-asmyp}]
