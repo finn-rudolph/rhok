@@ -222,6 +222,106 @@ Sei im Folgenden $Q(z, h) = (z/h) e^{-z^2/(2h)}$ und
 \end{align*}
 Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und zu zeigen, dass $L_{(k_i)}(p) \sim F$.
 
+
+\begin{lemma}
+    Sei $0 \le \delta < 1/6$. Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt für $p \to \infty$ und $z \le h^{1/2 + \delta}$
+    \begin{align*}
+        |Q(z, h) - \P(Z = z)| = O \bigg ( \frac 1 {h^{1 - 4\delta}} \bigg )
+    \end{align*}
+
+    \label{lemma:prob-s-z-asmyp}
+\end{lemma}
+
+\begin{remark*}
+    $z$ wird hier als Funktion von $h$ verstanden. Denn um (\ref{eq:lki-written-out}) später für $p \to \infty$ auszuwerten, reicht eine Abschätzung von $\P(Z_i = z_i)$ für konstante $z_i$ nicht aus, da über alle $1 \le z_i \le h_i$ summiert wird und $h_i = p/(\gcd(p - 1, 2k_i) - 1)$.
+
+    Aus Lemma \ref{lemma:prob-s-z-asmyp} folgt $\lim_{p \to \infty} \P(Z = z) = Q(z, h)$ für $z \le h^{1/2 + \delta}$. Mit einer einfachen Rechnung lässt sich das auch für $z > h^{1/2 +\delta}$ zeigen. Daraus folgt aber noch nicht $L_{(k_i)}(p) \sim F$, da die Anzahl an Summanden in (\ref{eq:lki-written-out}) von $p$ abhängt. Das $\delta$ in Lemma \ref{lemma:prob-s-z-asmyp} wird später hilfreich sein, um zu zeigen, dass wirklich die gesamte Summe in (\ref{eq:lki-written-out}) asymptotisch zu $F$ ist.
+\end{remark*}
+
+\begin{proof}[Beweis von Lemma \ref{lemma:prob-s-z-asmyp}]
+    Zunächst wird die Restgliedabschätzung $e^x = 1 + x + O(x^2)$ für $|x| \le 1$ auf $\P(Z = z)$ angewandt. Damit gilt
+    \begin{align*}
+        \P(Z = z) = \frac z h \prod_{j = 0}^{z - 1}
+        \Bigg ( e^{-j/h} - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
+    \end{align*}
+    Daraus folgt
+    \begin{align*}
+        \vert Q(z, h) - \P(Z = z) \vert
+         & = \frac z h \Bigg \vert
+        e^{-z^2/(2h)} -
+        \prod_{j = 0}^{z - 1}
+        \Bigg ( e^{-j/h} - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
+        \Bigg \vert                      \\
+         & \le \frac z h \Bigg \vert
+        e^{-z^2/(2h)} -
+        \prod_{j = 0}^{z - 1} e^{-j/h}
+        \Bigg \vert                      \\
+         & \quad + \frac z h \Bigg \vert
+        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
+        \prod_{j = 0, j \ne k}^{z - 1} e^{-j/h}
+        - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
+        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
+        \prod_{j = 0, j \ne k,l}^{z - 1} e^{-j/h}
+        + \cdots
+        \Bigg \vert
+    \end{align*}
+    Die Terme des ausmultiplizierten Produkts wurden nach der Zahl an $O(j^2/h^2)$-Faktoren gruppiert. Außerdem wurde die Dreiecksungleichung angewandt. Für den ersten Summanden gilt
+    \begin{align*}
+        \frac z h \Bigg \vert
+        e^{-z^2/(2h)} -
+        \prod_{j = 0}^{z - 1} e^{-j/h}
+        \Bigg \vert
+         & = \frac z h \Big \vert
+        e^{-z^2/(2h)} -
+        e^{-\sum_{j = 0}^{z - 1} j/h}
+        \Big \vert                                       \\
+         & = \frac z h \Big \vert
+        e^{-z^2/(2h)} -  e^{-z(z - 1)/(2h)}
+        \Big \vert                                       \\
+         & = \frac z h e^{-z^2/(2h)} \Big \vert
+        1 - e^{z/(2h)}
+        \Big \vert                                       \\
+         & \le \frac {z^2} {h^2}                         \\
+         & = O \bigg ( \frac 1 {h^{1 - 2\delta}} \bigg )
+    \end{align*}
+    Von der dritten zur vierten Zeile wurde erneut die Restgliedabschätzung verwendet. Für den zweiten Summanden gilt
+    \begin{align*}
+               & \frac z h \Bigg \vert
+        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
+        \prod_{j = 0, j \ne k}^{z - 1} e^{-j/h}
+        - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
+        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
+        \prod_{j = 0, j \ne k,l}^{z - 1} e^{-j/h}
+        + \cdots
+        \Bigg \vert                                           \\
+        \le \, & \frac z h \Bigg (
+        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
+        \prod_{j = 0, j \ne k}^{z - 1} e^{-j/h}
+        + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
+        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
+        \prod_{j = 0, j \ne k,l}^{z - 1} e^{-j/h}
+        + \cdots \Bigg )                                      \\
+        \le \, & \frac z h \Bigg (
+        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
+        + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
+        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
+        + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}\sum_{m = l + 1}^{z - 1}
+        O \bigg ( \frac {k^2l^2m^2} {h^6} \bigg )
+        + \cdots \Bigg )                                      \\
+        \le \, & \frac z h \Bigg (
+        z \, O \bigg ( \frac {z^2} {h^2} \bigg )
+        + z^2 \, O \bigg ( \frac {z^4} {h^4} \bigg )
+        + z^3 \, O \bigg ( \frac {z^6} {h^6} \bigg )
+        + \cdots \Bigg )                                      \\
+        = \,   & O \Bigg ( \frac 1 {h^{1/2 - \delta}} \bigg (
+        \frac 1 {h^{1/2 - 3 \delta}} + \frac 1 {h^{1 - 6\delta}}
+        + \frac 1 {h^{3/2 - 9\delta}} + \cdots
+        \bigg ) \Bigg )                                       \\
+        = \,   & O \bigg ( \frac 1 {h^{1 - 4\delta}} \bigg )
+    \end{align*}
+    Von der ersten zur zweiten Zeile wurden alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $e^{-j/h}$ weggelassen, da sie $\le 1$ sind. In der letzten Zeile wurde die geometrische Summenformel verwendet.
+\end{proof}
+
 \begin{lemma}
     Sei $F$ wie oben definiert. Es gilt
     \begin{align*}
@@ -319,131 +419,46 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
 \end{proof}
 
 \begin{lemma}
-    Sei $0 \le \delta < 1/6$. Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt für $p \to \infty$ und $z \le h^{1/2 + \delta}$
+    Sei $Q(z, h) = (z/h)e^{-z^2/(2h)}$ und $\delta > 0$. Dann gilt für $h \to \infty$
     \begin{align*}
-        |Q(z, h) - \P(Z = z)| = O \bigg ( \frac 1 {h^{1 - 4\delta}} \bigg )
+        \sum_{z = h^{1/2 + \delta}}^h Q(z, h) = O\Big (e^{-h^{2\delta}} \Big )
     \end{align*}
 
-    \label{lemma:prob-s-z-asmyp}
+    \label{lemma:q-large-z-asymp}
 \end{lemma}
 
-\begin{remark*}
-    $z$ wird hier als Funktion von $h$ verstanden. Denn um (\ref{eq:lki-written-out}) später für $p \to \infty$ auszuwerten, reicht eine Abschätzung von $\P(Z_i = z_i)$ für konstante $z_i$ nicht aus, da über alle $1 \le z_i \le h_i$ summiert wird und $h_i = p/(\gcd(p - 1, 2k_i) - 1)$.
-
-    Aus Lemma 3 folgt $\lim_{p \to \infty} \P(Z = z) = Q(z, h)$ für $z \le h^{1/2 + \delta}$. Mit einer einfachen Rechnung lässt sich das auch für $z > h^{1/2 +\delta}$ zeigen. Daraus folgt aber noch nicht $L_{(k_i)}(p) \sim F$, da die Anzahl an Summanden in (\ref{eq:lki-written-out}) von $p$ abhängt. Das $\delta$ in Lemma \ref{lemma:prob-s-z-asmyp} wird später hilfreich sein, um zu zeigen, dass wirklich die gesamte Summe in (\ref{eq:lki-written-out}) asymptotisch zu $F$ ist.
-\end{remark*}
-
-\begin{proof}[Beweis von Lemma \ref{lemma:prob-s-z-asmyp}]
-    Zunächst wird die Restgliedabschätzung $e^x = 1 + x + O(x^2)$ für $|x| \le 1$ auf $\P(Z = z)$ angewandt. Damit gilt
+\begin{proof}
+    Es gilt
     \begin{align*}
-        \P(Z = z) = \frac z h \prod_{j = 0}^{z - 1}
-        \Bigg ( e^{-j/h} - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
+        \sum_{z = h^{1/2 + \delta}}^h \frac z h e^{-z^2/2h}
+        \le \sum_{z = h^{1/2 + \delta}}^h e^{-h^{2\delta}}
+        \le he^{-h^{2\delta}} = O \Big (e^{-h^{2\delta}} \Big )
     \end{align*}
-    Daraus folgt
-    \begin{align*}
-        \vert Q(z, h) - \P(Z = z) \vert
-         & = \frac z h \Bigg \vert
-        e^{-z^2/(2h)} -
-        \prod_{j = 0}^{z - 1}
-        \Bigg ( e^{-j/h} - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
-        \Bigg \vert                      \\
-         & \le \frac z h \Bigg \vert
-        e^{-z^2/(2h)} -
-        \prod_{j = 0}^{z - 1} e^{-j/h}
-        \Bigg \vert                      \\
-         & \quad + \frac z h \Bigg \vert
-        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
-        \prod_{j = 0, j \ne k}^{z - 1} e^{-j/h}
-        - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
-        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
-        \prod_{j = 0, j \ne k,l}^{z - 1} e^{-j/h}
-        + \cdots
-        \Bigg \vert
-    \end{align*}
-    Die Terme des ausmultiplizierten Produkts wurden nach der Zahl an $O(j^2/h^2)$-Faktoren gruppiert. Außerdem wurde die Dreiecksungleichung angewandt. Für den ersten Summanden gilt
-    \begin{align*}
-        \frac z h \Bigg \vert
-        e^{-z^2/(2h)} -
-        \prod_{j = 0}^{z - 1} e^{-j/h}
-        \Bigg \vert
-         & = \frac z h \Big \vert
-        e^{-z^2/(2h)} -
-        e^{-\sum_{j = 0}^{z - 1} j/h}
-        \Big \vert                                       \\
-         & = \frac z h \Big \vert
-        e^{-z^2/(2h)} -  e^{-z(z - 1)/(2h)}
-        \Big \vert                                       \\
-         & = \frac z h e^{-z^2/(2h)} \Big \vert
-        1 - e^{z/(2h)}
-        \Big \vert                                       \\
-         & \le \frac {z^2} {h^2}                         \\
-         & = O \bigg ( \frac 1 {h^{1 - 2\delta}} \bigg )
-    \end{align*}
-    Von der dritten zur vierten Zeile wurde erneut die Restgliedabschätzung verwendet. Für den zweiten Summanden gilt
-    \begin{align*}
-               & \frac z h \Bigg \vert
-        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
-        \prod_{j = 0, j \ne k}^{z - 1} e^{-j/h}
-        - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
-        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
-        \prod_{j = 0, j \ne k,l}^{z - 1} e^{-j/h}
-        + \cdots
-        \Bigg \vert                                           \\
-        \le \, & \frac z h \Bigg (
-        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
-        \prod_{j = 0, j \ne k}^{z - 1} e^{-j/h}
-        + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
-        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
-        \prod_{j = 0, j \ne k,l}^{z - 1} e^{-j/h}
-        + \cdots \Bigg )                                      \\
-        \le \, & \frac z h \Bigg (
-        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
-        + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
-        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
-        + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}\sum_{m = l + 1}^{z - 1}
-        O \bigg ( \frac {k^2l^2m^2} {h^6} \bigg )
-        + \cdots \Bigg )                                      \\
-        \le \, & \frac z h \Bigg (
-        z \, O \bigg ( \frac {z^2} {h^2} \bigg )
-        + z^2 \, O \bigg ( \frac {z^4} {h^4} \bigg )
-        + z^3 \, O \bigg ( \frac {z^6} {h^6} \bigg )
-        + \cdots \Bigg )                                      \\
-        = \,   & O \Bigg ( \frac 1 {h^{1/2 - \delta}} \bigg (
-        \frac 1 {h^{1/2 - 3 \delta}} + \frac 1 {h^{1 - 6\delta}}
-        + \frac 1 {h^{3/2 - 9\delta}} + \cdots
-        \bigg ) \Bigg )                                       \\
-        = \,   & O \bigg ( \frac 1 {h^{1 - 4\delta}} \bigg )
-    \end{align*}
-    Von der ersten zur zweiten Zeile wurden alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $e^{-j/h}$ weggelassen, da sie $\le 1$ sind. In der letzten Zeile wird die geometrische Summenformel verwendet.
 \end{proof}
 
-Um $L_{(k_i)}(p) \sim F$ zu zeigen, wird Induktion über $M$ verwendet. Der Induktionsanfang folgt sofort aus Lemma \ref{lemma:prob-s-z-asmyp}. Um die Aussage für $M$ zu zeigen, wird Lemma \ref{lemma:prob-s-z-asmyp} mit $\delta = 1/16$ verwendet.
+Um $L_{(k_i)}(p) \sim F$ zu zeigen, schreibe man
 \begin{align*}
-    F & = \sum_{z_1 = 1}^{h_1} Q(z_1, h_1) \cdots
+    F = & \sum_{z_1 = 1}^{h_1^{9/16}} Q(z_1, h_1)
+    \sum_{z_2 = 1}^{h_2} Q(z_2, h_2)    \cdots
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
-    \min_{i = 1}^M(z_i \lg 2k_i)                  \\
-      & = \sum_{z_1 = 1}^{h_1^{1/2 + 1/16}}
-    \Bigg (\P(Z_1 = z_1) + O \bigg (\frac 1 {h^{3/4}} \bigg ) \Bigg )
-    \sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \cdots
+    \min_{i = 1}^M (z_i \lg 2k_i)                 \\
+        & \quad +
+    \sum_{z_1 = h_1^{9/16}}^{h_1} Q(z_1, h_1)
+    \sum_{z_2 = 1}^{h_2} Q(z_2, h_2)    \cdots
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
-    \min_{i = 1}^M(z_i \lg 2k_i)                  \\
-      & \quad +
-    \sum_{z_1 = h_1^{1/2 + 1/16}}^{h_1} Q(z_1, h_1)
-    \sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \cdots
-    \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
-    \min_{i = 1}^M(z_i \lg 2k_i)
+    \min_{i = 1}^M (z_i \lg 2k_i)
 \end{align*}
-Die Summen über $z_2$ bis $z_M$ können nach Lemma \ref{lemma:f-asmyp} durch $O(\sqrt p)$ abgeschätzt werden. Damit ist der gesamte Beitrag von $O(h^{-3/4})$ durch $O(p^{1/4})$ beschränkt. Die zweite Summe geht für $p \to \infty$ gegen 0. Da $F = \Theta(\sqrt p)$, gilt
+Die zweite Summe geht nach Lemma \ref{lemma:q-large-z-asymp} gegen 0. Indem auf die erste Summe Lemma \ref{lemma:prob-s-z-asmyp} mit $\delta = 1/16$ angewandt wird, folgt
 \begin{align*}
-    F \sim
-    \sum_{z_1 = 1}^{h_1^{1/2 + 1/16}} \P(Z_1 = z_1)
-    \sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \cdots
+    F \sim \sum_{z_1 = 1}^{h_1^{9/16}}
+    \Big ( \P(Z_1 = z_1) + O \Big ( h_1^{-3/4} \Big ) \Big )
+    \sum_{z_2 = 1}^{h_2} Q(z_2, h_2)    \cdots
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
-    \min_{i = 1}^M(z_i \lg 2k_i)
+    \min_{i = 1}^M (z_i \lg 2k_i)
 \end{align*}
-Wenn $z_i \ (i > 1)$ das Minimum ist, kann die Induktionsvoraussetzung angewandt werden, sodass die Aussage folgt. Andernfalls kann $z_1$ nach vorne gezogen werden und die Aussage folgt aus Lemma \ref{lemma:prob-s-z-asmyp}.
+Nach Lemma \ref{lemma:f-asmyp} gilt $\sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \cdots \sum_{z_M = 1}^{h_M} Q(z_M, h_M) \min_{i = 1}^M (z_i \lg 2k_i) = O(\sqrt p)$. Folglich ist die Summe aller Terme mit einem $O \big (h_2^{-3/4} \big )$-Faktor durch $O(p^{5/16})$ beschränkt. Für eine asymptotische Näherung von $F$ können sie also weggelassen werden. Indem dieses Argument für $Q(z_2, h_2) \dots, Q(z_M, h_M)$ wiederholt wird, können alle $Q(z_i, h_i)$ durch $\P(Z_i = z_i)$ ersetzt werden. Durch eine erneute Anwendung von Lemma \ref{lemma:q-large-z-asymp} und $\P(z_i, h_i) = O(Q(z_i, h_i))$ können die oberen Grenzen der Summen von $h_i^{9/16}$ zurück zu $h_i$ geändert werden, sodass $L_{(k_i)}(p) \sim F$ folgt.
 
-Aus den Lemmata 1 - 3 und der Rechnung eben folgt nun eine asymptotische Näherung für die Laufzeit der Rho-Methode.
+Aus Lemma \ref{lemma:f-asmyp} und $L_{(k_i)}(p) \sim F$ folgt nun eine asymptotische Näherung für die Laufzeit der Rho-Methode.
 \begin{theorem}
     Unter der Random Mapping Assumption gilt für die erwartete Laufzeit der Rho-Methode auf $M$ Maschinen mit $k$-Werten $k_1, \dots, k_M$
     \begin{align}
