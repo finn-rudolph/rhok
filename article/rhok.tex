@@ -151,44 +151,42 @@ Für $k = 1$ ist unter RMA die erwartete Anzahl an Iterationen der while-Schleif
 
 Sei $M$ die Anzahl verfügbarer Maschinen. Eine \emph{Maschine} meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte zufällig und unabhängig voneinander gewählt werden und der Algorithmus auf jeder der $M$ Maschinen ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Das ist nicht sofort klar, da durch ein größeres $k$ möglicherweise $\gcd(p - 1, 2k)$ groß ist, sodass die Zahl an Iterationen um einen Faktor $\sqrt{\gcd(p - 1, 2k) -1}$ sinkt. Allerdings steigt die Dauer einer Iteration um einen Faktor $\lg 2k$. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich der Laufzeit nicht die $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt, wenn $p \to \infty$. Wir definieren eine \emph{Zeiteinheit} als die Dauer einer Iteration für $k = 1$, bei einer Maschine mit Parameter $k$ dauert eine Iteration also $\lg 2k$ Zeiteinheiten. Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
 
-Sei $k_1, \dots, k_M, 1 \le k_i \in \N$ eine Zuordnung von $k$-Werten für $M$ Maschinen. Mit $L_{k_1, \dots, k_M}(p)$ wird die erwartete Laufzeit des parallelen Rho-Algorithmus mit entsprechenden $k$-Werten bezeichnet. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Unter RMA gilt
+Sei $k_1, \dots, k_M, 1 \le k_i \in \N$ eine Zuordnung von $k$-Werten für $M$ Maschinen. Mit $L_{k_1, \dots, k_M}(p)$ (oder kurz $L_{(k_i)}(p)$) wird die erwartete Laufzeit des parallelen Rho-Algorithmus mit entsprechenden $k$-Werten bezeichnet. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Unter RMA gilt
 \begin{align}
-    L_{k_1, \dots, k_M}(p) = \E \bigg ( \min_{i = 1}^M X_i \bigg )
-    \label{lk-definition}
+    L_{(k_i)}(p) = \E \bigg ( \min_{i = 1}^M Z_i \lg 2k_i \bigg )
+    \label{eq:lki-definition}
 \end{align}
-wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ ist, mit $X_i(f, x_0) = \nu(f, x_0)$ für $f \in A(h_i), x_0 \in \Z/h_i\Z$. In $L_{k_1, \dots, k_M}(p)$ ist $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ noch fixiert, der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optimal-k} behandelt.
+wobei $Z_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ ist, mit $Z_i(f, x_0) = \nu(f, x_0)$ für $f \in A(h_i), x_0 \in \Z/h_i\Z$. In $L_{(k_i)}(p)$ ist $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ noch fixiert, der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optimal-k} behandelt.
 
-Wenn $k_i = k_j$, sind $X_i$ und $X_j$ nicht stochastisch unabhängig, weil sich die $i$-te und $j$-te Maschine dann im gleichen funktionalen Graphen bewegen. Es kann beispielsweise sein, dass die $i$-te Maschine der $j$-ten "hinterherläuft", wenn der Anfangswert der $i$-ten in einem Teilbaum des Anfangswerts der $j$-ten liegt. Diese Abhängigkeit sorgt einerseits für eine schlechtere Laufzeit und erschwert die Analyse des Algorithmus. Um dieses Problem zu umgehen, kann die Funktion $f(x) = x^{2k_i} + c_i$ statt $f(x) = x^{2k_i} + 1$ für Maschine $i$ verwendet werden (\cite{cr99}, S. 6). Indem $c_i \ne 0, -2$ für jede Maschine unabhängig gewählt wird, sind $X_i$ und $X_j$ immer stochastisch unabhängig, auch wenn $k_i = k_j$. Für folgende Berechnungen wird daher immer angenommen, dass $X_i$ und $X_j$ für $i \ne j$ unabhängig sind.
+Wenn $k_i = k_j$, sind $Z_i$ und $Z_j$ nicht stochastisch unabhängig, weil sich die $i$-te und $j$-te Maschine dann im gleichen funktionalen Graphen bewegen. Es kann beispielsweise sein, dass die $i$-te Maschine der $j$-ten "hinterherläuft", wenn der Anfangswert der $i$-ten in einem Teilbaum des Anfangswerts der $j$-ten liegt. Diese Abhängigkeit sorgt für eine schlechtere Laufzeit und erschwert die Analyse des Algorithmus. Das Problem kann umgangen werden, indem die Funktion $f(x) = x^{2k_i} + c_i$ statt $f(x) = x^{2k_i} + 1$ für Maschine $i$ verwendet wird (\cite{cr99}, S. 6). Dabei wird $c_i \ne 0, -2$ für jede Maschine unabhängig gewählt, sodass $Z_i$ und $Z_j \ (i \ne j)$ immer stochastisch unabhängig sind, auch wenn $k_i = k_j$. Für folgende Berechnungen wird daher immer angenommen, dass $Z_i$ und $Z_j$ für $i \ne j$ unabhängig sind.
 
 \section{Herleitung einer Formel für die erwartete Laufzeit}
 \label{sec:formula-running-time}
 
-In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergeleitet. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
-
-Grundsätzlich gilt nach der Definition des Erwartungswerts
+In diesem Abschnitt wird eine Formel für $L_{(k_i)}(p)$ hergeleitet. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Mit (\ref{eq:lki-definition}) und der Definition des Erwartungswerts gilt
 \begin{align}
-    \E(t_{\min}) =
-    \sum_{z_1 = 1}^{h_1} \P(s_1 = z_1)
-    \sum_{z_2 = 1}^{h_2} \P(s_2 = z_2) \, \cdots
-    \sum_{z_M = 1}^{h_M} \P(s_M = z_M)
+    L_{(k_i)}(p) =
+    \sum_{z_1 = 1}^{h_1} \P(Z_1 = z_1)
+    \sum_{z_2 = 1}^{h_2} \P(Z_2 = z_2) \, \cdots
+    \sum_{z_M = 1}^{h_M} \P(Z_M = z_M)
     \, \min_{i = 1}^M(z_i \lg 2k_i)
     \label{formula:etmin-initial}
 \end{align}
-wobei durch "`$\cdots$"' $M$ ineinander verschachtelte Summen über alle möglichen $s_i$ für jedes $1 \le i \le M$ angedeutet werden. Zunächst soll $\P(s_i = z_i)$ bestimmt werden.
+wobei durch "`$\cdots$"' $M$ ineinander verschachtelte Summen über alle möglichen $z_i$ für jedes $1 \le i \le M$ angedeutet werden. Zunächst soll $\P(Z_i = z_i)$ bestimmt werden.
 
 \begin{lemma}
-    Man betrachte eine Maschine mit Parameter $k$ und $h = p/(\gcd(p - 1, 2k) - 1)$. Sei $\P(s = z)$ die Wahrscheinlichkeit, dass bei dieser Maschine nach $z$ Iterationen erstmals eine Kollision auftritt. Es gilt
+    Man betrachte eine Maschine mit Parameter $k$ und $h = p/(\gcd(p - 1, 2k) - 1)$. Sei $Z$ die gleichverteilte Zufallsvariable über $A(h) \times \Z/h\Z$ mit $Z(f, x_0) = \nu(f, x_0)$. Es gilt
     \begin{align*}
-        \P(s = z) = \frac z h \prod_{j = 0}^{z - 1} \bigg (1 - \frac j h \bigg )
+        \P(Z = z) = \frac z h \prod_{j = 0}^{z - 1} \bigg (1 - \frac j h \bigg )
     \end{align*}
 
     \label{lemma:prob-s-z}
 \end{lemma}
 
 \begin{proof}
-    Nach RMA genügt es $\P(\nu(f, x_0) = z)$ für eine zufällig gewählte Funktion $f \in A(h)$ und ein zufälliges $x_0 \in \Z/h\Z$ zu bestimmen. Für eine zufällige Funktion $f \in A(h)$ ist die Wahrscheinlichkeit einer Kollision im $j$-ten Schritt $j/h$, wenn in den ersten $j - 1$ Schritten keine Kollision aufgetreten ist, da jeder der $h$ möglichen Werte gleich wahrscheinlich ist und $j$ von ihnen zu einer Kollision führen. Es gilt also
+    Für eine zufällige Funktion $f \in A(h)$ ist die Wahrscheinlichkeit einer Kollision im $j$-ten Schritt $j/h$, wenn in den ersten $j - 1$ Schritten keine Kollision aufgetreten ist, da jeder der $h$ möglichen Werte gleich wahrscheinlich ist und $j$ von ihnen zu einer Kollision führen. Es gilt also
     \begin{align*}
-        \P(s = z) = \P(\nu(f, x_0) = z)
+        \P(Z = z)
         = \frac z h \prod_{j = 0}^{z - 1} \bigg (1 - \frac j h \bigg )
     \end{align*}
     da in den ersten $z - 1$ Schritten keine Kollision auftreten darf und im $z$-ten Schritt eine Kollision auftreten muss.
@@ -202,7 +200,7 @@ Sei im Folgenden $Q(z, h) = (z/h) e^{-z^2/(2h)}$ und
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \, \min_{i = 1}^M(z_i \lg 2k_i)
 \end{align*}
-Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu zeigen, dass $\E(t_{\min}) \sim F$.
+Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu zeigen, dass $L_{(k_i)}(p) \sim F$.
 
 \begin{lemma}
     Sei $F$ wie oben definiert. Es gilt
@@ -303,25 +301,25 @@ Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu
 \begin{lemma}
     Sei $0 \le \delta < 1/6$. Mit der Notation von Lemma \ref{lemma:prob-s-z} gilt für $p \to \infty$ und $z \le h^{1/2 + \delta}$
     \begin{align*}
-        |Q(z, h) - \P(s = z)| = O \bigg ( \frac 1 {h^{1 - 4\delta}} \bigg )
+        |Q(z, h) - \P(Z = z)| = O \bigg ( \frac 1 {h^{1 - 4\delta}} \bigg )
     \end{align*}
 
     \label{lemma:prob-s-z-asmyp}
 \end{lemma}
 
 \begin{remark*}
-    $z$ wird hier als Funktion von $h$ verstanden. Denn um (\ref{formula:etmin-initial}) später für $p \to \infty$ auszuwerten, reicht eine Abschätzung von $\P(s_i = z_i)$ für konstante $z_i$ nicht aus, da über alle $1 \le z_i \le h_i$ summiert wird und $h_i = p/(\gcd(p - 1, 2k_i) - 1)$.
+    $z$ wird hier als Funktion von $h$ verstanden. Denn um (\ref{formula:etmin-initial}) später für $p \to \infty$ auszuwerten, reicht eine Abschätzung von $\P(Z_i = z_i)$ für konstante $z_i$ nicht aus, da über alle $1 \le z_i \le h_i$ summiert wird und $h_i = p/(\gcd(p - 1, 2k_i) - 1)$.
 \end{remark*}
 
 \begin{proof}[Beweis von Lemma \ref{lemma:prob-s-z-asmyp}]
-    Zunächst wird die Restgliedabschätzung $e^x = 1 + x + O(x^2)$ für $|x| \le 1$ auf $\P(s = z)$ angewandt. Damit gilt
+    Zunächst wird die Restgliedabschätzung $e^x = 1 + x + O(x^2)$ für $|x| \le 1$ auf $\P(Z = z)$ angewandt. Damit gilt
     \begin{align*}
-        \P(s = z) = \frac z h \prod_{j = 0}^{z - 1}
+        \P(Z = z) = \frac z h \prod_{j = 0}^{z - 1}
         \Bigg ( e^{-j/h} - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
     \end{align*}
     Daraus folgt
     \begin{align*}
-        \vert Q(z, h) - \P(s = z) \vert
+        \vert Q(z, h) - \P(Z = z) \vert
          & = \frac z h \Bigg \vert
         e^{-z^2/(2h)} -
         \prod_{j = 0}^{z - 1}
@@ -397,13 +395,13 @@ Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu
     Von der ersten zur zweiten Zeile wurden alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $e^{-j/h}$ weggelassen, da sie $\le 1$ sind. In der letzten Zeile wird die geometrische Summenformel verwendet.
 \end{proof}
 
-Um $\E(t_{\min}) \sim F$ zu zeigen, wird Induktion über $M$ verwendet. Der Induktionsanfang folgt sofort aus Lemma \ref{lemma:prob-s-z-asmyp}. Um die Aussage für $M$ zu zeigen, wird Lemma \ref{lemma:prob-s-z-asmyp} mit $\delta = 1/16$ verwendet.
+Um $L_{(k_i)}(p) \sim F$ zu zeigen, wird Induktion über $M$ verwendet. Der Induktionsanfang folgt sofort aus Lemma \ref{lemma:prob-s-z-asmyp}. Um die Aussage für $M$ zu zeigen, wird Lemma \ref{lemma:prob-s-z-asmyp} mit $\delta = 1/16$ verwendet.
 \begin{align*}
     F & = \sum_{z_1 = 1}^{h_1} Q(z_1, h_1) \cdots
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \min_{i = 1}^M(z_i \lg 2k_i)                  \\
       & = \sum_{z_1 = 1}^{h_1^{1/2 + 1/16}}
-    \Bigg (\P(s_1 = z_1) + O \bigg (\frac 1 {h^{3/4}} \bigg ) \Bigg )
+    \Bigg (\P(Z_1 = z_1) + O \bigg (\frac 1 {h^{3/4}} \bigg ) \Bigg )
     \sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \cdots
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \min_{i = 1}^M(z_i \lg 2k_i)                  \\
@@ -413,21 +411,21 @@ Um $\E(t_{\min}) \sim F$ zu zeigen, wird Induktion über $M$ verwendet. Der Indu
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \min_{i = 1}^M(z_i \lg 2k_i)
 \end{align*}
-Die Summen über $z_2$ bis $z_M$ können nach Lemma \ref{lemma:f-asmyp} durch $O(\sqrt p)$ abgeschätzt werden. Damit ist der gesamte Beitrag von $O(h^{-3/4})$ durch $O(p^{1/4})$ beschränkt. Die zweite Summe geht für $p \to \infty$ gegen 0. Da $F = \Theta(\sqrt p)$, folgt $F \sim \E(t_{\min})$. Es gilt also
+Die Summen über $z_2$ bis $z_M$ können nach Lemma \ref{lemma:f-asmyp} durch $O(\sqrt p)$ abgeschätzt werden. Damit ist der gesamte Beitrag von $O(h^{-3/4})$ durch $O(p^{1/4})$ beschränkt. Die zweite Summe geht für $p \to \infty$ gegen 0. Da $F = \Theta(\sqrt p)$, gilt
 \begin{align*}
     F \sim
-    \sum_{z_1 = 1}^{h_1^{1/2 + 1/16}} \P(s_1 = z_1)
+    \sum_{z_1 = 1}^{h_1^{1/2 + 1/16}} \P(Z_1 = z_1)
     \sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \cdots
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \min_{i = 1}^M(z_i \lg 2k_i)
 \end{align*}
 Wenn $z_i \ (i > 1)$ das Minimum ist, kann die Induktionsvoraussetzung angewandt werden, sodass die Aussage folgt. Andernfalls kann $z_1$ nach vorne gezogen werden und die Aussage folgt aus Lemma \ref{lemma:prob-s-z-asmyp}.
 
-Nun folgt sofort eine asymptotische Näherung für die Laufzeit der Rho-Methode.
+Aus den Lemmata 1 - 3 und der Rechnung eben folgt nun eine asymptotische Näherung für die Laufzeit der Rho-Methode.
 \begin{theorem}
-    Unter der Random Mapping Assumption gilt für die erwartete Laufzeit der Rho-Methode
+    Unter der Random Mapping Assumption gilt für die erwartete Laufzeit der Rho-Methode auf $M$ Maschinen mit $k$-Werten $k_1, \dots, k_M$
     \begin{align*}
-        \E(t_{\min}) \sim
+        L_{k_1, \dots, k_M}(p) \sim
         \sqrt{\pi p / 2} \Bigg ( \sum_{i = 1}^M
         \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
     \end{align*}
