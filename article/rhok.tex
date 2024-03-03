@@ -191,7 +191,7 @@ wobei durch "`$\cdots$"' $M$ ineinander verschachtelte Summen über alle möglic
     da in den ersten $z - 1$ Schritten keine Kollision auftreten darf und im $z$-ten Schritt eine Kollision auftreten muss.
 \end{proof}
 
-Sei im Folgenden $Q(z, h) = \exp(-z^2/2h)z/h$ und
+Sei im Folgenden $Q(z, h) = (z/h) e^{-z^2/(2h)}$ und
 \begin{align*}
     F =
     \sum_{z_1 = 1}^{h_1} Q(z_1, h_1)
@@ -229,18 +229,18 @@ Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu
             & \int_{h_1}^{\infty} Q(z_1, h_1)
         \int_0^{h_2} Q(z_2, h_2) \cdots
         \int_0^{h_M} Q(z_M, h_M)
-        \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_2 dz_1                     \\
+        \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_2 dz_1 \\
         \le & \ p^M \int_{h_1}^{\infty}
-        \frac {z_1} {h_1} \exp \bigg ( \frac {-z_1^2}{2h_1} \bigg ) dz_1          \\
-            & = p^M \exp \bigg (\frac {-h_1} 2 \bigg ) \to 0 \quad (p \to \infty)
+        \frac {z_1} {h_1} e^{-z_1^2/(2h_1)} dz_1              \\
+            & = p^M e^{-h_1/2} \to 0 \quad (p \to \infty)
     \end{align*}
     Daraus folgt
     \begin{align*}
         F \sim
         \int_0^{\infty}
-        \frac {z_1} {h_1} \exp \bigg ( \frac {-z_1^2} {2h_1} \bigg ) \cdots
+        \frac {z_1} {h_1} e^{-z_1^2/(2h_1)} \cdots
         \int_0^{\infty}
-        \frac {z_M} {h_M} \exp \bigg ( \frac {-z_M^2} {2h_M} \bigg )
+        \frac {z_M} {h_M} e^{-z_M^2/(2h_M)}
         \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_1
     \end{align*}
     Nun wird ein Variablenwechsel $y_i = z_i \lg 2k_i$ durchgeführt. Damit gilt
@@ -311,68 +311,67 @@ Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu
 \end{remark*}
 
 \begin{proof}[Beweis von Lemma \ref{lemma:prob-s-z-asmyp}]
-    Zunächst wird die Restgliedabschätzung $\exp(x) = 1 + x + O(x^2)$ für $|x| \le 1$ auf $\P(s = z)$ angewandt. Damit gilt
+    Zunächst wird die Restgliedabschätzung $e^x = 1 + x + O(x^2)$ für $|x| \le 1$ auf $\P(s = z)$ angewandt. Damit gilt
     \begin{align*}
         \P(s = z) = \frac z h \prod_{j = 0}^{z - 1}
-        \Bigg ( \exp \bigg ( \frac {-j} h \bigg )
-        - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
+        \Bigg ( e^{-j/h} - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
     \end{align*}
     Daraus folgt
     \begin{align*}
-         & \vert Q(z, h) - \P(s = z) \vert =
-        \frac z h \Bigg \vert
-        \exp \bigg (\frac {-z^2} {2h} \bigg ) -
-        \prod_{j = 0}^{z - 1} \Bigg ( \exp \bigg ( \frac {-j} h \bigg )
-        - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
-        \Bigg \vert                          \\
+        \vert Q(z, h) - \P(s = z) \vert
+         & = \frac z h \Bigg \vert
+        e^{-z^2/(2h)} -
+        \prod_{j = 0}^{z - 1}
+        \Bigg ( e^{-j/h} - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
+        \Bigg \vert                      \\
          & \le \frac z h \Bigg \vert
-        \exp \bigg ( \frac {-z^2} {2h} \bigg ) -
-        \prod_{j = 0}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
-        \Bigg \vert                          \\
-         & \qquad + \frac z h \Bigg \vert
+        e^{-z^2/(2h)} -
+        \prod_{j = 0}^{z - 1} e^{-j/h}
+        \Bigg \vert                      \\
+         & \quad + \frac z h \Bigg \vert
         \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
-        \prod_{j = 0, j \ne k}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
-        - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1} O \bigg ( \frac {k^2l^2} {h^4} \bigg )
-        \prod_{j = 0, j \ne k,l}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        \prod_{j = 0, j \ne k}^{z - 1} e^{-j/h}
+        - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
+        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
+        \prod_{j = 0, j \ne k,l}^{z - 1} e^{-j/h}
         + \cdots
         \Bigg \vert
     \end{align*}
     Die Terme des ausmultiplizierten Produkts wurden nach der Zahl an $O(j^2/h^2)$-Faktoren gruppiert. Außerdem wurde die Dreiecksungleichung angewandt. Für den ersten Summanden gilt
     \begin{align*}
         \frac z h \Bigg \vert
-        \exp \bigg ( \frac {-z^2} {2h} \bigg ) -
-        \prod_{j = 0}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        e^{-z^2/(2h)} -
+        \prod_{j = 0}^{z - 1} e^{-j/h}
         \Bigg \vert
-         & = \frac z h \Bigg \vert
-        \exp \bigg ( \frac {-z^2} {2h} \bigg ) -
-        \exp \Bigg ( \sum_{j = 0}^{z - 1} \frac {-j} h \Bigg )
-        \Bigg \vert                                                       \\
-         & = \frac z h \Bigg \vert
-        \exp \bigg ( \frac {-z^2} {2h} \bigg ) -
-        \exp \bigg ( \frac {-z(z - 1)} {2h} \bigg )
-        \Bigg \vert                                                       \\
-         & = \frac z h \exp \bigg ( \frac {-z^2} {2h} \bigg ) \Bigg \vert
-        1 - \exp \bigg ( \frac z {2h} \bigg )
-        \Bigg \vert                                                       \\
-         & \le \frac {z^2} {h^2}                                          \\
+         & = \frac z h \Big \vert
+        e^{-z^2/(2h)} -
+        e^{-\sum_{j = 0}^{z - 1} j/h}
+        \Big \vert                                       \\
+         & = \frac z h \Big \vert
+        e^{-z^2/(2h)} -  e^{-z(z - 1)/(2h)}
+        \Big \vert                                       \\
+         & = \frac z h e^{-z^2/(2h)} \Big \vert
+        1 - e^{z/(2h)}
+        \Big \vert                                       \\
+         & \le \frac {z^2} {h^2}                         \\
          & = O \bigg ( \frac 1 {h^{1 - 2\delta}} \bigg )
     \end{align*}
     Von der dritten zur vierten Zeile wurde erneut die Restgliedabschätzung verwendet. Für den zweiten Summanden gilt
     \begin{align*}
                & \frac z h \Bigg \vert
         \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
-        \prod_{j = 0, j \ne k}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        \prod_{j = 0, j \ne k}^{z - 1} e^{-j/h}
         - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
         O \bigg ( \frac {k^2l^2} {h^4} \bigg )
-        \prod_{j = 0, j \ne k,l}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        \prod_{j = 0, j \ne k,l}^{z - 1} e^{-j/h}
         + \cdots
         \Bigg \vert                                           \\
         \le \, & \frac z h \Bigg (
         \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
-        \prod_{j = 0, j \ne k}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        \prod_{j = 0, j \ne k}^{z - 1} e^{-j/h}
         + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
         O \bigg ( \frac {k^2l^2} {h^4} \bigg )
-        \prod_{j = 0, j \ne k,l}^{z - 1} \exp \bigg ( \frac {-j} h \bigg )
+        \prod_{j = 0, j \ne k,l}^{z - 1} e^{-j/h}
         + \cdots \Bigg )                                      \\
         \le \, & \frac z h \Bigg (
         \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
@@ -394,7 +393,7 @@ Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu
         \frac 1 {1 - h^{-1/2+3\delta}} \Bigg )                \\
         = \,   & O \bigg ( \frac 1 {h^{1 - 4\delta}} \bigg )
     \end{align*}
-    Von der ersten zur zweiten Zeile wurden alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $\exp$ weggelassen, da sie $\le 1$ sind. In der vorletzten Zeile wird die geometrische Summenformel verwendet.
+    Von der ersten zur zweiten Zeile wurden alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $e^{-j/h}$ weggelassen, da sie $\le 1$ sind. In der vorletzten Zeile wird die geometrische Summenformel verwendet.
 \end{proof}
 
 Um $\E(t_{\min}) \sim F$ zu zeigen, wird Induktion über $M$ verwendet. Der Induktionsanfang folgt sofort aus Lemma \ref{lemma:prob-s-z-asmyp}. Um die Aussage für $M$ zu zeigen, wird Lemma \ref{lemma:prob-s-z-asmyp} mit $\delta = 1/16$ verwendet.
