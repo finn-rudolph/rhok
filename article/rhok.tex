@@ -161,8 +161,24 @@ wobei $Z_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ i
 Wenn $k_i = k_j$, sind $Z_i$ und $Z_j$ nicht stochastisch unabhängig, weil sich die $i$-te und $j$-te Maschine dann im gleichen funktionalen Graphen bewegen. Es kann beispielsweise sein, dass die $i$-te Maschine der $j$-ten "hinterherläuft", wenn der Anfangswert der $i$-ten in einem Teilbaum des Anfangswerts der $j$-ten liegt. Diese Abhängigkeit sorgt für eine schlechtere Laufzeit und erschwert die Analyse des Algorithmus. Das Problem kann umgangen werden, indem die Funktion $f(x) = x^{2k_i} + c_i$ statt $f(x) = x^{2k_i} + 1$ für Maschine $i$ verwendet wird (\cite{cr99}, S. 6). Dabei wird $c_i \ne 0, -2$ für jede Maschine unabhängig gewählt, sodass $Z_i$ und $Z_j \ (i \ne j)$ immer stochastisch unabhängig sind, auch wenn $k_i = k_j$. Für folgende Berechnungen wird daher immer angenommen, dass $Z_i$ und $Z_j$ für $i \ne j$ unabhängig sind.
 
 \begin{remark*}
-
+    In der Version dieser Arbeit zum Regionalwettbewerb war mir das Paper von \cite{cr99} noch nicht bekannt. Daher war mir nicht klar, dass sich die Abhängigkeit von Maschinen mit gleichem $k$ durch unabhängige Wahl von $c_i$ umgehen lässt, sondern es wurde nur $c_i = 1$ für alle $i$ in Betracht gezogen. Folglich wurde der Fall unabhängiger Maschinen ($\Longleftrightarrow$ paarweise verschiedene $k_i$) vom Fall abhängiger Maschinen unterschieden. Für den Fall unabhängiger Maschinen wurde die Formel aus Abschnitt \ref{sec:formula-running-time} hergeleitet, die jetzt natürlich allgemein gilt. Im Fall abhängiger Maschinen konnte eine Formel für $M = 2$ bestimmt werden. Sie ist hier für weitere Berechnungen nicht mehr relevant. Der Vollständigkeit halber, und weil der zentrale Satz in der Herleitung auch unabhängig von der Rho-Methode interessant ist, soll dieser ohne Beweis formuliert werden. Im Fall zweier abhängiger Maschinen bewegen sich beide Maschinen im gleichen funktionalen Graphen, beginnend von unabhängig gewählten Anfangsknoten. Die erwartete Anzahl an Iterationen ist also der Erwartungswert des Minimums der beiden Rho-Längen der Anfangsknoten. Diese Zahl wird unter RMA von folgendem Satz beschrieben.
 \end{remark*}
+
+\begin{theorem}
+    \label{theorem:min-rho-len-m2}
+    Sei $n \in \N$ und $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$. Wir bezeichnen mit
+    \begin{align*}
+        \tau_n =  \frac 1 {n^{n + 2}}
+        \sum_{g \in A(n)} \, \sum_{a \in \Z/n\Z} \, \sum_{b \in \Z/n\Z}
+        \min\{\nu(g, a), \nu(g, b)\}
+    \end{align*}
+    die erwartete minimale Rho-Länge zweier zufälliger Knoten in einem funktionalen Graphen von Größe $n$.  Es gilt
+    \begin{align*}
+        \tau_n \sim \frac {25} {32} \sqrt{\pi n / 2}
+    \end{align*}
+\end{theorem}
+
+Der Vorfaktor in der Definition von $\tau_n$ ist $1/n^{n + 2}$, da es $n^n$ Abbildungen $\Z/n\Z \to \Z/n\Z$ gibt und für jede von diesen $n^2$ Paare an Anfangswerten.
 
 \section{Herleitung einer Formel für die erwartete Laufzeit}
 \label{sec:formula-running-time}
@@ -204,7 +220,7 @@ Sei im Folgenden $Q(z, h) = (z/h) e^{-z^2/(2h)}$ und
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \, \min_{i = 1}^M(z_i \lg 2k_i)
 \end{align*}
-Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu zeigen, dass $L_{(k_i)}(p) \sim F$.
+Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und zu zeigen, dass $L_{(k_i)}(p) \sim F$.
 
 \begin{lemma}
     Sei $F$ wie oben definiert. Es gilt
@@ -436,36 +452,6 @@ Aus den Lemmata 1 - 3 und der Rechnung eben folgt nun eine asymptotische Näheru
         \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
     \end{align*}
 \end{theorem}
-
-
-\section{Der Fall zweier abhängiger Maschinen}
-\label{sec:dep-machines}
-
-Um $L_{k_1, \dots, k_M}(p)$ zu bestimmen, wenn $k_i = k_j$ für $i \ne j$ gilt, muss die Abhängigkeit der Rho-Längen der $i$-ten und $j$-ten Maschinen berücksichtigt werden. Denn setzt man beispielsweise $M = 2$ und $k_1 = k_2 = 1$ in (\ref{expectation-tmin}) ein, erhält man eine erwartete Laufzeit von $\sqrt {\pi p / 4}$. In diesem Abschnitt wird allerdings gezeigt, dass unter Berücksichtigung der Abhängigkeit $25/32 \sqrt{\pi p / 2}$ Schritte benötigt werden. Der Fall abhängiger Maschinen hat sich als weitaus schwieriger herausgestellt, weil keine allgemeine Formel gefunden wurde. Jedoch konnte der Fall $M = 2$ gelöst werden. In diesem Fall lässt sich das Problem folgendermaßen angehen. Sei $k = k_1 = k_2, \; h = p/(\gcd(p - 1, 2k) - 1)$ und $f : x \mapsto x^{2k} + 1$. Da die zwei Maschinen beide $f$ verwenden, bewegen sie sich beide im funktionalen Graphen $\gamma(f)$. Nach der Random Mapping Assumption ist die Verteilung der Rho-Längen von $f$ für $p \to \infty$ asymptotisch zur Verteilung der Rho-Längen eines zufälligen Elements aus $A(h)$. Das Problem reduziert sich daher auf folgende Frage: \emph{Gegeben sei ein zufälliges Element $g$ aus $A(n)$ und zwei zufällige Elemente $a, b \in \Z/n\Z$ für $n \in \N$. Was ist der Erwartungswert von $\min\{\nu(g, a), \nu(g, b)\}$?} Die Frage wird von folgendem Satz beantwortet, dessen Beweis das Ziel der nächsten zwei Abschnitte ist.
-
-\begin{theorem}
-    \label{theorem:min-rho-len-m2}
-    Sei $A(n)$ die Menge der Abbildungen $\Z/n\Z \to \Z/n\Z$. Wir bezeichnen mit
-    \begin{align*}
-        \tau_n =  \frac 1 {n^{n + 2}}
-        \sum_{g \in A(n)} \, \sum_{a \in \Z/n\Z} \, \sum_{b \in \Z/n\Z}
-        \min\{\nu(g, a), \nu(g, b)\}
-    \end{align*}
-    die erwartete minimale Rho-Länge zweier zufälliger Knoten in einem funktionalen Graphen von Größe $n$. Es gilt
-    \begin{align*}
-        \tau_n \sim \frac {25} {32} \sqrt{\pi n / 2}
-    \end{align*}
-\end{theorem}
-
-\noindent Der Vorfaktor in der Definition von $\tau_n$ ist $1/n^{n + 2}$, da es $n^n$ Abbildungen $\Z/n\Z \to \Z/n\Z$ gibt und für jede von diesen $n^2$ Paare an Anfangswerten.
-
-\noindent Aus Satz \ref{theorem:min-rho-len-m2} folgt sofort, dass $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p / 2}$. Daraus lässt sich auch auf $L_{k, k}(p)$ schließen. Für $1 \le k \in \N$ wird nach RMA $p$ durch $p/(\gcd(p - 1, 2k) - 1)$ ersetzt. Die Laufzeit pro Iteration steigt bei jeder Maschine aber um einen Faktor $\lg 2k$, sodass sie auch insgesamt um einen Faktor $\lg 2k$ steigt. Es gilt also
-\begin{align}
-    L_{k, k}(p) \sim 25 / 32 \sqrt{\pi p /2} \
-    \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}}
-    \label{lkkp}
-\end{align}
-Man bemerke, dass Satz \ref{theorem:min-rho-len-m2} unabhängig von der Anwendung auf Pollards Rho-Algorithmus formuliert wurde und nicht auf der Random Mapping Assumption basiert.
 
 \section{Bestimmung optimaler Exponenten für die Rho-Methode}
 \label{sec:optimal-k}
