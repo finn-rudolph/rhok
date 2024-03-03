@@ -446,27 +446,30 @@ Wenn $z_i \ (i > 1)$ das Minimum ist, kann die Induktionsvoraussetzung angewandt
 Aus den Lemmata 1 - 3 und der Rechnung eben folgt nun eine asymptotische Näherung für die Laufzeit der Rho-Methode.
 \begin{theorem}
     Unter der Random Mapping Assumption gilt für die erwartete Laufzeit der Rho-Methode auf $M$ Maschinen mit $k$-Werten $k_1, \dots, k_M$
-    \begin{align*}
+    \begin{align}
         L_{k_1, \dots, k_M}(p) \sim
         \sqrt{\pi p / 2} \Bigg ( \sum_{i = 1}^M
         \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
-    \end{align*}
+        \label{eq:lki-asymp}
+    \end{align}
+
+    \label{theorem:lki-asymp}
 \end{theorem}
 
 \section{Bestimmung optimaler Exponenten für die Rho-Methode}
 \label{sec:optimal-k}
 
-In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Formel (\ref{expectation-tmin}) und Satz \ref{theorem:min-rho-len-m2} konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Da $p - 1$ gerade ist, gilt $\gcd(p-1, 2k_i) = 2\gcd((p - 1)/2, k_i)$. Weitere Kongruenzen von $p - 1$ sind im Allgemeinen nicht bekannt, weshalb angenommen wird, dass jeder Rest $(p- 1)/2$ modulo $k_i$ gleich wahrscheinlich ist.
+In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Satz \ref{theorem:lki-asymp} konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Da $p - 1$ gerade ist, gilt $\gcd(p-1, 2k_i) = 2\gcd((p - 1)/2, k_i)$. Weitere Kongruenzen von $p - 1$ sind im Allgemeinen nicht bekannt, weshalb angenommen wird, dass jeder Rest von $(p- 1)/2$ modulo $k_i$ gleich wahrscheinlich ist.
 
 \subsection{Der Fall einer Maschine}
 
 \begin{theorem}
     \label{theorem:optimal-k-m1}
-    Sei $L_k(p)$ wie in (\ref{lk-definition}) definiert. Unter RMA gilt $\E(L_1(p)) < \E(L_k(p))$, wobei $1 < k \in \N$ und der Erwartungswert über alle möglichen $\gcd((p - 1)/2, k)$ genommen wird.
+    Sei $L_k(p)$ wie in (\ref{eq:lki-definition}) definiert. Der Erwartungswert $\E(L_k(p))$ über alle möglichen $\gcd((p - 1)/2, k)$ nimmt ein globales Minimum für $k = 1$ an.
 \end{theorem}
 
 \begin{proof}
-    Durch Einsetzen von $M = 1$ in (\ref{expectation-tmin}) erhalten wir
+    Durch Einsetzen von $M = 1$ in (\ref{eq:lki-asymp}) erhalten wir
     \begin{align*}
         L_k(p) \sim \sqrt {\pi p / 2} \;
         \frac {\lg 2k} {\sqrt{\gcd(p - 1, 2k) - 1}}
@@ -485,28 +488,30 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
         = \frac {\ln (x)(\ln (\ln (x)) + 1.51) - \ln 2}
         {x \ln (2) \ln (x)(\ln(\ln(x)) + 2.51)^2}
     \end{align*}
-    Für $x \ge 16$ ist der Nenner von $f'$ positiv, denn $x > 0$ und $\ln x > 0$, und weil $\ln \ln x > 1$ für $x \ge 16$ ist der Term unter dem Quadrat positiv. Der Zähler ist ebenfalls positiv, da $\ln x \ge 1$ und $\ln \ln x \ge 1$, woraus $\ln(x)(\ln(\ln(x)) + 1.51) \ge 1 \cdot (1 + 1.51) = 2.51 > \ln 2$ folgt. Also ist $f$ streng monoton steigend für $x \ge 16$, und da bereits $f(16) > 1$ gezeigt wurde, folgt $f(x) > 1$ für $x \ge 16$. Der Fall $k < 16$ wurde durch Ausrechnen von (\ref{expectation-tmin}) für $2 \le k \le 15$ überprüft.
+    Für $x \ge 16$ ist der Nenner von $f'$ positiv, denn $x > 0$ und $\ln x > 0$, und weil $\ln \ln x > 1$ für $x \ge 16$ ist der Term unter dem Quadrat positiv. Der Zähler ist ebenfalls positiv, da $\ln x \ge 1$ und $\ln \ln x \ge 1$, woraus $\ln(x)(\ln(\ln(x)) + 1.51) \ge 1 \cdot (1 + 1.51) = 2.51 > \ln 2$ folgt. Also ist $f$ streng monoton steigend für $x \ge 16$, und da bereits $f(16) > 1$ gezeigt wurde, folgt $f(x) > 1$ für $x \ge 16$. Der Fall $k < 16$ wurde durch Ausrechnen von (\ref{eq:lki-asymp}) für $2 \le k \le 15$ überprüft.
 \end{proof}
 
 \subsection{Der Fall zweier Maschinen}
 
 \begin{theorem}
     \label{theorem:optimal-k-m2}
-    Sei $L_{k_1, k_2}(p)$ wie in Abschnitt (\ref{lk-definition}) definiert. Man nehme RMA an und bilde den Erwartungswert $\E(L_{k_1, k_2})$ über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$.
+    Sei $L_{k_1, k_2}(p)$ wie in (\ref{eq:lki-definition}) definiert. Man nehme RMA an und bilde den Erwartungswert $\E(L_{k_1, k_2})$ über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$.
     \begin{enumerate}
-        \item Wenn $k_1, k_2$ unterschiedliche Primzahlen sind, gilt $\E(L_{1, 1}(p)) < \E(L_{k_1, k_2}(p))$.
+        \item Wenn $k_1, k_2$ Primzahlen sind, gilt $\E(L_{1, 1}(p)) < \E(L_{k_1, k_2}(p))$.
         \item Wenn $1 < k \in \N$, gilt $\E(L_{1, 1}(p)) < \E(L_{k, k}(p))$.
     \end{enumerate}
 \end{theorem}
 
 \begin{proof}
-    Nach Satz 1 gilt $L_{1, 1}(p) \sim 25/32 \sqrt{\pi p /2}$, es gilt also in beiden Teilen zu zeigen, dass der Erwartungswert größer ist. Zunächst wird Teil 1 bewiesen. Da $k_1 \ne k_2$, sind die zwei Maschinen unabhängig und (\ref{expectation-tmin}) kann verwendet werden.
+    Nach Satz \ref{theorem:lki-asymp} gilt
     \begin{align*}
         L_{k_1, k_2}(p)
          & \sim \sqrt{\pi p / 2} \
         \Bigg ( \frac {\gcd(p - 1, 2k_1) - 1} {\lg^2 2k_1} +
         \frac {\gcd(p -1, 2k_2) - 1} {\lg^2 2k_2} \Bigg )^{-1/2}
     \end{align*}
+    Durch Einsetzen von $k_1 = k_2 = 1$ erhalten wir $L_{1, 1}(p) \sim \sqrt{\pi p / 4}$. Es gilt also in beiden Teilen zu zeigen, dass der Erwartungswert größer ist. Zunächst wird Teil 1 bewiesen.
+
     Durch Bilden des Erwartungswerts über alle möglichen $\gcd((p - 1)/2, k_i)$ für $i = 1, 2$ erhält man
     \begin{align}
         \E(L_{k_1, k_2})
@@ -524,18 +529,18 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
          & = \sqrt{\pi p / 2} \
         \frac {(k_1 - 1) (k_2- 1)} {k_1k_2}
         \sqrt{\frac{\lg^2(2k_1) \lg^2(2k_2)}{\lg^2(2k_1) + \lg^2(2k_2)}}
-        \label{m2-expectation-lb}
+        \label{eq:two-mach-lowerb}
     \end{align}
-    Wie bei $M = 1$ wurden die Summen über alle Teiler von $k_1, k_2$ durch den Wert für $d_1 = d_2 = 1$ nach unten begrenzt. Die Terme $(k_i - 1)/k_i$ sind streng monoton steigend in $k_i$. Ebenso ist das Argument der nachfolgenden Wurzel in (\ref{m2-expectation-lb}) streng monoton steigend in jedem der $k_i$. Um das zu zeigen, sei $x = \lg^2 2k_1, y = \lg^2 2k_2$ und $x' > x$. Dann gilt
+    Wie bei $M = 1$ wurden die Summen über alle Teiler von $k_1, k_2$ durch den Wert bei $d_1 = d_2 = 1$ nach unten begrenzt. Die Terme $(k_i - 1)/k_i$ sind streng monoton steigend in $k_i$. Ebenso ist das Argument der nachfolgenden Wurzel in (\ref{eq:two-mach-lowerb}) streng monoton steigend in jedem der $k_i$. Um das zu zeigen, sei $x = \lg^2 2k_1, y = \lg^2 2k_2$ und $x' > x$. Dann gilt
     \begin{align*}
         \frac {x'y} {x' + y}
         = \frac {x'y} {x' + y} \, \frac {x + y} {xy} \, \frac {xy} {x + y}
         = \frac {xx'y + x'y^2} {xx'y + xy^2} \, \frac {xy} {x + y}
         > \frac {xy} {x + y}
     \end{align*}
-    da $x, x', y > 0$ und $x < x'$. Der Term ist symmetrisch in $x$ und $y$, womit er auch streng monoton steigend in $y$ ist. Da die Wurzelfunktion streng monoton steigt und die Verkettung streng monoton steigender Funktionen streng monoton steigt, folgt, dass die gesamte Wurzel auf der rechten Seite von (\ref{m2-expectation-lb}) streng monoton steigt. Weil nun jeder einzelne Faktor in (\ref{m2-expectation-lb}) streng monoton steigt und positiv ist, ist ganz (\ref{m2-expectation-lb}) streng monoton steigend in den $k_i$. Indem man $k_1 = 3,\; k_2 = 5$ in (\ref{m2-expectation-lb}) einsetzt, sieht man, dass $E(L_{3, 5}(p)) \ge 1.0881 \sqrt{\pi p /2}  > 25 / 32 \sqrt{\pi p / 2}$. Weil (\ref{m2-expectation-lb}) symmetrisch in $k_1, k_2$ ist, kann $k_1 < k_2$ angenommen werden. Dann folgt aus der Monotonie von (\ref{m2-expectation-lb}), dass $E(L_{k_1, k_2}(p)) > \E(L_{1, 1}(p))$, wenn $k_1 \ge 3$. Es bleibt also lediglich der Fall $k_1 = 2$. Durch Einsetzen von $k_1 = 2, \; k_2 = 11$ in (\ref{m2-expectation-lb}) gilt $\E(L_{2, 11}(p)) \ge 0.8294 \sqrt{\pi p / 2} > 25 / 32 \sqrt{\pi p / 2}$. Aus der Monotonie von (\ref{m2-expectation-lb}) folgt $\E(L_{k_1, k_2}(p)) > \E(L_{1, 1}(p))$ für $k_1 = 2$ und $k_2 \ge 11$. Die übrigen Fälle $k_1 = 2$ und $k_2 = 3, 5, 7$ wurden nachgerechnet.
+    da $x, x', y > 0$ und $x < x'$. Der Term ist symmetrisch in $x$ und $y$, womit er auch streng monoton steigend in $y$ ist. Da die Wurzelfunktion streng monoton steigt und die Verkettung streng monoton steigender Funktionen streng monoton steigt, folgt, dass die gesamte Wurzel auf der rechten Seite von (\ref{eq:two-mach-lowerb}) streng monoton steigt. Weil nun jeder einzelne Faktor in (\ref{eq:two-mach-lowerb}) streng monoton steigt und positiv ist, ist ganz (\ref{eq:two-mach-lowerb}) streng monoton steigend in den $k_i$. Indem man $k_1 = k_2 = 3$ in (\ref{eq:two-mach-lowerb}) einsetzt, sieht man, dass $E(L_{3, 3}(p)) \ge 0.8123 \sqrt{\pi p /2}  > \sqrt{\pi p / 4}$. Weil (\ref{eq:two-mach-lowerb}) symmetrisch in $k_1, k_2$ ist, kann $k_1 < k_2$ angenommen werden. Dann folgt aus der Monotonie von (\ref{eq:two-mach-lowerb}), dass $E(L_{k_1, k_2}(p)) > \E(L_{1, 1}(p))$, wenn $k_1 \ge 3$. Es bleibt also lediglich der Fall $k_1 = 2$. Durch Einsetzen von $k_1 = 2, \; k_2 = 7$ in (\ref{eq:two-mach-lowerb}) gilt $\E(L_{2, 7}(p)) \ge 0.7588 \sqrt{\pi p / 2} > \sqrt{\pi p / 4}$. Aus der Monotonie von (\ref{eq:two-mach-lowerb}) folgt $\E(L_{k_1, k_2}(p)) > \E(L_{1, 1}(p))$ für $k_1 = 2$ und $k_2 \ge 7$. Die übrigen Fälle $k_1 = 2$ und $k_2 = 2, 3, 5$ wurden nachgerechnet.
 
-    Nun zum Beweis von Teil 2. Aus (\ref{lkkp}) folgt $L_{k, k}(p) = 25 / 32 \cdot L_{k}(p)$ für $1 \le k \in \N$. Damit folgt Teil 2 des Satzes aus Satz 3.
+    Nun zum Beweis von Teil 2. Aus (\ref{eq:lki-asymp}) folgt $L_{k, k}(p) = L_{k}(p) / \sqrt 2$ für $1 \le k \in \N$. Damit folgt Teil 2 des Satzes aus Satz \ref{theorem:optimal-k-m1}.
 \end{proof}
 
 \section{Experimentelle Ergebnisse}
