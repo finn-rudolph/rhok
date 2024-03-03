@@ -158,7 +158,7 @@ Sei $k_1, \dots, k_M, 1 \le k_i \in \N$ eine Zuordnung von $k$-Werten für $M$ M
 \end{align}
 wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ ist, mit $X_i(f, x_0) = \nu(f, x_0)$ für $f \in A(h_i), x_0 \in \Z/h_i\Z$. In $L_{k_1, \dots, k_M}(p)$ ist $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ noch fixiert, der Erwartungswert über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ wird erst in Abschnitt \ref{sec:optimal-k} behandelt. Eine Schwierigkeit in der Herleitung einer Formel für $L_{k_1, \dots, k_M}(p)$ ist, dass $X_i$ und $X_j$ nicht unabhängig sind, wenn $k_i = k_j$. Grund dafür ist, dass $f$ in diesem Fall gleich ist, sodass sich die $i$-te und $j$-te Maschine im gleichen funktionalen Graphen bewegen. Daher wird in Abschnitt \ref{sec:indep-machines} der Fall unabhängiger Maschinen behandelt, und in Abschnitt \ref{sec:dep-machines} der Fall abhängiger Maschinen für $M = 2$.
 
-\section{Herleitung einer Formel für die Laufzeit}
+\section{Herleitung einer Formel für die erwartete Laufzeit}
 \label{sec:formula-running-time}
 
 In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergeleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Die Rho-Längen verschiedener Maschinen sind hier stochastisch unabhängig. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
@@ -397,67 +397,42 @@ Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu
     Von der ersten zur zweiten Zeile wurden alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $\exp$ weggelassen, da sie $\le 1$ sind. In der vorletzten Zeile wird die geometrische Summenformel verwendet.
 \end{proof}
 
-Um $\E(t_{\min}) \sim F$ zu zeigen, wird Induktion über $M$ verwendet. Die Induktionsvoraussetzung ist, dass $|\E(t_{\min}) - F| = O(p^{\epsilon})$ für jedes $\epsilon > 0$. Daraus folgt $\E(t_{\min}) \sim F$, denn nach Lemma \ref{lemma:f-asmyp} gilt $F = \Theta(\sqrt p)$.
-
-Für den Induktionsanfang, sei $M = 1$ und $\epsilon > 0$. Man wähle $\delta = \min(\epsilon/2, 1/6)$. Es gilt
+Um $\E(t_{\min}) \sim F$ zu zeigen, wird Induktion über $M$ verwendet. Der Induktionsanfang folgt sofort aus Lemma \ref{lemma:prob-s-z-asmyp}. Um die Aussage für $M$ zu zeigen, wird Lemma \ref{lemma:prob-s-z-asmyp} mit $\delta = 1/16$ verwendet.
 \begin{align*}
-    |\E(t_{\min}) - F|
-     & = \Bigg \vert
-    \sum_{z_1 = 1}^{h_1} \big (\P(s_1 = z_1) - Q(z_1, h_1) \big ) z_1
-    \Bigg \vert                                \\
-     & \le \sum_{z_1 = 1}^{h_1^{1/2 + \delta}}
-    \big | \P(s_1 = z_1) - Q(z_1, h_1) \big | z_1 +
-    \sum_{z_1 = h^{1/2 + \delta}}^{h_1}
-    \big ( \big | \P(s_1 = z_1) \big | + \big | Q(z_1, h_1) \big | \big ) z_1
-\end{align*}
-Indem man Lemma \ref{lemma:prob-s-z-asmyp} auf die erste Summe anwendet, erhält man folgende Abschätzung.
-\begin{align*}
-    \sum_{z_1 = 1}^{h_1^{1/2 + \delta}}
-    \big | \P(s_1 = z_1) - Q(z_1, h_1) \big | z_1
-     & =
-    O \Bigg (
-    \sum_{z_1 = 1}^{h_1^{1/2 + \delta}} \frac {z_1} {h^{1-4\delta}} \Bigg ) \\
-     & = O \Bigg ( h_1^{1/2 + \delta} \,
-    \frac {h_1^{1/2 + \delta}} {h_1^{1 - 4\delta}} \Bigg )                  \\
-     & = O \Big ( p^{2\delta}\Big )                                         \\
-\end{align*}
-Da $\P(s_1 = z_1) = O(Q(z_1, h_1))$, kann die zweite Summe wie folgt abgeschätzt werden.
-\begin{align*}
-    \sum_{z_1 = h^{1/2 + \delta}}^{h_1}
-    \big ( \big | \P(s_1 = z_1) \big | +
-    \big | Q(z_1, h_1) \big | \big ) z_1
-     & =
-    O \Bigg ( \sum_{z_1 = h_1^{1/2 + \delta}}^{h_1}
-    \frac {z_1^2}{h_1} e^{-z_1^2 / (2h_1)} \Bigg )       \\
-     & = O \Bigg ( \sum_{z_1 = h_1^{1/2 + \delta}}^{h_1}
-    h_1 e^{-h_1^{2\delta}/2} \Bigg )                     \\
-     & = O \Big ( h_1^2 e^{-h_1^{2 \delta}/2} \Big )
-    \to 0 \quad (p \to \infty)
-\end{align*}
-Das schließt den Beweis des Induktionsanfangs ab. Sei nun $M \in \N, M \ge 2$.
-
-\begin{align*}
-    \lim_{p \to \infty} \frac {F} {\E(t_{\min})}
-     & = \lim_{p \to \infty}
-    1 + \frac{F - \E(t_{\min})} {\E(t_{\min})}                               \\
-     & = 1 + \lim_{p \to \infty} \frac 1 {\E(t_{\min})}
-    \sum_{z_1 = 1}^{h_1} \bigg ( Q(z_1, h_1) - \P(s_1 = z_1) \big ) \cdots   \\
-     & \qquad \sum_{z_M = 1}^{h_M} \big ( Q(z_M, h_M) - \P(s_M - z_M) \big )
+    F & = \sum_{z_1 = 1}^{h_1} Q(z_1, h_1) \cdots
+    \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
+    \min_{i = 1}^M(z_i \lg 2k_i)                  \\
+      & = \sum_{z_1 = 1}^{h_1^{1/2 + 1/16}}
+    \Bigg (\P(s_1 = z_1) + O \bigg (\frac 1 {h^{3/4}} \bigg ) \Bigg )
+    \sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \cdots
+    \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
+    \min_{i = 1}^M(z_i \lg 2k_i)                  \\
+      & \quad +
+    \sum_{z_1 = h_1^{1/2 + 1/16}}^{h_1} Q(z_1, h_1)
+    \sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \cdots
+    \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \min_{i = 1}^M(z_i \lg 2k_i)
 \end{align*}
-Es wird gezeigt, dass der Limes in obiger Formel 0 ist. Dafür reicht es zu zeigen, dass die verschachtelte Summe im Limes (alles unter dem Limes außer $1/\E(t_{\min}))$ durch eine Konstante beschränkt ist, da $\lim_{p \to \infty} \E(t_{\min}) = \infty$. Dafür wird der Betrag betrachtet und $\min_{i = 1}^M (z_i \lg 2k_i)$ durch $z_1 \lg 2k_1$ abgeschätzt.
+Die Summen über $z_2$ bis $z_M$ können nach Lemma \ref{lemma:f-asmyp} durch $O(\sqrt p)$ abgeschätzt werden. Damit ist der gesamte Beitrag von $O(h^{-3/4})$ durch $O(p^{1/4})$ beschränkt. Die zweite Summe geht für $p \to \infty$ gegen 0. Da $F = \Theta(\sqrt p)$, folgt $F \sim \E(t_{\min})$. Es gilt also
 \begin{align*}
-        & \Bigg \vert
-    \sum_{z_1 = 1}^{h_1} \big ( Q(z_1, h_1) - \P(s_1 = z_1) \big ) \cdots
-    \sum_{z_M = 1}^{h_M} \big ( Q(z_M, h_M) - \P(s_M - z_M) \big )
+    F \sim
+    \sum_{z_1 = 1}^{h_1^{1/2 + 1/16}} \P(s_1 = z_1)
+    \sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \cdots
+    \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \min_{i = 1}^M(z_i \lg 2k_i)
-    \Bigg \vert                                                 \\
-    \le & \sum_{z_1 = 1}^{h_1} | Q(z_1, h_1) - \P(s_1 = z_1) |
-    z_1 \lg 2k_1
-    \sum_{z_2 = 1}^{h_2} | Q(z_2, h_2) - \P(s_2 = z_2) | \cdots \\
-        & \qquad
-    \sum_{z_M = 1}^{h_M} | Q(z_M, h_M) - \P(s_M - z_M) |
 \end{align*}
+Wenn $z_i \ (i > 1)$ das Minimum ist, kann die Induktionsvoraussetzung angewandt werden, sodass die Aussage folgt. Andernfalls kann $z_1$ nach vorne gezogen werden und die Aussage folgt aus Lemma \ref{lemma:prob-s-z-asmyp}.
+
+Nun folgt sofort eine asymptotische Näherung für die Laufzeit der Rho-Methode.
+\begin{theorem}
+    Unter der Random Mapping Assumption gilt für die erwartete Laufzeit der Rho-Methode
+    \begin{align*}
+        \E(t_{\min}) \sim
+        \sqrt{\pi p / 2} \Bigg ( \sum_{i = 1}^M
+        \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
+    \end{align*}
+\end{theorem}
+
 
 \section{Der Fall zweier abhängiger Maschinen}
 \label{sec:dep-machines}
