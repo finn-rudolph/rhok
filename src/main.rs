@@ -1,13 +1,12 @@
 mod formula;
-mod multi;
-mod single;
+mod measurements;
+mod pollard_rho;
 
 use std::env;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Source {
     Formula,
-    Single,
     Multi,
 }
 
@@ -24,8 +23,7 @@ fn iterate_k_values(
 ) {
     if j == k.len() {
         val.push(match source {
-            Source::Single => single::measure(k),
-            Source::Multi => multi::measure(k),
+            Source::Multi => measurements::measure(k),
             Source::Formula => formula::expected_time(k_min, k_max, k),
         });
         println!("{:?}", k);
@@ -77,7 +75,7 @@ fn print_values(
 fn main() {
     // Only use half of the available threads for better measurement accuracy.
     rayon::ThreadPoolBuilder::new()
-        .num_threads(10)
+        .num_threads(4)
         .build_global()
         .unwrap();
 
@@ -86,7 +84,6 @@ fn main() {
 
     let source = match args[1].as_str() {
         "--formula" => Source::Formula,
-        "--single" => Source::Single,
         "--multi" => Source::Multi,
         _ => unreachable!(),
     };
