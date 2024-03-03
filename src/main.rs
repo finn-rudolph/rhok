@@ -73,12 +73,6 @@ fn print_values(
 // information are printed.
 
 fn main() {
-    // Only use half of the available threads for better measurement accuracy.
-    rayon::ThreadPoolBuilder::new()
-        .num_threads(4)
-        .build_global()
-        .unwrap();
-
     let args: Vec<String> = env::args().collect();
     assert!(5 <= args.len() && args.len() <= 6);
 
