@@ -161,7 +161,7 @@ wobei $X_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ i
 \section{Herleitung einer Formel für die erwartete Laufzeit}
 \label{sec:formula-running-time}
 
-In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergeleitet, die im Fall paarweise verschiedener $k$-Werte gilt. Die Rho-Längen verschiedener Maschinen sind hier stochastisch unabhängig. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
+In diesem Abschnitt wird eine Formel für $L_{k_1, \dots, k_M}(p)$ hergeleitet. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$ und $s_i$ die Anzahl an Iterationen, nach denen bei der $i$-ten Maschine erstmals eine Kollision auftritt. Sei $t_i = s_i \lg 2k_i$ die Zeit, nach der bei Maschine $i$ erstmals eine Kollision auftritt und $t_{\min} = \min_{i = 1}^M t_i$. Das Ziel ist die Bestimmung von $\E(t_{\min})$.
 
 Grundsätzlich gilt nach der Definition des Erwartungswerts
 \begin{align}
@@ -179,6 +179,7 @@ wobei durch "`$\cdots$"' $M$ ineinander verschachtelte Summen über alle möglic
     \begin{align*}
         \P(s = z) = \frac z h \prod_{j = 0}^{z - 1} \bigg (1 - \frac j h \bigg )
     \end{align*}
+
     \label{lemma:prob-s-z}
 \end{lemma}
 
@@ -389,11 +390,9 @@ Das Ziel ist nun eine einfache asymptotische Näherung für $F$ zu finden und zu
         \frac 1 {h^{1/2 - 3 \delta}} + \frac 1 {h^{1 - 6\delta}}
         + \frac 1 {h^{3/2 - 9\delta}} + \cdots
         \bigg ) \Bigg )                                       \\
-        = \,   & O \Bigg ( \frac 1 {h^{1 - 4\delta}} \,
-        \frac 1 {1 - h^{-1/2+3\delta}} \Bigg )                \\
         = \,   & O \bigg ( \frac 1 {h^{1 - 4\delta}} \bigg )
     \end{align*}
-    Von der ersten zur zweiten Zeile wurden alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $e^{-j/h}$ weggelassen, da sie $\le 1$ sind. In der vorletzten Zeile wird die geometrische Summenformel verwendet.
+    Von der ersten zur zweiten Zeile wurden alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $e^{-j/h}$ weggelassen, da sie $\le 1$ sind. In der letzten Zeile wird die geometrische Summenformel verwendet.
 \end{proof}
 
 Um $\E(t_{\min}) \sim F$ zu zeigen, wird Induktion über $M$ verwendet. Der Induktionsanfang folgt sofort aus Lemma \ref{lemma:prob-s-z-asmyp}. Um die Aussage für $M$ zu zeigen, wird Lemma \ref{lemma:prob-s-z-asmyp} mit $\delta = 1/16$ verwendet.
