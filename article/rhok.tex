@@ -10,6 +10,7 @@
 \usepackage{csquotes}
 \usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2cm]{geometry}
 \usepackage[hidelinks]{hyperref}
+\usepackage{inconsolata}
 \usepackage[utf8]{inputenc}
 \usepackage{mathtools}
 \usepackage{pgfplots}
@@ -552,7 +553,6 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
 
 \section{Experimentelle Ergebnisse}
 
-
 \begin{figure}
     \centering
     \begin{tikzpicture}
@@ -623,54 +623,53 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
             \addplot[color=blue,mark=square]
             coordinates {
                     (1 ,   1)
-                    (2 ,   1.3978885464872288)
-                    (3 ,   1.788199306852694)
-                    (4 ,   1.8508119490589103)
-                    (5 ,   2.3290288931911793)
-                    (6 ,   2.1555971643533156)
-                    (7 ,   2.676542528802016)
-                    (8 ,   2.3173772149821845)
-                    (9 ,   2.7111978624995503)
-                    (10,   2.66772819590063)
-                    (11,   3.1975758138477883)
-                    (12,   2.5984083562137448)
-                    (13,   3.205532226483847)
-                    (14,   2.963641213701939)
-                    (15,   3.2182899882206666)
-                    (16,   2.7871554537970447)
-                    (17,   3.4400173096977245)
-                    (18,   3.0377719432739276)
-                    (19,   3.744225803359003)
-                    (20,   3.1146199281293603)
-                    (21,   3.401957775054015)
-                    (22,   3.462364783461436)
-                    (23,   4.053216312566319)
-                    (24,   3.0549040966749454)
-                    (25,   3.5810181519145163)
-                    (26,   3.4745102060796613)
-                    (27,   3.7204619978917886)
-                    (28,   3.41252330716704)
-                    (29,   4.093753579091115)
-                    (30,   3.5834352307560313)
-                    (31,   4.3771017764188045)
-                    (32,   3.2486676558361824)
-                    (33,   3.596833843979978)
-                    (34,   3.6505131171551946)
-                    (35,   4.017241670387443)
-                    (36,   3.4930788880134296)
-                    (37,   4.317018311859838)
-                    (38,   3.952797999199545)
-                    (39,   4.17098873041593)
-                    (40,   3.584013316671218)
-                    (41,   4.269743050417149)
-                    (42,   3.7468556319380117)
-                    (43,   4.62446557466819)
-                    (44,   3.891427662098623)
-                    (45,   4.1124366976681515)
-                    (46,   4.2735749775055325)
-                    (47,   4.923225382510301)
-                    (48,   3.502048374944525)
-                };
+                    (2 ,   1.2688871624076672)
+                    (3 ,   1.5448360772795062)
+                    (4 ,   1.6215294878078745)
+                    (5 ,   2.1260552548319587)
+                    (6 ,   1.7210271616473245)
+                    (7 ,   2.5083228373472504)
+                    (8 ,   2.006075780278468)
+                    (9 ,   2.2840987997737323)
+                    (10,   2.227057271909877)
+                    (11,   3.0667905710118877)
+                    (12,   2.02973927462346)
+                    (13,   3.1096795366509973)
+                    (14,   2.554240766520122)
+                    (15,   2.605128864950923)
+                    (16,   2.4065268921363367)
+                    (17,   3.3463078632578274)
+                    (18,   2.3995424079135566)
+                    (19,   3.636437145493917)
+                    (20,   2.540642287388499)
+                    (21,   2.798891347254288)
+                    (22,   3.0196492908359134)
+                    (23,   3.962603150398965)
+                    (24,   2.3707754814488204)
+                    (25,   3.263084687726768)
+                    (26,   3.055858996661355)
+                    (27,   3.1536357812541125)
+                    (28,   2.8452919940049712)
+                    (29,   4.002758086162577)
+                    (30,   2.7051029645392757)
+                    (31,   4.281180949475698)
+                    (32,   2.798678843877791)
+                    (33,   3.0338163972786867)
+                    (34,   3.236647402168213)
+                    (35,   3.456162662926002)
+                    (36,   2.6958680662121215)
+                    (37,   4.206046640838136)
+                    (38,   3.480612316774627)
+                    (39,   3.530674663584416)
+                    (40,   2.894119424906177)
+                    (41,   4.195187693016042)
+                    (42,   2.8835503555481226)
+                    (43,   4.500107134645032)
+                    (44,   3.324245578471752)
+                    (45,   3.2505677313318966)
+                    (46,   3.7547741175937004)
+                    (47,   4.7967391294287784)
+                    (48,   2.7134203084992854)};
 
             \legend{Formel (\ref{eq:lki-asymp}), Gemessene Laufzeit}
         \end{axis}
@@ -726,9 +725,9 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
     \label{fig:measurements-m2}
 \end{figure}
 
-Um zu demonstrieren, dass Satz \ref{theorem:lki-asymp} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreibt, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Als Testzahlen wurden 192-Bit-Zahlen verwendet, bei denen jeder Primfaktor größer als $2^{24}$ ist und ein Primfaktor kleiner als $2^{25}$ ist. Die Größe der Primfaktoren nach unten zu beschränken ist sinnvoll, da die Laufzeit der Rho-Methode sonst sehr kurz wäre und die Messergebnisse durch Dinge wie den Aufwand der Laufzeitmessung selbst verfälscht werden würden. Es ist auch sinnvoll, dass die Testzahlen einen kleinen Primfaktor enthalten, da die Laufzeit sonst sehr groß wäre. Es wurden $2^{12}$ Testzahlen verwendet. Die mittlere Laufzeit und Werte von (\ref{eq:lki-asymp}) zum Vergleich sind in den Abbildungen \ref{fig:measurements-m1} und \ref{fig:measurements-m2} dargestellt. Sowohl die Werte der Formel als auch die Messdaten wurden skaliert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 steht.
+Um zu demonstrieren, dass Satz \ref{theorem:lki-asymp} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreibt, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Als Testzahlen wurden 192-Bit-Zahlen verwendet, bei denen jeder Primfaktor größer als $2^{22}$ ist und ein Primfaktor kleiner als $2^{23}$ ist. Die Größe der Primfaktoren nach unten zu beschränken ist sinnvoll, da die Laufzeit der Rho-Methode sonst sehr kurz wäre und die Messergebnisse durch Dinge wie den Aufwand der Laufzeitmessung selbst verfälscht werden würden. Es ist auch sinnvoll, dass die Testzahlen einen kleinen Primfaktor enthalten, da die Laufzeit sonst sehr groß wäre. Es wurden jeweils $2^{14}$ Testzahlen verwendet. Die mittlere Laufzeit und Werte von (\ref{eq:lki-asymp}) zum Vergleich sind in den Abbildungen \ref{fig:measurements-m1} und \ref{fig:measurements-m2} dargestellt. Sowohl die Werte der Formel als auch die Messdaten wurden skaliert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 steht. Der Code für die Laufzeitmessungen ist unter \href{https://github.com/finn-rudolph/rhok}{\texttt{https://github.com/finn-rudolph/rhok}} verfügbar.
 
-\emph{Eine Maschine.} Die Laufzeit wird gut von (\ref{eq:lki-asymp}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert.
+\emph{Eine Maschine.} Man sieht, dass der Verlauf der Laufzeit von Formel (\ref{eq:lki-asymp}) widergespiegelt wird. Beispielsweise werden hohe Werte bei Primzahlen und niedrige Werte bei Zahlen mit vielen verschiedenen Primfaktoren (z.B. 24) angenommen. Es fällt allerdings auf, dass die Laufzeit bei allen Werten von $k$ im Verhältnis zur Laufzeit bei $k = 1$ geringer als erwartet ist. Eine Erklärung dafür ist, dass der Aufwand der Berechnung von $\gcd(n, x_i - x_j)$ in der Rho-Methode vernachlässigt wurde. Obwohl, wie in Abschnitt \ref{sec:pollards-rho-method} beschreiben, die Optimierung aus \cite{bre80} verwendet wurde, um diesen Aufwand zu amortisieren, macht er immer noch einen relevanten Teil aus. Dadurch fällt der größere Aufwand der Berechnung von $x^{2k}$ für größere $k$ relativ gesehen weniger ins Gewicht. Die Messungen bestätigen aber die Aussage von Satz \ref{theorem:optimal-k-m1} und zeigen, dass Formel (\ref{eq:lki-asymp}) zum Vergleich der Laufzeit bei verschiedenen Werten von $k$ geeignet ist.
 
 \emph{Zwei Maschinen.} Auch hier wird das grundsätzliche Verhalten der Laufzeit gut durch (\ref{eq:lki-asymp}) beschreiben. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist. Auffällig ist, dass die Laufzeitunterschiede weniger ausgeprägt sind als von den Formeln vorhergesagt. Das liegt wahrscheinlich daran, dass neben der Berechnung von $x^{2k}$ auch andere Berechnungen im Rho-Algorithmus durchgeführt werden, deren Dauer unabhängig von $k$ ist (z.B. das Bilden des $\gcd$). Diese werden aber in den Formeln nicht berücksichtigt.
 
