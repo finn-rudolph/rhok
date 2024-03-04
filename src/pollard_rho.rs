@@ -30,7 +30,7 @@ pub fn pollard_rho(n: &Integer, k: u64, rng: &mut RandState) -> Integer {
     const BATCH_SIZE: u64 = 1 << 10;
     const LENGTH_LIMIT: u64 = 1 << 18;
 
-    let _k = k << 1;
+    let two_k = k << 1;
     let c: Integer = n.random_below_ref(rng).into();
 
     let mut x: Integer = n.random_below_ref(rng).into();
@@ -43,7 +43,7 @@ pub fn pollard_rho(n: &Integer, k: u64, rng: &mut RandState) -> Integer {
             let mut i = 0;
             while i < l {
                 for _ in 0..BATCH_SIZE {
-                    x = pow_mod(x, _k, n) + &c;
+                    x = pow_mod(x, two_k, n) + &c;
                     q *= (&x - &y).complete();
                     q %= n;
                 }

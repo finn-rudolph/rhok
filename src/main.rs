@@ -7,12 +7,12 @@ use std::env;
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Source {
     Formula,
-    Real,
+    Measurements,
 }
 
 // Prints the running times / formula values for all possible assignments of
 // k-values to a given number of machines. The k-values are maintained in `k`,
-// `source` decides whether the formula or real measurements are used.
+// `source` decides whether the formula or measurements are used.
 fn iterate_k_values(
     k_min: u64,
     k_max: u64,
@@ -23,8 +23,8 @@ fn iterate_k_values(
 ) {
     if j == k.len() {
         val.push(match source {
-            Source::Real => measurements::measure(k),
-            Source::Formula => formula::expected_time(k_min, k_max, k),
+            Source::Measurements => measurements::measure(k),
+            Source::Formula => formula::expected_time(k),
         });
         eprintln!("{:?}", k);
         return;
@@ -67,8 +67,9 @@ fn print_values(
     }
 }
 
-// CLI usage: [--formula | --single | --multi] [#machines] [minimal k]
-// [maximal k]
+// CLI usage:
+// cargo run --release -- [--formula | --measurements] [#machines]
+//     [minimal k] [maximal k]
 // If `--raw` is written after this, only the values without additional
 // information are printed.
 
@@ -78,7 +79,7 @@ fn main() {
 
     let source = match args[1].as_str() {
         "--formula" => Source::Formula,
-        "--real" => Source::Real,
+        "--measurements" => Source::Measurements,
         _ => unreachable!(),
     };
 
@@ -102,9 +103,7 @@ fn main() {
         for i in 1..=machines {
             print!("{:<5}", format!("k{}", i));
         }
-
         println!("value");
-
         false
     };
 
