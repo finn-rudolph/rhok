@@ -7,7 +7,7 @@ use std::env;
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Source {
     Formula,
-    Multi,
+    Real,
 }
 
 // Prints the running times / formula values for all possible assignments of
@@ -23,10 +23,10 @@ fn iterate_k_values(
 ) {
     if j == k.len() {
         val.push(match source {
-            Source::Multi => measurements::measure(k),
+            Source::Real => measurements::measure(k),
             Source::Formula => formula::expected_time(k_min, k_max, k),
         });
-        println!("{:?}", k);
+        eprintln!("{:?}", k);
         return;
     }
 
@@ -78,7 +78,7 @@ fn main() {
 
     let source = match args[1].as_str() {
         "--formula" => Source::Formula,
-        "--multi" => Source::Multi,
+        "--real" => Source::Real,
         _ => unreachable!(),
     };
 

@@ -5,8 +5,8 @@ use rug::{integer::IsPrime, rand::RandState, Integer};
 
 use crate::pollard_rho;
 
-const SAMPLES: usize = 1 << 12;
-const MIN_BITS: u32 = 24;
+const SAMPLES: usize = 1 << 14;
+const MIN_BITS: u32 = 22;
 const TOTAL_BITS: u32 = 192;
 
 static TEST_NUMBERS: Lazy<Vec<Integer>> =

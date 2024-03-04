@@ -59,6 +59,6 @@ pub fn pollard_rho(n: &Integer, k: u64, rng: &mut RandState) -> Integer {
             l <<= 1;
         }
 
-        println!("retrying to factor {}", n);
+        eprintln!("retrying to factor {}", n);
     }
 }
