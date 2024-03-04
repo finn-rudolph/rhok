@@ -10,6 +10,7 @@
 \usepackage{csquotes}
 \usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2cm]{geometry}
 \usepackage[hidelinks]{hyperref}
+\usepackage[utf8]{inputenc}
 \usepackage{mathtools}
 \usepackage{pgfplots}
 \usepackage{sectsty}
@@ -91,16 +92,16 @@
 
 \section{Zusammenfassung}
 
-In dieser Arbeit wird die Frage behandelt, wie der Parameter $k$ in Pollards Rho-Methode optimal gewählt werden kann. Ein größerer Wert von $k$ erhöht grundsätzlich die Laufzeit, kann aber auch zu einer deutlichen Verringerung führen, wenn die Primfaktoren der zu faktorisierenden Zahl günstige Eigenschaften haben. Im Allgemeinen ist über die Primfaktoren allerdings nichts bekannt, denn sie sollen durch den Algorithmus bestimmt werden. Daher stellt sich die Frage, welcher Wert von $k$ im Mittel am besten ist. Es ergibt sich insbesondere dann ein interessantes Problem, wenn der Algorithmus auf mehreren Maschinen parallelisiert wird, weil $k$ dann für jede Maschine gewählt werden muss. Unter weithin anerkannten Annahmen über Pollards Rho-Algorithmus konnten grundlegende Methoden zur Beantwortung dieser Frage entwickelt werden. Mit diesen war es möglich zu zeigen, dass $k = 1$ für eine Maschine optimal ist. Im Fall zweier Maschinen wird gezeigt, dass $k_1 = k_2 = 1$ besser ist als wenn $k_1$ und $k_2$ Primzahlen sind oder wenn $k_1 = k_2 > 1$ gilt. $k_i$ bezeichnet den Wert von $k$ für die $i$-te Maschine. Anschließend werden Laufzeitmessungen vorgestellt, die die theoretischen Ergebnisse bestätigen.
+In dieser Arbeit wird die Frage behandelt, wie der Parameter $k$ in Pollards Rho-Methode optimal gewählt werden kann. Ein größerer Wert von $k$ erhöht grundsätzlich die Laufzeit, kann aber auch zu einer deutlichen Verringerung führen, wenn die Primfaktoren der zu faktorisierenden Zahl günstige Eigenschaften haben. Im Allgemeinen ist über die Primfaktoren allerdings nichts bekannt, denn sie sollen durch den Algorithmus bestimmt werden. Daher stellt sich die Frage, welcher Wert von $k$ im Mittel am besten ist. Es ergibt sich insbesondere dann ein interessantes Problem, wenn der Algorithmus auf mehreren Maschinen parallelisiert wird, weil $k$ dann für jede Maschine gewählt werden muss. Unter weithin anerkannten Annahmen über den Rho-Algorithmus konnten grundlegende Methoden zur Beantwortung dieser Frage entwickelt werden. Mit diesen war es möglich zu zeigen, dass $k = 1$ für eine Maschine optimal ist. Im Fall zweier Maschinen wird gezeigt, dass $k_1 = k_2 = 1$ besser ist als wenn $k_1$ und $k_2$ Primzahlen sind oder wenn $k_1 = k_2 > 1$ gilt. $k_i$ bezeichnet den Wert von $k$ für die $i$-te Maschine. Anschließend werden die theoretischen Ergebnisse mit Laufzeitmessungen verglichen.
 
 \section{Motivation und Fragestellung}
 
-Pollards Rho-Methode bleibt trotz der Existenz asymptotisch schnellerer Algorithmen einer der meist verwendeten Algorithmen zur Faktorisierung kleiner Zahlen. Gleichzeitig werden Leistungssteigerungen bei modernen Computern häufig durch größere Nebenläufigkeit (z. B. mehr Prozessorkerne) erzielt. Um die Rho-Methode schnellstmöglich zu implementieren, ist es also nötig zu untersuchen, wie sie am besten parallel ausgeführt werden kann. Bevor die Fragestellung präzise formuliert werden kann, soll jedoch Pollards Rho-Methode vorgestellt werden.
+Pollards Rho-Methode bleibt trotz der Existenz asymptotisch schnellerer Algorithmen einer der meist verwendeten Algorithmen zur Faktorisierung kleiner Zahlen. Gleichzeitig werden Leistungssteigerungen bei modernen Computern häufig durch größere Nebenläufigkeit (z. B. mehr Prozessorkerne) erzielt. Um die Rho-Methode schnellstmöglich zu implementieren, ist es also nötig zu untersuchen, wie sie am besten parallel ausgeführt werden kann. Bevor die Fragestellung präzise formuliert werden kann, soll Pollards Rho-Methode vorgestellt werden.
 
 \subsection{Pollards Rho-Methode}
 \label{sec:pollards-rho-method}
 
-Sei $n$ die zu faktorisierende Zahl. Es wird angenommen, dass $n$ ungerade und keine Potenz einer natürlichen Zahl ist, da sonst einfach ein Faktor gefunden werden kann. Sei $h : \Z/n\Z \to \Z/n\Z$ mit $h : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen zufälligen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_i)_{i \in \N}$, definiert durch $x_i = h(x_{i - 1})$. Da $(x_i)_{i \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee der Rho-Methode ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Das Ereignis, dass eine Folge einen Wert zweimal annimmt, wird eine \emph{Kollision} in dieser Folge genannt. Nimmt man an, dass die Periodenlänge von $(x_i)_{i \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Die Annahme ist plausibel, weil für den kleinsten Primfaktor $p \le \sqrt n$ gilt, es also deutlich weniger mögliche Werte für $\pi(x_i)$ als $x_i$ gibt. Im Folgenden ist $p$ immer der kleinste Primfaktor von $n$. Außerdem wird angenommen, dass die anderen Primfaktoren von $n$ so viel größer als $p$ sind, dass die Wahrscheinlichkeit einer Kollision modulo eines anderen Primfaktors vernachlässigbar gering ist. Zum Finden solcher $x_i, x_j$ ist es hilfreich, den funktionalen Graphen von $h$ zu betrachten.
+Die Rho-Methode wurde erstmals von \cite{pol75} beschrieben. Sei $n$ die zu faktorisierende Zahl. Es wird angenommen, dass $n$ ungerade und keine Potenz einer natürlichen Zahl ist, da sonst einfach ein Faktor gefunden werden kann. Sei $h : \Z/n\Z \to \Z/n\Z$ mit $h : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen zufälligen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_i)_{i \in \N}$, definiert durch $x_i = h(x_{i - 1})$. Da $(x_i)_{i \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee der Rho-Methode ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Nimmt man an, dass die Periodenlänge von $(x_i)_{i \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Die Annahme ist plausibel, weil für den kleinsten Primfaktor $p \le \sqrt n$ gilt, es also deutlich weniger mögliche Werte für $\pi(x_i)$ als $x_i$ gibt. Im Folgenden ist $p$ immer der kleinste Primfaktor von $n$. Das Ereignis, dass eine Folge einen Wert zweimal annimmt, wird eine \emph{Kollision} in dieser Folge genannt. Es wird außerdem angenommen, dass die anderen Primfaktoren von $n$ so viel größer als $p$ sind, dass die Wahrscheinlichkeit einer Kollision modulo eines anderen Primfaktors vernachlässigbar gering ist. Zum Finden solcher $x_i, x_j$ ist es hilfreich, den funktionalen Graphen von $h$ zu betrachten.
 
 \begin{definition}[Funktionaler Graph]
     Sei $X$ eine endliche Menge und $f: X \to X$ eine Abbildung. Der funktionale Graph von $f$, geschrieben $\gamma(f)$, ist der gerichtete Graph mit Knotenmenge $X$ und Kantenmenge $E$, wobei die Kante $(x, y) \in X \times X$ genau dann in $E$ liegt, wenn $f(x) = y$.
@@ -108,7 +109,7 @@ Sei $n$ die zu faktorisierende Zahl. Es wird angenommen, dass $n$ ungerade und k
 
 \noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(h)$ ist $x_0$ also ein Knoten in einem der Bäume, der durch seinen Pfad zur Wurzel mit dem Zyklus seiner Zusammenhangskomponente verbunden ist. Die Folge $(x_i)_{i \in \N}$ startet bei $x_0$ und "`läuft"' durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An der Wurzel des Baums von $x_0$ wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_i)_{i \in \N}$ periodisch. Bei Auftritt der ersten Kollision bildet der von $(x_i)_{i \in \N}$ abgelaufene Pfad die Form eines "`$\rho$"' in $\gamma(h)$.
 
-Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \in \N}$ "`läuft"' also durch $\gamma(f)$, beginnend von $\pi(x_0)$. Unser Ziel, das Finden einer Kollision von $(\pi(x_i))_{i \in \N}$, ist also äquivalent dazu, einen Knoten in $\gamma(f)$ zu finden, der zweimal in dem von $(\pi(x_i))_{i \in \N}$ abgelaufenen Pfad erscheint. Dafür kann Floyds Algorithmus zur Zykluserkennung in $\gamma(f)$ verwendet werden. Floyds Algorithmus macht sich zunutze, dass es ein $1 \le r \in \N$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss (\cite{knu98}, S. 7). Sei $\mu(f, \pi(x_0))$ die Höhe von $\pi(x_0)$ in seinem Baum und $\lambda(f, \pi(x_0))$ die Länge des Zyklus von $\pi(x_0)$. Für das minimale solcher $r$ gilt dann $r \le \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ (\cite{knu98}, S. 7). Wir nennen $\nu(f, \pi(x_0)) = \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ die Rho-Länge von $\pi(x_0)$ in $f$. Es würde also genügen, die Folgen $(\pi(x_i))_{i \in \N}$ und $(\pi(x_{2i}))_{n \in \N}$ gleichzeitig Glied für Glied zu berechnen und in jedem Schritt zu überprüfen, ob $\pi(x_i) = \pi(x_{2i})$. Das kann aber nicht explizit geschehen, da $p$ unbekannt ist. Stattdessen werden $(x_i)_{i \in \N}$ und $(x_{2i})_{i \in \N}$ Glied für Glied berechnet. Das Überprüfen, ob $\pi(x_i) = \pi(x_{2i})$ geschieht durch Berechnung von $\gcd(n, x_i - x_{2i})$. So erhält man nach maximal $\nu(f, \pi(x_0))$ Schritten die gewünschte Kollision. Die Methode kann wie folgt zusammengefasst werden.
+Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \in \N}$ "`läuft"' also durch $\gamma(f)$, beginnend von $\pi(x_0)$. Unser Ziel, das Finden einer Kollision von $(\pi(x_i))_{i \in \N}$, ist also äquivalent dazu, einen Knoten in $\gamma(f)$ zu finden, der zweimal in dem von $(\pi(x_i))_{i \in \N}$ abgelaufenen Pfad erscheint. Dafür kann Floyds Algorithmus zur Zykluserkennung in $\gamma(f)$ verwendet werden. Floyds Algorithmus macht sich zunutze, dass es ein $1 \le r \in \N$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss (\cite{knu98}, S. 7). Sei $\mu(f, \pi(x_0))$ die Höhe von $\pi(x_0)$ in seinem Baum und $\lambda(f, \pi(x_0))$ die Länge des Zyklus von $\pi(x_0)$. Für das minimale solcher $r$ gilt dann $r \le \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ (\cite{knu98}, S. 7). Wir nennen $\nu(f, \pi(x_0)) = \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ die Rho-Länge von $\pi(x_0)$ in $f$. Es also genügt also, die Folgen $(\pi(x_i))_{i \in \N}$ und $(\pi(x_{2i}))_{n \in \N}$ gleichzeitig Glied für Glied zu berechnen und in jedem Schritt zu überprüfen, ob $\pi(x_i) = \pi(x_{2i})$. Das kann natürlich nicht explizit geschehen, da $p$ unbekannt ist. Stattdessen werden $(x_i)_{i \in \N}$ und $(x_{2i})_{i \in \N}$ Glied für Glied berechnet. Das Überprüfen, ob $\pi(x_i) = \pi(x_{2i})$ geschieht durch Berechnung von $\gcd(n, x_i - x_{2i})$. So erhält man nach maximal $\nu(f, \pi(x_0))$ Schritten die gewünschte Kollision. Die Methode kann wie folgt zusammengefasst werden. Dabei speichert $x$ nach der $i$-ten Iteration das $i$-te Glied der Folge $(x_i)_{i \in \N}$ und $y$ das $i$-te Glied von $(x_{2i})_{i \in \N}$.
 
 \begin{algorithm*}
     $x \gets $ zufällige natürliche Zahl zwischen $0$ und $n - 1$ \;
@@ -127,7 +128,7 @@ Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \i
     \caption{Pollards Rho-Methode}
 \end{algorithm*}
 
-\noindent Die Analyse von Pollards Rho-Algorithmus erweist sich als schwierig, es ist bis dato keine rigorose Laufzeitanalyse bekannt. Unter heuristischen Annahmen lässt sich die Laufzeit allerdings gut abschätzen. Als erste Vereinfachung wird statt der mittleren Anzahl an Iterationen von Floyds Algorithmus die mittlere Rho-Länge analysiert. Eine zentrale Annahme dreht sich um die Verteilung der Rho-Längen in $\gamma(f)$, für deren Formulierung der Begriff einer asymptotischen Näherung benötigt wird.
+Die Analyse der Rho-Methode erweist sich als schwierig, es ist keine rigorose Laufzeitanalyse bekannt. Unter heuristischen Annahmen lässt sich die Laufzeit allerdings gut abschätzen. Als erste Vereinfachung wird statt der mittleren Anzahl an Iterationen von Floyds Algorithmus die mittlere Rho-Länge analysiert. Eine weitere Annahme dreht sich um die Verteilung der Rho-Längen in $\gamma(f)$, für deren Formulierung der Begriff einer asymptotischen Näherung benötigt wird.
 
 \begin{definition}[Asymptotische Näherung]
     Eine Funktion $f : \R \to \R$ heißt genau dann asymptotische Näherung von einer Funktion $g : \R \to \R$, oder asymptotisch zu $g$, wenn
@@ -149,7 +150,7 @@ Für $k = 1$ ist unter RMA die erwartete Anzahl an Iterationen der while-Schleif
 
 \subsection{Parallelisierung der Rho-Methode}
 
-Sei $M$ die Anzahl verfügbarer Maschinen. Eine \emph{Maschine} meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte zufällig und unabhängig voneinander gewählt werden und der Algorithmus auf jeder der $M$ Maschinen ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Das ist nicht sofort klar, da durch ein größeres $k$ möglicherweise $\gcd(p - 1, 2k)$ groß ist, sodass die Zahl an Iterationen um einen Faktor $\sqrt{\gcd(p - 1, 2k) -1}$ sinkt. Allerdings steigt die Dauer einer Iteration um einen Faktor $\lg 2k$. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich der Laufzeit nicht die $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt, wenn $p \to \infty$. Wir definieren eine \emph{Zeiteinheit} als die Dauer einer Iteration für $k = 1$, bei einer Maschine mit Parameter $k$ dauert eine Iteration also $\lg 2k$ Zeiteinheiten. Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
+Sei $M$ die Anzahl verfügbarer Maschinen. Eine \emph{Maschine} meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte ($x_0$ in Abschnitt \ref{sec:pollards-rho-method}) zufällig und unabhängig voneinander gewählt werden und der Algorithmus auf jeder der $M$ Maschinen ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Das ist nicht sofort klar, da durch ein größeres $k$ möglicherweise $\gcd(p - 1, 2k)$ groß ist, sodass die Zahl an Iterationen um einen Faktor $\sqrt{\gcd(p - 1, 2k) -1}$ sinkt. Allerdings steigt die Dauer einer Iteration um einen Faktor $\lg 2k$. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich der Laufzeit nicht die $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt, wenn $p \to \infty$. Wir definieren eine \emph{Zeiteinheit} als die Dauer einer Iteration für $k = 1$, bei einer Maschine mit Parameter $k$ dauert eine Iteration also $\lg 2k$ Zeiteinheiten. Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
 
 Sei $k_1, \dots, k_M, 1 \le k_i \in \N$ eine Zuordnung von $k$-Werten für $M$ Maschinen. Mit $L_{k_1, \dots, k_M}(p)$ (oder kurz $L_{(k_i)}(p)$) wird die erwartete Laufzeit des parallelen Rho-Algorithmus mit entsprechenden $k$-Werten bezeichnet. Sei $h_i = p/(\gcd(p - 1, 2k_i) - 1)$. Unter RMA gilt
 \begin{align}
@@ -161,7 +162,7 @@ wobei $Z_i$ die gleichverteilte Zufallsvariable über $A(h_i) \times \Z/h_i\Z$ i
 Wenn $k_i = k_j$, sind $Z_i$ und $Z_j$ nicht stochastisch unabhängig, weil sich die $i$-te und $j$-te Maschine dann im gleichen funktionalen Graphen bewegen. Es kann beispielsweise sein, dass die $i$-te Maschine der $j$-ten "hinterherläuft", wenn der Anfangswert der $i$-ten in einem Teilbaum des Anfangswerts der $j$-ten liegt. Diese Abhängigkeit sorgt für eine schlechtere Laufzeit und erschwert die Analyse des Algorithmus. Das Problem kann umgangen werden, indem die Funktion $f(x) = x^{2k_i} + c_i$ statt $f(x) = x^{2k_i} + 1$ für Maschine $i$ verwendet wird (\cite{cr99}, S. 6). Dabei wird $c_i \ne 0, -2$ für jede Maschine unabhängig gewählt, sodass $Z_i$ und $Z_j \ (i \ne j)$ immer stochastisch unabhängig sind, auch wenn $k_i = k_j$. Für folgende Berechnungen wird daher immer angenommen, dass $Z_i$ und $Z_j$ für $i \ne j$ unabhängig sind.
 
 \begin{remark*}
-    In der Version dieser Arbeit zum Regionalwettbewerb war mir das Paper von \cite{cr99} noch nicht bekannt. Daher war mir nicht klar, dass sich die Abhängigkeit von Maschinen mit gleichem $k$ durch unabhängige Wahl von $c_i$ umgehen lässt, sondern es wurde nur $c_i = 1$ für alle $i$ in Betracht gezogen. Folglich wurde der Fall unabhängiger Maschinen ($\Longleftrightarrow$ paarweise verschiedene $k_i$) vom Fall abhängiger Maschinen unterschieden. Für den Fall unabhängiger Maschinen wurde die Formel aus Abschnitt \ref{sec:formula-running-time} hergeleitet, die durch zufällige Wahl von $c_i$ nun allgemein gilt. Im Fall abhängiger Maschinen konnte eine Formel für $M = 2$ bestimmt werden. Sie ist hier für weitere Berechnungen nicht mehr relevant. Weil der zentrale Satz in der Herleitung auch unabhängig von der Anwendung auf die Rho-Methode interessant ist, soll dieser vorgestellt werden. Der Beweis wird aufgrund seiner Länge weggelassen. Im Fall zweier abhängiger Maschinen bewegen sich beide Maschinen im gleichen funktionalen Graphen, beginnend von unabhängig gewählten Anfangsknoten. Die erwartete Anzahl an Iterationen ist also der Erwartungswert des Minimums der beiden Rho-Längen der Anfangsknoten. Diese Zahl wird unter RMA von folgendem Satz beschrieben.
+    In der Version dieser Arbeit zum Regionalwettbewerb war mir das Paper von \cite{cr99} noch nicht bekannt. Daher war mir nicht klar, dass sich die Abhängigkeit von Maschinen mit gleichem $k$ durch unabhängige Wahl von $c_i$ umgehen lässt, sondern es wurde nur $c_i = 1$ für alle $i$ in Betracht gezogen. Folglich wurde der Fall unabhängiger Maschinen ($\Longleftrightarrow$ paarweise verschiedene $k_i$) vom Fall abhängiger Maschinen unterschieden. Für den Fall unabhängiger Maschinen wurde die Formel aus Abschnitt \ref{sec:formula-running-time} hergeleitet, die durch zufällige Wahl von $c_i$ nun allgemein gilt. Im Fall abhängiger Maschinen konnte eine Formel für $M = 2$ bestimmt werden. Sie ist hier für weitere Berechnungen nicht mehr relevant. Weil der zentrale Satz in der Herleitung aber auch unabhängig von der Anwendung auf die Rho-Methode interessant ist, soll dieser vorgestellt werden. Der Beweis wird aufgrund seiner Länge weggelassen. Im Fall zweier abhängiger Maschinen bewegen sich beide Maschinen im gleichen funktionalen Graphen, beginnend von unabhängig gewählten Anfangsknoten. Die erwartete Anzahl an Iterationen ist also der Erwartungswert des Minimums der beiden Rho-Längen der Anfangsknoten. Diese Zahl wird unter RMA von folgendem Satz beschrieben.
 \end{remark*}
 
 \begin{theorem}
@@ -197,29 +198,25 @@ wobei durch "`$\cdots$"' $M$ ineinander verschachtelte Summen über alle möglic
 \begin{lemma}
     Man betrachte eine Maschine mit Parameter $k$ und $h = p/(\gcd(p - 1, 2k) - 1)$. Sei $Z$ die gleichverteilte Zufallsvariable über $A(h) \times \Z/h\Z$ mit $Z(f, x_0) = \nu(f, x_0)$. Es gilt
     \begin{align*}
-        \P(Z = z) = \frac z h \prod_{j = 0}^{z - 1} \bigg (1 - \frac j h \bigg )
+        \P(Z = z) = \frac z h \prod_{j = 1}^{z - 1} \bigg (1 - \frac j h \bigg )
     \end{align*}
 
     \label{lemma:prob-s-z}
 \end{lemma}
 
 \begin{proof}
-    Für eine zufällige Funktion $f \in A(h)$ ist die Wahrscheinlichkeit einer Kollision im $j$-ten Schritt $j/h$, wenn in den ersten $j - 1$ Schritten keine Kollision aufgetreten ist, da jeder der $h$ möglichen Werte gleich wahrscheinlich ist und $j$ von ihnen zu einer Kollision führen. Es gilt also
-    \begin{align*}
-        \P(Z = z)
-        = \frac z h \prod_{j = 0}^{z - 1} \bigg (1 - \frac j h \bigg )
-    \end{align*}
-    da in den ersten $z - 1$ Schritten keine Kollision auftreten darf und im $z$-ten Schritt eine Kollision auftreten muss.
+    Für eine zufällige Funktion $f \in A(h)$ ist die Wahrscheinlichkeit einer Kollision im $j$-ten Schritt $j/h$, wenn in den ersten $j - 1$ Schritten keine Kollision aufgetreten ist, da jeder der $h$ möglichen Werte gleich wahrscheinlich ist und $j$ von ihnen zu einer Kollision führen. Das Produkt ist also die Wahrscheinlichkeit, dass in den ersten $z - 1$ Schritten keine Kollision auftritt, und der Faktor $z/h$ ist die Wahrscheinlichkeit, dass im $z$-ten Schritt eine Kollision auftritt.
 \end{proof}
 
 Sei im Folgenden $Q(z, h) = (z/h) e^{-z^2/(2h)}$ und
-\begin{align*}
+\begin{align}
     F =
     \sum_{z_1 = 1}^{h_1} Q(z_1, h_1)
     \sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \, \cdots
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \, \min_{i = 1}^M(z_i \lg 2k_i)
-\end{align*}
+    \label{eq:f-definition}
+\end{align}
 Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und zu zeigen, dass $L_{(k_i)}(p) \sim F$.
 
 
@@ -233,15 +230,15 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
 \end{lemma}
 
 \begin{remark*}
-    $z$ wird hier als Funktion von $h$ verstanden. Denn um (\ref{eq:lki-written-out}) später für $p \to \infty$ auszuwerten, reicht eine Abschätzung von $\P(Z_i = z_i)$ für konstante $z_i$ nicht aus, da über alle $1 \le z_i \le h_i$ summiert wird und $h_i = p/(\gcd(p - 1, 2k_i) - 1)$.
+    $z$ wird hier als Funktion von $h$ verstanden. Denn Lemma \ref{lemma:prob-s-z-asmyp} später auf (\ref{eq:lki-written-out}) für $p \to \infty$ anzuwenden, reicht eine Abschätzung für konstante $z_i$ nicht aus, da in (\ref{eq:lki-written-out}) über alle $1 \le z_i \le h_i$ summiert wird und $h_i = p/(\gcd(p - 1, 2k_i) - 1)$.
 
     Aus Lemma \ref{lemma:prob-s-z-asmyp} folgt $\lim_{p \to \infty} \P(Z = z) = Q(z, h)$ für $z \le h^{1/2 + \delta}$. Mit einer einfachen Rechnung lässt sich das auch für $z > h^{1/2 +\delta}$ zeigen. Daraus folgt aber noch nicht $L_{(k_i)}(p) \sim F$, da die Anzahl an Summanden in (\ref{eq:lki-written-out}) von $p$ abhängt. Das $\delta$ in Lemma \ref{lemma:prob-s-z-asmyp} wird später hilfreich sein, um zu zeigen, dass wirklich die gesamte Summe in (\ref{eq:lki-written-out}) asymptotisch zu $F$ ist.
 \end{remark*}
 
 \begin{proof}[Beweis von Lemma \ref{lemma:prob-s-z-asmyp}]
-    Zunächst wird die Restgliedabschätzung $e^x = 1 + x + O(x^2)$ für $|x| \le 1$ auf $\P(Z = z)$ angewandt. Damit gilt
+    Durch Anwenden der Restgliedabschätzung $e^x = 1 + x + O(x^2)$ für $|x| \le 1$ auf $\P(Z = z)$ erhalten wir
     \begin{align*}
-        \P(Z = z) = \frac z h \prod_{j = 0}^{z - 1}
+        \P(Z = z) = \frac z h \prod_{j = 1}^{z - 1}
         \Bigg ( e^{-j/h} - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
     \end{align*}
     Daraus folgt
@@ -249,19 +246,19 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
         \vert Q(z, h) - \P(Z = z) \vert
          & = \frac z h \Bigg \vert
         e^{-z^2/(2h)} -
-        \prod_{j = 0}^{z - 1}
+        \prod_{j = 1}^{z - 1}
         \Bigg ( e^{-j/h} - O \bigg (\frac {j^2} {h^2} \bigg ) \Bigg )
         \Bigg \vert                      \\
          & \le \frac z h \Bigg \vert
         e^{-z^2/(2h)} -
-        \prod_{j = 0}^{z - 1} e^{-j/h}
+        \prod_{j = 1}^{z - 1} e^{-j/h}
         \Bigg \vert                      \\
          & \quad + \frac z h \Bigg \vert
-        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
-        \prod_{j = 0, j \ne k}^{z - 1} e^{-j/h}
-        - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
+        \sum_{k = 1}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
+        \prod_{j = 1, j \ne k}^{z - 1} e^{-j/h}
+        - \sum_{k = 1}^{z - 1}\sum_{l = k+1}^{z - 1}
         O \bigg ( \frac {k^2l^2} {h^4} \bigg )
-        \prod_{j = 0, j \ne k,l}^{z - 1} e^{-j/h}
+        \prod_{j = 1, j \ne k,l}^{z - 1} e^{-j/h}
         + \cdots
         \Bigg \vert
     \end{align*}
@@ -269,7 +266,7 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
     \begin{align*}
         \frac z h \Bigg \vert
         e^{-z^2/(2h)} -
-        \prod_{j = 0}^{z - 1} e^{-j/h}
+        \prod_{j = 1}^{z - 1} e^{-j/h}
         \Bigg \vert
          & = \frac z h \Big \vert
         e^{-z^2/(2h)} -
@@ -287,25 +284,18 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
     Von der dritten zur vierten Zeile wurde erneut die Restgliedabschätzung verwendet. Für den zweiten Summanden gilt
     \begin{align*}
                & \frac z h \Bigg \vert
-        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
-        \prod_{j = 0, j \ne k}^{z - 1} e^{-j/h}
-        - \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
+        \sum_{k = 1}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
+        \prod_{j = 1, j \ne k}^{z - 1} e^{-j/h}
+        - \sum_{k = 1}^{z - 1}\sum_{l = k+1}^{z - 1}
         O \bigg ( \frac {k^2l^2} {h^4} \bigg )
-        \prod_{j = 0, j \ne k,l}^{z - 1} e^{-j/h}
+        \prod_{j = 1, j \ne k,l}^{z - 1} e^{-j/h}
         + \cdots
         \Bigg \vert                                           \\
         \le \, & \frac z h \Bigg (
-        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
-        \prod_{j = 0, j \ne k}^{z - 1} e^{-j/h}
-        + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
+        \sum_{k = 1}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
+        + \sum_{k = 1}^{z - 1}\sum_{l = k+1}^{z - 1}
         O \bigg ( \frac {k^2l^2} {h^4} \bigg )
-        \prod_{j = 0, j \ne k,l}^{z - 1} e^{-j/h}
-        + \cdots \Bigg )                                      \\
-        \le \, & \frac z h \Bigg (
-        \sum_{k = 0}^{z - 1} O \bigg ( \frac {k^2} {h^2} \bigg )
-        + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}
-        O \bigg ( \frac {k^2l^2} {h^4} \bigg )
-        + \sum_{k = 0}^{z - 1}\sum_{l = k+1}^{z - 1}\sum_{m = l + 1}^{z - 1}
+        + \sum_{k = 1}^{z - 1}\sum_{l = k+1}^{z - 1}\sum_{m = l + 1}^{z - 1}
         O \bigg ( \frac {k^2l^2m^2} {h^6} \bigg )
         + \cdots \Bigg )                                      \\
         \le \, & \frac z h \Bigg (
@@ -319,11 +309,11 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
         \bigg ) \Bigg )                                       \\
         = \,   & O \bigg ( \frac 1 {h^{1 - 4\delta}} \bigg )
     \end{align*}
-    Von der ersten zur zweiten Zeile wurden alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $e^{-j/h}$ weggelassen, da sie $\le 1$ sind. In der letzten Zeile wurde die geometrische Summenformel verwendet.
+    Von der ersten zur zweiten Zeile wurden mit der Dreiecksungleichung alle negativen Vorzeichen entfernt. Anschließend wurden die Produkte von $e^{-j/h}$ weggelassen, da sie $\le 1$ sind. In der letzten Zeile wurde die geometrische Summenformel verwendet.
 \end{proof}
 
 \begin{lemma}
-    Sei $F$ wie oben definiert. Es gilt
+    Sei $F$ wie in (\ref{eq:f-definition}) definiert. Es gilt
     \begin{align*}
         F \sim \sqrt{\pi p / 2} \Bigg ( \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
     \end{align*}
@@ -332,7 +322,7 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
 \end{lemma}
 
 \begin{proof}
-    Die Summen werden durch Integrale angenähert.
+    Die Summen in (\ref{eq:f-definition}) werden durch Integrale angenähert.
     \begin{align*}
         F \sim
         \int_0^{h_1} Q(z_1, h_1)
@@ -342,8 +332,10 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
     \end{align*}
     Da
     \begin{align*}
-        \int_0^{h_2} Q(z_2, h_2) \cdots \int_0^{h_M} Q(z_M, h_M)
-        \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_2 \le p^M
+        \int_0^{h_2} Q(z_2, h_2)
+        \int_0^{h_3} Q(z_3, h_3) \cdots
+        \int_0^{h_M} Q(z_M, h_M)
+        \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_3 dz_2 \le p^M
     \end{align*}
     gilt
     \begin{align*}
@@ -353,15 +345,15 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
         \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_2 dz_1 \\
         \le & \ p^M \int_{h_1}^{\infty}
         \frac {z_1} {h_1} e^{-z_1^2/(2h_1)} dz_1              \\
-            & = p^M e^{-h_1/2} \to 0 \quad (p \to \infty)
+        =   & \; p^M e^{-h_1/2} \to 0 \quad (p \to \infty)
     \end{align*}
     Daraus folgt
     \begin{align*}
         F \sim
         \int_0^{\infty}
-        \frac {z_1} {h_1} e^{-z_1^2/(2h_1)} \cdots
+        \frac {z_1 e^{-z_1^2/(2h_1)}} {h_1}  \cdots
         \int_0^{\infty}
-        \frac {z_M} {h_M} e^{-z_M^2/(2h_M)}
+        \frac {z_M e^{-z_M^2/(2h_M)}} {h_M}
         \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_1
     \end{align*}
     Nun wird ein Variablenwechsel $y_i = z_i \lg 2k_i$ durchgeführt. Damit gilt
@@ -374,7 +366,7 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
         \frac {y_M e^{-y_M^2 / (2h_M \lg^2 2k_M)}} {h_M \lg 2k_M}
         \min_{i = 1}^M(y_i) \, dy_M \cdots dy_1
     \end{align*}
-    Anstatt über alle $y_i$ von $0$ bis $\infty$ zu integrieren, wird nun unterschieden, welches der $y_i$ das Minimum ist. Wenn $y_j$ das Minimum ist, wird über $y_j$ von $0$ bis $\infty$ integriert und über $y_i \ (i \ne j)$ von $y_i$ bis $\infty$. So kann $\min_{i = 1}^M (y_i)$ nach vorne gezogen werden, sodass die Integrale für $i \ne j$ unabhängig voneinander ausgewertet werden. Schließlich wird über alle möglichen $j$ aufsummiert.
+    Anstatt über alle $y_i$ von $0$ bis $\infty$ zu integrieren, wird nun unterschieden, welches der $y_i$ das Minimum ist. Wenn $y_j$ das Minimum ist, wird über $y_j$ von $0$ bis $\infty$ integriert und über $y_i \ (i \ne j)$ von $y_i$ bis $\infty$. Dadurch ist es möglich, $\min_{i = 1}^M (y_i)$ nach vorne zu ziehen, sodass die Integrale für $i \ne j$ unabhängig voneinander ausgewertet werden können. Schließlich wird über alle möglichen $j$ aufsummiert.
     \begin{align*}
         F & \sim
         \prod_{i = 1}^M \frac 1 {\lg 2k_i}
@@ -421,18 +413,18 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
 \begin{lemma}
     Sei $Q(z, h) = (z/h)e^{-z^2/(2h)}$ und $\delta > 0$. Dann gilt für $h \to \infty$
     \begin{align*}
-        \sum_{z = h^{1/2 + \delta}}^h Q(z, h) = O\Big (e^{-h^{2\delta}} \Big )
+        \sum_{z = h^{1/2 + \delta}}^h Q(z, h) \le he^{-h^{2\delta}/2}
     \end{align*}
 
     \label{lemma:q-large-z-asymp}
 \end{lemma}
 
 \begin{proof}
-    Es gilt
+    Da $e^{-z^2/(2h)}$ für $z \ge 0$ monoton fällt, gilt
     \begin{align*}
         \sum_{z = h^{1/2 + \delta}}^h \frac z h e^{-z^2/2h}
-        \le \sum_{z = h^{1/2 + \delta}}^h e^{-h^{2\delta}}
-        \le he^{-h^{2\delta}} = O \Big (e^{-h^{2\delta}} \Big )
+        \le \sum_{z = h^{1/2 + \delta}}^h e^{-h^{2\delta}/2}
+        \le he^{-h^{2\delta}/2}
     \end{align*}
 \end{proof}
 
@@ -448,7 +440,7 @@ Um $L_{(k_i)}(p) \sim F$ zu zeigen, schreibe man
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \min_{i = 1}^M (z_i \lg 2k_i)
 \end{align*}
-Die zweite Summe geht nach Lemma \ref{lemma:q-large-z-asymp} gegen 0. Indem auf die erste Summe Lemma \ref{lemma:prob-s-z-asmyp} mit $\delta = 1/16$ angewandt wird, folgt
+Da die Summen über $z_2$ bis $z_M$ durch ein Polynom in $p$ beschränkt sind, geht die zweite Zeile nach Lemma \ref{lemma:q-large-z-asymp} gegen 0. Indem auf die erste Summe Lemma \ref{lemma:prob-s-z-asmyp} mit $\delta = 1/16$ angewandt wird, folgt
 \begin{align*}
     F \sim \sum_{z_1 = 1}^{h_1^{9/16}}
     \Big ( \P(Z_1 = z_1) + O \Big ( h_1^{-3/4} \Big ) \Big )
@@ -456,7 +448,7 @@ Die zweite Summe geht nach Lemma \ref{lemma:q-large-z-asymp} gegen 0. Indem auf 
     \sum_{z_M = 1}^{h_M} Q(z_M, h_M)
     \min_{i = 1}^M (z_i \lg 2k_i)
 \end{align*}
-Nach Lemma \ref{lemma:f-asmyp} gilt $\sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \cdots \sum_{z_M = 1}^{h_M} Q(z_M, h_M) \min_{i = 1}^M (z_i \lg 2k_i) = O(\sqrt p)$. Folglich ist die Summe aller Terme mit einem $O \big (h_2^{-3/4} \big )$-Faktor durch $O(p^{5/16})$ beschränkt. Für eine asymptotische Näherung von $F$ können sie also weggelassen werden. Indem dieses Argument für $Q(z_2, h_2) \dots, Q(z_M, h_M)$ wiederholt wird, können alle $Q(z_i, h_i)$ durch $\P(Z_i = z_i)$ ersetzt werden. Durch eine erneute Anwendung von Lemma \ref{lemma:q-large-z-asymp} und $\P(z_i, h_i) = O(Q(z_i, h_i))$ können die oberen Grenzen der Summen von $h_i^{9/16}$ zurück zu $h_i$ geändert werden, sodass $L_{(k_i)}(p) \sim F$ folgt.
+Nach Lemma \ref{lemma:f-asmyp} gilt $\sum_{z_2 = 1}^{h_2} Q(z_2, h_2) \cdots \sum_{z_M = 1}^{h_M} Q(z_M, h_M) \min_{i = 1}^M (z_i \lg 2k_i) = O(\sqrt p)$. Folglich ist die Summe aller Terme mit einem $O \big (h_1^{-3/4} \big )$-Faktor durch $O(p^{5/16})$ beschränkt. Für eine asymptotische Näherung von $F$ können sie also weggelassen werden. Indem dieses Argument für $Q(z_2, h_2) \dots, Q(z_M, h_M)$ wiederholt wird, können alle $Q(z_i, h_i)$ durch $\P(Z_i = z_i)$ ersetzt werden. Da $\P(z_i, h_i) = O(Q(z_i, h_i))$, können die oberen Grenzen der Summen von $h_i^{9/16}$ durch eine erneute Anwendung von Lemma \ref{lemma:q-large-z-asymp} zurück zu $h_i$ geändert werden. Daraus folgt $L_{(k_i)}(p) \sim F$.
 
 Aus Lemma \ref{lemma:f-asmyp} und $L_{(k_i)}(p) \sim F$ folgt nun eine asymptotische Näherung für die Laufzeit der Rho-Methode.
 \begin{theorem}
@@ -630,54 +622,55 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
 
             \addplot[color=blue,mark=square]
             coordinates {
-                    (1, 1.0)
-                    (2, 1.509948118652118)
-                    (3, 2.0993697474766457)
-                    (4, 2.1116345085043)
-                    (5, 2.877418891483742)
-                    (6, 2.5685036940000137)
-                    (7, 2.996430188276255)
-                    (8, 2.7314845124186458)
-                    (9, 3.328296749381993)
-                    (10, 3.2577944117129998)
-                    (11, 3.7230055520415988)
-                    (12, 3.1561945991451923)
-                    (13, 3.736074156058803)
-                    (14, 3.3685945128552692)
-                    (15, 3.319276959371872)
-                    (16, 3.3613292919244078)
-                    (17, 4.394228617904989)
-                    (18, 3.722443809049611)
-                    (19, 4.451548228110135)
-                    (20, 3.84047914786071)
-                    (21, 3.920376539331896)
-                    (22, 4.032026952636839)
-                    (23, 4.529968590050905)
-                    (24, 3.707477302822801)
-                    (25, 4.242901333931946)
-                    (26, 4.037016391081217)
-                    (27, 4.058783598622834)
-                    (28, 3.9310913363101916)
-                    (29, 4.522555243332595)
-                    (30, 3.7415823259420846)
-                    (31, 4.59640961602802)
-                    (32, 3.982932254189798)
-                    (33, 4.510560919218005)
-                    (34, 4.624088329155094)
-                    (35, 4.744870700917283)
-                    (36, 4.277919837533675)
-                    (37, 5.181576815360558)
-                    (38, 4.687283294435714)
-                    (39, 4.642788634977157)
-                    (40, 4.449130421846238)
-                    (41, 5.186842863188695)
-                    (42, 4.302098653348379)
-                    (43, 5.24978349062113)
-                    (44, 4.594828700423131)
-                    (45, 4.4958880668775825)
-                    (46, 4.73608695893801)
-                    (47, 5.293961293662393)
-                    (48, 4.28487474982348)};
+                    (1 ,   1)
+                    (2 ,   1.3978885464872288)
+                    (3 ,   1.788199306852694)
+                    (4 ,   1.8508119490589103)
+                    (5 ,   2.3290288931911793)
+                    (6 ,   2.1555971643533156)
+                    (7 ,   2.676542528802016)
+                    (8 ,   2.3173772149821845)
+                    (9 ,   2.7111978624995503)
+                    (10,   2.66772819590063)
+                    (11,   3.1975758138477883)
+                    (12,   2.5984083562137448)
+                    (13,   3.205532226483847)
+                    (14,   2.963641213701939)
+                    (15,   3.2182899882206666)
+                    (16,   2.7871554537970447)
+                    (17,   3.4400173096977245)
+                    (18,   3.0377719432739276)
+                    (19,   3.744225803359003)
+                    (20,   3.1146199281293603)
+                    (21,   3.401957775054015)
+                    (22,   3.462364783461436)
+                    (23,   4.053216312566319)
+                    (24,   3.0549040966749454)
+                    (25,   3.5810181519145163)
+                    (26,   3.4745102060796613)
+                    (27,   3.7204619978917886)
+                    (28,   3.41252330716704)
+                    (29,   4.093753579091115)
+                    (30,   3.5834352307560313)
+                    (31,   4.3771017764188045)
+                    (32,   3.2486676558361824)
+                    (33,   3.596833843979978)
+                    (34,   3.6505131171551946)
+                    (35,   4.017241670387443)
+                    (36,   3.4930788880134296)
+                    (37,   4.317018311859838)
+                    (38,   3.952797999199545)
+                    (39,   4.17098873041593)
+                    (40,   3.584013316671218)
+                    (41,   4.269743050417149)
+                    (42,   3.7468556319380117)
+                    (43,   4.62446557466819)
+                    (44,   3.891427662098623)
+                    (45,   4.1124366976681515)
+                    (46,   4.2735749775055325)
+                    (47,   4.923225382510301)
+                    (48,   3.502048374944525)
+                };
 
             \legend{Formel (\ref{eq:lki-asymp}), Gemessene Laufzeit}
         \end{axis}
@@ -733,7 +726,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
     \label{fig:measurements-m2}
 \end{figure}
 
-Um zu demonstrieren, dass Satz \ref{theorem:lki-asymp} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreibt, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Als Testzahlen wurden 192-Bit-Zahlen verwendet, bei denen jeder Primfaktor größer als $2^{24}$ ist. Die Größe der Primfaktoren nach unten zu beschränken ist sinnvoll, da die Laufzeit der Rho-Methode sonst sehr kurz wäre und die Messergebnisse durch Dinge wie den Aufwand der Laufzeitmessung selbst verfälscht werden würden. Die Ergebnisse und Werte von (\ref{eq:lki-asymp}) zum Vergleich sind in den Abbildungen \ref{fig:measurements-m1} und \ref{fig:measurements-m2} dargestellt. Sowohl die Werte der Formel als auch die Messdaten wurden skaliert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 steht.
+Um zu demonstrieren, dass Satz \ref{theorem:lki-asymp} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreibt, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Als Testzahlen wurden 192-Bit-Zahlen verwendet, bei denen jeder Primfaktor größer als $2^{24}$ ist und ein Primfaktor kleiner als $2^{25}$ ist. Die Größe der Primfaktoren nach unten zu beschränken ist sinnvoll, da die Laufzeit der Rho-Methode sonst sehr kurz wäre und die Messergebnisse durch Dinge wie den Aufwand der Laufzeitmessung selbst verfälscht werden würden. Es ist auch sinnvoll, dass die Testzahlen einen kleinen Primfaktor enthalten, da die Laufzeit sonst sehr groß wäre. Es wurden $2^{12}$ Testzahlen verwendet. Die mittlere Laufzeit und Werte von (\ref{eq:lki-asymp}) zum Vergleich sind in den Abbildungen \ref{fig:measurements-m1} und \ref{fig:measurements-m2} dargestellt. Sowohl die Werte der Formel als auch die Messdaten wurden skaliert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 steht.
 
 \emph{Eine Maschine.} Die Laufzeit wird gut von (\ref{eq:lki-asymp}) angenähert, denn die Werte befinden sich in der gleichen Größenordnung und auch Charakteristika spezieller Zahlen, wie beispielsweise hohe Werte bei Primzahlen, werden von beiden reflektiert.
 
