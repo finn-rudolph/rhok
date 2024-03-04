@@ -10,7 +10,7 @@
 \usepackage[backend=biber, style=apa]{biblatex}
 \usepackage{caption}
 \usepackage{csquotes}
-\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2cm]{geometry}
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.4cm]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{inconsolata}
 \usepackage{mathtools}
@@ -53,6 +53,8 @@
 
 \sectionfont{\large}
 \subsectionfont{\normalsize}
+
+\allowdisplaybreaks
 
 \begin{document}
 
@@ -161,7 +163,7 @@ Ein Beispiel eines funktionalen Graphen ist in Abbildung \ref{fig:fn-graph-17} z
 \end{figure}
 
 Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \in \N}$ "`läuft"' also durch $\gamma(f)$, beginnend von $\pi(x_0)$. Unser Ziel, das Finden einer Kollision von $(\pi(x_i))_{i \in \N}$, ist also äquivalent dazu, einen Knoten in $\gamma(f)$ zu finden, der zweimal in dem von $(\pi(x_i))_{i \in \N}$ abgelaufenen Pfad erscheint. Dafür kann Floyds Algorithmus zur Zykluserkennung in $\gamma(f)$ verwendet werden. Floyds Algorithmus macht sich zunutze, dass es ein $1 \le r \in \N$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss (\cite{knu98}, S. 7). Sei $\mu(f, \pi(x_0))$ die Höhe von $\pi(x_0)$ in seinem Baum und $\lambda(f, \pi(x_0))$ die Länge des Zyklus von $\pi(x_0)$. Für das minimale solcher $r$ gilt dann $r \le \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ (\cite{knu98}, S. 7). Wir nennen $\nu(f, \pi(x_0)) = \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ die Rho-Länge von $\pi(x_0)$ in $f$. Es also genügt also, die Folgen $(\pi(x_i))_{i \in \N}$ und $(\pi(x_{2i}))_{n \in \N}$ gleichzeitig Glied für Glied zu berechnen und in jedem Schritt zu überprüfen, ob $\pi(x_i) = \pi(x_{2i})$. Das kann natürlich nicht explizit geschehen, da $p$ unbekannt ist. Stattdessen werden $(x_i)_{i \in \N}$ und $(x_{2i})_{i \in \N}$ Glied für Glied berechnet. Das Überprüfen, ob $\pi(x_i) = \pi(x_{2i})$ geschieht durch Berechnung von $\gcd(n, x_i - x_{2i})$. So erhält man nach maximal $\nu(f, \pi(x_0))$ Schritten die gewünschte Kollision. Die Methode kann wie folgt zusammengefasst werden. Dabei speichert $x$ nach der $i$-ten Iteration das $i$-te Glied der Folge $(x_i)_{i \in \N}$ und $y$ das $i$-te Glied von $(x_{2i})_{i \in \N}$.
-\begin{algorithm*}
+\begin{algorithm}
     $x \gets $ zufällige natürliche Zahl zwischen $0$ und $n - 1$ \;
     $y \gets x$ \;
     \While{\emph{\textsc{true}}}
@@ -176,7 +178,7 @@ Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \i
     }
 
     \caption{Pollards Rho-Methode}
-\end{algorithm*}
+\end{algorithm}
 Die Analyse der Rho-Methode erweist sich als schwierig, es ist keine rigorose Laufzeitanalyse bekannt. Unter heuristischen Annahmen lässt sich die Laufzeit allerdings gut abschätzen. Als erste Vereinfachung wird statt der mittleren Anzahl an Iterationen von Floyds Algorithmus die mittlere Rho-Länge analysiert. Eine weitere Annahme dreht sich um die Verteilung der Rho-Längen in $\gamma(f)$, für deren Formulierung der Begriff einer asymptotischen Näherung benötigt wird.
 
 \begin{definition}[Asymptotische Näherung]
@@ -455,7 +457,7 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
         \sqrt {\pi / 2} \
         \Bigg ( \sum_{i = 1}^M \frac 1 {h_i \lg^2 2k_i} \Bigg )^{-3/2}     \\
           & = \sqrt{\pi p / 2} \; \Bigg (
-        \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
+        \sum_{i = 1}^M \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2} \qedhere
     \end{align*}
 \end{proof}
 
@@ -471,9 +473,9 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
 \begin{proof}
     Da $e^{-z^2/(2h)}$ für $z \ge 0$ monoton fällt, gilt
     \begin{align*}
-        \sum_{z = h^{1/2 + \delta}}^h \frac z h e^{-z^2/2h}
+         & \sum_{z = h^{1/2 + \delta}}^h \frac z h e^{-z^2/2h}
         \le \sum_{z = h^{1/2 + \delta}}^h e^{-h^{2\delta}/2}
-        \le he^{-h^{2\delta}/2}
+        \le he^{-h^{2\delta}/2} \qedhere
     \end{align*}
 \end{proof}
 
