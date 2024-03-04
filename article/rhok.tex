@@ -321,7 +321,7 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
         \Bigg \vert
          & = \frac z h \Big \vert
         e^{-z^2/(2h)} -
-        e^{-\sum_{j = 0}^{z - 1} j/h}
+        e^{-\sum_{j = 1}^{z - 1} j/h}
         \Big \vert                                       \\
          & = \frac z h \Big \vert
         e^{-z^2/(2h)} -  e^{-z(z - 1)/(2h)}
@@ -381,14 +381,14 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
         \int_0^{h_M} Q(z_M, h_M)
         \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_2 dz_1
     \end{align*}
-    Da
+    Für beliebiges $z_1 \in \R$ mit $z_1 \ge 0$ gilt
     \begin{align*}
         \int_0^{h_2} Q(z_2, h_2)
         \int_0^{h_3} Q(z_3, h_3) \cdots
         \int_0^{h_M} Q(z_M, h_M)
         \min_{i = 1}^M(z_i \lg 2k_i) \, dz_M \cdots dz_3 dz_2 \le p^M
     \end{align*}
-    gilt
+    Folglich gilt
     \begin{align*}
             & \int_{h_1}^{\infty} Q(z_1, h_1)
         \int_0^{h_2} Q(z_2, h_2) \cdots
@@ -410,7 +410,7 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
     Nun wird ein Variablenwechsel $y_i = z_i \lg 2k_i$ durchgeführt. Damit gilt
     \begin{align*}
         F \sim
-        \prod_{i = 1}^M \frac 1 {\lg 2k_i}
+        \Bigg (\prod_{i = 1}^M \frac 1 {\lg 2k_i} \Bigg )
         \int_0^{\infty}
         \frac {y_1 e^{-y_1^2 / (2h_1 \lg^2 2k_1)}} {h_1\lg 2k_1}  \cdots
         \int_0^{\infty}
@@ -420,7 +420,7 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
     Anstatt über alle $y_i$ von $0$ bis $\infty$ zu integrieren, wird nun unterschieden, welches der $y_i$ das Minimum ist. Wenn $y_j$ das Minimum ist, wird über $y_j$ von $0$ bis $\infty$ integriert und über $y_i \ (i \ne j)$ von $y_i$ bis $\infty$. Dadurch ist es möglich, $\min_{i = 1}^M (y_i)$ nach vorne zu ziehen, sodass die Integrale für $i \ne j$ unabhängig voneinander ausgewertet werden können. Schließlich wird über alle möglichen $j$ aufsummiert.
     \begin{align*}
         F & \sim
-        \prod_{i = 1}^M \frac 1 {\lg 2k_i}
+        \Bigg (\prod_{i = 1}^M \frac 1 {\lg 2k_i} \Bigg )
         \sum_{j = 1}^M \int_0^\infty
         \frac {y_j^2 e^{-y_j^2 / (2h_j \lg^2 2k_j)}} {h_j \lg 2k_j}
         \prod_{i = 1, i \ne j}^M \int_{y_j}^{\infty}
@@ -436,11 +436,11 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
     Also gilt
     \begin{align*}
         F & \sim
-        \prod_{i = 1}^M \frac 1 {\lg 2k_i}
+        \Bigg (\prod_{i = 1}^M \frac 1 {\lg 2k_i} \Bigg )
         \sum_{j = 1}^M \int_0^\infty
         \frac {y^2 e^{-y^2 / (2h_j \lg^2 2k_j)}} {h_j \lg 2k_j}
         \prod_{i = 1, i \ne j}^M e^{-y^2/(2h_i \lg^2 2k_i)} \lg 2k_i \; dy \\
-          & = \prod_{i = 1}^M \frac 1 {\lg 2k_i}
+          & = \Bigg ( \prod_{i = 1}^M \frac 1 {\lg 2k_i} \Bigg )
         \sum_{j = 1}^M \int_0^\infty
         \frac {y^2} {h_j \lg^2 2k_j} \,
         \prod_{i = 1}^M e^{-y^2/(2h_i \lg^2 2k_i)} \lg 2k_i \; dy          \\
@@ -473,7 +473,7 @@ Das Ziel ist nun, eine einfache asymptotische Näherung für $F$ zu finden und z
 \begin{proof}
     Da $e^{-z^2/(2h)}$ für $z \ge 0$ monoton fällt, gilt
     \begin{align*}
-         & \sum_{z = h^{1/2 + \delta}}^h \frac z h e^{-z^2/2h}
+         & \sum_{z = h^{1/2 + \delta}}^h \frac z h e^{-z^2/(2h)}
         \le \sum_{z = h^{1/2 + \delta}}^h e^{-h^{2\delta}/2}
         \le he^{-h^{2\delta}/2} \qedhere
     \end{align*}
