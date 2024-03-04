@@ -109,10 +109,58 @@ Die Rho-Methode wurde erstmals von \cite{pol75} beschrieben. Sei $n$ die zu fakt
     Sei $X$ eine endliche Menge und $f: X \to X$ eine Abbildung. Der funktionale Graph von $f$, geschrieben $\gamma(f)$, ist der gerichtete Graph mit Knotenmenge $X$ und Kantenmenge $E$, wobei die Kante $(x, y) \in X \times X$ genau dann in $E$ liegt, wenn $f(x) = y$.
 \end{definition}
 
-\noindent Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(h)$ ist $x_0$ also ein Knoten in einem der Bäume, der durch seinen Pfad zur Wurzel mit dem Zyklus seiner Zusammenhangskomponente verbunden ist. Die Folge $(x_i)_{i \in \N}$ startet bei $x_0$ und "`läuft"' durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An der Wurzel des Baums von $x_0$ wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_i)_{i \in \N}$ periodisch. Bei Auftritt der ersten Kollision bildet der von $(x_i)_{i \in \N}$ abgelaufene Pfad die Form eines "`$\rho$"' in $\gamma(h)$.
+Ein Beispiel eines funktionalen Graphen ist in Abbildung \ref{fig:fn-graph-17} zu sehen. Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(h)$ ist $x_0$ also ein Knoten in einem der Bäume, der durch seinen Pfad zur Wurzel mit dem Zyklus seiner Zusammenhangskomponente verbunden ist. Die Folge $(x_i)_{i \in \N}$ startet bei $x_0$ und "`läuft"' durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An der Wurzel des Baums von $x_0$ wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_i)_{i \in \N}$ periodisch. Bei Auftritt der ersten Kollision bildet der von $(x_i)_{i \in \N}$ abgelaufene Pfad die Form eines "`$\rho$"' in $\gamma(h)$.
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \tikzset{every node/.style={
+                    circle, draw=black, inner sep = 0pt, minimum size=19pt
+                }}
+        \small
+        \node[circle, draw=black] (0) at (0, 0) {0};
+        \node[circle, draw=black] (1) at (1.5, 0) {1};
+        \node[circle, draw=black] (2) at (3, 0) {2};
+        \node[circle, draw=black] (5) at (4, -1.3) {5};
+        \node[circle, draw=black] (9) at (5.5, -1.3) {9};
+        \node[circle, draw=black] (14) at (6.5, 0) {14};
+        \node[circle, draw=black] (10) at (5.5, 1.3) {10};
+        \node[circle, draw=black] (16) at (4, 1.3) {16};
+        \node[circle, draw=black] (4) at (-1.1, -1.1) {4};
+        \node[circle, draw=black] (13) at (-1.1, 1.1) {13};
+        \node[circle, draw=black] (15) at (4, -2.7) {15};
+        \node[circle, draw=black] (12) at (5.5, -2.7) {12};
+        \node[circle, draw=black] (8) at (8, 0) {8};
+        \node[circle, draw=black] (7) at (4, 2.7) {7};
+        \node[circle, draw=black] (3) at (6.8, 2) {3};
+        \node[circle, draw=black] (11) at (8.3, 1.3) {11};
+        \node[circle, draw=black] (6) at (8.3, 2.7) {6};
+
+        \draw[->] (0) -- (1);
+        \draw[->] (1) -- (2);
+        \draw[->] (2) -- (5);
+        \draw[->] (5) -- (9);
+        \draw[->] (9) -- (14);
+        \draw[->] (14) -- (10);
+        \draw[->] (10) -- (16);
+        \draw[->] (16) -- (2);
+        \draw[->] (13) -- (0);
+        \draw[->] (4) -- (0);
+        \draw[->] (7) -- (16);
+        \draw[->] (3) -- (10);
+        \draw[->] (15) -- (5);
+        \draw[->] (12) -- (9);
+        \draw[->] (6) -- (3);
+        \draw[->] (11) -- (3);
+        \draw[->] (8) -- (14);
+        \normalsize
+    \end{tikzpicture}
+
+    \caption{Der funktionale Graph von $f : \Z/17\Z \to \Z/17\Z$ mit $f : x \mapsto x^2 + 1$.}
+    \label{fig:fn-graph-17}
+\end{figure}
 
 Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \in \N}$ "`läuft"' also durch $\gamma(f)$, beginnend von $\pi(x_0)$. Unser Ziel, das Finden einer Kollision von $(\pi(x_i))_{i \in \N}$, ist also äquivalent dazu, einen Knoten in $\gamma(f)$ zu finden, der zweimal in dem von $(\pi(x_i))_{i \in \N}$ abgelaufenen Pfad erscheint. Dafür kann Floyds Algorithmus zur Zykluserkennung in $\gamma(f)$ verwendet werden. Floyds Algorithmus macht sich zunutze, dass es ein $1 \le r \in \N$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss (\cite{knu98}, S. 7). Sei $\mu(f, \pi(x_0))$ die Höhe von $\pi(x_0)$ in seinem Baum und $\lambda(f, \pi(x_0))$ die Länge des Zyklus von $\pi(x_0)$. Für das minimale solcher $r$ gilt dann $r \le \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ (\cite{knu98}, S. 7). Wir nennen $\nu(f, \pi(x_0)) = \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ die Rho-Länge von $\pi(x_0)$ in $f$. Es also genügt also, die Folgen $(\pi(x_i))_{i \in \N}$ und $(\pi(x_{2i}))_{n \in \N}$ gleichzeitig Glied für Glied zu berechnen und in jedem Schritt zu überprüfen, ob $\pi(x_i) = \pi(x_{2i})$. Das kann natürlich nicht explizit geschehen, da $p$ unbekannt ist. Stattdessen werden $(x_i)_{i \in \N}$ und $(x_{2i})_{i \in \N}$ Glied für Glied berechnet. Das Überprüfen, ob $\pi(x_i) = \pi(x_{2i})$ geschieht durch Berechnung von $\gcd(n, x_i - x_{2i})$. So erhält man nach maximal $\nu(f, \pi(x_0))$ Schritten die gewünschte Kollision. Die Methode kann wie folgt zusammengefasst werden. Dabei speichert $x$ nach der $i$-ten Iteration das $i$-te Glied der Folge $(x_i)_{i \in \N}$ und $y$ das $i$-te Glied von $(x_{2i})_{i \in \N}$.
-
 \begin{algorithm*}
     $x \gets $ zufällige natürliche Zahl zwischen $0$ und $n - 1$ \;
     $y \gets x$ \;
@@ -129,7 +177,6 @@ Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \i
 
     \caption{Pollards Rho-Methode}
 \end{algorithm*}
-
 Die Analyse der Rho-Methode erweist sich als schwierig, es ist keine rigorose Laufzeitanalyse bekannt. Unter heuristischen Annahmen lässt sich die Laufzeit allerdings gut abschätzen. Als erste Vereinfachung wird statt der mittleren Anzahl an Iterationen von Floyds Algorithmus die mittlere Rho-Länge analysiert. Eine weitere Annahme dreht sich um die Verteilung der Rho-Längen in $\gamma(f)$, für deren Formulierung der Begriff einer asymptotischen Näherung benötigt wird.
 
 \begin{definition}[Asymptotische Näherung]
@@ -470,8 +517,6 @@ Aus Lemma \ref{lemma:f-asmyp} und $L_{(k_i)}(p) \sim F$ folgt nun eine asymptoti
 
 In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Maschinen bestmöglich gewählt werden kann. Mit Satz \ref{theorem:lki-asymp} konnten Ergebnisse in den Fällen $M = 1$ und $M = 2$ erzielt werden. Die grundlegende Strategie ist, den Erwartungswert von $L_{k_1, \dots, k_M}(p)$ über alle Möglichkeiten von $\gcd(p - 1, 2k_i)$ für alle $1 \le i \le M$ zu bilden und so einen Wert für die erwartete Laufzeit in Abhängigkeit der $k_i$ zu erhalten. Da $p - 1$ gerade ist, gilt $\gcd(p-1, 2k_i) = 2\gcd((p - 1)/2, k_i)$. Weitere Kongruenzen von $p - 1$ sind im Allgemeinen nicht bekannt, weshalb angenommen wird, dass jeder Rest von $(p- 1)/2$ modulo $k_i$ gleich wahrscheinlich ist.
 
-\subsection{Der Fall einer Maschine}
-
 \begin{theorem}
     \label{theorem:optimal-k-m1}
     Sei $L_k(p)$ wie in (\ref{eq:lki-definition}) definiert. Der Erwartungswert $\E(L_k(p))$ über alle möglichen $\gcd((p - 1)/2, k)$ nimmt ein globales Minimum für $k = 1$ an.
@@ -499,8 +544,6 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
     \end{align*}
     Für $x \ge 16$ ist der Nenner von $f'$ positiv, denn $x > 0$ und $\ln x > 0$, und weil $\ln \ln x > 1$ für $x \ge 16$ ist der Term unter dem Quadrat positiv. Der Zähler ist ebenfalls positiv, da $\ln x \ge 1$ und $\ln \ln x \ge 1$, woraus $\ln(x)(\ln(\ln(x)) + 1.51) \ge 1 \cdot (1 + 1.51) = 2.51 > \ln 2$ folgt. Also ist $f$ streng monoton steigend für $x \ge 16$, und da bereits $f(16) > 1$ gezeigt wurde, folgt $f(x) > 1$ für $x \ge 16$. Der Fall $k < 16$ wurde durch Ausrechnen von (\ref{eq:lki-asymp}) für $2 \le k \le 15$ überprüft.
 \end{proof}
-
-\subsection{Der Fall zweier Maschinen}
 
 \begin{theorem}
     \label{theorem:optimal-k-m2}
