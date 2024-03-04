@@ -1,5 +1,7 @@
 \documentclass[a4paper, 11pt, ngerman]{article}
 
+\usepackage[utf8]{inputenc}
+
 \usepackage[algoruled, nosemicolon]{algorithm2e}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -11,7 +13,6 @@
 \usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2cm]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{inconsolata}
-\usepackage[utf8]{inputenc}
 \usepackage{mathtools}
 \usepackage{pgfplots}
 \usepackage{sectsty}
@@ -38,10 +39,10 @@
 \theoremstyle{plain}
 \newtheorem{theorem}{Satz}
 \newtheorem{lemma}{Lemma}
+\newtheorem*{assumption*}{Annahme}
 
 \theoremstyle{remark}
 \newtheorem*{remark*}{Anmerkung}
-\newtheorem*{assumption*}{Annahme}
 
 \newcommand*\uparagraph{
         \par
@@ -727,15 +728,20 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
 
 Um zu demonstrieren, dass Satz \ref{theorem:lki-asymp} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreibt, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Als Testzahlen wurden 192-Bit-Zahlen verwendet, bei denen jeder Primfaktor größer als $2^{22}$ ist und ein Primfaktor kleiner als $2^{23}$ ist. Die Größe der Primfaktoren nach unten zu beschränken ist sinnvoll, da die Laufzeit der Rho-Methode sonst sehr kurz wäre und die Messergebnisse durch Dinge wie den Aufwand der Laufzeitmessung selbst verfälscht werden würden. Es ist auch sinnvoll, dass die Testzahlen einen kleinen Primfaktor enthalten, da die Laufzeit sonst sehr groß wäre. Es wurden jeweils $2^{14}$ Testzahlen verwendet. Die mittlere Laufzeit und Werte von (\ref{eq:lki-asymp}) zum Vergleich sind in den Abbildungen \ref{fig:measurements-m1} und \ref{fig:measurements-m2} dargestellt. Sowohl die Werte der Formel als auch die Messdaten wurden skaliert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 steht. Der Code für die Laufzeitmessungen ist unter \href{https://github.com/finn-rudolph/rhok}{\texttt{https://github.com/finn-rudolph/rhok}} verfügbar.
 
-\emph{Eine Maschine.} Man sieht, dass der Verlauf der Laufzeit von Formel (\ref{eq:lki-asymp}) widergespiegelt wird. Beispielsweise werden hohe Werte bei Primzahlen und niedrige Werte bei Zahlen mit vielen verschiedenen Primfaktoren (z.B. 24) angenommen. Es fällt allerdings auf, dass die Laufzeit bei allen Werten von $k$ im Verhältnis zur Laufzeit bei $k = 1$ geringer als erwartet ist. Eine Erklärung dafür ist, dass der Aufwand der Berechnung von $\gcd(n, x_i - x_j)$ in der Rho-Methode vernachlässigt wurde. Obwohl, wie in Abschnitt \ref{sec:pollards-rho-method} beschreiben, die Optimierung aus \cite{bre80} verwendet wurde, um diesen Aufwand zu amortisieren, macht er immer noch einen relevanten Teil aus. Dadurch fällt der größere Aufwand der Berechnung von $x^{2k}$ für größere $k$ relativ gesehen weniger ins Gewicht. Die Messungen bestätigen aber die Aussage von Satz \ref{theorem:optimal-k-m1} und zeigen, dass Formel (\ref{eq:lki-asymp}) zum Vergleich der Laufzeit bei verschiedenen Werten von $k$ geeignet ist.
+\paragraph*{Eine Maschine.} Man sieht, dass der Verlauf der Laufzeit von Formel (\ref{eq:lki-asymp}) widergespiegelt wird. Beispielsweise werden hohe Werte bei Primzahlen und niedrige Werte bei Zahlen mit vielen verschiedenen Primfaktoren (z.B. 24) angenommen.
 
-\emph{Zwei Maschinen.} Auch hier wird das grundsätzliche Verhalten der Laufzeit gut durch (\ref{eq:lki-asymp}) beschreiben. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist. Auffällig ist, dass die Laufzeitunterschiede weniger ausgeprägt sind als von den Formeln vorhergesagt. Das liegt wahrscheinlich daran, dass neben der Berechnung von $x^{2k}$ auch andere Berechnungen im Rho-Algorithmus durchgeführt werden, deren Dauer unabhängig von $k$ ist (z.B. das Bilden des $\gcd$). Diese werden aber in den Formeln nicht berücksichtigt.
+Es fällt allerdings auf, dass die Laufzeit bei allen Werten von $k$ im Verhältnis zur Laufzeit bei $k = 1$ geringer als erwartet ist. Eine Erklärung dafür ist, dass der Aufwand der Berechnung von $\gcd(n, x_i - x_j)$ in der Rho-Methode vernachlässigt wurde. Obwohl, wie in Abschnitt \ref{sec:pollards-rho-method} beschreiben, die Optimierung aus \cite{bre80} verwendet wurde, um diesen Aufwand zu amortisieren, macht er immer noch einen relevanten Teil aus. Dadurch fällt der größere Aufwand der Berechnung von $x^{2k}$ für größere $k$ relativ gesehen weniger ins Gewicht.
+
+An den Messergebnissen ist noch eine weitere Vereinfachung in der Analyse erkennbar. Wenn man die Laufzeit und Werte von (\ref{eq:lki-asymp}) bei $k = 8, 16, 32$ mit nahe gelegenen Werten vergleicht, beobachtet man, dass die Laufzeit im Verhältnis kleiner ist. Beispielsweise ist die Laufzeit bei $k = 16$ geringer als bei $k = 15$, der Wert von (\ref{eq:lki-asymp}) jedoch höher, und die Laufzeit bei $k = 32$ ist nahezu gleich der bei $k = 30$, wohingegen der Wert von (\ref{eq:lki-asymp}) deutlich größer ist. Das könnte daran liegen, dass der Aufwand zur Berechnung von $x^{2k}$ in der Praxis von der Anzahl an Einsen in der Binärdarstellung von $k$ abhängt. In der Implementierung wurde Square-and-Multiply zur Berechnung von Potenzen verwendet.
+
+
+\paragraph*{Zwei Maschinen.} Auch hier wird das grundsätzliche Verhalten der Laufzeit durch (\ref{eq:lki-asymp}) reflektiert. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist.
 
 \section{Fazit}
 
-Zur Beantwortung der Frage nach der optimalen Wahl des Parameters $k$ konnten in dieser Arbeit grundlegende Formeln und Methoden entwickelt werden. Unter üblichen Annahmen über Pollards Rho-Algorithmus wurde eine Formel für die erwartete Laufzeit in Abhängigkeit der $k_i \ (1 \le i \le M)$ aufgestellt. Die damit erzielten Ergebnisse für $M = 1$ und $M = 2$ werden von Laufzeitmessungen unterstützt.
+Zur Beantwortung der Frage nach der optimalen Wahl des Parameters $k$ konnten in dieser Arbeit grundlegende Formeln und Methoden entwickelt werden. Unter üblichen Annahmen über Pollards Rho-Algorithmus wurde eine Formel für die erwartete Laufzeit in Abhängigkeit der $k_i \ (1 \le i \le M)$ aufgestellt. Die damit erzielten Ergebnisse für $M = 1$ und $M = 2$ werden von Laufzeitmessungen unterstützt. Auch zeigen die Messungen, dass Formel (\ref{eq:lki-asymp}) zum Vergleich der Laufzeit bei verschiedenen Werten von $k$ geeignet ist. Für eine vollständige Beantwortung der Frage sind allerdings noch weitere Schritte nötig. Der Fall $M = 2$ müsste vollständig geklärt werden, und $M \ge 3$ wurde in dieser Arbeit noch nicht behandelt.
 
-Für eine vollständige Beantwortung der Frage sind allerdings noch weitere Schritte nötig. Der Fall $M = 2$ müsste vollständig geklärt werden, und $M \ge 3$ wurde in dieser Arbeit noch nicht behandelt. Darüber hinaus stellt sich die Frage, ob es sinnvoll ist, nach der Wahl von $k$-Werten während der gesamten Ausführung des Algorithmus bei diesen zu bleiben. Möglicherweise ist es besser, dass eine Maschine nach längerer Zeit mit einem bestimmten Wert von $k$ diesen aufgibt und mit einem anderen $k$ weitermacht.
+Darüber hinaus stellt sich die Frage, ob es sinnvoll ist, nach der Wahl von $k$-Werten während der gesamten Ausführung des Algorithmus bei diesen zu bleiben. Möglicherweise ist es besser, dass eine Maschine nach längerer Zeit mit einem bestimmten Wert von $k$ diesen aufgibt und mit einem anderen $k$ weitermacht.
 
 \newpage
 \printbibliography
