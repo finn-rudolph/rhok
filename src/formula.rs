@@ -71,14 +71,21 @@ fn independent_machines(k: &Vec<u64>, i: usize, s: f64) -> f64 {
         return 1.0 / s.sqrt();
     }
 
+    // Silently assumes that the k-values are increasing. Search the last j
+    // such that k[i] == k[j].
+    let mut j = i;
+    while j < k.len() && k[i] == k[j] {
+        j += 1;
+    }
+
     let inv_lg_k_i_squared =
         1.0 / (((k[i] << 1) as f64).log2() * ((k[i] << 1) as f64).log2());
     let mut expected: f64 = 0.0;
     for d in PHI.divisors(k[i]) {
         expected += independent_machines(
             k,
-            i + 1,
-            s + (2 * d - 1) as f64 * inv_lg_k_i_squared,
+            j,
+            s + (j as u64 * (2 * d - 1)) as f64 * inv_lg_k_i_squared,
         ) * PHI.gcd_probability(k[i], *d);
     }
 
