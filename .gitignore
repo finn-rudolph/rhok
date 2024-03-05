@@ -12,5 +12,5 @@
 *.log
 *.toc
 *.vscode
-poster/*.pdf
+*.pdf
 poster/svg-inkscape
