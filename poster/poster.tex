@@ -18,34 +18,29 @@ Pollards Rho-Methode ist einer der schnellsten Algorithmen zur Primfaktorzerlegu
 
 \subsection{Vorgehen}
 
-Das Ziel war es, durch eine geeignete mathematische Beschreibung des Rho-Algorithmus eine Formel für die mittlere Laufzeit in Abhängigkeit der Werte von $k$ für jede Maschine herzuleiten. Es wurde wie üblich für den Rho-Algorithmus angenommen, dass sich $f(x) = x^{2k} + 1$ wie eine zufällige Funktion modulo $p$ verhält, sodass der Algorithmus wahrscheinlichkeitsbasiert analysiert werden konnte. Die Laufzeit des Rho-Algorithmus wird vor allem von der Anzahl an Iterationen bestimmt, bis ein Faktor gefunden wird. Diese ist von der Struktur des funktionalen Graphen von $f$ und damit von $k$ abhängig, im Allgemeinen hat der Graph bei größerem $k$ eine bessere Struktur. Die Dauer einer Iteration steigt aber um $\log_2 2k$ im Verhältnis zu $k = 1$ wegen der Berechnung von $x^{2k}$.
+Das Ziel war es, durch eine geeignete mathematische Beschreibung des Rho-Algorithmus eine Formel für die mittlere Laufzeit in Abhängigkeit der Werte von $k$ für jede Maschine herzuleiten. Es wurde wie üblich für den Rho-Algorithmus angenommen, dass sich $f(x) = x^{2k} + c$ für $c \ne 0, -2$ wie eine zufällige Funktion modulo $p$ verhält, sodass der Algorithmus wahrscheinlichkeitsbasiert analysiert werden konnte. Die Laufzeit des Rho-Algorithmus wird vor allem von der Anzahl an Iterationen bestimmt, bis ein Faktor gefunden wird. Diese ist von der Struktur des funktionalen Graphen von $f$ und damit von $k$ abhängig, im Allgemeinen hat der Graph bei größerem $k$ eine bessere Struktur. Die Dauer einer Iteration steigt aber um $\log_2 2k$ im Verhältnis zu $k = 1$ wegen der Berechnung von $x^{2k}$.
 
 \vspace{0.5cm}
-\noindent \textbf{Abhängige und unabhängige Maschinen.} Eine Schwierigkeit bei der Analyse war, dass zwei Maschinen mit gleichem $k$ stochastisch abhängig sind. Der Fall stochastisch unabhängiger Maschinen, in dem nur paarweise verschiedene Werte von $k$ möglich sind, wurde daher vom Fall abhängiger Maschinen unterschieden. Im Fall unabhängiger Maschinen wurde folgende Formel als asymptotische Näherung für die Laufzeit gefunden:
+\noindent \textbf{Eine Formel für die Laufzeit.} Der Wert von $c$ in $f$ wird für jede Maschine zufällig gewählt, um sicherzustellen, dass die Maschinen unabhängig von-einander sind. Denn verwenden zwei Maschinen den gleichen Wert von $k$ und $c$, bewegen sie sich im gleichen funktionalen Graphen. Die dadurch entstehen-de Abhängigkeit sorgt für eine schlechtere Laufzeit und erschwert die Analyse. Wenn $c$ zufällig und unabhängig für jede Maschine gewählt wird, kann jedoch angenommen werden, dass die Maschinen alle unabhängig voneinander sind. Unter dieser Annahme konnte folgende Formel für die Laufzeit der Rho-Methode bestimmt werden.
 
 \begin{figure}[H]
-    \hspace{2.4cm} \includesvg[height=70pt]{formula-indep}
+    \centering
+    \includesvg[height=70pt]{running-time-formula}
 \end{figure}
-
 
 \noindent $M$ bezeichnet hier die Anzahl an Maschinen und $k_i$ den Wert von $k$ für die $i$-te Maschine.
 
-Der Fall abhängiger Maschinen konnte für $M = 2$ gelöst werden. Hier wurde folgende Formel bestimmt:
+\vspace{0.5cm}
+\noindent \textbf{Bestimmung optimaler Werte von $\boldsymbol{k}$.} Im Fall $M = 1$ wurde obige Formel für $k = 1$ ausgewertet und eine untere Schranke für $k > 1$ bestimmt. So konnte gezeigt werden, dass bei $k = 1$ der minimale Wert angenommen wird. Im Fall $M = 2$ wurde ähnlich vorgegangen, um eine untere Schranke zu erhalten, wenn $k_1$ und $k_2$ prim oder gleich sind.
 
-\begin{figure}[H]
-    \hspace{2.8cm}
-    \includesvg[height=60pt]{formula-dep2}
-\end{figure}
+\vspace{2.3cm}
+\subsection{Laufzeitmessungen}
 
-\noindent Wenn bei $M = 2$ die Maschinen abhängig voneinander sind, sind ihre $k$-Werte gleich. Da der funktionale Graph von $f$ durch $k$ bestimmt wird, heißt das, dass sich die beiden Maschinen im gleichen funktionalen Graphen bewegen. Man kann sich den Algorithmus in diesem Fall so vorstellen, dass man zwei zufällige Startknoten in einem zufälligen funktionalen Graphen wählt und den Zykelfindungsalgorithmus von beiden Knoten gleichzeitig ausführt. Für die Bestimmung von (2) muss also der Durchschnitt des Minimums der Anzahl nötiger Iterationen für alle möglichen Paare an Startknoten betrachtet werden. Das wurde durch Konstruktion aller möglichen funktionalen Graphen und Paare an Anfangswerten durch erzeugende Funktionen realisiert.
-
-\newpage
-
-\subsection{Laufzeitmessungen} Es wurden Laufzeitmessungen für eine und zwei Ma-schinen durchgeführt, um zu zeigen, dass die hergelei-teten Formeln das Laufzeitverhalten des Algorithmus gut beschreiben. Dafür wurden für verschiedene Wer-te von $k$ jeweils $2^{20}$ zufällige 62-Bit Zahlen mit einem 21-Bit und einem 41-Bit Faktor gewählt und die Zeit gemessen, bis von mindestens einer Maschine ein Faktor gefunden wurde. Die Ergebnisse sind in den Abbildungen 1 und 2 dargestellt.
+Für $M = 1$ und $M = 2$ wurden die berechneten Werte für die Laufzeit mit Laufzeitmessungen verglichen. Es wurden für verschiedene Werte von $k$ jeweils $2^{14}$ zufällige 192-Bit Zahlen gewählt, bei denen jeder Primfaktor größer als $2^{22}$ ist und mindestens ein Primfaktor kleiner $2^{23}$. Die Größe der Primfaktoren nach unten zu beschränken ist sinnvoll, da die Laufzeit der Rho-Methode sonst sehr kurz wäre und die Messergebnisse durch Dinge wie den Aufwand der Laufzeitmessung selbst verfälscht werden würden. Es ist auch sinnvoll, dass die Testzahlen einen kleinen Primfaktor enthalten, da die Laufzeit sonst sehr groß wäre. Die Ergebnisse sind in den Abbildungen 1 und 2 dargestellt.
 
 \vspace{2.3cm}
 \subsection{Ergebnisse}
 
-Im Fall einer Maschine konnte mit Formel (1) unter vereinfachenden Annahmen gezeigt werden, dass $k = 1$ optimal ist. Im Fall zweier Maschinen wurde gezeigt, dass für beide Maschinen $k = 1$ zu wählen besser ist, als wenn $k$ bei beiden Maschinen gleich ist oder jeweils eine Primzahl ist. Es wird vermutet und von Experimenten bestätigt, dass $k = 1$ für beide Maschinen optimal ist. In weiteren Untersuchungen könnte der Fall $M = 2$ vollständig geklärt werden, oder $M \ge 3$ behandelt werden.
+Im Fall einer Maschine konnte unter vereinfachenden Annahmen gezeigt werden, dass $k = 1$ optimal ist. Im Fall zweier Maschinen wurde gezeigt, dass für beide Maschinen $k = 1$ zu wählen besser ist, als wenn $k$ bei beiden Maschinen gleich ist oder jeweils eine Primzahl ist. Es wird vermutet und von Experimenten bestätigt, dass $k = 1$ für beide Maschinen optimal ist. In weiteren Untersuchungen könnte der Fall $M = 2$ vollständig geklärt werden oder $M \ge 3$ behandelt werden.
 
 \end{document}
