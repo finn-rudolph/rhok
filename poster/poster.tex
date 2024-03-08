@@ -31,16 +31,14 @@ Das Ziel war es, durch eine geeignete mathematische Beschreibung des Rho-Algorit
 \noindent $M$ bezeichnet hier die Anzahl an Maschinen und $k_i$ den Wert von $k$ für die $i$-te Maschine.
 
 \vspace{0.5cm}
-\noindent \textbf{Bestimmung optimaler Werte von $\boldsymbol{k}$.} Im Fall $M = 1$ wurde obige Formel für $k = 1$ ausgewertet und eine untere Schranke für $k > 1$ bestimmt. So konnte gezeigt werden, dass bei $k = 1$ der minimale Wert angenommen wird. Im Fall $M = 2$ wurde ähnlich vorgegangen, um eine untere Schranke zu erhalten, wenn $k_1$ und $k_2$ prim oder gleich sind.
+\noindent \textbf{Bestimmung optimaler Werte von $\boldsymbol{k}$.} Im Fall $M = 1$ wurde obige Formel für $k = 1$ ausgewertet und eine untere Schranke für $k > 1$ bestimmt. So konnte gezeigt werden, dass bei $k = 1$ der minimale Wert angenommen wird. Im Fall $M = 2$ wurde ähnlich vorgegangen, jedoch ist es hier nicht gelungen, eine untere Schranke für beliebige $k_1, k_2$ mit $k_1 > 1$ oder $k_2 > 1$ zu bestimmen. In den Fällen, wenn $k_1 = k_2 > 1$ oder wenn $k_1$ und $k_2$ prim sind, konnte aber eine geeignete untere Schranke für die Laufzeit gefunden werden.
 
-\vspace{2.3cm}
 \subsection{Laufzeitmessungen}
 
-Für $M = 1$ und $M = 2$ wurden die berechneten Werte für die Laufzeit mit Laufzeitmessungen verglichen. Es wurden für verschiedene Werte von $k$ jeweils $2^{14}$ zufällige 192-Bit Zahlen gewählt, bei denen jeder Primfaktor größer als $2^{22}$ ist und mindestens ein Primfaktor kleiner $2^{23}$. Die Größe der Primfaktoren nach unten zu beschränken ist sinnvoll, da die Laufzeit der Rho-Methode sonst sehr kurz wäre und die Messergebnisse durch Dinge wie den Aufwand der Laufzeitmessung selbst verfälscht werden würden. Es ist auch sinnvoll, dass die Testzahlen einen kleinen Primfaktor enthalten, da die Laufzeit sonst sehr groß wäre. Die Ergebnisse sind in den Abbildungen 1 und 2 dargestellt.
+Für $M = 1$ und $M = 2$ wurden die berechneten Werte für die Laufzeit mit Laufzeitmessungen verglichen. Für verschiedene Werte von $k$ wurden jeweils $2^{14}$ zufällige 192-Bit Zahlen gewählt, bei denen jeder Primfaktor $> 2^{22}$ und mindestens ein Primfaktor $< 2^{23}$ ist. Die Größe der Primfaktoren nach unten zu beschränken ist sinnvoll, da die Laufzeit der Rho-Methode sonst sehr kurz wäre und die Messergebnisse durch Dinge wie den Aufwand der Laufzeitmessung selbst verfälscht werden würden. Es ist auch sinnvoll, dass die Testzahlen einen kleinen Primfaktor enthalten, damit die Laufzeit nicht zu groß ist. Die Ergebnisse sind in den Abbildungen 1 und 2 dargestellt.
 
-\vspace{2.3cm}
 \subsection{Ergebnisse}
 
-Im Fall einer Maschine konnte unter vereinfachenden Annahmen gezeigt werden, dass $k = 1$ optimal ist. Im Fall zweier Maschinen wurde gezeigt, dass für beide Maschinen $k = 1$ zu wählen besser ist, als wenn $k$ bei beiden Maschinen gleich ist oder jeweils eine Primzahl ist. Es wird vermutet und von Experimenten bestätigt, dass $k = 1$ für beide Maschinen optimal ist. In weiteren Untersuchungen könnte der Fall $M = 2$ vollständig geklärt werden oder $M \ge 3$ behandelt werden.
+Im Fall einer Maschine konnte unter vereinfachenden Annahmen gezeigt werden, dass $k = 1$ optimal ist. Im Fall zweier Maschinen wurde gezeigt, dass für beide Maschinen $k = 1$ zu wählen besser ist, als zwei andere, gleiche Werte oder zwei Primzahlen. Es wird vermutet, dass $k = 1$ für beide Maschinen optimal ist. In weiteren Untersuchungen könnte der Fall $M = 2$ vollständig geklärt werden oder $M \ge 3$ behandelt werden.
 
 \end{document}
