@@ -5,7 +5,7 @@ use rug::{integer::IsPrime, rand::RandState, Integer};
 
 use crate::pollard_rho;
 
-const SAMPLES: usize = 1 << 14;
+const SAMPLES: usize = 1 << 10;
 const MIN_BITS: u32 = 22;
 const TOTAL_BITS: u32 = 192;
 
@@ -57,7 +57,9 @@ fn gen_test_numbers(samples: usize) -> Vec<Integer> {
     test_numbers
 }
 
-pub fn measure(k: &Vec<u64>) -> f64 {
+// Returns the average minimum time over all elements of k (the average is
+// taken over TEST_NUMBERS).
+pub fn measure_min_time(k: &Vec<u64>) -> f64 {
     let sum: Duration = TEST_NUMBERS.iter().fold(Duration::ZERO, |sum, n| {
         let mut min_time = Duration::from_secs(42);
         let mut rng = RandState::new();

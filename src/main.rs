@@ -23,7 +23,7 @@ fn iterate_k_values(
 ) {
     if j == k.len() {
         val.push(match source {
-            Source::Measurements => measurements::measure(k),
+            Source::Measurements => measurements::measure_min_time(k),
             Source::Formula => formula::expected_time(k),
         });
         eprintln!("{:?}", k);
