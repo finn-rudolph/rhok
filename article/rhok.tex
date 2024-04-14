@@ -9,7 +9,7 @@
 \usepackage[backend=biber, style=apa]{biblatex}
 \usepackage{caption}
 \usepackage{csquotes}
-\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.4cm]{geometry}
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2cm]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{inconsolata}
 \usepackage{mathtools}
@@ -94,12 +94,18 @@ In dieser Arbeit wird die Frage behandelt, wie der Exponent der Iterationsfunkti
 
 \section{Motivation und Hintergrund}
 
-Pollards Rho-Methode bleibt trotz der Existenz asymptotisch schnellerer Algorithmen einer der meist verwendeten Algorithmen zur Faktorisierung kleiner Zahlen. Gleichzeitig werden Leistungssteigerungen bei modernen Computern häufig durch größere Nebenläufigkeit (z. B. mehr Prozessorkerne) erzielt. Um die Rho-Methode schnellstmöglich zu implementieren, ist es also nötig zu untersuchen, wie sie am besten parallel ausgeführt werden kann.
+Pollards Rho-Methode bleibt trotz der Existenz asymptotisch schnellerer Algorithmen einer der meist verwendeten Algorithmen zur Faktorisierung kleiner Zahlen. Gleichzeitig werden Leistungssteigerungen bei modernen Computern häufig durch größere Nebenläufigkeit (z. B. mehr Prozessorkerne) erzielt. Um die Rho-Methode schnellstmöglich zu implementieren, ist es also nötig zu untersuchen, wie sie am besten parallel ausgeführt werden kann. Die Wahl von $k$ geschieht für jede Maschine separat und hat unter Umständen großen Einfluss auf die Laufzeit, wie später gezeigt wird. Das motiviert folgende Frage: \emph{Wie wählt man den Parameter k für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?}
+
+Den Exponenten der Iterationsfunktion zu variieren, wurde bereits in der ersten Veröffentlichung der Rho-Methode (\cite{pol75}) in Betracht gezogen. In \cite{bp81} gelang durch eine Veränderung von $k$ (allerdings nur auf einer Maschine) die erstmalige Faktorisierung der achten Fermatzahl $F_8 = 2^{2^8} + 1$. Wenn Kongruenzen der Primfaktoren bekannt sind, wie im Fall von Fermatzahlen, kann $k$ gezielt gewählt werden, um die Laufzeit zu verringern. Hier wird allerdings der Fall allgemeiner Zahlen betrachtet, das heißt, keine Kongruenzen der Primfaktoren sind bekannt.
+
+Bei einer direkten Parallelisierung der Rho-Methode auf $M$ Maschinen ergibt sich eine Verringerung der Laufzeit um einen Faktor $\sqrt M$. In \cite{cr99} wurde ein Verfahren vorgestellt, mit dem sich eine theoretische Verringerung um einen Faktor $(\log^2 M)/M$ erzielen lässt. Dort muss der Wert von $k$ bei allen Maschinen gleich sein.
+
+Der Name \glqq Rho-Methode\grqq  \space wird nicht nur für den Faktorisierungsalgorithmus verwendet, sondern auch für ähnliche Verfahren zur Bestimmung diskreter Logarithmen. Für diese ist ein effiziente Methode zur Parallelisierung bekannt (\cite{vow99}). Sie liefert bei $M$ Maschinen eine Verringerung der Laufzeit um einen Faktor $M$, funktioniert allerdings nicht für das Faktorisierungsproblem. Für Faktorisierung existiert kein Verfahren, dass bei $M$ Maschinen eine Laufzeitreduktion um einen Faktor $M$ erzielt.
 
 \section{Erläuterung der Rho-Methode}
 \label{sec:pollards-rho-method}
 
-Die Rho-Methode wurde erstmals von \cite{pol75} beschrieben. Sei $n$ die zu faktorisierende Zahl. Es wird angenommen, dass $n$ ungerade und keine Potenz einer natürlichen Zahl ist, da sonst einfach ein Faktor gefunden werden kann.
+Sei $n$ die zu faktorisierende Zahl. Es wird angenommen, dass $n$ ungerade und keine Potenz einer natürlichen Zahl ist, da sonst einfach ein Faktor gefunden werden kann.
 
 \subsection{Die Iterationsfunktion und ihr funktionaler Graph.}
 
