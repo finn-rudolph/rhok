@@ -24,8 +24,6 @@
 
 \addbibresource{rhok.bib}
 
-\renewcommand{\thealgocf}{}
-
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\N}{\mathbb{N}}
@@ -100,7 +98,7 @@ Den Exponenten der Iterationsfunktion zu variieren, wurde bereits in der ersten 
 
 Bei einer direkten Parallelisierung der Rho-Methode auf $M$ Maschinen ergibt sich eine Verringerung der Laufzeit um einen Faktor $\sqrt M$. In \cite{cr99} wurde ein Verfahren vorgestellt, mit dem sich eine theoretische Verringerung um einen Faktor $(\log^2 M)/M$ erzielen lässt. Dafür muss der Wert von $k$ bei allen Maschinen gleich sein, weshalb das Verfahren nicht weiter in Betracht gezogen wird. Eine Methode, um bei $M$ Maschinen eine Laufzeitreduktion um einen Faktor $M$ zu erhalten, ist nicht bekannt (im Gegensatz zu dem verwandten Problem der Bestimmung diskreter Logarithmen, siehe \cite{vow99}).
 
-In dieser Arbeit soll es also um folgende Frage gehen: \emph{Gegeben $M$ Maschinen und eine Zahl, über deren Primfaktoren nichts besonderes bekannt ist. Wie wählt man den Parameter k für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?}
+In dieser Arbeit soll es also um folgende Frage gehen: \emph{Gegeben $M$ Maschinen und eine Zahl, über deren Primfaktoren nichts besonderes bekannt ist. Wie wählt man den Parameter k für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Wo genau die Problematik und Komplexität dieser Frage liegen, kann erst deutlich werden, nachdem die Rho-Methode und ihre parallelisierte Variante vorgestellt wurden.
 
 \section{Erläuterung der Rho-Methode}
 \label{sec:pollards-rho-method}
@@ -185,7 +183,6 @@ Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \i
 
     \caption{Pollards Rho-Methode}
 \end{algorithm}
-
 \subsection{Analyse der Rho-Methode.}
 
 Die Analyse der Rho-Methode erweist sich als schwierig, es ist keine rigorose Laufzeitanalyse bekannt. Unter heuristischen Annahmen lässt sich die Laufzeit allerdings gut abschätzen. Als erste Vereinfachung wird statt der mittleren Anzahl an Iterationen von Floyds Algorithmus die mittlere Rho-Länge analysiert. Eine weitere Annahme dreht sich um die Verteilung der Rho-Längen in $\gamma(f)$, für deren Formulierung der Begriff einer asymptotischen Näherung benötigt wird.
