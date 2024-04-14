@@ -20,7 +20,7 @@
 
 \title{Parametrisierung von Pollards Rho-Methode}
 \author{Finn Rudolph}
-\date{04.03.2024}
+\date{22.04.2024}
 
 \addbibresource{rhok.bib}
 
@@ -84,25 +84,22 @@
 
     \vspace{0.5em}
 
-    \begin{spacing}{1.2}
-        \tableofcontents
-    \end{spacing}
+    \tableofcontents
 
     \thispagestyle{empty}
-
 \end{titlepage}
 
 \newpage
 
 \section{Zusammenfassung}
 
-In dieser Arbeit wird die Frage behandelt, wie der Parameter $k$ in Pollards Rho-Methode optimal gewählt werden kann. Ein größerer Wert von $k$ erhöht grundsätzlich die Laufzeit, kann aber auch zu einer deutlichen Verringerung führen, wenn die Primfaktoren der zu faktorisierenden Zahl günstige Eigenschaften haben. Im Allgemeinen ist über die Primfaktoren allerdings nichts bekannt, denn sie sollen durch den Algorithmus bestimmt werden. Daher stellt sich die Frage, welcher Wert von $k$ im Mittel am besten ist. Es ergibt sich insbesondere dann ein interessantes Problem, wenn der Algorithmus auf mehreren Maschinen parallelisiert wird, weil $k$ dann für jede Maschine gewählt werden muss. Unter weithin anerkannten Annahmen über den Rho-Algorithmus konnten grundlegende Methoden zur Beantwortung dieser Frage entwickelt werden. Mit diesen war es möglich zu zeigen, dass $k = 1$ für eine Maschine optimal ist. Im Fall zweier Maschinen wird gezeigt, dass $k_1 = k_2 = 1$ besser ist als wenn $k_1$ und $k_2$ Primzahlen sind oder wenn $k_1 = k_2 > 1$ gilt. $k_i$ bezeichnet den Wert von $k$ für die $i$-te Maschine. Anschließend werden die theoretischen Ergebnisse mit Laufzeitmessungen verglichen.
+In dieser Arbeit wird die Frage behandelt, wie der Exponent der Iterationsfunktion $f : x \mapsto x^{2k} + 1$ in Pollards Rho-Methode optimal gewählt werden kann. Ein größerer Wert von $k$ erhöht grundsätzlich die Laufzeit, kann aber auch zu einer deutlichen Verringerung führen, wenn die Primfaktoren der zu faktorisierenden Zahl günstige Eigenschaften haben. Im Allgemeinen ist über die Primfaktoren allerdings nichts bekannt, denn sie sollen durch den Algorithmus bestimmt werden. Daher stellt sich die Frage, welcher Wert von $k$ im Mittel am besten ist. Es ergibt sich insbesondere dann ein interessantes Problem, wenn der Algorithmus auf mehreren Maschinen parallelisiert wird, weil $k$ dann für jede Maschine gewählt werden muss. Unter weithin anerkannten Annahmen über den Rho-Algorithmus konnten grundlegende Methoden zur Beantwortung dieser Frage entwickelt werden. Mit diesen war es möglich zu zeigen, dass $k = 1$ für eine Maschine optimal ist. Im Fall zweier Maschinen wird gezeigt, dass $k_1 = k_2 = 1$ besser ist als wenn $k_1$ und $k_2$ Primzahlen sind oder wenn $k_1 = k_2 > 1$ gilt. $k_i$ bezeichnet den Wert von $k$ für die $i$-te Maschine. Anschließend werden die theoretischen Ergebnisse mit Laufzeitmessungen verglichen.
 
-\section{Motivation und Fragestellung}
+\section{Motivation und Hintergrund}
 
-Pollards Rho-Methode bleibt trotz der Existenz asymptotisch schnellerer Algorithmen einer der meist verwendeten Algorithmen zur Faktorisierung kleiner Zahlen. Gleichzeitig werden Leistungssteigerungen bei modernen Computern häufig durch größere Nebenläufigkeit (z. B. mehr Prozessorkerne) erzielt. Um die Rho-Methode schnellstmöglich zu implementieren, ist es also nötig zu untersuchen, wie sie am besten parallel ausgeführt werden kann. Bevor die Fragestellung präzise formuliert werden kann, soll Pollards Rho-Methode vorgestellt werden.
+Pollards Rho-Methode bleibt trotz der Existenz asymptotisch schnellerer Algorithmen einer der meist verwendeten Algorithmen zur Faktorisierung kleiner Zahlen. Gleichzeitig werden Leistungssteigerungen bei modernen Computern häufig durch größere Nebenläufigkeit (z. B. mehr Prozessorkerne) erzielt. Um die Rho-Methode schnellstmöglich zu implementieren, ist es also nötig zu untersuchen, wie sie am besten parallel ausgeführt werden kann.
 
-\subsection{Pollards Rho-Methode}
+\section{Erläuterung der Rho-Methode}
 \label{sec:pollards-rho-method}
 
 Die Rho-Methode wurde erstmals von \cite{pol75} beschrieben. Sei $n$ die zu faktorisierende Zahl. Es wird angenommen, dass $n$ ungerade und keine Potenz einer natürlichen Zahl ist, da sonst einfach ein Faktor gefunden werden kann. Sei $h : \Z/n\Z \to \Z/n\Z$ mit $h : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen zufälligen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_i)_{i \in \N}$, definiert durch $x_i = h(x_{i - 1})$. Da $(x_i)_{i \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee der Rho-Methode ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Nimmt man an, dass die Periodenlänge von $(x_i)_{i \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Die Annahme ist plausibel, weil für den kleinsten Primfaktor $p \le \sqrt n$ gilt, es also deutlich weniger mögliche Werte für $\pi(x_i)$ als $x_i$ gibt. Im Folgenden ist $p$ immer der kleinste Primfaktor von $n$. Das Ereignis, dass eine Folge einen Wert zweimal annimmt, wird eine \emph{Kollision} in dieser Folge genannt. Es wird außerdem angenommen, dass die anderen Primfaktoren von $n$ so viel größer als $p$ sind, dass die Wahrscheinlichkeit einer Kollision modulo eines anderen Primfaktors vernachlässigbar gering ist. Zum Finden solcher $x_i, x_j$ ist es hilfreich, den funktionalen Graphen von $h$ zu betrachten.
@@ -199,7 +196,7 @@ Die Analyse der Rho-Methode erweist sich als schwierig, es ist keine rigorose La
 
 Für $k = 1$ ist unter RMA die erwartete Anzahl an Iterationen der while-Schleife asymptotisch zu $\sqrt{\pi p / 2}$ (\cite{knu98}, S. 8). Da die Berechnung des größten gemeinsamen Teilers $O(\ln n)$ Schritte benötigt, ist die erwartete Laufzeit des Algorithmus $O(\sqrt p \ln n)$. Durch eine einfache Modifikation kann die Dauer des $\gcd$ amortisiert werden, sodass sich die Laufzeit auf $O(\sqrt p)$ verringert (\cite{bre80}). Damit ist pro Iteration also nur noch die Zeit zur Berechnung der $2k$-ten Potenzen von $x$ und $y$ relevant, was durchschnittlich in $c \lg 2k$ Schritten möglich ist, wobei $c$ eine hier unwichtige Konstante ist. Mit $\lg x$ wird der Logarithmus zur Basis 2 bezeichnet.
 
-\subsection{Parallelisierung der Rho-Methode}
+\section{Parallelisierung der Rho-Methode}
 
 Sei $M$ die Anzahl verfügbarer Maschinen. Eine \emph{Maschine} meint hier nicht zwingend einen Computer, sondern eine Ressource, auf der ein sequentielles Programm ausgeführt werden kann, was beispielsweise auch ein Prozessorthread sein kann. Die Rho-Methode lässt sich parallelisieren, indem $M$ Anfangswerte ($x_0$ in Abschnitt \ref{sec:pollards-rho-method}) zufällig und unabhängig voneinander gewählt werden und der Algorithmus auf jeder der $M$ Maschinen ausgeführt wird, bis eine der Maschinen einen Faktor findet. Nun ergibt sich folgende Frage, die in dieser Arbeit behandelt werden soll: \emph{Wie wählt man den Parameter $k$ für jede Maschine optimal, um eine möglichst geringe Laufzeit zu erzielen?} Das ist nicht sofort klar, da durch ein größeres $k$ möglicherweise $\gcd(p - 1, 2k)$ groß ist, sodass die Zahl an Iterationen um einen Faktor $\sqrt{\gcd(p - 1, 2k) -1}$ sinkt. Allerdings steigt die Dauer einer Iteration um einen Faktor $\lg 2k$. Da es sich bei den Veränderungen in der Laufzeit durch Veränderung von $k$ um konstante Faktoren handelt, wird für den Vergleich der Laufzeit nicht die $O$-Notation verwendet, sondern eine asymptotische Näherung für die erwartete Zahl an Zeiteinheiten bestimmt, wenn $p \to \infty$. Wir definieren eine \emph{Zeiteinheit} als die Dauer einer Iteration für $k = 1$, bei einer Maschine mit Parameter $k$ dauert eine Iteration also $\lg 2k$ Zeiteinheiten. Im Gegensatz zur $O$-Notation kann zwischen zwei Funktionen, die asymptotisch zueinander sind, für große $n$ kein konstanter Faktor liegen, sodass sich Veränderungen um konstante Faktoren sinnvoll vergleichen lassen.
 
@@ -773,14 +770,18 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
 
 Um zu demonstrieren, dass Satz \ref{theorem:lki-asymp} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreibt, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Als Testzahlen wurden 192-Bit-Zahlen verwendet, bei denen jeder Primfaktor größer als $2^{22}$ ist und ein Primfaktor kleiner als $2^{23}$ ist. Die Größe der Primfaktoren nach unten zu beschränken ist sinnvoll, da die Laufzeit der Rho-Methode sonst sehr kurz wäre und die Messergebnisse durch Dinge wie den Aufwand der Laufzeitmessung selbst verfälscht werden würden. Es ist auch sinnvoll, dass die Testzahlen einen kleinen Primfaktor enthalten, da die Laufzeit sonst sehr groß wäre. Es wurden jeweils $2^{14}$ Testzahlen verwendet. Die mittlere Laufzeit und Werte von (\ref{eq:lki-asymp}) zum Vergleich sind in den Abbildungen \ref{fig:measurements-m1} und \ref{fig:measurements-m2} dargestellt. Sowohl die Werte der Formel als auch die Messdaten wurden skaliert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 steht. Der Code für die Laufzeitmessungen ist unter \href{https://github.com/finn-rudolph/rhok}{\texttt{https://github.com/finn-rudolph/rhok}} verfügbar.
 
-\paragraph*{Eine Maschine.} Man sieht, dass der Verlauf der Laufzeit von Formel (\ref{eq:lki-asymp}) widergespiegelt wird. Beispielsweise werden hohe Werte bei Primzahlen und niedrige Werte bei Zahlen mit vielen verschiedenen Primfaktoren (z.B. 24) angenommen.
+\paragraph{Eine Maschine.}
+
+Man sieht, dass der Verlauf der Laufzeit von Formel (\ref{eq:lki-asymp}) widergespiegelt wird. Beispielsweise werden hohe Werte bei Primzahlen und niedrige Werte bei Zahlen mit vielen verschiedenen Primfaktoren (z.B. 24) angenommen.
 
 Es fällt allerdings auf, dass die Laufzeit bei allen Werten von $k$ im Verhältnis zur Laufzeit bei $k = 1$ geringer als erwartet ist. Eine Erklärung dafür ist, dass der Aufwand der Berechnung von $\gcd(n, x_i - x_j)$ in der Rho-Methode vernachlässigt wurde. Obwohl, wie in Abschnitt \ref{sec:pollards-rho-method} beschreiben, die Optimierung aus \cite{bre80} verwendet wurde, um diesen Aufwand zu amortisieren, macht er immer noch einen relevanten Teil aus. Dadurch fällt der größere Aufwand der Berechnung von $x^{2k}$ für größere $k$ relativ gesehen weniger ins Gewicht.
 
 An den Messergebnissen ist noch eine weitere Vereinfachung in der Analyse erkennbar. Wenn man die Laufzeit und Werte von (\ref{eq:lki-asymp}) bei $k = 8, 16, 32$ mit nahe gelegenen Werten vergleicht, beobachtet man, dass die Laufzeit im Verhältnis kleiner ist. Beispielsweise ist die Laufzeit bei $k = 16$ geringer als bei $k = 15$, der Wert von (\ref{eq:lki-asymp}) jedoch höher, und die Laufzeit bei $k = 32$ ist nahezu gleich der bei $k = 30$, wohingegen der Wert von (\ref{eq:lki-asymp}) deutlich größer ist. Das könnte daran liegen, dass der Aufwand zur Berechnung von $x^{2k}$ in der Praxis von der Anzahl an Einsen in der Binärdarstellung von $k$ abhängt. In der Implementierung wurde Square-and-Multiply zur Berechnung von Potenzen verwendet.
 
 
-\paragraph*{Zwei Maschinen.} Auch hier wird das grundsätzliche Verhalten der Laufzeit durch (\ref{eq:lki-asymp}) reflektiert. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist.
+\paragraph{Zwei Maschinen.}
+
+Auch hier wird das grundsätzliche Verhalten der Laufzeit durch (\ref{eq:lki-asymp}) reflektiert. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist.
 
 \section{Fazit}
 
