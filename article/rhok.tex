@@ -1,7 +1,6 @@
 \documentclass[a4paper, 11pt, ngerman]{article}
 
 \usepackage[utf8]{inputenc}
-
 \usepackage[algoruled, nosemicolon]{algorithm2e}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -17,6 +16,7 @@
 \usepackage{pgfplots}
 \usepackage{sectsty}
 \usepackage[onehalfspacing]{setspace}
+\usepackage{titlesec}
 
 \title{Parametrisierung von Pollards Rho-Methode}
 \author{Finn Rudolph}
@@ -44,19 +44,16 @@
 \theoremstyle{remark}
 \newtheorem*{remark*}{Anmerkung}
 
-\newcommand*\uparagraph{
-        \par
-        \nopagebreak
-        \vskip3.25ex plus1ex minus.2ex
-        \noindent
-}
-
 \sectionfont{\large}
 \subsectionfont{\normalsize}
 
 \allowdisplaybreaks
 
 \begin{document}
+
+\titleformat{\subsection}[runin]{\bfseries}{\thesubsection}{0.5em}{}
+
+\setcounter{tocdepth}{1}
 
 \begin{titlepage}
 
@@ -102,7 +99,11 @@ Pollards Rho-Methode bleibt trotz der Existenz asymptotisch schnellerer Algorith
 \section{Erläuterung der Rho-Methode}
 \label{sec:pollards-rho-method}
 
-Die Rho-Methode wurde erstmals von \cite{pol75} beschrieben. Sei $n$ die zu faktorisierende Zahl. Es wird angenommen, dass $n$ ungerade und keine Potenz einer natürlichen Zahl ist, da sonst einfach ein Faktor gefunden werden kann. Sei $h : \Z/n\Z \to \Z/n\Z$ mit $h : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen zufälligen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_i)_{i \in \N}$, definiert durch $x_i = h(x_{i - 1})$. Da $(x_i)_{i \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee der Rho-Methode ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Nimmt man an, dass die Periodenlänge von $(x_i)_{i \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Die Annahme ist plausibel, weil für den kleinsten Primfaktor $p \le \sqrt n$ gilt, es also deutlich weniger mögliche Werte für $\pi(x_i)$ als $x_i$ gibt. Im Folgenden ist $p$ immer der kleinste Primfaktor von $n$. Das Ereignis, dass eine Folge einen Wert zweimal annimmt, wird eine \emph{Kollision} in dieser Folge genannt. Es wird außerdem angenommen, dass die anderen Primfaktoren von $n$ so viel größer als $p$ sind, dass die Wahrscheinlichkeit einer Kollision modulo eines anderen Primfaktors vernachlässigbar gering ist. Zum Finden solcher $x_i, x_j$ ist es hilfreich, den funktionalen Graphen von $h$ zu betrachten.
+Die Rho-Methode wurde erstmals von \cite{pol75} beschrieben. Sei $n$ die zu faktorisierende Zahl. Es wird angenommen, dass $n$ ungerade und keine Potenz einer natürlichen Zahl ist, da sonst einfach ein Faktor gefunden werden kann.
+
+\subsection{Die Iterationsfunktion und ihr funktionaler Graph.}
+
+Sei $h : \Z/n\Z \to \Z/n\Z$ mit $h : x \mapsto x^{2k} + 1$ für einen Parameter $1 \le k \in \N$. Man wähle einen zufälligen Anfangswert $x_0 \in \Z/n\Z$ und betrachte die Folge $(x_i)_{i \in \N}$, definiert durch $x_i = h(x_{i - 1})$. Da $(x_i)_{i \in \N}$ über der endlichen Menge $\Z/n\Z$ definiert ist, ist die Folge ab einem bestimmten Punkt periodisch. Sei $p$ ein Primfaktor von $n$ und $\pi : \Z/n\Z \to \Z/p\Z$ die natürliche Projektion. Die Idee der Rho-Methode ist, zwei Folgenglieder $x_i, x_j \in \Z/n\Z$ zu finden, sodass $x_i \ne x_j$ aber $\pi(x_i) = \pi(x_j)$. Dann ist nämlich $\gcd(n, x_i - x_j)$ ein echter Faktor von $n$. Nimmt man an, dass die Periodenlänge von $(x_i)_{i \in \N}$ in $\Z/n\Z$ deutlich länger als die Periodenlänge in $\Z/p\Z$ ist, reicht es aus, $x_i, x_j$ mit $i \ne j$ zu finden, die kongruent modulo $p$ sind. Die Annahme ist plausibel, weil für den kleinsten Primfaktor $p \le \sqrt n$ gilt, es also deutlich weniger mögliche Werte für $\pi(x_i)$ als $x_i$ gibt. Im Folgenden ist $p$ immer der kleinste Primfaktor von $n$. Das Ereignis, dass eine Folge einen Wert zweimal annimmt, wird eine \emph{Kollision} in dieser Folge genannt. Es wird außerdem angenommen, dass die anderen Primfaktoren von $n$ so viel größer als $p$ sind, dass die Wahrscheinlichkeit einer Kollision modulo eines anderen Primfaktors vernachlässigbar gering ist. Zum Finden oben genannter $x_i, x_j$ ist es hilfreich, den funktionalen Graphen von $h$ zu betrachten.
 
 \begin{definition}[Funktionaler Graph]
     Sei $X$ eine endliche Menge und $f: X \to X$ eine Abbildung. Der funktionale Graph von $f$, geschrieben $\gamma(f)$, ist der gerichtete Graph mit Knotenmenge $X$ und Kantenmenge $E$, wobei die Kante $(x, y) \in X \times X$ genau dann in $E$ liegt, wenn $f(x) = y$.
@@ -159,7 +160,9 @@ Ein Beispiel eines funktionalen Graphen ist in Abbildung \ref{fig:fn-graph-17} z
     \label{fig:fn-graph-17}
 \end{figure}
 
-Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \in \N}$ "`läuft"' also durch $\gamma(f)$, beginnend von $\pi(x_0)$. Unser Ziel, das Finden einer Kollision von $(\pi(x_i))_{i \in \N}$, ist also äquivalent dazu, einen Knoten in $\gamma(f)$ zu finden, der zweimal in dem von $(\pi(x_i))_{i \in \N}$ abgelaufenen Pfad erscheint. Dafür kann Floyds Algorithmus zur Zykluserkennung in $\gamma(f)$ verwendet werden. Floyds Algorithmus macht sich zunutze, dass es ein $1 \le r \in \N$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss (\cite{knu98}, S. 7). Sei $\mu(f, \pi(x_0))$ die Höhe von $\pi(x_0)$ in seinem Baum und $\lambda(f, \pi(x_0))$ die Länge des Zyklus von $\pi(x_0)$. Für das minimale solcher $r$ gilt dann $r \le \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ (\cite{knu98}, S. 7). Wir nennen $\nu(f, \pi(x_0)) = \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ die Rho-Länge von $\pi(x_0)$ in $f$. Es also genügt also, die Folgen $(\pi(x_i))_{i \in \N}$ und $(\pi(x_{2i}))_{n \in \N}$ gleichzeitig Glied für Glied zu berechnen und in jedem Schritt zu überprüfen, ob $\pi(x_i) = \pi(x_{2i})$. Das kann natürlich nicht explizit geschehen, da $p$ unbekannt ist. Stattdessen werden $(x_i)_{i \in \N}$ und $(x_{2i})_{i \in \N}$ Glied für Glied berechnet. Das Überprüfen, ob $\pi(x_i) = \pi(x_{2i})$ geschieht durch Berechnung von $\gcd(n, x_i - x_{2i})$. So erhält man nach maximal $\nu(f, \pi(x_0))$ Schritten die gewünschte Kollision. Die Methode kann wie folgt zusammengefasst werden. Dabei speichert $x$ nach der $i$-ten Iteration das $i$-te Glied der Folge $(x_i)_{i \in \N}$ und $y$ das $i$-te Glied von $(x_{2i})_{i \in \N}$.
+\subsection{Kollisionserkennung im funktionalen Graphen modulo $\boldsymbol{p}$.}
+
+Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \in \N}$ "`läuft"' analog durch $\gamma(f)$, beginnend von $\pi(x_0)$. Unser Ziel, das Finden einer Kollision von $(\pi(x_i))_{i \in \N}$, ist also äquivalent dazu, einen Knoten in $\gamma(f)$ zu finden, der zweimal in dem von $(\pi(x_i))_{i \in \N}$ abgelaufenen Pfad erscheint. Dafür kann Floyds Algorithmus zur Zykluserkennung in $\gamma(f)$ verwendet werden. Floyds Algorithmus macht sich zunutze, dass es ein $1 \le r \in \N$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss (\cite{knu98}, S. 7). Sei $\mu(f, \pi(x_0))$ die Höhe von $\pi(x_0)$ in seinem Baum und $\lambda(f, \pi(x_0))$ die Länge des Zyklus von $\pi(x_0)$. Für das minimale solcher $r$ gilt $r \le \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ (\cite{knu98}, S. 7). Wir nennen $\nu(f, \pi(x_0)) = \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ die Rho-Länge von $\pi(x_0)$ in $f$. Es also genügt also, die Folgen $(\pi(x_i))_{i \in \N}$ und $(\pi(x_{2i}))_{n \in \N}$ gleichzeitig Glied für Glied zu berechnen und in jedem Schritt zu überprüfen, ob $\pi(x_i) = \pi(x_{2i})$. Das kann natürlich nicht explizit geschehen, da $p$ unbekannt ist. Stattdessen werden $(x_i)_{i \in \N}$ und $(x_{2i})_{i \in \N}$ Glied für Glied berechnet. Das Überprüfen, ob $\pi(x_i) = \pi(x_{2i})$ geschieht durch Berechnung von $\gcd(n, x_i - x_{2i})$. So erhält man nach maximal $\nu(f, \pi(x_0))$ Schritten die gewünschte Kollision. Die Methode kann wie folgt zusammengefasst werden. Dabei speichert $x$ nach der $i$-ten Iteration das $i$-te Glied der Folge $(x_i)_{i \in \N}$ und $y$ das $i$-te Glied von $(x_{2i})_{i \in \N}$.
 \begin{algorithm}
     $x \gets $ zufällige natürliche Zahl zwischen $0$ und $n - 1$ \;
     $y \gets x$ \;
@@ -176,6 +179,9 @@ Sei $f$ die Abbildung $h$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \i
 
     \caption{Pollards Rho-Methode}
 \end{algorithm}
+
+\subsection{Analyse der Rho-Methode.}
+
 Die Analyse der Rho-Methode erweist sich als schwierig, es ist keine rigorose Laufzeitanalyse bekannt. Unter heuristischen Annahmen lässt sich die Laufzeit allerdings gut abschätzen. Als erste Vereinfachung wird statt der mittleren Anzahl an Iterationen von Floyds Algorithmus die mittlere Rho-Länge analysiert. Eine weitere Annahme dreht sich um die Verteilung der Rho-Längen in $\gamma(f)$, für deren Formulierung der Begriff einer asymptotischen Näherung benötigt wird.
 
 \begin{definition}[Asymptotische Näherung]
@@ -770,7 +776,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
 
 Um zu demonstrieren, dass Satz \ref{theorem:lki-asymp} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreibt, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Als Testzahlen wurden 192-Bit-Zahlen verwendet, bei denen jeder Primfaktor größer als $2^{22}$ ist und ein Primfaktor kleiner als $2^{23}$ ist. Die Größe der Primfaktoren nach unten zu beschränken ist sinnvoll, da die Laufzeit der Rho-Methode sonst sehr kurz wäre und die Messergebnisse durch Dinge wie den Aufwand der Laufzeitmessung selbst verfälscht werden würden. Es ist auch sinnvoll, dass die Testzahlen einen kleinen Primfaktor enthalten, da die Laufzeit sonst sehr groß wäre. Es wurden jeweils $2^{14}$ Testzahlen verwendet. Die mittlere Laufzeit und Werte von (\ref{eq:lki-asymp}) zum Vergleich sind in den Abbildungen \ref{fig:measurements-m1} und \ref{fig:measurements-m2} dargestellt. Sowohl die Werte der Formel als auch die Messdaten wurden skaliert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 steht. Der Code für die Laufzeitmessungen ist unter \href{https://github.com/finn-rudolph/rhok}{\texttt{https://github.com/finn-rudolph/rhok}} verfügbar.
 
-\paragraph{Eine Maschine.}
+\subsection{Eine Maschine}
 
 Man sieht, dass der Verlauf der Laufzeit von Formel (\ref{eq:lki-asymp}) widergespiegelt wird. Beispielsweise werden hohe Werte bei Primzahlen und niedrige Werte bei Zahlen mit vielen verschiedenen Primfaktoren (z.B. 24) angenommen.
 
@@ -778,8 +784,7 @@ Es fällt allerdings auf, dass die Laufzeit bei allen Werten von $k$ im Verhält
 
 An den Messergebnissen ist noch eine weitere Vereinfachung in der Analyse erkennbar. Wenn man die Laufzeit und Werte von (\ref{eq:lki-asymp}) bei $k = 8, 16, 32$ mit nahe gelegenen Werten vergleicht, beobachtet man, dass die Laufzeit im Verhältnis kleiner ist. Beispielsweise ist die Laufzeit bei $k = 16$ geringer als bei $k = 15$, der Wert von (\ref{eq:lki-asymp}) jedoch höher, und die Laufzeit bei $k = 32$ ist nahezu gleich der bei $k = 30$, wohingegen der Wert von (\ref{eq:lki-asymp}) deutlich größer ist. Das könnte daran liegen, dass der Aufwand zur Berechnung von $x^{2k}$ in der Praxis von der Anzahl an Einsen in der Binärdarstellung von $k$ abhängt. In der Implementierung wurde Square-and-Multiply zur Berechnung von Potenzen verwendet.
 
-
-\paragraph{Zwei Maschinen.}
+\subsection{Zwei Maschinen}
 
 Auch hier wird das grundsätzliche Verhalten der Laufzeit durch (\ref{eq:lki-asymp}) reflektiert. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist.
 
