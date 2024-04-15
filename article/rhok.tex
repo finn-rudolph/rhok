@@ -1,6 +1,6 @@
 \documentclass[a4paper, 11pt, ngerman]{article}
 
-\usepackage[utf8]{inputenc}
+% \usepackage[utf8]{inputenc}
 \usepackage[algoruled, nosemicolon]{algorithm2e}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -73,9 +73,9 @@
 
     \vspace{0.2em}
 
-    \section*{Projektüberblick}
+    \section*{Zusammenfassung}
 
-    Pollards Rho-Methode ist einer der schnellsten Algorithmen zur Faktorisierung kleiner Zahlen. Bei der Implementierung des Algorithmus kann ein Parameter $k$ gewählt werden, der unter Umständen großen Einfluss auf die Laufzeit des Algorithmus hat, sowohl im positiven als auch im negativen Sinn. In dieser Arbeit soll untersucht werden, wie $k$ bestmöglich gewählt wird. Insbesondere ist der Fall interessant, wenn der Algorithmus auf mehreren Maschinen parallel ausgeführt wird, weil dann für jede Maschine $k$ separat gewählt werden kann. Für den Fall einer und zweier Maschinen konnten theoretische Ergebnisse erzielt werden, im Fall zweier Maschinen bleiben aber noch Fragen offen. Diese Ergebnisse decken sich mit durchgeführten Experimenten. Offen bleibt auch die Frage der optimalen Parametrisierung für drei oder mehr Maschinen.
+    Pollards Rho-Methode ist einer der schnellsten Algorithmen, um kleine Primfaktoren einer Zahl zu finden. Die Rho-Methode effizient auf mehreren Maschinen gleichzeitig auszuführen, ist allerdings ein Problem ohne zufriedenstellende Lösung. In dieser Arbeit soll untersucht werden, wie ein Parameter $k$ in der Rho-Methode bestmöglich gewählt werden kann, um eine geringe Laufzeit zu erzielen. $k$ kann für jede Maschine separat gewählt werden und hat unter Umständen großen Einfluss auf die Laufzeit --- sowohl im positiven als auch im negativen Sinn. Um die Frage anzugehen, wurde eine Formel für die Laufzeit in Abhängigkeit von $k$ hergeleitet. Mit dieser war es möglich zu zeigen, dass $k = 1$ im Fall einer Maschine optimal ist, und dass im Fall zweier Maschinen für beide $k = 1$ zu wählen besser ist, als zwei Primzahlen oder zwei gleiche Zahlen größer 1 zu wählen. Diese Ergebnisse und die Korrektheit der Formel wurden von Laufzeitmessungen bestätigt. Mithilfe der Formel kann das Laufzeitverhalten der Rho-Methode besser verstanden werden, bezüglich der optimalen Wahl von $k$ bei mehreren Maschinen bleiben aber noch Fragen offen.
 
     \vspace{0.5em}
 
@@ -85,10 +85,6 @@
 \end{titlepage}
 
 \newpage
-
-\section{Zusammenfassung}
-
-In dieser Arbeit wird die Frage behandelt, wie der Exponent der Iterationsfunktion $f : x \mapsto x^{2k} + 1$ in Pollards Rho-Methode optimal gewählt werden kann. Ein größerer Wert von $k$ erhöht grundsätzlich die Laufzeit, kann aber auch zu einer deutlichen Verringerung führen, wenn die Primfaktoren der zu faktorisierenden Zahl günstige Eigenschaften haben. Im Allgemeinen ist über die Primfaktoren allerdings nichts bekannt, denn sie sollen durch den Algorithmus bestimmt werden. Daher stellt sich die Frage, welcher Wert von $k$ im Mittel am besten ist. Es ergibt sich insbesondere dann ein interessantes Problem, wenn der Algorithmus auf mehreren Maschinen parallelisiert wird, weil $k$ dann für jede Maschine gewählt werden muss. Unter weithin anerkannten Annahmen über den Rho-Algorithmus konnten grundlegende Methoden zur Beantwortung dieser Frage entwickelt werden. Der wichtigste Beitrag ist die Bestimmung einer Formel für die erwartete Laufzeit bei beliebiger Anzahl an Maschinen und beliebigen Werten von $k$. Mit dieser war es möglich zu zeigen, dass $k = 1$ für eine Maschine optimal ist. Im Fall zweier Maschinen wird gezeigt, dass $k_1 = k_2 = 1$ besser ist als wenn $k_1$ und $k_2$ Primzahlen sind oder wenn $k_1 = k_2 > 1$ gilt. $k_i$ bezeichnet den Wert von $k$ für die $i$-te Maschine. Anschließend werden die theoretischen Ergebnisse mit Laufzeitmessungen verglichen.
 
 \section{Motivation und Hintergrund}
 
