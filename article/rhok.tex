@@ -525,6 +525,8 @@ Aus Lemma \ref{lemma:f-asmyp} und $L_{(k_i)}(p) \sim F$ folgt nun eine asymptoti
     \label{theorem:lki-asymp}
 \end{theorem}
 
+Als Beispiel kann man $M = 1$ und $k_1 = 1$ betrachten. In diesem Fall vereinfacht sich (\ref{eq:lki-asymp}) zu $\sqrt{\pi p / 2}$, was genau das Ergebnis in \cite{pol75}, S. 332 ist.
+
 \section{Bestimmung optimaler Exponenten für die Rho-Methode}
 \label{sec:optimal-k}
 
@@ -596,7 +598,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
         \sqrt{\frac{\lg^2(2k_1) \lg^2(2k_2)}{\lg^2(2k_1) + \lg^2(2k_2)}}
         \label{eq:two-mach-lowerb}
     \end{align}
-    Wie bei $M = 1$ wurden die Summen über alle Teiler von $k_1, k_2$ durch den Wert bei $d_1 = d_2 = 1$ nach unten begrenzt. Die Terme $(k_i - 1)/k_i$ sind streng monoton steigend in $k_i$. Ebenso ist das Argument der nachfolgenden Wurzel in (\ref{eq:two-mach-lowerb}) streng monoton steigend in jedem der $k_i$. Um das zu zeigen, sei $x = \lg^2 2k_1, y = \lg^2 2k_2$ und $x' > x$. Dann gilt
+    Wie bei $M = 1$ wurden die Summen über alle Teiler von $k_1, k_2$ durch den Wert bei $d_1 = d_2 = 1$ nach unten begrenzt. Die Terme $(k_i - 1)/k_i$ sind streng monoton steigend in $k_i$. Ebenso ist das Argument der nachfolgenden Wurzel in (\ref{eq:two-mach-lowerb}) streng monoton steigend in jedem der $k_i$. Für die Monotonie in $k_1$ bemerke man zunächst, dass $\lg$ streng monoton steigt und setze $x = \lg^2 2k_1, y = \lg^2 2k_2$. Sei $x' > x$ beliebig. Dann gilt
     \begin{align*}
         \frac {x'y} {x' + y}
         = \frac {x'y} {x' + y} \, \frac {x + y} {xy} \, \frac {xy} {x + y}
