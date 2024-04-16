@@ -85,7 +85,7 @@ fn expected_time_r(k: &Vec<u64>, i: usize, s: f64) -> f64 {
         expected += expected_time_r(
             k,
             j,
-            s + (j as u64 * (2 * d - 1)) as f64 * inv_lg_k_i_squared,
+            s + ((j - i) as u64 * (2 * d - 1)) as f64 * inv_lg_k_i_squared,
         ) * PHI.gcd_probability(k[i], *d);
     }
 
