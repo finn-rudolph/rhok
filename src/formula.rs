@@ -66,33 +66,40 @@ impl Phi {
 
 static PHI: Lazy<Phi> = Lazy::new(|| Phi::new(K_MAX));
 
-fn expected_time_r(k: &Vec<u64>, i: usize, s: f64) -> f64 {
-    if i == k.len() {
-        return 1.0 / s.sqrt();
+fn gcd(m: u64, n: u64) -> u64 {
+    if n == 0 {
+        return m;
     }
+    gcd(n, m % n)
+}
 
-    // Silently assumes that the k-values are increasing. Search the last j
-    // such that k[i] == k[j].
-    let mut j = i;
-    while j < k.len() && k[i] == k[j] {
-        j += 1;
-    }
-
-    let inv_lg_k_i_squared =
-        1.0 / (((k[i] << 1) as f64).log2() * ((k[i] << 1) as f64).log2());
-    let mut expected: f64 = 0.0;
-    for d in PHI.divisors(k[i]) {
-        expected += expected_time_r(
-            k,
-            j,
-            s + ((j - i) as u64 * (2 * d - 1)) as f64 * inv_lg_k_i_squared,
-        ) * PHI.gcd_probability(k[i], *d);
-    }
-
-    expected
+fn lcm(x: &[u64]) -> u64 {
+    x.iter().fold(1, |a, b| (a * (b / gcd(a, *b))))
 }
 
 // k is the array of k-values assigned to the machines.
 pub fn expected_time(k: &Vec<u64>) -> f64 {
-    expected_time_r(k, 0, 0.0)
+    let l = lcm(k);
+    let inv_lg_k_squared: Vec<f64> = k
+        .iter()
+        .map(|k_i| {
+            let inv_lg_k_i = 1.0 / ((k_i << 1) as f64).log2();
+            inv_lg_k_i * inv_lg_k_i
+        })
+        .collect();
+
+    let mut expected = 0.0;
+
+    for d in PHI.divisors(l) {
+        expected += PHI.gcd_probability(l, *d)
+            / k.iter()
+                .zip(inv_lg_k_squared.iter())
+                .map(|(k_i, inv_lg_k_i_squared)| {
+                    (2 * gcd(*d, *k_i) - 1) as f64 * inv_lg_k_i_squared
+                })
+                .sum::<f64>()
+                .sqrt();
+    }
+
+    expected
 }
