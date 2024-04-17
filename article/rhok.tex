@@ -116,6 +116,17 @@ Zum Finden oben genannter $x_i, x_j$ ist es hilfreich, den funktionalen Graphen 
 
 Ein Beispiel eines funktionalen Graphen ist in Abbildung \ref{fig:fn-graph-17} zu sehen. Es ist leicht zu zeigen, dass jede Zusammenhangskomponente eines funktionalen Graphen aus einem Zyklus und an den Zyklusknoten gewurzelten Bäumen besteht. In $\gamma(g)$ ist $x_0$ also ein Knoten in einem der Bäume, der durch seinen Pfad zur Wurzel mit dem Zyklus seiner Zusammenhangskomponente verbunden ist. Die Folge $(x_i)_{i \in \N}$ startet bei $x_0$ und "`läuft"' durch den Graphen, wobei immer die eindeutige von einem Knoten ausgehende Kante entlanggegangen wird. An der Wurzel des Baums von $x_0$ wird der Zyklus in der Zusammenhangskomponente von $x_0$ betreten, und ab genau diesem Punkt ist $(x_i)_{i \in \N}$ periodisch. Bei Auftritt der ersten Kollision bildet der von $(x_i)_{i \in \N}$ abgelaufene Pfad die Form eines "`$\rho$"' in $\gamma(g)$, was dem Algorithmus seinen Namen gibt.
 
+Folgende Begriffe werden für weitere Erklärungen und die Analyse des Algorithmus nötig sein:
+\begin{definition}
+    Sei $f : X \to X$ eine Abbildung über einer endlichen Menge $X$ und $x \in X$. Wir nennen
+    \begin{enumerate}
+        \item $\mu(f, x)$ die Höhe von $x$ in seinem Baum in $\gamma(f)$.
+        \item $\lambda(f, x)$ die Länge des Zyklus in der Zusammenhangskomponente von $x$ in $\gamma(f)$.
+        \item $\rho(f, x) = \mu(f, x) + \lambda(f, x)$ die Rho-Länge von $x$.
+    \end{enumerate}
+\end{definition}
+Als Beispiel betrachte man $f$ aus Abbildung \ref{fig:fn-graph-17} mit $x = 15$. Es gilt $\mu(f, 15) = 1, \lambda(f, 15) = 6$ und $\rho(f, 15) = 7$.
+
 \begin{figure}
     \centering
     \begin{tikzpicture}
@@ -125,15 +136,15 @@ Ein Beispiel eines funktionalen Graphen ist in Abbildung \ref{fig:fn-graph-17} z
         \small
         \node[circle, draw=black] (0) at (0, 0) {0};
         \node[circle, draw=black] (1) at (1.5, 0) {1};
-        \node[circle, draw=black] (2) at (3, 0) {2};
-        \node[circle, draw=black] (5) at (4, -1.3) {5};
-        \node[circle, draw=black] (9) at (5.5, -1.3) {9};
-        \node[circle, draw=black] (14) at (6.5, 0) {14};
-        \node[circle, draw=black] (10) at (5.5, 1.3) {10};
-        \node[circle, draw=black] (16) at (4, 1.3) {16};
+        \node[circle, draw=magenta] (2) at (3, 0) {2};
+        \node[circle, draw=magenta] (5) at (4, -1.3) {5};
+        \node[circle, draw=magenta] (9) at (5.5, -1.3) {9};
+        \node[circle, draw=magenta] (14) at (6.5, 0) {14};
+        \node[circle, draw=magenta] (10) at (5.5, 1.3) {10};
+        \node[circle, draw=magenta] (16) at (4, 1.3) {16};
         \node[circle, draw=black] (4) at (-1.1, -1.1) {4};
         \node[circle, draw=black] (13) at (-1.1, 1.1) {13};
-        \node[circle, draw=black] (15) at (4, -2.7) {15};
+        \node[circle, draw=magenta] (15) at (4, -2.7) {15};
         \node[circle, draw=black] (12) at (5.5, -2.7) {12};
         \node[circle, draw=black] (8) at (8, 0) {8};
         \node[circle, draw=black] (7) at (4, 2.7) {7};
@@ -143,17 +154,17 @@ Ein Beispiel eines funktionalen Graphen ist in Abbildung \ref{fig:fn-graph-17} z
 
         \draw[->] (0) -- (1);
         \draw[->] (1) -- (2);
-        \draw[->] (2) -- (5);
-        \draw[->] (5) -- (9);
-        \draw[->] (9) -- (14);
-        \draw[->] (14) -- (10);
-        \draw[->] (10) -- (16);
-        \draw[->] (16) -- (2);
+        \draw[->, draw = magenta] (2) -- (5);
+        \draw[->, draw = magenta] (5) -- (9);
+        \draw[->, draw = magenta] (9) -- (14);
+        \draw[->, draw = magenta] (14) -- (10);
+        \draw[->, draw = magenta] (10) -- (16);
+        \draw[->, draw = magenta] (16) -- (2);
         \draw[->] (13) -- (0);
         \draw[->] (4) -- (0);
         \draw[->] (7) -- (16);
         \draw[->] (3) -- (10);
-        \draw[->] (15) -- (5);
+        \draw[->, draw = magenta] (15) -- (5);
         \draw[->] (12) -- (9);
         \draw[->] (6) -- (3);
         \draw[->] (11) -- (3);
@@ -161,13 +172,15 @@ Ein Beispiel eines funktionalen Graphen ist in Abbildung \ref{fig:fn-graph-17} z
         \normalsize
     \end{tikzpicture}
 
-    \caption{Der funktionale Graph von $f : \Z/17\Z \to \Z/17\Z$ mit $f : x \mapsto x^2 + 1$.}
+    \caption{Der funktionale Graph von $f : \Z/17\Z \to \Z/17\Z$ mit $f : x \mapsto x^2 + 1$. Der Weg, den die Folge $x_0, f(x_0), f(f(x_0)), f(f(f(x_0))), \dots$ mit $x_0 = 15$ beschreibt, ist farbig markiert. Konkret lautet die Folge $15, 5, 9, 14, 10, 16, 2, 5, 9, 14, 10, 16, 2, \dots$}
     \label{fig:fn-graph-17}
 \end{figure}
 
 \subsection{Kollisionserkennung im funktionalen Graphen modulo $\boldsymbol{p}$.}
 
-Sei $f$ die Abbildung $g$, betrachtet in $\Z/p\Z$. Die Folge $(\pi(x_{i}))_{i \in \N}$ "`läuft"' analog durch $\gamma(f)$, beginnend von $\pi(x_0)$. Unser Ziel, das Finden einer Kollision von $(\pi(x_i))_{i \in \N}$, ist also äquivalent dazu, einen Knoten in $\gamma(f)$ zu finden, der zweimal in dem von $(\pi(x_i))_{i \in \N}$ abgelaufenen Pfad erscheint. Dafür kann Floyds Algorithmus zur Zykluserkennung in $\gamma(f)$ verwendet werden. Floyds Algorithmus macht sich zunutze, dass es ein $1 \le r \in \N$ mit $\pi(x_r) = \pi(x_{2r})$ geben muss (\cite{knu98}, S. 7). Sei $\mu(f, \pi(x_0))$ die Höhe von $\pi(x_0)$ in seinem Baum und $\lambda(f, \pi(x_0))$ die Länge des Zyklus von $\pi(x_0)$. Für das minimale solcher $r$ gilt $r \le \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ (\cite{knu98}, S. 7). Wir nennen $\rho(f, \pi(x_0)) = \mu(f, \pi(x_0)) + \lambda(f, \pi(x_0))$ die Rho-Länge von $\pi(x_0)$ in $f$. Es also genügt also, die Folgen $(\pi(x_i))_{i \in \N}$ und $(\pi(x_{2i}))_{n \in \N}$ gleichzeitig Glied für Glied zu berechnen und in jedem Schritt zu überprüfen, ob $\pi(x_i) = \pi(x_{2i})$. Das kann natürlich nicht explizit geschehen, da $p$ unbekannt ist. Stattdessen werden $(x_i)_{i \in \N}$ und $(x_{2i})_{i \in \N}$ Glied für Glied berechnet. Das Überprüfen, ob $\pi(x_i) = \pi(x_{2i})$ geschieht durch Berechnung von $\gcd(n, x_i - x_{2i})$. So erhält man nach maximal $\rho(f, \pi(x_0))$ Schritten die gewünschte Kollision. Die Rho-Methode ist in Algorithmus \ref{alg:rho} dargestellt. Nach der $i$-ten Iteration speichert $x$ das $i$-te Glied der Folge $(x_i)_{i \in \N}$ und $y$ das $i$-te Glied von $(x_{2i})_{i \in \N}$.
+Sei $f$ die Abbildung $g$, betrachtet in $\Z/p\Z$ und $x_i' = \pi(x_i)$ für alle $i \in \N$. Die Folge $(x_{i}')_{i \in \N}$ "`läuft"' analog durch $\gamma(f)$, beginnend von $x_0'$. Unser Ziel, das Finden einer Kollision von $(x_i')_{i \in \N}$, ist also äquivalent dazu, einen Knoten in $\gamma(f)$ zu finden, der zweimal in dem von $(x_i')_{i \in \N}$ abgelaufenen Pfad erscheint. Für die  Dafür kann Floyds Algorithmus zur Zykluserkennung in $\gamma(f)$ verwendet werden. Floyds Algorithmus macht sich zunutze, dass es ein $1 \le r \in \N$ mit $x_r' = x_{2r}'$ geben muss (\cite{knu98}, S. 7). Für das minimale solcher $r$ gilt $r \le \mu(f, x_0') + \lambda(f, x_0')$ (\cite{knu98}, S. 7). Als Beispiel betrachte man wieder $f$ aus Abbildung \ref{fig:fn-graph-17} und $x_0 = 15$. Das minimale $r$ mit $x_r = x_{2r}$ ist $r = 6$, und es gilt $x_r = 2$.
+
+Es also genügt also, die Folgen $(x_i')_{i \in \N}$ und $(x_{2i}')_{n \in \N}$ gleichzeitig Glied für Glied zu berechnen und in jedem Schritt zu überprüfen, ob $x_i' = x_{2i}'$. Das kann natürlich nicht explizit geschehen, da $p$ unbekannt ist. Stattdessen werden $(x_i)_{i \in \N}$ und $(x_{2i})_{i \in \N}$ Glied für Glied berechnet. Das Überprüfen, ob $x_i' = x_{2i}'$ geschieht durch Berechnung von $\gcd(n, x_i - x_{2i})$. So erhält man nach maximal $\rho(f, x_0')$ Schritten die gewünschte Kollision. Die Rho-Methode ist in Algorithmus \ref{alg:rho} dargestellt. Nach der $i$-ten Iteration speichert $x$ das $i$-te Glied der Folge $(x_i)_{i \in \N}$ und $y$ das $i$-te Glied von $(x_{2i})_{i \in \N}$.
 \begin{algorithm}
     $x \gets $ zufällige natürliche Zahl zwischen $0$ und $n - 1$ \;
     $y \gets x$ \;
