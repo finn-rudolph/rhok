@@ -94,7 +94,7 @@
 
 Pollards Rho-Methode bleibt trotz der Existenz asymptotisch schnellerer Algorithmen einer der meist verwendeten Algorithmen, um kleine Primfaktoren in Zahlen zu erkennen. Gleichzeitig werden Leistungssteigerungen bei modernen Computern häufig durch größere Nebenläufigkeit (z. B. mehr Prozessorkerne) erzielt. Um die Rho-Methode schnellstmöglich zu implementieren, ist es also nötig zu untersuchen, wie sie am besten parallel ausgeführt werden kann. Die Wahl von $k$ geschieht für jede Maschine separat und hat unter Umständen großen Einfluss auf die Laufzeit, weshalb sie ein wichtiger Ansatzpunkt zur Weiterentwicklung der parallelen Rho-Methode ist.
 
-Der Parameter $k$ bestimmt in der Rho-Methode den Exponenten der Funktion $f : x \mapsto x^{2k} + 1$. Diese Funktion wird wiederholt auf einen zufällig gewählten Anfangswert $x_0$ angewandt, und wenn $f^{(m)}(x_0) = f^{(2m)}(x_0)$ ($f^{(m)}$ ist die $m$-malige Verkettung von $f$), findet die Rho-Methode einen Faktor.
+Der Parameter $k$ bestimmt in der Rho-Methode den Exponenten der Funktion $f : x \mapsto x^{2k} + 1$. Diese Funktion wird wiederholt auf einen zufällig gewählten Anfangswert $x_0$ angewandt. Wenn $f^{(m)}(x_0) = f^{(2m)}(x_0)$ ($f^{(m)}$ ist die $m$-malige Verkettung von $f$), findet die Rho-Methode einen Faktor.
 
 $k$ zu variieren, wurde bereits in der ersten Veröffentlichung der Rho-Methode (\cite{pol75}) in Betracht gezogen. In \cite{bp81} gelang durch eine Veränderung von $k$ (allerdings nur auf einer Maschine) die erstmalige Faktorisierung der achten Fermatzahl $F_8 = 2^{2^8} + 1$. Wenn Kongruenzen der Primfaktoren bekannt sind, wie im Fall von Fermatzahlen, kann $k$ gezielt gewählt werden, um die Laufzeit zu verringern. In dieser Arbeit wird allerdings der Fall allgemeiner Zahlen betrachtet, das heißt, keine Kongruenzen der Primfaktoren sind bekannt.
 
@@ -131,21 +131,24 @@ Als Beispiel betrachte man $f$ aus Abbildung \ref{fig:fn-graph-17} mit $x = 15$.
 \begin{figure}
     \centering
     \begin{tikzpicture}
+        \newcommand{\cNode}{magenta}
+        \newcommand{\cEdge}{magenta}
+
         \tikzset{every node/.style={
                     circle, draw=black, inner sep = 0pt, minimum size=19pt
                 }}
         \small
         \node[circle, draw=black] (0) at (0, 0) {0};
         \node[circle, draw=black] (1) at (1.5, 0) {1};
-        \node[circle, draw=magenta] (2) at (3, 0) {2};
-        \node[circle, draw=magenta] (5) at (4, -1.3) {5};
-        \node[circle, draw=magenta] (9) at (5.5, -1.3) {9};
-        \node[circle, draw=magenta] (14) at (6.5, 0) {14};
-        \node[circle, draw=magenta] (10) at (5.5, 1.3) {10};
-        \node[circle, draw=magenta] (16) at (4, 1.3) {16};
+        \node[circle, draw=\cNode] (2) at (3, 0) {2};
+        \node[circle, draw=\cNode] (5) at (4, -1.3) {5};
+        \node[circle, draw=\cNode] (9) at (5.5, -1.3) {9};
+        \node[circle, draw=\cNode] (14) at (6.5, 0) {14};
+        \node[circle, draw=\cNode] (10) at (5.5, 1.3) {10};
+        \node[circle, draw=\cNode] (16) at (4, 1.3) {16};
         \node[circle, draw=black] (4) at (-1.1, -1.1) {4};
         \node[circle, draw=black] (13) at (-1.1, 1.1) {13};
-        \node[circle, draw=magenta] (15) at (4, -2.7) {15};
+        \node[circle, draw=\cNode] (15) at (4, -2.7) {15};
         \node[circle, draw=black] (12) at (5.5, -2.7) {12};
         \node[circle, draw=black] (8) at (8, 0) {8};
         \node[circle, draw=black] (7) at (4, 2.7) {7};
@@ -155,17 +158,17 @@ Als Beispiel betrachte man $f$ aus Abbildung \ref{fig:fn-graph-17} mit $x = 15$.
 
         \draw[->] (0) -- (1);
         \draw[->] (1) -- (2);
-        \draw[->, draw = magenta] (2) -- (5);
-        \draw[->, draw = magenta] (5) -- (9);
-        \draw[->, draw = magenta] (9) -- (14);
-        \draw[->, draw = magenta] (14) -- (10);
-        \draw[->, draw = magenta] (10) -- (16);
-        \draw[->, draw = magenta] (16) -- (2);
+        \draw[->, draw = \cEdge] (2) -- (5);
+        \draw[->, draw = \cEdge] (5) -- (9);
+        \draw[->, draw = \cEdge] (9) -- (14);
+        \draw[->, draw = \cEdge] (14) -- (10);
+        \draw[->, draw = \cEdge] (10) -- (16);
+        \draw[->, draw = \cEdge] (16) -- (2);
         \draw[->] (13) -- (0);
         \draw[->] (4) -- (0);
         \draw[->] (7) -- (16);
         \draw[->] (3) -- (10);
-        \draw[->, draw = magenta] (15) -- (5);
+        \draw[->, draw = \cEdge] (15) -- (5);
         \draw[->] (12) -- (9);
         \draw[->] (6) -- (3);
         \draw[->] (11) -- (3);
@@ -630,8 +633,8 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
 \begin{figure}
     \centering
     \begin{tikzpicture}
-        \draw[draw = red, thick] (4.45, 2.38) circle [x radius=0.5, y radius=0.2, rotate = 325];
-        \draw[draw = red, thick] (4.45, 3.57) circle [x radius=0.5, y radius=0.2, rotate = 25];
+        \draw[draw = red] (4.45, 2.38) circle [x radius=0.5, y radius=0.2, rotate = 325];
+        \draw[draw = red] (4.45, 3.57) circle [x radius=0.5, y radius=0.2, rotate = 25];
 
         \begin{axis}[
                 xlabel = {$k$},
@@ -803,23 +806,56 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
     \label{fig:measurements-m2}
 \end{figure}
 
-Um zu demonstrieren, dass Satz \ref{theorem:lki-asymp} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreibt, wurden Laufzeitmessungen für $M = 1$ und $M = 2$ durchgeführt. Als Testzahlen wurden 192-Bit-Zahlen verwendet, bei denen jeder Primfaktor größer als $2^{22}$ ist und ein Primfaktor kleiner als $2^{23}$ ist. Die Größe der Primfaktoren nach unten zu beschränken ist sinnvoll, da die Laufzeit der Rho-Methode sonst sehr kurz wäre und die Messergebnisse durch Dinge wie den Aufwand der Laufzeitmessung selbst verfälscht werden würden. Es ist auch sinnvoll, dass die Testzahlen einen kleinen Primfaktor enthalten, da die Laufzeit sonst sehr groß wäre. Es wurden jeweils $2^{14} = 16384$ Testzahlen verwendet. Die mittlere Laufzeit und Werte von (\ref{eq:lki-asymp}) zum Vergleich sind in den Abbildungen \ref{fig:measurements-m1} und \ref{fig:measurements-m2} dargestellt. Sowohl die Werte der Formel als auch die Messdaten wurden skaliert, sodass bei $k = 1$ bzw. $k_1 = k_2 = 1$ der Wert 1 steht. Der Code für die Laufzeitmessungen ist unter \href{https://github.com/finn-rudolph/rhok}{\texttt{https://github.com/finn-rudolph/rhok}} verfügbar.
+\begin{figure}
+    \centering
+    \small
+
+    \begin{tabular}{ccc|c|c}
+        $k_1$ & $k_2$ & $k_3$ & Laufzeit                         & Formel (\ref{eq:lki-asymp})      \\
+        \hline
+        1     & 1     & 1     & \textcolor[HTML]{ 0020ff }{1.00} & \textcolor[HTML]{ 0020ff }{1.00} \\
+        1     & 1     & 2     & \textcolor[HTML]{ 1620e8 }{1.07} & \textcolor[HTML]{ 1420ea }{1.10} \\
+        1     & 1     & 3     & \textcolor[HTML]{ 1f20df }{1.10} & \textcolor[HTML]{ 1d20e1 }{1.14} \\
+        1     & 1     & 4     & \textcolor[HTML]{ 1f20df }{1.10} & \textcolor[HTML]{ 1d20e1 }{1.14} \\
+        1     & 2     & 2     & \textcolor[HTML]{ 3220cc }{1.16} & \textcolor[HTML]{ 3420ca }{1.25} \\
+        1     & 2     & 3     & \textcolor[HTML]{ 3e20c0 }{1.20} & \textcolor[HTML]{ 3c20c2 }{1.29} \\
+        1     & 2     & 4     & \textcolor[HTML]{ 4520b9 }{1.22} & \textcolor[HTML]{ 4020be }{1.31} \\
+        1     & 3     & 3     & \textcolor[HTML]{ 5b20a3 }{1.29} & \textcolor[HTML]{ 4f20af }{1.38} \\
+        1     & 3     & 4     & \textcolor[HTML]{ 5b20a3 }{1.29} & \textcolor[HTML]{ 4b20b3 }{1.36} \\
+        1     & 4     & 4     & \textcolor[HTML]{ 61209d }{1.31} & \textcolor[HTML]{ 5120ad }{1.39} \\
+        2     & 2     & 2     & \textcolor[HTML]{ 6b2093 }{1.34} & \textcolor[HTML]{ 792085 }{1.58} \\
+        2     & 2     & 3     & \textcolor[HTML]{ 7a2084 }{1.39} & \textcolor[HTML]{ 81207d }{1.62} \\
+        2     & 2     & 4     & \textcolor[HTML]{ 81207d }{1.41} & \textcolor[HTML]{ 94206a }{1.71} \\
+        2     & 3     & 3     & \textcolor[HTML]{ 972067 }{1.48} & \textcolor[HTML]{ 9c2062 }{1.75} \\
+        2     & 3     & 4     & \textcolor[HTML]{ 9d2061 }{1.50} & \textcolor[HTML]{ a0205e }{1.77} \\
+        2     & 4     & 4     & \textcolor[HTML]{ a62058 }{1.53} & \textcolor[HTML]{ be2040 }{1.91} \\
+        3     & 3     & 3     & \textcolor[HTML]{ e82016 }{1.74} & \textcolor[HTML]{ e82016 }{2.11} \\
+        3     & 3     & 4     & \textcolor[HTML]{ e2201c }{1.72} & \textcolor[HTML]{ ca2034 }{1.97} \\
+        3     & 4     & 4     & \textcolor[HTML]{ e2201c }{1.72} & \textcolor[HTML]{ d1202d }{2.00} \\
+        4     & 4     & 4     & \textcolor[HTML]{ ff2000 }{1.81} & \textcolor[HTML]{ ff2000 }{2.22} \\
+    \end{tabular}
+
+    \caption{Laufzeitmessungen und theoretische Werte von Formel (\ref{eq:lki-asymp}) für $M = 3$ und $1 \le k_1 \le k_2 \le k_3 \le 4$.}
+    \label{fig:measurements-m3}
+\end{figure}
+
+Um zu demonstrieren, dass Satz \ref{theorem:lki-asymp} das Laufzeitverhalten von Pollards Rho-Algorithmus gut beschreibt, wurden Laufzeitmessungen für $M = 1, M = 2$ und $M = 3$ durchgeführt. Als Testzahlen wurden 192-Bit-Zahlen verwendet, bei denen jeder Primfaktor größer als $2^{22}$ ist und ein Primfaktor kleiner als $2^{23}$ ist. Die Größe der Primfaktoren nach unten zu beschränken ist sinnvoll, da die Laufzeit der Rho-Methode sonst sehr kurz wäre und die Messergebnisse durch Dinge wie den Aufwand der Laufzeitmessung selbst verfälscht werden würden. Es ist auch sinnvoll, dass die Testzahlen einen kleinen Primfaktor enthalten, da die Laufzeit sonst sehr groß wäre. Es wurden jeweils $2^{14} = 16384$ Testzahlen verwendet. Die mittlere Laufzeit und Werte von (\ref{eq:lki-asymp}) zum Vergleich sind in den Abbildungen \ref{fig:measurements-m1}, \ref{fig:measurements-m2} und \ref{fig:measurements-m3} dargestellt. Sowohl die Werte der Formel als auch die Messdaten wurden skaliert, sodass bei $k_i = 1$ für alle $1 \le i \le M$ der Wert 1 steht. Der Code für die Laufzeitmessungen ist unter \href{https://github.com/finn-rudolph/rhok}{\texttt{https://github.com/finn-rudolph/rhok}} verfügbar.
 
 \subsection{Eine Maschine.}
 
 Man sieht, dass der Verlauf der Laufzeit von Formel (\ref{eq:lki-asymp}) widergespiegelt wird. Beispielsweise werden hohe Werte bei Primzahlen und niedrige Werte bei Zahlen mit vielen verschiedenen Primfaktoren (z.B. 24) angenommen.
 
-Es fällt allerdings auf, dass die Laufzeit bei allen Werten von $k$ im Verhältnis zur Laufzeit bei $k = 1$ geringer als erwartet ist. Eine Erklärung dafür ist, dass der Aufwand der Berechnung von $\gcd(n, x_i - x_j)$ in der Rho-Methode vernachlässigt wurde. Obwohl, wie in Abschnitt \ref{sec:pollards-rho-method} beschreiben, die Optimierung aus \cite{bre80} verwendet wurde, um diesen Aufwand zu amortisieren, macht er immer noch einen relevanten Teil aus. Die Laufzeit ist also geringer als erwartet, was zunächst widersprüchlich erscheint, da der $\gcd$ in der Analyse vernachlässigt wurde. Das lässt sich dadurch erklären, dass die Laufzeit relativ zu $k = 1$ dargestellt ist und der größere Aufwand der Berechnung von $x^{2k}$ für größere $k$ in der Praxis weniger ins Gewicht fällt als in der Analyse.
+Für $k > 1$ ist die Laufzeit im Verhältnis zur Laufzeit bei $k = 1$ allerdings geringer als erwartet. Eine Erklärung dafür ist, dass der Aufwand der Berechnung von $\gcd(n, x_i - x_j)$ in der Rho-Methode vernachlässigt wurde. Obwohl, wie in Abschnitt \ref{sec:pollards-rho-method} beschreiben, die Optimierung aus \cite{bre80} verwendet wurde, um diesen Aufwand zu amortisieren, macht er immer noch einen relevanten Teil aus. Die Laufzeit ist also geringer als erwartet, was zunächst widersprüchlich erscheint, da der $\gcd$ in der Analyse vernachlässigt wurde. Das lässt sich dadurch erklären, dass die Laufzeit relativ zu $k = 1$ dargestellt ist und der größere Aufwand der Berechnung von $x^{2k}$ für größere $k$ in der Praxis weniger ins Gewicht fällt als in der Analyse.
 
 An den Messergebnissen ist noch eine weitere Vereinfachung in der Analyse erkennbar. Wenn man die Laufzeit und Werte von (\ref{eq:lki-asymp}) bei $k = 8, 16, 32$ mit nahe gelegenen Werten vergleicht, beobachtet man, dass die Laufzeit im Verhältnis kleiner ist. Beispielsweise ist die gemessene Laufzeit bei $k = 16$ geringer als bei $k = 15$, der theoretische Wert von (\ref{eq:lki-asymp}) jedoch höher, und die Laufzeit bei $k = 32$ ist nahezu gleich der bei $k = 30$, wohingegen der Wert von (\ref{eq:lki-asymp}) deutlich größer ist. Das liegt wahrscheinlich daran, dass Square-and-Multiply (\cite{knu98}, S. 461) zur Berechnung von der Aufwand zur Berechnung von $x^{2k}$ verwendet wurde. Die Laufzeit dieses Algorithmus ist nicht genau $\lg 2k$, sondern hängt in der Praxis von der Anzahl an Einsen in der Binärdarstellung von $k$ ab, und Zweierpotenzen haben eine minimale Anzahl an Einsen in ihrer Binärdarstellung.
 
-\subsection{Zwei Maschinen.}
+\subsection{Zwei und drei Maschinen.}
 
-Auch hier wird das grundsätzliche Verhalten der Laufzeit durch (\ref{eq:lki-asymp}) reflektiert. Die Aussage von Satz \ref{theorem:optimal-k-m2} wird bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist.
+Auch für $M = 2$ und $M = 3$ beschreibt (\ref{eq:lki-asymp}) das Laufzeitverhalten gut. Denn die Formel nimmt bei genau den Parameterwahlen hohe bzw. niedrige Werte an, bei denen auch die Laufzeit hoch bzw. niedrig ist. In Bezug auf $M = 2$ wird die Aussage von Satz \ref{theorem:optimal-k-m2} bestätigt, und es gibt zumindest für $1 \le k_1 \le k_2 \le 14$ kein Paar $k_1, k_2$ mit einer geringeren Laufzeit als $k_1 = k_2 = 1$. Da die Laufzeit für größere $k_1, k_2$ tendenziell zu steigen scheint, wird die Vermutung aufgestellt, dass $k_1 = k_2 = 1$ optimal ist. Auch bei $M = 3$ legen die Werte der Formel und die Laufzeitmessungen nahe, dass $k_1 = k_2 = k_3 = 1$ optimal ist. Berechnet man für $M = 3$ Werte der Formel für noch größere $k$, sieht man, dass sich der tendenzielle Anstieg der Laufzeit fortsetzt.
 
 \section{Fazit}
 
-Der Parameter $k$ der Rho-Methode wurde bei bekannten Kongruenzen der Primfaktoren schon erfolgreich zur Verringerung der Laufzeit eingesetzt. Allerdings war über die optimale Wahl bei allgemeinen Zahlen bisher wenig bekannt, insbesondere bei einer parallelen Ausführung auf mehreren Maschinen. Die in dieser Arbeit bestimmte Formel für die erwartete Laufzeit bei gegebenen $k$-Werten ermöglicht ein besseres Verständnis des Laufzeitverhaltens der parallelen Rho-Methode. Mithilfe der Formel war es möglich zu zeigen, dass für $M = 1$ am besten $k = 1$ gewählt wird, und für $M = 2$ die Wahl $k_1 = k_2 = 1$ besser ist als zwei Primzahlen und zwei gleiche Zahlen größer als 1. Diese Ergebnisse werden von Laufzeitmessungen unterstützt. Auch zeigen die Messungen, dass Formel (\ref{eq:lki-asymp}) das Laufzeitverhalten der Rho-Methode gut beschreibt und daher zum Vergleich der Laufzeit bei verschiedenen Werten von $k$ geeignet ist. Für eine vollständige Beantwortung der Frage sind allerdings noch weitere Schritte nötig. Der Fall $M = 2$ müsste vollständig geklärt werden, und $M \ge 3$ wurde in dieser Arbeit noch nicht behandelt.
+Der Parameter $k$ der Rho-Methode wurde bei bekannten Kongruenzen der Primfaktoren schon erfolgreich zur Verringerung der Laufzeit eingesetzt. Allerdings war über die optimale Wahl bei allgemeinen Zahlen bisher wenig bekannt, insbesondere bei einer parallelen Ausführung auf mehreren Maschinen. Die in dieser Arbeit bestimmte Formel für die erwartete Laufzeit bei gegebenen $k$-Werten ermöglicht ein besseres Verständnis des Laufzeitverhaltens der parallelen Rho-Methode. Mithilfe der Formel war es möglich zu zeigen, dass für $M = 1$ am besten $k = 1$ gewählt wird, und für $M = 2$ die Wahl $k_1 = k_2 = 1$ besser ist als zwei Primzahlen und zwei gleiche Zahlen größer als 1. Dass $k_1 = k_2 = 1$ optimal ist, konnte anhand der Formel formal noch nicht bewiesen werden, Laufzeitmessungen und berechnete Werte der Formel lassen dies aber vermuten. Die Laufzeitmessungen zeigen ebenfalls, dass Formel (\ref{eq:lki-asymp}) das Laufzeitverhalten der Rho-Methode gut beschreibt und daher zum Vergleich der Laufzeit bei verschiedenen Werten von $k$ geeignet ist. Ein nächster Schritt in der Beantwortung der Frage nach der optimalen Parametrisierung könnte der Beweis sein, dass $k_1 = k_2 = 1$ für $M = 2$ optimal ist. Daneben könnte man versuchen, Teilergebnisse für $M \ge 3$ zu erzielen.
 
 Darüber hinaus stellt sich die Frage, ob es sinnvoll ist, nach der Wahl von $k$-Werten während der gesamten Ausführung des Algorithmus bei diesen zu bleiben. Möglicherweise ist es besser, dass eine Maschine nach längerer Zeit mit einem bestimmten Wert von $k$ diesen aufgibt und mit einem anderen $k$ weitermacht.
 
