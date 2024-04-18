@@ -37,7 +37,8 @@ fn iterate_k_values(
     }
 }
 
-// TODO: maybe use higher order fn to not repeat the logic for iteration over k
+// TODO: maybe use higher order fn so the logic for iteration over k isn't
+// repeated
 
 fn print_values(
     k_min: u64,
