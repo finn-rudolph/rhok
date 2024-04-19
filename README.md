@@ -1,6 +1,6 @@
 # Parametrisierung von Pollards Rho-Methode
 
-Dieses Repository enthält den Code für mein Jugend forscht Projekt "Parametrisierung von Pollards Rho-Methode". Um Laufzeitmessungen durchzuführen, führe man im Projektordner
+Dieses Repository enthält den Code für mein Jugend forscht-Projekt "Parametrisierung von Pollards Rho-Methode". Um Laufzeitmessungen durchzuführen, führe man im Projektordner
 
 ```
 cargo run --release -- --measurements [M] [k_min] [k_max]
