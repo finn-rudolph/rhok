@@ -1,0 +1,30 @@
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage[sfdefault,lining]{FiraSans}
+\renewcommand*\oldstylenums[1]{{\firaoldstyle #1}}
+\usepackage[mathrm=sym]{unicode-math}
+\setmathfont{Fira Math}
+
+\usepackage{blindtext}
+
+\definecolor{cong}{HTML}{0049c6}
+\definecolor{vei}{HTML}{d700ff}
+\definecolor{tech}{HTML}{ff4800}
+
+\colorlet{backgroundcolor}{white}
+\colorlet{blocktitlebgcolor}{white}
+\colorlet{framecolor}{white}
+\colorlet{blocktitlefgcolor}{cong}
+
+\tikzposterlatexaffectionproofoff
+
+\settitle{
+    \centering
+    \bfseries \Huge \@title \par
+    \vspace*{0.7em}
+    \LARGE \@author \par
+    \vspace*{1em}
+}
+
+\title{Parametrisierung von Pollards Rho-Methode}
+\author{Finn Rudolph}
