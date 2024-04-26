@@ -4,23 +4,28 @@
 \usepackage{pgfplots}
 \usetikzlibrary{arrows, decorations.markings}
 
+\def\lw{2.5pt}
+
 \pgfplotsset{
-  every axis plot/.append style={line width=2pt},
+  every axis plot/.append style={line width=\lw},
   every axis plot post/.append style={
     every mark/.append style={line width=6pt}
   }
 }
 
-\begin{document}
-\block{Laufzeitmessungen}
-{
-  \begin{tikzpicture}
-    \draw[draw = red] (4.45, 2.38) circle [x radius=0.5, y radius=0.2, rotate = 325];
-    \draw[draw = red] (4.45, 3.57) circle [x radius=0.5, y radius=0.2, rotate = 25];
 
+\begin{document}
+
+\usetitlestyle{Zero}
+\maketitle
+
+\block{Zur Überprüfung der theoretischen Ergebnisse wurden Laufzeitmessungen durchgeführt.}
+{
+  \vspace*{5cm}
+  \begin{tikzpicture}
     \begin{axis}[
         axis lines=left,
-        axis line style = {line width = 2pt},
+        axis line style = {line width = \lw},
         xmin = 1,
         xmax = 48,
         xlabel = $k$,
@@ -36,7 +41,7 @@
         legend cell align = left,
       ]
 
-      \addplot[color=vei,mark=*]
+      \addplot[color=c2,mark=*]
       coordinates{
           (1, 1.0)
           (2, 1.5773502691896257)
@@ -88,7 +93,7 @@
           (48, 3.903718627468377)
         };
 
-      \addplot[color=tech,mark=*]
+      \addplot[color=c3,mark=*]
       coordinates {
           (1 ,   1)
           (2 ,   1.2688871624076672)
@@ -140,6 +145,43 @@
           (48,   2.7134203084992854)};
       \legend{Formel, Messungen}
     \end{axis}
+
+    \draw[draw = red, line width = \lw] (15.2, 6.4) circle [x radius=1.2, y radius=0.7, rotate = 325];
+    \draw[draw = red, line width = \lw] (15.24, 10.73) circle [x radius=1.2, y radius=0.7, rotate = 25];
   \end{tikzpicture}
 }
+
+\vspace*{10cm}
+
+\note[
+  radius = 14cm,
+  angle = 110,
+  width = 400pt,
+]{
+  gleicher Kurvenverlauf $\implies$ Die Formel beschreibt das Laufzeitverhalten der Rho-Methode gut.
+}
+
+\note[
+  width = 400pt,
+  angle = -90,
+  radius = 17cm,
+]{
+  \begin{align*}
+    k \text{ ist eine Primzahl}  & \Longleftrightarrow \text{hohe Laufzeit}    \\
+    k \text{ hat viele Faktoren} & \Longleftrightarrow \text{geringe Laufzeit}
+  \end{align*}
+}
+
+
+\note[
+  targetoffsetx=-10.7cm,
+  targetoffsety=-6cm,
+  radius=12cm,
+  angle=-90,
+  width = 400pt,
+  connection = true,
+]{
+  Geringere Laufzeit als erwartet bei Zweierpotenzen
+}
+
 \end{document}
