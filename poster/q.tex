@@ -4,8 +4,6 @@
 \usepackage{pgfplots}
 \usetikzlibrary{arrows, decorations.markings}
 
-\def\lw{2.5pt}
-
 \pgfplotsset{
   every axis plot/.append style={line width=\lw},
   every axis plot post/.append style={
@@ -19,7 +17,10 @@
 \usetitlestyle{Zero}
 \maketitle
 
-\block{Zur Überprüfung der theoretischen Ergebnisse wurden Laufzeitmessungen durchgeführt.}
+\block{Das optimale $\boldsymbol{k}$ lautet...}{
+}
+
+\block{Laufzeitmessungen unterstützen die theoretischen Ergebnisse.}
 {
   \vspace*{5cm}
   \begin{tikzpicture}
@@ -30,8 +31,9 @@
         xmax = 48,
         xlabel = $k$,
         x label style = {at={(axis description cs:0.5,-0.06)},anchor=north},
-        y label style={at={(axis description cs:0.1,1.12)},rotate=-90,anchor=north},
-        ylabel = normierte Laufzeit,
+        y label style={at={(axis description cs:0.05,1.16)},rotate=-90,anchor=north},
+        ylabel = normierte \\ Laufzeit,
+        ylabel style ={align = left},
         xtick = {1, 8, 16, 24, 32, 40, 48},
         ytick = {1, 2, 3, 4, 5, 6},
         width = 1450pt,
@@ -146,42 +148,58 @@
       \legend{Formel, Messungen}
     \end{axis}
 
-    \draw[draw = red, line width = \lw] (15.2, 6.4) circle [x radius=1.2, y radius=0.7, rotate = 325];
-    \draw[draw = red, line width = \lw] (15.24, 10.73) circle [x radius=1.2, y radius=0.7, rotate = 25];
+    % eher grau oder so
+    \draw[draw = black, line width = 1.5pt, dashed] (14.2, 5.2) rectangle ++(2.2, 6.4);
+    % \draw[draw = red, line width = \lw] (15.2, 6.4) circle [x radius=1.2, y radius=0.7, rotate = 325];
+    % \draw[draw = red, line width = \lw] (15.24, 10.73) circle [x radius=1.2, y radius=0.7, rotate = 25];
+
+    % \draw[draw = red, line width = \lw, dashed] (36.77, 23) to (36.77, 4);
+    % \draw[draw = red, line width = \lw, dashed] (37.81, 23) to (37.81, 4);
   \end{tikzpicture}
 }
 
 \vspace*{10cm}
 
 \note[
-  radius = 14cm,
-  angle = 110,
-  width = 400pt,
-]{
-  gleicher Kurvenverlauf $\implies$ Die Formel beschreibt das Laufzeitverhalten der Rho-Methode gut.
-}
+  radius = 21cm,
+  angle = 50,
+  width = 700pt,
+]{\centering\large{\textbf{Der ähnliche Kurvenverlauf bestätigt die Korrektheit der Formel.}}}
+
+% not really relevant
+% \note[
+%   connection = true,
+%   targetoffsetx = 11.7cm,
+%   targetoffsety = -9.7cm,
+%   width = 400pt,
+%   angle = -90,
+%   radius = 9cm,
+% ]{
+%   \begin{align*}
+%     k \text{ ist eine Primzahl}  & \Longleftrightarrow \text{hohe Laufzeit}    \\
+%     k \text{ hat viele Faktoren} & \Longleftrightarrow \text{geringe Laufzeit}
+%   \end{align*}
+% }
+
 
 \note[
-  width = 400pt,
-  angle = -90,
-  radius = 17cm,
-]{
-  \begin{align*}
-    k \text{ ist eine Primzahl}  & \Longleftrightarrow \text{hohe Laufzeit}    \\
-    k \text{ hat viele Faktoren} & \Longleftrightarrow \text{geringe Laufzeit}
-  \end{align*}
-}
-
-
-\note[
-  targetoffsetx=-10.7cm,
-  targetoffsety=-6cm,
+  targetoffsetx=-10.2cm,
+  targetoffsety=-8.7cm,
   radius=12cm,
-  angle=-90,
-  width = 400pt,
+  angle=-100,
+  width = 650pt,
   connection = true,
 ]{
   Geringere Laufzeit als erwartet bei Zweierpotenzen
+}
+
+\note[
+  radius = 20.5cm,
+  angle = 130,
+  width = 700pt,
+]{
+  \centering
+  \large{Für die Messungen wurde die Rho-Methode mit $k$-Werten von 1 bis 48 auf jeweils 16384 Testfällen ausgeführt.}
 }
 
 \end{document}
