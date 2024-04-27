@@ -12,7 +12,6 @@
   }
 }
 
-
 \begin{document}
 
 \usetitlestyle{Zero}
@@ -50,12 +49,30 @@
 \begin{columns}
   \useblockstyle{cbstyle}
   \column{0.33}
-  \block{}{\centering 1 Maschine}
+  \block{}{
+    \centering
+    \color{white}
+    \large
+    \includesvg[width=50pt]{cpu-icon} \\
+    1 Maschine
+  }
   \column{0.33}
-  \block{}{\centering \LARGE $1 \le k \le 48$ \\
-    \large Werte von $k$ zwischen 1 und 48}
+  \block{}{
+    \centering
+    \color{white}
+    \LARGE
+    $1 \le k \le 48$ \\
+    \large
+    Werte von $k$ zwischen 1 und 48
+  }
   \column{0.33}
-  \block{}{\centering 16384 Testfälle}
+  \block{}{
+    \centering
+    \color{white}
+    \large
+    \includesvg[width=50pt]{experiment-icon} \\
+    16384 Testfälle
+  }
   \useblockstyle{bstyle}
 \end{columns}
 
