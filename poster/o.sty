@@ -1,5 +1,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{setspace}
 \usepackage[sfdefault,lining]{FiraSans}
 \renewcommand*\oldstylenums[1]{{\firaoldstyle #1}}
 \usepackage[mathrm=sym]{unicode-math}
@@ -18,14 +20,27 @@
 
 \colorlet{notebgcolor}{white}
 
-\definenotestyle{ntsty}{}{
+\onehalfspacing
+
+\def\lw{2.5pt}
+
+\definenotestyle{nstyle}{}{
     \ifNoteHasConnection
-        \draw[thick] (notecenter) -- (notetarget) node{};
+        \draw[line width = 1.5pt, dashed] (notecenter) -- (notetarget) node{};
     \fi
 }
-\usenotestyle{ntsty}
+\usenotestyle{nstyle}
 
-
+\defineblockstyle{bstyle}{
+    titleleft
+}{
+    \ifBlockHasTitle
+        \draw[color=framecolor, fill=blocktitlebgcolor,
+            rounded corners=\blockroundedcorners] (blocktitle.south west)
+        rectangle (blocktitle.north east);
+    \fi
+}
+\useblockstyle{bstyle}
 
 \tikzposterlatexaffectionproofoff
 
