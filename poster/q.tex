@@ -17,16 +17,17 @@
 \usetitlestyle{Zero}
 \maketitle
 
-\draw[fill = lightweakcolor, draw = none] (-50, 21.5) rectangle ++(100, 100);
-\draw[fill = darkstrongcolor, draw = none] (-50, -30) rectangle ++(100, -100);
+\draw[fill = darkweakcolor, draw = none] (-50, 21.5) rectangle ++(100, 100);
+\draw[fill = darkweakcolor, draw = none] (-50, -30) rectangle ++(100, -100);
 
 \begin{columns}
   \column{0.5}
-  \block{\huge{\textbf{Das optimale $\boldsymbol{k}$ ist...}}}{
+  \block{\huge{\textcolor{white}{\textbf{Das optimale $\boldsymbol{k}$ ist...}}}}{
     \begin{center}
-      \textcolor{darkstrongcolor}{\Huge{$\boldsymbol{k = 1}$}}
+      \textcolor{white}{\Huge{$\boldsymbol{k = 1}$}}
     \end{center}
     \vspace{2em}
+    \color{white}
     bei einer Maschine. In dem Beweis dafür wurde die Formel für die Laufzeit bei $M = k = 1$ ausgewertet und anschließend die Formel für $M = 1$ und $k > 1$ nach unten abgeschätzt.
   }
 
@@ -34,9 +35,10 @@
   \block{}{
     \vspace{2.97em}
     \begin{center}
-      \textcolor{darkstrongcolor}{\Huge{{$\boldsymbol{k_1 = k_2 = 1}$}}}
+      \textcolor{white}{\Huge{{$\boldsymbol{k_1 = k_2 = 1}$}}}
     \end{center}
     \vspace{2em}
+    \color{white}
     (vermutlich) bei zwei Maschinen. Mit der Formel wurde bewiesen, dass $k_1 = k_2 = 1$ besser ist als zwei Primzahlen oder zwei gleiche Zahlen größer als 1. Auswertungen der Formel und Laufzeitmessungen suggerieren, das $k_1 = k_2 = 1$ tatsächlich optimal ist.
     \vspace{1.7em}
   }
@@ -189,8 +191,8 @@
           (47,   4.7967391294287784)
           (48,   2.7134203084992854)};
 
-      \node[align=left] (F) at (1450, 470) {\large theoretische Werte \\ der Formel};
-      \node[align=left] (M) at (3800, 70) {gemessene Laufzeit \\ der Rho-Methode};
+      \node[align=left] (F) at (1450, 470) {\color{darkstrongcolor} theoretische Werte \\ \color{darkstrongcolor} der Formel};
+      \node[align=left] (M) at (3800, 70) {\color{lightstrongcolor} gemessene Laufzeit \\ \color{lightstrongcolor} der Rho-Methode};
       \node[align=left] (L) at (300, 470) {Laufzeit \\ relativ \\ zu $k = 1$};
 
       \draw[dashed, draw = darkstrongcolor, line width = \lw] (1450, 433) to (1600, 380);
@@ -201,8 +203,7 @@
 
 \block{}{
   \vspace{-1.2cm}
-  \centering
-  \LARGE{\textbf{ähnlicher Kurvenverlauf $\Longrightarrow$ Die Formel beschreibt die Laufzeit gut.}}
+  \LARGE{\textbf{Ähnlicher Kurvenverlauf $\Longrightarrow$ Die Formel beschreibt die Laufzeit gut.}}
   \vspace{3.7cm}
 }
 
