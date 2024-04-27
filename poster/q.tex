@@ -18,14 +18,14 @@
 \usetitlestyle{Zero}
 \maketitle
 
-\draw[fill = c5, draw = none] (-50, 21.5) rectangle ++(100, 100);
-\draw[fill = c2, draw = none] (-50, -30) rectangle ++(100, -100);
+\draw[fill = lightweakcolor, draw = none] (-50, 21.5) rectangle ++(100, 100);
+\draw[fill = darkstrongcolor, draw = none] (-50, -30) rectangle ++(100, -100);
 
 \begin{columns}
   \column{0.5}
   \block{\huge{\textbf{Das optimale $\boldsymbol{k}$ ist...}}}{
     \begin{center}
-      \textcolor{c2}{\Huge{$\boldsymbol{k = 1}$}}
+      \textcolor{darkstrongcolor}{\Huge{$\boldsymbol{k = 1}$}}
     \end{center}
     \vspace{2em}
     \large
@@ -36,7 +36,7 @@
   \block{}{
     \vspace{2.97em}
     \begin{center}
-      \textcolor{c2}{\Huge{{$\boldsymbol{k_1 = k_2 = 1}$}}}
+      \textcolor{darkstrongcolor}{\Huge{{$\boldsymbol{k_1 = k_2 = 1}$}}}
     \end{center}
     \vspace{2em}
     \large
@@ -77,7 +77,7 @@
         height = 700pt,
       ]
 
-      \addplot[color=c2,mark=*]
+      \addplot[color=darkstrongcolor,mark=*]
       coordinates{
           (1, 1.0)
           (2, 1.5773502691896257)
@@ -129,7 +129,7 @@
           (48, 3.903718627468377)
         };
 
-      \addplot[color=c3,mark=*]
+      \addplot[color=lightstrongcolor,mark=*]
       coordinates {
           (1 ,   1)
           (2 ,   1.2688871624076672)
@@ -184,7 +184,7 @@
       \node[align=left] (M) at (4000, 70) {gemessene Laufzeit \\ der Rho-Methode};
       \node[align=left] (L) at (300, 470) {Laufzeit \\ relativ \\ zu $k = 1$};
 
-      \draw[dashed, draw = c2, line width = \lw] (1900, 450) to (2200, 400);
+      \draw[dashed, draw = darkstrongcolor, line width = \lw] (1900, 450) to (2200, 400);
     \end{axis}
   \end{tikzpicture}
   \vspace{6.8cm}
