@@ -2,6 +2,7 @@
 
 \usepackage{o}
 \usepackage{pgfplots}
+\usepackage{svg}
 \usetikzlibrary{arrows, decorations.markings}
 
 \pgfplotsset{
@@ -214,5 +215,19 @@
   \centering
   \large{Für die Messungen wurde die Rho-Methode mit $k$-Werten von 1 bis 48 auf jeweils 16384 Testfällen ausgeführt.}
 }
+
+\begin{columns}
+  \column{0.7}
+  \block{}{
+    \vspace{120pt}
+    \centering
+    \huge
+    LINK ZUR SCHRIFTLICHEN ARBEIT $\quad \Longrightarrow$
+  }
+  \column{0.3}
+  \block{}{
+    \includesvg[width=300pt]{rhok-qr}
+  }
+\end{columns}
 
 \end{document}
