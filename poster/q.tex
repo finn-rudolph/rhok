@@ -17,8 +17,20 @@
 \usetitlestyle{Zero}
 \maketitle
 
-\block{Das optimale $\boldsymbol{k}$ lautet...}{
-}
+\block{Das optimale $\boldsymbol{k}$ ist...}{}
+
+\begin{columns}
+  \column{0.5}
+  \block{}{
+    \LARGE{\textcolor{c3}{$k = 1$}} \normalsize
+    bei einer Maschine. In dem Beweis dafür wurde die Formel für die Laufzeit bei $M = k = 1$ ausgewertet und anschließend die Formel für $M = 1$ und $k > 1$ nach unten abgeschätzt.
+  }
+  \column{0.5}
+  \block{}{
+    \LARGE{\textcolor{c3}{$k_1 = k_2 = 1$}} \normalsize
+    (wahrscheinlich) bei zwei Maschinen. Mit der Formel wurde bewiesen, dass $k_1 = k_2 = 1$ besser ist als zwei Primzahlen oder zwei gleiche Zahlen größer als 1. Auswertungen der Formel und Laufzeitmessungen suggerieren, das $k_1 = k_2 = 1$ tatsächlich optimal ist.
+  }
+\end{columns}
 
 \block{Laufzeitmessungen unterstützen die theoretischen Ergebnisse.}
 {
@@ -160,6 +172,7 @@
 
 \vspace*{10cm}
 
+% maybe das oben in die mitte und die erklärung unten klein
 \note[
   radius = 21cm,
   angle = 50,
