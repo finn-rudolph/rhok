@@ -27,7 +27,6 @@
       \textcolor{darkstrongcolor}{\Huge{$\boldsymbol{k = 1}$}}
     \end{center}
     \vspace{2em}
-    \large
     bei einer Maschine. In dem Beweis dafür wurde die Formel für die Laufzeit bei $M = k = 1$ ausgewertet und anschließend die Formel für $M = 1$ und $k > 1$ nach unten abgeschätzt.
   }
 
@@ -38,8 +37,8 @@
       \textcolor{darkstrongcolor}{\Huge{{$\boldsymbol{k_1 = k_2 = 1}$}}}
     \end{center}
     \vspace{2em}
-    \large
     (vermutlich) bei zwei Maschinen. Mit der Formel wurde bewiesen, dass $k_1 = k_2 = 1$ besser ist als zwei Primzahlen oder zwei gleiche Zahlen größer als 1. Auswertungen der Formel und Laufzeitmessungen suggerieren, das $k_1 = k_2 = 1$ tatsächlich optimal ist.
+    \vspace{1.7em}
   }
 \end{columns}
 
@@ -47,33 +46,28 @@
   Hier wird die Formel mit der tatsächlichen Laufzeit verglichen für...
 }
 \begin{columns}
-  \useblockstyle{cbstyle}
   \column{0.33}
   \block{}{
     \centering
-    \color{white}
-    \large
     \includesvg[width=50pt]{cpu-icon} \\
     1 Maschine
   }
   \column{0.33}
   \block{}{
     \centering
-    \color{white}
     \LARGE
+    \vspace{0.3cm}
     $1 \le k \le 48$ \\
+    \vspace{0.4cm}
     \large
     Werte von $k$ zwischen 1 und 48
   }
   \column{0.33}
   \block{}{
     \centering
-    \color{white}
-    \large
     \includesvg[width=50pt]{experiment-icon} \\
     16384 Testfälle
   }
-  \useblockstyle{bstyle}
 \end{columns}
 
 \block{}
@@ -84,10 +78,8 @@
         axis line style = {line width = \lw},
         xmin = 1,
         xmax = 48,
-        xlabel = $k$,
-        x label style = {at={(axis description cs:0.5,-0.06)},anchor=north},
-        % y label style={at={(axis description cs:0.05,1.16)},rotate=-90,anchor=north},
-        % ylabel style ={align = left},
+        xlabel = { $k$},
+        x label style = {at={(axis description cs:0.97,0.12)},anchor=north},
         xtick = {1, 8, 16, 24, 32, 40, 48},
         ytick = {1, 2, 3, 4, 5, 6},
         width = 1450pt,
@@ -197,24 +189,31 @@
           (47,   4.7967391294287784)
           (48,   2.7134203084992854)};
 
-      \node[align=left] (F) at (2000, 500) {theoretische Werte \\ der Formel};
-      \node[align=left] (M) at (4000, 70) {gemessene Laufzeit \\ der Rho-Methode};
+      \node[align=left] (F) at (1450, 470) {\large theoretische Werte \\ der Formel};
+      \node[align=left] (M) at (3800, 70) {gemessene Laufzeit \\ der Rho-Methode};
       \node[align=left] (L) at (300, 470) {Laufzeit \\ relativ \\ zu $k = 1$};
 
-      \draw[dashed, draw = darkstrongcolor, line width = \lw] (1900, 450) to (2200, 400);
+      \draw[dashed, draw = darkstrongcolor, line width = \lw] (1450, 433) to (1600, 380);
+      \draw[dashed, draw = lightstrongcolor, line width = \lw] (3700, 110) to (3550, 230);
     \end{axis}
   \end{tikzpicture}
-  \vspace{6.8cm}
+}
+
+\block{}{
+  \vspace{-1.2cm}
+  \centering
+  \LARGE{\textbf{ähnlicher Kurvenverlauf $\Longrightarrow$ Die Formel beschreibt die Laufzeit gut.}}
+  \vspace{3.7cm}
 }
 
 \begin{columns}
   \column{0.8}
   \block{}{
-    \vspace{80pt}
-    \centering
-    \huge
+    \raggedleft
+    \vspace{160pt}
+    \LARGE
     \color{white}
-    \textbf{Link zur schriftlichen Arbeit} \Huge $\quad \Longrightarrow$
+    \textbf{Link zur schriftlichen Arbeit}
   }
   \column{0.2}
   \block{}{
