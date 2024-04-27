@@ -1,4 +1,4 @@
-\documentclass[a1paper, portrait, 25pt]{tikzposter}
+\documentclass[a1paper, portrait, 25pt, innermargin=2cm]{tikzposter}
 
 \usepackage{o}
 \usepackage{pgfplots}
@@ -18,24 +18,49 @@
 \usetitlestyle{Zero}
 \maketitle
 
-\block{Das optimale $\boldsymbol{k}$ ist...}{}
+\draw[fill = c5, draw = none] (-50, 21.5) rectangle ++(100, 100);
+\draw[fill = c2, draw = none] (-50, -30) rectangle ++(100, -100);
 
 \begin{columns}
   \column{0.5}
-  \block{}{
-    \LARGE{\textcolor{c3}{$k = 1$}} \normalsize
+  \block{\huge{\textbf{Das optimale $\boldsymbol{k}$ ist...}}}{
+    \begin{center}
+      \textcolor{c2}{\Huge{$\boldsymbol{k = 1}$}}
+    \end{center}
+    \vspace{2em}
+    \large
     bei einer Maschine. In dem Beweis dafür wurde die Formel für die Laufzeit bei $M = k = 1$ ausgewertet und anschließend die Formel für $M = 1$ und $k > 1$ nach unten abgeschätzt.
   }
+
   \column{0.5}
   \block{}{
-    \LARGE{\textcolor{c3}{$k_1 = k_2 = 1$}} \normalsize
-    (wahrscheinlich) bei zwei Maschinen. Mit der Formel wurde bewiesen, dass $k_1 = k_2 = 1$ besser ist als zwei Primzahlen oder zwei gleiche Zahlen größer als 1. Auswertungen der Formel und Laufzeitmessungen suggerieren, das $k_1 = k_2 = 1$ tatsächlich optimal ist.
+    \vspace{2.97em}
+    \begin{center}
+      \textcolor{c2}{\Huge{{$\boldsymbol{k_1 = k_2 = 1}$}}}
+    \end{center}
+    \vspace{2em}
+    \large
+    (vermutlich) bei zwei Maschinen. Mit der Formel wurde bewiesen, dass $k_1 = k_2 = 1$ besser ist als zwei Primzahlen oder zwei gleiche Zahlen größer als 1. Auswertungen der Formel und Laufzeitmessungen suggerieren, das $k_1 = k_2 = 1$ tatsächlich optimal ist.
   }
 \end{columns}
 
-\block{Laufzeitmessungen unterstützen die theoretischen Ergebnisse.}
+\block{\huge{Laufzeitmessungen bestätigen die Korrektheit der Formel.}}{
+  Hier wird die Formel mit der tatsächlichen Laufzeit verglichen für...
+}
+\begin{columns}
+  \useblockstyle{cbstyle}
+  \column{0.33}
+  \block{}{\centering 1 Maschine}
+  \column{0.33}
+  \block{}{\centering \LARGE $1 \le k \le 48$ \\
+    \large Werte von $k$ zwischen 1 und 48}
+  \column{0.33}
+  \block{}{\centering 16384 Testfälle}
+  \useblockstyle{bstyle}
+\end{columns}
+
+\block{}
 {
-  \vspace*{5cm}
   \begin{tikzpicture}
     \begin{axis}[
         axis lines=left,
@@ -44,16 +69,12 @@
         xmax = 48,
         xlabel = $k$,
         x label style = {at={(axis description cs:0.5,-0.06)},anchor=north},
-        y label style={at={(axis description cs:0.05,1.16)},rotate=-90,anchor=north},
-        ylabel = normierte \\ Laufzeit,
-        ylabel style ={align = left},
+        % y label style={at={(axis description cs:0.05,1.16)},rotate=-90,anchor=north},
+        % ylabel style ={align = left},
         xtick = {1, 8, 16, 24, 32, 40, 48},
         ytick = {1, 2, 3, 4, 5, 6},
         width = 1450pt,
         height = 700pt,
-        legend pos = north west,
-        legend style = {draw = none},
-        legend cell align = left,
       ]
 
       \addplot[color=c2,mark=*]
@@ -158,75 +179,29 @@
           (46,   3.7547741175937004)
           (47,   4.7967391294287784)
           (48,   2.7134203084992854)};
-      \legend{Formel, Messungen}
+
+      \node[align=left] (F) at (2000, 500) {theoretische Werte \\ der Formel};
+      \node[align=left] (M) at (4000, 70) {gemessene Laufzeit \\ der Rho-Methode};
+      \node[align=left] (L) at (300, 470) {Laufzeit \\ relativ \\ zu $k = 1$};
+
+      \draw[dashed, draw = c2, line width = \lw] (1900, 450) to (2200, 400);
     \end{axis}
-
-    % eher grau oder so
-    \draw[draw = black, line width = 1.5pt, dashed] (14.2, 5.2) rectangle ++(2.2, 6.4);
-    % \draw[draw = red, line width = \lw] (15.2, 6.4) circle [x radius=1.2, y radius=0.7, rotate = 325];
-    % \draw[draw = red, line width = \lw] (15.24, 10.73) circle [x radius=1.2, y radius=0.7, rotate = 25];
-
-    % \draw[draw = red, line width = \lw, dashed] (36.77, 23) to (36.77, 4);
-    % \draw[draw = red, line width = \lw, dashed] (37.81, 23) to (37.81, 4);
   \end{tikzpicture}
-}
-
-\vspace*{10cm}
-
-% maybe das oben in die mitte und die erklärung unten klein
-\note[
-  radius = 21cm,
-  angle = 50,
-  width = 700pt,
-]{\centering\large{\textbf{Der ähnliche Kurvenverlauf bestätigt die Korrektheit der Formel.}}}
-
-% not really relevant
-% \note[
-%   connection = true,
-%   targetoffsetx = 11.7cm,
-%   targetoffsety = -9.7cm,
-%   width = 400pt,
-%   angle = -90,
-%   radius = 9cm,
-% ]{
-%   \begin{align*}
-%     k \text{ ist eine Primzahl}  & \Longleftrightarrow \text{hohe Laufzeit}    \\
-%     k \text{ hat viele Faktoren} & \Longleftrightarrow \text{geringe Laufzeit}
-%   \end{align*}
-% }
-
-
-\note[
-  targetoffsetx=-10.2cm,
-  targetoffsety=-8.7cm,
-  radius=12cm,
-  angle=-100,
-  width = 650pt,
-  connection = true,
-]{
-  Geringere Laufzeit als erwartet bei Zweierpotenzen
-}
-
-\note[
-  radius = 20.5cm,
-  angle = 130,
-  width = 700pt,
-]{
-  \centering
-  \large{Für die Messungen wurde die Rho-Methode mit $k$-Werten von 1 bis 48 auf jeweils 16384 Testfällen ausgeführt.}
+  \vspace{6.8cm}
 }
 
 \begin{columns}
-  \column{0.7}
+  \column{0.8}
   \block{}{
-    \vspace{120pt}
+    \vspace{80pt}
     \centering
     \huge
-    LINK ZUR SCHRIFTLICHEN ARBEIT $\quad \Longrightarrow$
+    \color{white}
+    \textbf{Link zur schriftlichen Arbeit} \Huge $\quad \Longrightarrow$
   }
-  \column{0.3}
+  \column{0.2}
   \block{}{
-    \includesvg[width=300pt]{rhok-qr}
+    \includesvg[width=220pt]{rhok-qr}
   }
 \end{columns}
 
