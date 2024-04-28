@@ -6,29 +6,27 @@
 
 \maketitle
 
-\block{\Huge Wie faktorisiert man Zahlen am schnellsten mit Pollards Rho-Methode?}
+\draw[fill = c1, draw = none] (-50, 9.5) rectangle ++(100, 100);
 
-\begin{columns}
-    \column{0.5}
-    \block{Pollards Rho-Methode}{
-        \begin{itemize}
-            \item ist ein Algorithmus zur Faktorisierung von Zahlen in ihre Primfaktoren
-            \item hat Anwendung in der Kryptographie
-        \end{itemize}
-    }
-    \column{0.5}
-    \block{Der zu optimierende Paramter $\boldsymbol{k}$}{
-        \begin{itemize}
-            \item i
-        \end{itemize}
-    }
-\end{columns}
+\block{\vspace{-0.7em}\Huge\color{white} Wie faktorisiert man Zahlen am schnellsten mit Pollards Rho-Methode?\vspace{8em}}
+
+\node[align = center] (PRM) at (-10, 8) {Pollards Rho-Methode};
+\node[align = center] (ZVZ) at (-14, 3) {ist ein Algorithmus zur Zerlegung von \\ Zahlen in ihre Primfaktoren};
+\node[align = center] (AC) at (-16, -4) {hat Anwendung in der Kryptographie};
+\node[align = center] (MMG) at (-4, 0) {kann auf mehreren Computern gleichzeitig ausgeführt werden};
+
+
+\node[align = center] (PK) at (10, 8) {Der Parameter $k$};
+\node[align = center] (SG) at (4, 2) {kann für jeden Computer separat gewählt werden};
+\node[align = center] (EXP) at (10, 5) {bestimmt den Exponenten der Funktion $\boldsymbol{f(x) = x^{2k} + 1}$.};
+\node[align = center] (VIS) at (14, -2) {};
 
 \begin{columns}
     \column{0.382}
     \block{}{
-        \color{c1}
-        \LARGE Um das herauszufinden, habe ich folgende Formel für die Laufzeit bestimmt:
+        \color{c3}
+        \LARGE \bf
+        Um das herauszufinden, habe ich folgende Formel für die Laufzeit bestimmt:
     }
     \column{0.618}
     \block{}{
