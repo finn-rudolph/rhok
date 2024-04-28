@@ -1,4 +1,4 @@
-\documentclass[a1paper, portrait, 25pt, innermargin=2cm]{tikzposter}
+\documentclass[a1paper, portrait, 25pt, innermargin=2cm,blockverticalspace=0cm]{tikzposter}
 
 \usepackage{o}
 \usepackage{pgfplots}
@@ -17,34 +17,44 @@
 \usetitlestyle{Zero}
 \maketitle
 
-\draw[fill = darkweakcolor, draw = none] (-50, 21.5) rectangle ++(100, 100);
-\draw[fill = darkweakcolor, draw = none] (-50, -30) rectangle ++(100, -100);
+% \draw[fill = c1, draw = none] (-50, 18.5) rectangle ++(100, 100);
+\draw[fill = c1, draw = none] (-50, -30) rectangle ++(100, -100);
 
+\block{\vspace{0.5em}\Huge{\textcolor{c3}{\textbf{Das optimale $\boldsymbol{k}$ ist...}}}\vspace{-1.5em}}{
+}
 \begin{columns}
   \column{0.5}
-  \block{\huge{\textcolor{white}{\textbf{Das optimale $\boldsymbol{k}$ ist...}}}}{
+  \colorlet{framecolor}{c4}
+  % \useblockstyle{framedblock}
+  \block{}{
+    \vspace{1em}
     \begin{center}
-      \textcolor{white}{\Huge{$\boldsymbol{k = 1}$}}
+      \textcolor{c4}{\Huge{$\boldsymbol{k = 1}$}}
     \end{center}
-    \vspace{2em}
-    \color{white}
+    \vspace{1em}
+    \color{c1}
     bei einer Maschine. In dem Beweis dafür wurde die Formel für die Laufzeit bei $M = k = 1$ ausgewertet und anschließend die Formel für $M = 1$ und $k > 1$ nach unten abgeschätzt.
   }
 
   \column{0.5}
+  \colorlet{framecolor}{c5}
   \block{}{
-    \vspace{2.97em}
+    \vspace{0.2em}
     \begin{center}
-      \textcolor{white}{\Huge{{$\boldsymbol{k_1 = k_2 = 1}$}}}
+      \textcolor{c5}{\Huge{{$\boldsymbol{k_1 = k_2 = 1}$}}}
     \end{center}
-    \vspace{2em}
-    \color{white}
-    (vermutlich) bei zwei Maschinen. Mit der Formel wurde bewiesen, dass $k_1 = k_2 = 1$ besser ist als zwei Primzahlen oder zwei gleiche Zahlen größer als 1. Auswertungen der Formel und Laufzeitmessungen suggerieren, das $k_1 = k_2 = 1$ tatsächlich optimal ist.
-    \vspace{1.7em}
+    \vspace{1em}
+    \color{c1}
+    bei zwei Maschinen (vermutlich). Mit der Formel wurde bewiesen, dass $k_1 = k_2 = 1$ besser ist als zwei Primzahlen oder zwei gleiche Zahlen größer als 1. Auswertungen der Formel und Laufzeitmessungen suggerieren, das $k_1 = k_2 = 1$ tatsächlich optimal ist.
   }
+  \useblockstyle{bstyle}
 \end{columns}
 
-\block{\huge{Laufzeitmessungen bestätigen die Korrektheit der Formel.}}{
+\block{
+  \vspace{1.5em}
+  \Huge{Laufzeitmessungen bestätigen die Korrektheit der Formel.}
+}{
+  \color{c1}
   Hier wird die Formel mit der tatsächlichen Laufzeit verglichen für...
 }
 \begin{columns}
@@ -52,6 +62,7 @@
   \block{}{
     \centering
     \includesvg[width=50pt]{cpu-icon} \\
+    \color{c1}
     1 Maschine
   }
   \column{0.33}
@@ -62,11 +73,13 @@
     $1 \le k \le 48$ \\
     \vspace{0.4cm}
     \large
+    \color{c1}
     Werte von $k$ zwischen 1 und 48
   }
   \column{0.33}
   \block{}{
     \centering
+    \color{c1}
     \includesvg[width=50pt]{experiment-icon} \\
     16384 Testfälle
   }
@@ -74,6 +87,10 @@
 
 \block{}
 {
+  \def\firstcolor{c3}
+  \def\secondcolor{c5}
+  \color{c1}
+
   \begin{tikzpicture}
     \begin{axis}[
         axis lines=left,
@@ -88,7 +105,7 @@
         height = 700pt,
       ]
 
-      \addplot[color=darkstrongcolor,mark=*]
+      \addplot[color=\firstcolor,mark=*]
       coordinates{
           (1, 1.0)
           (2, 1.5773502691896257)
@@ -140,7 +157,7 @@
           (48, 3.903718627468377)
         };
 
-      \addplot[color=lightstrongcolor,mark=*]
+      \addplot[color=\secondcolor,mark=*]
       coordinates {
           (1 ,   1)
           (2 ,   1.2688871624076672)
@@ -191,35 +208,37 @@
           (47,   4.7967391294287784)
           (48,   2.7134203084992854)};
 
-      \node[align=left] (F) at (1450, 470) {\color{darkstrongcolor} theoretische Werte \\ \color{darkstrongcolor} der Formel};
-      \node[align=left] (M) at (3800, 70) {\color{lightstrongcolor} gemessene Laufzeit \\ \color{lightstrongcolor} der Rho-Methode};
-      \node[align=left] (L) at (300, 470) {Laufzeit \\ relativ \\ zu $k = 1$};
+      \node[align=left] (F) at (1450, 470) {\color{\firstcolor} theoretische Werte \\ \color{\firstcolor} der Formel};
+      \node[align=left] (M) at (3800, 70) {\color{\secondcolor} gemessene Laufzeit \\ \color{\secondcolor} der Rho-Methode};
+      \node[align=left] (L) at (300, 470) {\color{c1} Laufzeit \\ \color{c1}  relativ \\ \color{c1} zu $k = 1$};
 
-      \draw[dashed, draw = darkstrongcolor, line width = \lw] (1450, 433) to (1600, 380);
-      \draw[dashed, draw = lightstrongcolor, line width = \lw] (3700, 110) to (3550, 230);
+      \draw[dashed, draw = \firstcolor, line width = \lw] (1450, 433) to (1600, 380);
+      \draw[dashed, draw = \secondcolor, line width = \lw] (3700, 110) to (3550, 230);
     \end{axis}
   \end{tikzpicture}
 }
 
 \block{}{
   \vspace{-1.2cm}
-  \LARGE{\textbf{Ähnlicher Kurvenverlauf $\Longrightarrow$ Die Formel beschreibt die Laufzeit gut.}}
-  \vspace{3.7cm}
+  \LARGE{\textbf{\textcolor{c3}{Ähnlicher Kurvenverlauf $\Longrightarrow$ Die Formel beschreibt die Laufzeit gut.}}}
+  \vspace{6.6cm}
 }
 
 \begin{columns}
-  \column{0.8}
+  \column{0.7}
   \block{}{
     \raggedleft
-    \vspace{160pt}
-    \LARGE
+    \vspace{80pt}
+    \Huge
     \color{white}
-    \textbf{Link zur schriftlichen Arbeit}
+    \textbf{Link zur schriftlichen Arbeit $\boldsymbol{\to}$}
   }
-  \column{0.2}
+  \column{0.3}
   \block{}{
+    \hfill
     \includesvg[width=220pt]{rhok-qr}
   }
 \end{columns}
+
 
 \end{document}

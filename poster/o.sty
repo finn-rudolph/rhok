@@ -19,46 +19,54 @@
 \definecolor{darkweakcolor}{HTML}{231B59}
 \definecolor{lightweakcolor}{HTML}{6B71F2}
 
+\definecolor{c1}{HTML}{191C2D}
+\definecolor{c2}{HTML}{11464A}
+\definecolor{c3}{HTML}{007B63}
+\definecolor{c4}{HTML}{F2C438}
+\definecolor{c5}{HTML}{F2A533}
+
+
 \colorlet{backgroundcolor}{white}
 \colorlet{blocktitlebgcolor}{white}
 \colorlet{framecolor}{white}
-\colorlet{blocktitlefgcolor}{darkstrongcolor}
+\colorlet{blocktitlefgcolor}{c3}
 
 \colorlet{notebgcolor}{white}
 
 \onehalfspacing
-\large
+% \large
 
 \def\lw{3pt}
 
 \definenotestyle{nstyle}{}{
-    \ifNoteHasConnection
-        \draw[line width = 1.5pt, dashed] (notecenter) -- (notetarget) node{};
-    \fi
+  \ifNoteHasConnection
+    \draw[line width = 1.5pt, dashed] (notecenter) -- (notetarget) node{};
+  \fi
 }
 \usenotestyle{nstyle}
 
 \defineblockstyle{bstyle}{
-    titleleft
+  titleleft
 }{}
 \useblockstyle{bstyle}
 
-\defineblockstyle{cbstyle}{
-    titleleft,
-}{
-    \draw[fill=darkstrongcolor,
-        rounded corners=\blockroundedcorners] (blockbody.south west)
-    rectangle (blockbody.north east);
+\defineblockstyle{framedblock}{}{
+  \draw[color=framecolor, line width = \lw,
+    rounded corners=\blockroundedcorners] (blockbody.south west)
+  rectangle (blockbody.north east);
+}
+
+\defineblockstyle{headerblock}{titleleft,}{
 }
 
 \tikzposterlatexaffectionproofoff
 
 \settitle{
-    \centering
-    \bfseries \Huge \@title \par
-    \vspace*{0.7em}
-    \LARGE \@author \par
-    \vspace*{1em}
+  \centering
+  \bfseries \Huge \@title \par
+  \vspace*{0.7em}
+  \LARGE \@author \par
+  \vspace*{1em}
 }
 
 \definetitlestyle{Zero}{titletotopverticalspace=-260pt,titletoblockverticalspace=0pt}{}
