@@ -24,6 +24,7 @@
 \definecolor{c3}{HTML}{007B63}
 \definecolor{c4}{HTML}{F2C438}
 \definecolor{c5}{HTML}{F2A533}
+\definecolor{c6}{HTML}{DBE2FF}
 
 
 \colorlet{backgroundcolor}{white}
@@ -46,30 +47,19 @@
 \usenotestyle{nstyle}
 
 \defineblockstyle{bstyle}{
-  titleleft
+  titlecenter
 }{}
 \useblockstyle{bstyle}
 
-\defineblockstyle{framedblock}{}{
-  \draw[color=framecolor, line width = \lw,
+\defineblockstyle{framedblock}{
+  bodyinnersep=2cm
+}{
+  \draw[color=c1, line width = 0cm, fill = c1,
     rounded corners=\blockroundedcorners] (blockbody.south west)
   rectangle (blockbody.north east);
 }
 
-\defineblockstyle{headerblock}{titleleft,}{
-}
-
 \tikzposterlatexaffectionproofoff
 
-\settitle{
-  \centering
-  \bfseries \Huge \@title \par
-  \vspace*{0.7em}
-  \LARGE \@author \par
-  \vspace*{1em}
-}
-
 \definetitlestyle{Zero}{titletotopverticalspace=-260pt,titletoblockverticalspace=0pt}{}
-
-\title{Parametrisierung von Pollards Rho-Methode}
-\author{Finn Rudolph}
+\usetitlestyle{Zero}

@@ -14,59 +14,63 @@
 
 \begin{document}
 
-\usetitlestyle{Zero}
 \maketitle
 
-% \draw[fill = c1, draw = none] (-50, 18.5) rectangle ++(100, 100);
+% \draw[fill = c1, draw = none] (-50, 17) rectangle ++(100, 100);
 \draw[fill = c1, draw = none] (-50, -30) rectangle ++(100, -100);
 
-\block{\vspace{0.5em}\Huge{\textcolor{c3}{\textbf{Das optimale $\boldsymbol{k}$ ist...}}}\vspace{-1.5em}}{
-}
+\useblockstyle{framedblock}
+
 \begin{columns}
   \column{0.5}
-  \colorlet{framecolor}{c4}
-  % \useblockstyle{framedblock}
   \block{}{
-    \vspace{1em}
+    \color{white}
     \begin{center}
-      \textcolor{c4}{\Huge{$\boldsymbol{k = 1}$}}
+      \LARGE Eine Maschine \\
+      \vspace{1.64em}
+      \textcolor{c4}{\textbf{\Huge{$\boldsymbol{k = 1}$ ist optimal}}}
+      \vspace{1.2em}
     \end{center}
-    \vspace{1em}
-    \color{c1}
-    bei einer Maschine. In dem Beweis dafür wurde die Formel für die Laufzeit bei $M = k = 1$ ausgewertet und anschließend die Formel für $M = 1$ und $k > 1$ nach unten abgeschätzt.
+    In dem Beweis dafür wurde die Formel für die Laufzeit zunächst bei $M = k = 1$ ausgewertet. Anschließend wurde eine untere Schranke für $M = 1$ und $k > 1$ bestimmt und damit die Optimalität von $k = 1$ bewiesen. Die unten dargestellten Laufzeitmessungen unterstützen die Aussage.
   }
-
   \column{0.5}
-  \colorlet{framecolor}{c5}
   \block{}{
-    \vspace{0.2em}
+    \color{white}
     \begin{center}
-      \textcolor{c5}{\Huge{{$\boldsymbol{k_1 = k_2 = 1}$}}}
+      \vspace{-0.3em}
+      \LARGE Zwei Maschinen \\
+      \vspace{1em}
+      \textcolor{c5}{\huge{\textbf{$\boldsymbol{k_1 = k_2 = 1}$ ist besser als $\boldsymbol{k_1 = k_2 > 1}$ und $\boldsymbol{k_1, k_2}$ prim}}} \\
+      \vspace{1em}
     \end{center}
-    \vspace{1em}
-    \color{c1}
-    bei zwei Maschinen (vermutlich). Mit der Formel wurde bewiesen, dass $k_1 = k_2 = 1$ besser ist als zwei Primzahlen oder zwei gleiche Zahlen größer als 1. Auswertungen der Formel und Laufzeitmessungen suggerieren, das $k_1 = k_2 = 1$ tatsächlich optimal ist.
+    Im Fall zweier Primzahlen und zweier gleicher Zahlen für $k$ bei beiden Maschinen war eine Abschätzung der Formel nach unten möglich. Laufzeitmessungen bestätigen das Ergebnis und deuten darauf hin, dass $k_1 = k_2 = 1$ optimal ist.
   }
-  \useblockstyle{bstyle}
 \end{columns}
 
+\useblockstyle{bstyle}
+
 \block{
-  \vspace{1.5em}
-  \Huge{Laufzeitmessungen bestätigen die Korrektheit der Formel.}
+  \vspace{1em}
+  \huge{Laufzeitmessungen bestätigen die Korrektheit der Formel.}
 }{
   \color{c1}
+  \vspace{-0.6em}
+  \centering
   Hier wird die Formel mit der tatsächlichen Laufzeit verglichen für...
 }
 \begin{columns}
   \column{0.33}
   \block{}{
+    \vspace{-2.2em}
     \centering
     \includesvg[width=50pt]{cpu-icon} \\
     \color{c1}
+    \bf
     1 Maschine
   }
   \column{0.33}
   \block{}{
+    \vspace{-2.2em}
     \centering
     \LARGE
     \vspace{0.3cm}
@@ -74,19 +78,23 @@
     \vspace{0.4cm}
     \large
     \color{c1}
-    Werte von $k$ zwischen 1 und 48
+    \bf
+    Werte von $\boldsymbol{k}$ zwischen 1 und 48
   }
   \column{0.33}
   \block{}{
+    \vspace{-2.2em}
     \centering
     \color{c1}
     \includesvg[width=50pt]{experiment-icon} \\
+    \bf
     16384 Testfälle
   }
 \end{columns}
 
 \block{}
 {
+  \vspace{-2em}
   \def\firstcolor{c3}
   \def\secondcolor{c5}
   \color{c1}
@@ -219,9 +227,10 @@
 }
 
 \block{}{
-  \vspace{-1.2cm}
+  \vspace{-1.8cm}
+  \centering
   \LARGE{\textbf{\textcolor{c3}{Ähnlicher Kurvenverlauf $\Longrightarrow$ Die Formel beschreibt die Laufzeit gut.}}}
-  \vspace{6.6cm}
+  \vspace{0.35cm}
 }
 
 \begin{columns}
