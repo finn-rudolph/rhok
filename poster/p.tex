@@ -1,0 +1,44 @@
+\documentclass[a2paper, landscape, 25pt]{tikzposter}
+
+\usepackage{o}
+
+\begin{document}
+
+\maketitle
+
+\block{\Huge Wie faktorisiert man Zahlen am schnellsten mit Pollards Rho-Methode?}
+
+\begin{columns}
+    \column{0.5}
+    \block{Pollards Rho-Methode}{
+        \begin{itemize}
+            \item ist ein Algorithmus zur Faktorisierung von Zahlen in ihre Primfaktoren
+            \item hat Anwendung in der Kryptographie
+        \end{itemize}
+    }
+    \column{0.5}
+    \block{Der zu optimierende Paramter $\boldsymbol{k}$}{
+        \begin{itemize}
+            \item i
+        \end{itemize}
+    }
+\end{columns}
+
+\begin{columns}
+    \column{0.382}
+    \block{}{
+        \color{c1}
+        \LARGE Um das herauszufinden, habe ich folgende Formel für die Laufzeit bestimmt:
+    }
+    \column{0.618}
+    \block{}{
+        \color{c1}
+        \LARGE
+        \begin{align*}
+            \sqrt{\pi p / 2} \ \Bigg ( \sum_{i = 1}^M
+            \frac {\gcd(p - 1, 2k_i) - 1} {\lg^2 2k_i} \Bigg )^{-1/2}
+        \end{align*}
+    }
+\end{columns}
+
+\end{document}
