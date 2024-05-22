@@ -506,8 +506,6 @@ Indem man die Näherung $1 + x \approx e^x$ für kleine $x$ verwendet, sieht man
     \end{align*}
 \end{proof}
 
-
-
 Um $L_{(k_i)}(p) \sim F$ zu zeigen, teile man die erste Summe in (\ref{eq:f-definition}) bei $h_1^{9/16}$
 \begin{align*}
     F = & \sum_{z_1 = 1}^{h_1^{9/16}} Q(z_1, h_1)
@@ -552,7 +550,7 @@ In diesem Abschnitt wird die Frage behandelt, wie der Parameter $k$ bei $M$ Masc
 
 \begin{theorem}
     \label{theorem:optimal-k-m1}
-    Sei $L_k(p)$ wie in (\ref{eq:lki-definition}) definiert. Der Erwartungswert $\E(L_k(p))$ über alle möglichen $\gcd((p - 1)/2, k)$ nimmt ein globales Minimum für $k = 1$ an.
+    Sei $L_k(p)$ wie in (\ref{eq:lki-definition}) definiert. Der Erwartungswert $\E(L_k(p))$ über alle möglichen $\gcd((p - 1)/2, k)$ ist für $k = 1$ minimal.
 \end{theorem}
 
 \begin{proof}
@@ -753,7 +751,6 @@ Nun sehen wir uns den Fall von zwei Maschinen an.
                     (46,   3.7547741175937004)
                     (47,   4.7967391294287784)
                     (48,   2.7134203084992854)};
-
             \legend{Formel (\ref{eq:lki-asymp}), Gemessene Laufzeit}
         \end{axis}
     \end{tikzpicture}
